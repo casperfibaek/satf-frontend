@@ -1,4 +1,5 @@
 // global CustomFunctions
+/* eslint-disable no-unused-vars */
 
 function makeRequest(method, url, timeout = 12000) {
   return new Promise(((resolve, reject) => {
@@ -59,7 +60,7 @@ function isValidPluscode(code) {
     return false;
   }
   // Is it in an illegal position?
-  if (code.indexOf(seperator) > seperatorPosition || code.indexOf(seperator) % 2 == 1) {
+  if (code.indexOf(seperator) > seperatorPosition || code.indexOf(seperator) % 2 === 1) {
     return false;
   }
   // We can have an even number of padding characters before the separator,
@@ -259,6 +260,244 @@ function AdminLevel1(latitude, longitude = false) {
 
 function AdminLevel2(latitude, longitude = false) {
   const url = (lat, lng) => `https://marl.io/api/satf/admin_level_2?lat=${lat}&lng=${lng}`;
+  try {
+    if (isValidWhatFreeWords(latitude)) {
+      return What3WordsToLatLng(latitude).then((latlng) => {
+        const coords = JSON.parse(latlng);
+        const lat = coords[0];
+        const lng = coords[1];
+
+        return makeRequest('get', url(lat, lng))
+          .then((value) => value);
+      });
+    }
+
+    if (isValidPluscode(latitude)) {
+      return PlusCodeToLatLng(latitude).then((latlng) => {
+        const coords = JSON.parse(latlng);
+        const lat = coords[0];
+        const lng = coords[1];
+
+        return makeRequest('get', url(lat, lng))
+          .then((value) => value);
+      });
+    }
+
+    const lat = latitude;
+    const lng = longitude;
+    return makeRequest('get', url(lat, lng))
+      .then((value) => value);
+  } catch (err) {
+    const error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+    throw error;
+  }
+}
+
+
+function AdminLevel2FuzzyLev(name) {
+  try {
+    return makeRequest('get', `https://marl.io/api/satf/admin_level_2_fuzzy_lev?name=${name}`)
+      .then((value) => value);
+  } catch (err) {
+    const error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+    throw error;
+  }
+}
+
+
+function AdminLevel2FuzzyTri(name) {
+  try {
+    return makeRequest('get', `https://marl.io/api/satf/admin_level_2_fuzzy_tri?name=${name}`)
+      .then((value) => value);
+  } catch (err) {
+    const error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+    throw error;
+  }
+}
+
+
+function UrbanStatus(latitude, longitude = false) {
+  const url = (lat, lng) => `https://marl.io/api/satf/urban_status?lat=${lat}&lng=${lng}`;
+  try {
+    if (isValidWhatFreeWords(latitude)) {
+      return What3WordsToLatLng(latitude).then((latlng) => {
+        const coords = JSON.parse(latlng);
+        const lat = coords[0];
+        const lng = coords[1];
+
+        return makeRequest('get', url(lat, lng))
+          .then((value) => value);
+      });
+    }
+
+    if (isValidPluscode(latitude)) {
+      return PlusCodeToLatLng(latitude).then((latlng) => {
+        const coords = JSON.parse(latlng);
+        const lat = coords[0];
+        const lng = coords[1];
+
+        return makeRequest('get', url(lat, lng))
+          .then((value) => value);
+      });
+    }
+
+    const lat = latitude;
+    const lng = longitude;
+    return makeRequest('get', url(lat, lng))
+      .then((value) => value);
+  } catch (err) {
+    const error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+    throw error;
+  }
+}
+
+
+function UrbanStatusSimple(latitude, longitude = false) {
+  const url = (lat, lng) => `https://marl.io/api/satf/urban_status_simple?lat=${lat}&lng=${lng}`;
+  try {
+    if (isValidWhatFreeWords(latitude)) {
+      return What3WordsToLatLng(latitude).then((latlng) => {
+        const coords = JSON.parse(latlng);
+        const lat = coords[0];
+        const lng = coords[1];
+
+        return makeRequest('get', url(lat, lng))
+          .then((value) => value);
+      });
+    }
+
+    if (isValidPluscode(latitude)) {
+      return PlusCodeToLatLng(latitude).then((latlng) => {
+        const coords = JSON.parse(latlng);
+        const lat = coords[0];
+        const lng = coords[1];
+
+        return makeRequest('get', url(lat, lng))
+          .then((value) => value);
+      });
+    }
+
+    const lat = latitude;
+    const lng = longitude;
+    return makeRequest('get', url(lat, lng))
+      .then((value) => value);
+  } catch (err) {
+    const error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+    throw error;
+  }
+}
+
+
+function NearestPlace(latitude, longitude = false) {
+  const url = (lat, lng) => `https://marl.io/api/satf/nearest_placename?lat=${lat}&lng=${lng}`;
+  try {
+    if (isValidWhatFreeWords(latitude)) {
+      return What3WordsToLatLng(latitude).then((latlng) => {
+        const coords = JSON.parse(latlng);
+        const lat = coords[0];
+        const lng = coords[1];
+
+        return makeRequest('get', url(lat, lng))
+          .then((value) => value);
+      });
+    }
+
+    if (isValidPluscode(latitude)) {
+      return PlusCodeToLatLng(latitude).then((latlng) => {
+        const coords = JSON.parse(latlng);
+        const lat = coords[0];
+        const lng = coords[1];
+
+        return makeRequest('get', url(lat, lng))
+          .then((value) => value);
+      });
+    }
+
+    const lat = latitude;
+    const lng = longitude;
+    return makeRequest('get', url(lat, lng))
+      .then((value) => value);
+  } catch (err) {
+    const error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+    throw error;
+  }
+}
+
+
+function NearestPoi(latitude, longitude = false) {
+  const url = (lat, lng) => `https://marl.io/api/satf/nearest_poi?lat=${lat}&lng=${lng}`;
+  try {
+    if (isValidWhatFreeWords(latitude)) {
+      return What3WordsToLatLng(latitude).then((latlng) => {
+        const coords = JSON.parse(latlng);
+        const lat = coords[0];
+        const lng = coords[1];
+
+        return makeRequest('get', url(lat, lng))
+          .then((value) => value);
+      });
+    }
+
+    if (isValidPluscode(latitude)) {
+      return PlusCodeToLatLng(latitude).then((latlng) => {
+        const coords = JSON.parse(latlng);
+        const lat = coords[0];
+        const lng = coords[1];
+
+        return makeRequest('get', url(lat, lng))
+          .then((value) => value);
+      });
+    }
+
+    const lat = latitude;
+    const lng = longitude;
+    return makeRequest('get', url(lat, lng))
+      .then((value) => value);
+  } catch (err) {
+    const error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+    throw error;
+  }
+}
+
+
+function NearestBank(latitude, longitude = false) {
+  const url = (lat, lng) => `https://marl.io/api/satf/nearest_bank?lat=${lat}&lng=${lng}`;
+  try {
+    if (isValidWhatFreeWords(latitude)) {
+      return What3WordsToLatLng(latitude).then((latlng) => {
+        const coords = JSON.parse(latlng);
+        const lat = coords[0];
+        const lng = coords[1];
+
+        return makeRequest('get', url(lat, lng))
+          .then((value) => value);
+      });
+    }
+
+    if (isValidPluscode(latitude)) {
+      return PlusCodeToLatLng(latitude).then((latlng) => {
+        const coords = JSON.parse(latlng);
+        const lat = coords[0];
+        const lng = coords[1];
+
+        return makeRequest('get', url(lat, lng))
+          .then((value) => value);
+      });
+    }
+
+    const lat = latitude;
+    const lng = longitude;
+    return makeRequest('get', url(lat, lng))
+      .then((value) => value);
+  } catch (err) {
+    const error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+    throw error;
+  }
+}
+
+
+function NearestBankDist(latitude, longitude = false) {
+  const url = (lat, lng) => `https://marl.io/api/satf/nearest_bank_distance?lat=${lat}&lng=${lng}`;
   try {
     if (isValidWhatFreeWords(latitude)) {
       return What3WordsToLatLng(latitude).then((latlng) => {

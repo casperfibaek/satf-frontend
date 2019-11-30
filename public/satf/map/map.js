@@ -4,12 +4,100 @@ if (localStorage.getItem('eventNumber') === null) {
 
 let localEvent = Number(localStorage.getItem('eventNumber'));
 
-const map = L.map('map').setView([51.505, -0.09], 13);
+// Bounds
+const southWest = L.latLng(5.3353253293190095, -1.1842325491159249);
+const northEast = L.latLng(6.1770972290384405, 0.4266650607723487);
+const bounds = L.latLngBounds(southWest, northEast);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19,
-  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-}).addTo(map);
+
+// Base layers
+const osm = L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors', minZoom: 9, maxZoom: 18 });
+const esri = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+  attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+});
+const s2_dry = L.tileLayer('./s2_dry/{z}/{x}/{y}.png', {
+  tms: true, opacity: 1, attribution: 'NIRAS', minZoom: 9, maxNativeZoom: 15, maxZoom: 21, bounds,
+});
+const s2_wet = L.tileLayer('./s2_wet/{z}/{x}/{y}.png', {
+  tms: true, opacity: 1, attribution: 'NIRAS', minZoom: 9, maxNativeZoom: 15, maxZoom: 21, bounds,
+});
+const white = L.tileLayer('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEAAQMAAABmvDolAAAAA1BMVEX///+nxBvIAAAAH0lEQVQYGe3BAQ0AAADCIPunfg43YAAAAAAAAAAA5wIhAAAB9aK9BAAAAABJRU5ErkJggg==', { minZoom: 9, maxZoom: 15 });
+
+const map = L.map('map', {
+  center: [51.505, -0.09],
+  zoom: 13,
+  minZoom: 9,
+  maxZoom: 17,
+  layers: [osm],
+});
+
+L.control.scale().addTo(map);
+
+const all_classes = L.tileLayer('./all_classes/{z}/{x}/{y}.png', {
+  tms: true, opacity: 0.7, attribution: 'NIRAS', minZoom: 9, maxNativeZoom: 15, maxZoom: 21, bounds,
+});
+const urban_non_urban = L.tileLayer('./urban_non-urban/{z}/{x}/{y}.png', {
+  tms: true, opacity: 0.7, attribution: 'NIRAS', minZoom: 9, maxNativeZoom: 15, maxZoom: 21, bounds,
+});
+const bank_distance = L.tileLayer('./bank_distance/{z}/{x}/{y}.png', {
+  tms: true, opacity: 0.7, attribution: 'NIRAS', minZoom: 9, maxNativeZoom: 15, maxZoom: 21, bounds,
+});
+const road_density = L.tileLayer('./road_density/{z}/{x}/{y}.png', {
+  tms: true, opacity: 0.7, attribution: 'NIRAS', minZoom: 9, maxNativeZoom: 15, maxZoom: 21, bounds,
+});
+const viirs = L.tileLayer('./viirs/{z}/{x}/{y}.png', {
+  tms: true, opacity: 0.7, attribution: 'NASA', minZoom: 9, maxNativeZoom: 15, maxZoom: 21, bounds,
+});
+const surf_dry = L.tileLayer('./surf_dry/{z}/{x}/{y}.png', {
+  tms: true, opacity: 0.7, attribution: 'NIRAS', minZoom: 9, maxNativeZoom: 15, maxZoom: 21, bounds,
+});
+const surf_wet = L.tileLayer('./surf_wet/{z}/{x}/{y}.png', {
+  tms: true, opacity: 0.7, attribution: 'NIRAS', minZoom: 9, maxNativeZoom: 15, maxZoom: 21, bounds,
+});
+const tex_b04 = L.tileLayer('./dry_b4_tex/{z}/{x}/{y}.png', {
+  tms: true, opacity: 1, attribution: 'NIRAS', minZoom: 9, maxNativeZoom: 15, maxZoom: 21, bounds,
+});
+const tex_b08 = L.tileLayer('./dry_b8_tex/{z}/{x}/{y}.png', {
+  tms: true, opacity: 1, attribution: 'NIRAS', minZoom: 9, maxNativeZoom: 15, maxZoom: 21, bounds,
+});
+const tex_b12 = L.tileLayer('./dry_b12_tex/{z}/{x}/{y}.png', {
+  tms: true, opacity: 1, attribution: 'NIRAS', minZoom: 9, maxNativeZoom: 15, maxZoom: 21, bounds,
+});
+
+const basemaps = {
+  OpenStreetMap: osm,
+  'Esri WorldMap': esri,
+  'Dry Season 2019 (RGB)': s2_dry,
+  'Wet Season 2019 (RGB)': s2_wet,
+  'Without background': white,
+};
+
+const overlaymaps = {
+  'Classification (All)': all_classes,
+  'Classification (Urb/Rur)': urban_non_urban,
+  'Nighttime Lights 2019': viirs,
+  'Distance to Banks': bank_distance,
+  'Road Density': road_density,
+  'Dry season SAR (Coh2 * Db)': surf_dry,
+  'Wet season SAR (Coh2 * Db)': surf_wet,
+  'PCA Texture Red': tex_b04,
+  'PCA Texture NIR': tex_b08,
+  'PCA Texture SWIR': tex_b12,
+  'Mbinya Research': mbinya_layer,
+};
+
+const title = L.control();
+title.onAdd = function (map) {
+  this._div = L.DomUtil.create('div', 'ctl title');
+  this.update();
+  return this._div;
+};
+title.update = function (props) {
+  this._div.innerHTML = 'Urban Proximity Study. Savings at the Frontiers';
+};
+title.addTo(map);
+
+L.control.layers(basemaps, overlaymaps, { collapsed: false }).addTo(map);
 
 function addMarkers(themap, markername) {
   const markersList = JSON.parse(localStorage.getItem(markername));
