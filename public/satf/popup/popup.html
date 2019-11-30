@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <title>Dialog for My Office Add-in</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <!-- For more information on Office UI Fabric, visit https://developer.microsoft.com/fabric. -->
+  <link rel="stylesheet" href="https://marl.io/satf/assets/fabric.min.css"/>
+  
+  <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js" type="text/javascript"></script>
+  <script type="text/javascript" src="https://marl.io/satf/popup/popup.js"></script>
+  
+</head>
+<body>
+  <div class="docs-DialogExample-default">
+    <div class="ms-Dialog">
+      <div class="ms-Dialog-title">All emails together</div>
+      <div class="ms-Dialog-content">
+        <p class="ms-Dialog-subText">Your Inbox has changed. No longer does it include favorites, it is a singular destination for your emails.</p>
+        <div class="ms-CheckBox">
+          <input tabindex="-1" type="checkbox" class="ms-CheckBox-input">
+          <label role="checkbox" class="ms-CheckBox-field" tabindex="0" aria-checked="false" name="checkboxa">
+            <span class="ms-Label">Option1</span> 
+          </label>
+        </div>
+        <div class="ms-CheckBox">
+          <input tabindex="-1" type="checkbox" class="ms-CheckBox-input">
+          <label role="checkbox" class="ms-CheckBox-field" tabindex="0" aria-checked="false" name="checkboxa">
+            <span class="ms-Label">Option2</span> 
+          </label>
+        </div>
+      </div>
+      <div class="ms-Dialog-actions">
+        <button class="ms-Button ms-Dialog-action ms-Button--primary">
+          <span class="ms-Button-label">Save</span> 
+        </button>
+        <button class="ms-Button ms-Dialog-action">
+          <span class="ms-Button-label">Cancel</span> 
+        </button>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center">
+        <p class="ms-font-xl">ENTER YOUR NAME</p>
+        <input id="name-box" type="text"/><br/><br/>
+        <button id="ok-button" class="ms-Button">OK</button>
+      </div>
+    </div>
+    <button class="ms-Button docs-DialogExample-button">Open Dialog</button>
+    <label class="docs-DialogExample-label"></label>
+  </div>
+</body>
+</html>

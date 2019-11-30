@@ -1,0 +1,8 @@
+{
+  "appService.zipIgnorePattern": [
+    "node_modules{,/**}",
+    ".vscode{,/**}"
+  ],
+  "appService.deploySubpath": "",
+  "appService.defaultWebAppToDeploy": "/subscriptions/c3428477-46c4-48a8-bedf-23d9c96d486d/resourceGroups/phd/providers/Microsoft.Web/sites/cfiapi"
+}
