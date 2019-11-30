@@ -99,7 +99,7 @@ async function openDialogPopup(event) {
   localStorage.setItem('clientID', 'casper123');
 
   Office.context.ui.displayDialogAsync(
-    'https://marl.io/satf/popup.html',
+    'https://marl.io/satf/popup/popup.html',
     {
       height: 40,
       width: 30,
@@ -169,7 +169,7 @@ async function openDialogMap(event) {
   localStorage.setItem('markers', markers);
 
   Office.context.ui.displayDialogAsync(
-    'https://marl.io/satf/map.html',
+    'https://marl.io/satf/map/map.html',
     {
       height: 40,
       width: 30,
