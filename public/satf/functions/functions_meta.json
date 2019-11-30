@@ -2,28 +2,8 @@
     "functions": [
         {
             "description": "From Latitude, Longitude to What3Words",
-            "id": "LatLngToWhatFreeWords",
+            "id": "LatLngToWhat3Words",
             "name": "WHAT3WORDS",
-            "parameters": [
-                {
-                    "description": "Latitude of point.",
-                    "name": "Latitude",
-                    "type": "number"
-                },
-                {
-                    "description": "Longitude of point.",
-                    "name": "Longitude",
-                    "type": "number"
-                }
-            ],
-            "result": {
-                "type": "string"
-            }
-        },
-        {
-            "description": "From Latitude, Longitude to Pluscodes",
-            "id": "LatLngToPluscode",
-            "name": "PLUSCODE",
             "parameters": [
                 {
                     "description": "Latitude of point.",

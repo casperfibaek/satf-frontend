@@ -1,0 +1,143 @@
+{
+  "functions": [
+      {
+          "description": "Hello Worlds",
+          "id": "helloWorld",
+          "name": "HELLO",
+          "parameters": [
+          ],
+          "result": {
+              "type": "string"
+          }
+      },
+    {
+        "description": "From Latitude, Longitude to What3Words",
+        "id": "LatLngToWhatFreeWords",
+        "name": "WHAT3WORDS",
+        "parameters": [
+            {
+                "description": "Latitude of point.",
+                "name": "Latitude",
+                "type": "number"
+            },
+            {
+                "description": "Longitude of point.",
+                "name": "Longitude",
+                "type": "number"
+            }
+        ],
+        "result": {
+            "type": "string"
+        }
+    },
+    {
+        "description": "From Latitude, Longitude to Pluscode",
+        "id": "LatLngToPluscode",
+        "name": "PLUSCODE",
+        "parameters": [
+            {
+                "description": "Latitude of point.",
+                "name": "Latitude",
+                "type": "number"
+            },
+            {
+                "description": "Longitude of point.",
+                "name": "Longitude",
+                "type": "number"
+            }
+        ],
+        "result": {
+            "type": "string"
+        }
+    },
+    {
+        "description": "Population Density from latitude and longitude",
+        "id": "PopulationDensity",
+        "name": "POPDENS",
+        "parameters": [
+            {
+                "description": "Latitude of point",
+                "name": "Latitude",
+                "type": "any"
+            },
+            {
+                "description": "Longitude of point.",
+                "name": "Longitude",
+                "type": "number",
+                "optional": true
+            }
+        ],
+        "result": {
+            "type": "number"
+        }
+    },
+    {
+        "description": "Buffered populationdensity from latitude and longitude",
+        "id": "PopulationDensityBuffer",
+        "name": "POPDENSBUF",
+        "parameters": [
+            {
+                "description": "Buffer in meters.",
+                "name": "Buffer",
+                "type": "number"
+            },
+            {
+                "description": "Latitude of point.",
+                "name": "Latitude",
+                "type": "any"
+            },
+            {
+                "description": "Longitude of point.",
+                "name": "Longitude",
+                "type": "number",
+                "optional": true
+            }
+        ],
+        "result": {
+            "type": "number"
+        }
+    },
+    {
+        "description": "Administrative zone from latitude and longitude (level 1)",
+        "id": "AdminLevel1",
+        "name": "ADMINLEVEL1",
+        "parameters": [
+            {
+                "description": "Latitude of point.",
+                "name": "Latitude",
+                "type": "any"
+            },
+            {
+                "description": "Longitude of point.",
+                "name": "Longitude",
+                "type": "number",
+                "optional": true
+            }
+        ],
+        "result": {
+            "type": "string"
+        }
+    },
+    {
+        "description": "Administrative zone from latitude and longitude (level 2)",
+        "id": "AdminLevel2",
+        "name": "ADMINLEVEL2",
+        "parameters": [
+            {
+                "description": "Latitude of point.",
+                "name": "Latitude",
+                "type": "any"
+            },
+            {
+                "description": "Longitude of point.",
+                "name": "Longitude",
+                "type": "number",
+                "optional": true
+            }
+        ],
+        "result": {
+            "type": "string"
+        }
+    }
+  ]
+}

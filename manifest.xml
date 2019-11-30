@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0" xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="TaskPaneApp">
-  <Id>1a3b85bb-5dfc-5684-87a6-ed7ccb48c919</Id>
+  <Id>1a3b85bb-5dfc-5684-87a6-ed7ccb48c920</Id>
   <Version>1.0.0.1</Version>
   <ProviderName>NIRAS</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
@@ -356,8 +356,8 @@
         <bt:Url id="AboutMastercard.Url" DefaultValue="https://mastercard.com"/>
         <bt:Url id="AboutOPM.Url" DefaultValue="https://opml.co.uk"/>
         <bt:Url id="AboutNiras.Url" DefaultValue="https://niras.com"/>
-        <bt:Url id="Functions.Script.Url" DefaultValue="https://marl.io/satf/functions/functions.js"/>
-        <bt:Url id="Functions.Metadata.Url" DefaultValue="https://marl.io/satf/functions/functions_meta.json"/>
+        <bt:Url id="Functions.Script.Url" DefaultValue="https://marl.io/satf/functions/functions_simple.js"/>
+        <bt:Url id="Functions.Metadata.Url" DefaultValue="https://marl.io/satf/functions/functions_meta_simple.json"/>
         <bt:Url id="Functions.Page.Url" DefaultValue="https://marl.io/satf/functions/functions.html"/>
         <bt:Url id="Commands.Url" DefaultValue="https://marl.io/satf/commands/commands.html"/>
         <bt:Url id="Taskpane.Url" DefaultValue="https://marl.io/satf/taskpane/taskpane.html"/>

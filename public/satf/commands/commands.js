@@ -1,3 +1,5 @@
+// The Office.onReady command, even empty, is needed by office-js to work at all(?)
+
 Office.onReady(() => {
   (async function startDB() {
     idbKeyval
@@ -15,7 +17,6 @@ async function insertCell(val) {
   await Excel.run(async (context) => {
     const range = context.workbook.getSelectedRange();
     range.values = [[val]];
-    // range.load('address');
 
     await context.sync();
   });
@@ -109,7 +110,6 @@ async function openDialogPopup(event) {
     },
   );
 
-  // Be sure to indicate when the add-in command function is complete
   event.completed();
 }
 
@@ -121,7 +121,6 @@ async function openDialogNIRAS(event) {
     displayInIframe: true,
   });
 
-  // Be sure to indicate when the add-in command function is complete
   event.completed();
 }
 
@@ -133,7 +132,6 @@ async function openDialogOPM(event) {
     displayInIframe: true,
   });
 
-  // Be sure to indicate when the add-in command function is complete
   event.completed();
 }
 
@@ -145,7 +143,6 @@ async function openDialogSATF(event) {
     displayInIframe: true,
   });
 
-  // Be sure to indicate when the add-in command function is complete
   event.completed();
 }
 
@@ -157,7 +154,6 @@ async function openDialogHELP(event) {
     displayInIframe: true,
   });
 
-  // Be sure to indicate when the add-in command function is complete
   event.completed();
 }
 
@@ -184,7 +180,6 @@ async function openDialogMap(event) {
     },
   );
 
-  // Be sure to indicate when the add-in command function is complete
   event.completed();
 }
 
@@ -198,7 +193,6 @@ async function addMapData(event) {
   }
   localStorage.setItem('eventNumber', String(Number(localEventNumber) + 1));
 
-  // Be sure to indicate when the add-in command function is complete
   event.completed();
 }
 

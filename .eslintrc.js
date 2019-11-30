@@ -15,6 +15,7 @@ module.exports = {
         "Excel": true,
         "L": true,
         "idbKeyval": true,
+        "CustomFunctions": true,
     },
     "parserOptions": {
         "ecmaVersion": 2018
