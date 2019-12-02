@@ -184,7 +184,7 @@ function PopulationDensity(latitude, longitude = false) {
   const baseurl = 'https://marl.io/api/satf/population_density';
   return new Promise(((resolve, reject) => {
     getLatLngInfo(baseurl, latitude, longitude)
-      .then((value) => { resolve(value); })
+      .then((value) => { resolve(Number(value)); })
       .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
   }));
 }
@@ -198,8 +198,11 @@ function PopulationDensityBuffer(buffer_in_meters, latitude, longitude = false) 
         const lat = coords[0];
         const lng = coords[1];
 
-        return makeRequest('get', url(buffer_in_meters, lat, lng))
-          .then((value) => value);
+        return new Promise((resolve, reject) => {
+          makeRequest('get', url(buffer_in_meters, lat, lng))
+            .then((value) => { resolve(Number(value)); })
+            .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
+        });
       });
     }
 
@@ -209,21 +212,72 @@ function PopulationDensityBuffer(buffer_in_meters, latitude, longitude = false) 
         const lat = coords[0];
         const lng = coords[1];
 
-        return makeRequest('get', url(buffer_in_meters, lat, lng))
-          .then((value) => value);
+        return new Promise((resolve, reject) => {
+          makeRequest('get', url(buffer_in_meters, lat, lng))
+            .then((value) => { resolve(Number(value)); })
+            .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
+        });
       });
     }
 
     const lat = latitude;
     const lng = longitude;
-    return makeRequest('get', url(buffer_in_meters, lat, lng))
-      .then((value) => value);
+
+    return new Promise((resolve, reject) => {
+      makeRequest('get', url(buffer_in_meters, lat, lng))
+        .then((value) => { resolve(Number(value)); })
+        .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
+    });
   } catch (err) {
     const error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
     throw error;
   }
 }
 
+function PopulationDensityWalk(minutes, latitude, longitude = false) {
+  const url = (buffer, lat, lng) => `https://marl.io/api/satf/population_density_walk?lat=${lat}&lng=${lng}&minutes=${buffer}`;
+  try {
+    if (isValidWhatFreeWords(latitude)) {
+      return What3WordsToLatLng(latitude).then((latlng) => {
+        const coords = JSON.parse(latlng);
+        const lat = coords[0];
+        const lng = coords[1];
+
+        return new Promise((resolve, reject) => {
+          makeRequest('get', url(minutes, lat, lng))
+            .then((value) => { resolve(Number(value)); })
+            .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
+        });
+      });
+    }
+
+    if (isValidPluscode(latitude)) {
+      return PlusCodeToLatLng(latitude).then((latlng) => {
+        const coords = JSON.parse(latlng);
+        const lat = coords[0];
+        const lng = coords[1];
+
+        return new Promise((resolve, reject) => {
+          makeRequest('get', url(minutes, lat, lng))
+            .then((value) => { resolve(Number(value)); })
+            .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
+        });
+      });
+    }
+
+    const lat = latitude;
+    const lng = longitude;
+
+    return new Promise((resolve, reject) => {
+      makeRequest('get', url(minutes, lat, lng))
+        .then((value) => { resolve(Number(value)); })
+        .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
+    });
+  } catch (err) {
+    const error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+    throw error;
+  }
+}
 
 function AdminLevel1(latitude, longitude = false) {
   const baseurl = 'https://marl.io/api/satf/admin_level_1';

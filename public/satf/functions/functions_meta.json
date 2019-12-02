@@ -51,7 +51,7 @@
         }
     },
     {
-        "description": "Population Density from latitude and longitude",
+        "description": "Population Density at point (ppl/ha)",
         "id": "PopulationDensity",
         "name": "POPDENS",
         "parameters": [
@@ -72,7 +72,33 @@
         }
     },
     {
-        "description": "Buffered populationdensity from latitude and longitude",
+        "description": "Population within provided walking distance in minutes from point",
+        "id": "PopulationDensityWalk",
+        "name": "POPDENSWALK",
+        "parameters": [
+            {
+                "description": "Time in minutes",
+                "name": "Minutes",
+                "type": "number"
+            },
+            {
+                "description": "Latitude of point",
+                "name": "Latitude",
+                "type": "any"
+            },
+            {
+                "description": "Longitude of point.",
+                "name": "Longitude",
+                "type": "number",
+                "optional": true
+            }
+        ],
+        "result": {
+            "type": "number"
+        }
+    },
+    {
+        "description": "Population within provided distance in meters from point",
         "id": "PopulationDensityBuffer",
         "name": "POPDENSBUF",
         "parameters": [
