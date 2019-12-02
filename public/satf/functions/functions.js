@@ -1,530 +1,320 @@
 // global CustomFunctions
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+/* eslint-disable no-unused-vars */
+
+function makeRequest(method, url, timeout = 12000) {
+  return new Promise(((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open(method, url);
+    xhr.timeout = timeout;
+    xhr.onload = function changeHappened() {
+      if (this.readyState === 4 && this.status >= 200 && this.status < 300) {
+        resolve(xhr.response);
+      } else {
+        reject(new Error({
+          status: this.status,
+          statusText: xhr.statusText,
+        }));
+      }
+    };
+    xhr.onerror = function errorHappened() {
+      reject(new Error({
+        status: this.status,
+        statusText: xhr.statusText,
+      }));
+    };
+    xhr.ontimeout = function timeoutHappened() {
+      reject(new Error({
+        status: this.status,
+        statusText: `Timeout: ${method}@${url}`,
+      }));
+    };
+    xhr.send();
+  }));
+}
+
+function isValidPluscode(code) {
+  // A separator used to break the code into two parts to aid memorability.
+  const seperator = '+';
+
+  // The number of characters to place before the separator.
+  const seperatorPosition = 8;
+
+  // The character used to pad codes.
+  const paddingCharacter = '0';
+
+  // The character set used to encode the values.
+  const codeAlphabet = '23456789CFGHJMPQRVWX';
+
+  if (!code || typeof code !== 'string') {
+    return false;
+  }
+  // The separator is required.
+  if (code.indexOf(seperator) === -1) {
+    return false;
+  }
+  if (code.indexOf(seperator) !== code.lastIndexOf(seperator)) {
+    return false;
+  }
+  // Is it the only character?
+  if (code.length === 1) {
+    return false;
+  }
+  // Is it in an illegal position?
+  if (code.indexOf(seperator) > seperatorPosition || code.indexOf(seperator) % 2 === 1) {
+    return false;
+  }
+  // We can have an even number of padding characters before the separator,
+  // but then it must be the final character.
+  if (code.indexOf(paddingCharacter) > -1) {
+    // Not allowed to start with them!
+    if (code.indexOf(paddingCharacter) === 0) {
+      return false;
     }
-};
-function isWhat3WordsString(str) {
-    if (typeof str !== 'string') {
-        return false;
+    // There can only be one group and it must have even length.
+    const padMatch = code.match(new RegExp(`(${paddingCharacter}+)`, 'g'));
+    if (padMatch.length > 1 || padMatch[0].length % 2 === 1 || padMatch[0].length > seperatorPosition - 2) {
+      return false;
     }
-    if (str.split('.').length !== 3) {
-        return false;
+    // If the code is long enough to end with a separator, make sure it does.
+    if (code.charAt(code.length - 1) !== seperator) {
+      return false;
     }
-    if (/^[a-zA-Z.]+$/.test(str) === false) {
-        return false;
+  }
+  // If there are characters after the separator, make sure there isn't just
+  // one of them (not legal).
+  if (code.length - code.indexOf(seperator) - 1 === 1) {
+    return false;
+  }
+
+  // Strip the separator and any padding characters.
+  const nosepCode = code.replace(new RegExp(`\\${seperator}+`), '').replace(new RegExp(`${paddingCharacter}+`), '');
+  // Check the code contains only valid characters.
+  for (let i = 0, len = nosepCode.length; i < len; i += 1) {
+    const character = nosepCode.charAt(i).toUpperCase();
+    if (character !== seperator && codeAlphabet.indexOf(character) === -1) {
+      return false;
     }
-    return true;
+  }
+  return true;
 }
-function LatLngToWhat3Words(latitude, longitude) {
-    return __awaiter(this, void 0, void 0, function () {
-        var res, error, data, err_1, error;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch("https://marl.io/api/satf/latlng_to_whatfreewords?lat=" + latitude + "&lng=" + longitude)];
-                case 1:
-                    res = _a.sent();
-                    if (!res.ok) {
-                        error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(res.statusText));
-                        throw error;
-                    }
-                    return [4 /*yield*/, res.json()];
-                case 2:
-                    data = _a.sent();
-                    return [2 /*return*/, data];
-                case 3:
-                    err_1 = _a.sent();
-                    error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_1));
-                    throw error;
-                case 4: return [2 /*return*/];
-            }
-        });
-    });
+
+
+function isValidWhatFreeWords(str) {
+  if (typeof str !== 'string') { return false; }
+  if (str.split('.').length !== 3) { return false; }
+  if (/^[a-zA-Z.]+$/.test(str) === false) { return false; }
+
+  return true;
 }
-function What3WordsToLatLng(str) {
-    return __awaiter(this, void 0, void 0, function () {
-        var res, error, data, err_2, error;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch("https://api.what3words.com/v3/convert-to-coordinates?words=" + str + "&key=TI2OVXV0")];
-                case 1:
-                    res = _a.sent();
-                    if (!res.ok) {
-                        error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(res.statusText));
-                        throw error;
-                    }
-                    return [4 /*yield*/, res.json()];
-                case 2:
-                    data = _a.sent();
-                    return [2 /*return*/, data.coordinates];
-                case 3:
-                    err_2 = _a.sent();
-                    error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_2));
-                    throw error;
-                case 4: return [2 /*return*/];
-            }
-        });
-    });
+
+function LatLngToWhatFreeWords(latitude, longitude) {
+  return new Promise((resolve, reject) => {
+    makeRequest('get', `https://marl.io/api/satf/latlng_to_whatfreewords?lat=${latitude}&lng=${longitude}`)
+      .then((value) => { resolve(value); })
+      .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
+  });
 }
-function PopulationDensity(latitude, longitude) {
-    if (longitude === void 0) { longitude = false; }
-    return __awaiter(this, void 0, void 0, function () {
-        var lat, lng, coords, res, error, data, err_3, error;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 5, , 6]);
-                    lat = latitude;
-                    lng = longitude;
-                    if (!isWhat3WordsString(latitude)) return [3 /*break*/, 2];
-                    return [4 /*yield*/, What3WordsToLatLng(latitude)];
-                case 1:
-                    coords = _a.sent();
-                    lat = coords.lat;
-                    lng = coords.lng;
-                    _a.label = 2;
-                case 2: return [4 /*yield*/, fetch("https://localhost/api/satf/population_density?lat=" + lat + "&lng=" + lng)];
-                case 3:
-                    res = _a.sent();
-                    if (!res.ok) {
-                        error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(res.statusText));
-                        throw error;
-                    }
-                    return [4 /*yield*/, res.json()];
-                case 4:
-                    data = _a.sent();
-                    return [2 /*return*/, data];
-                case 5:
-                    err_3 = _a.sent();
-                    error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_3));
-                    throw error;
-                case 6: return [2 /*return*/];
-            }
-        });
-    });
+
+function What3WordsToLatLng(words) {
+  return new Promise((resolve, reject) => {
+    makeRequest('get', `https://marl.io/api/satf/whatfreewords_to_latlng?words=${words}`)
+      .then((value) => { resolve(value); })
+      .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
+  });
 }
-function PopulationDensityBuffer(buffer_in_meters, latitude, longitude) {
-    if (longitude === void 0) { longitude = false; }
-    return __awaiter(this, void 0, void 0, function () {
-        var lat, lng, coords, res, error, data, err_4, error;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 5, , 6]);
-                    lat = latitude;
-                    lng = longitude;
-                    if (!isWhat3WordsString(latitude)) return [3 /*break*/, 2];
-                    return [4 /*yield*/, What3WordsToLatLng(latitude)];
-                case 1:
-                    coords = _a.sent();
-                    lat = coords.lat;
-                    lng = coords.lng;
-                    _a.label = 2;
-                case 2: return [4 /*yield*/, fetch("https://localhost/api/satf/population_density_buffer?lat=" + lat + "&lng=" + lng + "&buffer=" + buffer_in_meters)];
-                case 3:
-                    res = _a.sent();
-                    if (!res.ok) {
-                        error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(res.statusText));
-                        throw error;
-                    }
-                    return [4 /*yield*/, res.json()];
-                case 4:
-                    data = _a.sent();
-                    return [2 /*return*/, data];
-                case 5:
-                    err_4 = _a.sent();
-                    error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_4));
-                    throw error;
-                case 6: return [2 /*return*/];
-            }
-        });
-    });
+
+function LatLngToPluscode(latitude, longitude) {
+  return new Promise((resolve, reject) => {
+    makeRequest('get', `https://marl.io/api/satf/latlng_to_pluscode?lat=${latitude}&lng=${longitude}`)
+      .then((value) => { resolve(value); })
+      .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
+  });
 }
-function AdminLevel1(latitude, longitude) {
-    if (longitude === void 0) { longitude = false; }
-    return __awaiter(this, void 0, void 0, function () {
-        var lat, lng, coords, res, error, data, err_5, error;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 5, , 6]);
-                    lat = latitude;
-                    lng = longitude;
-                    if (!isWhat3WordsString(latitude)) return [3 /*break*/, 2];
-                    return [4 /*yield*/, What3WordsToLatLng(latitude)];
-                case 1:
-                    coords = _a.sent();
-                    lat = coords.lat;
-                    lng = coords.lng;
-                    _a.label = 2;
-                case 2: return [4 /*yield*/, fetch("https://localhost/api/satf/admin_level_1?lat=" + lat + "&lng=" + lng)];
-                case 3:
-                    res = _a.sent();
-                    if (!res.ok) {
-                        error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(res.statusText));
-                        throw error;
-                    }
-                    return [4 /*yield*/, res.text()];
-                case 4:
-                    data = _a.sent();
-                    return [2 /*return*/, data];
-                case 5:
-                    err_5 = _a.sent();
-                    error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_5));
-                    throw error;
-                case 6: return [2 /*return*/];
-            }
-        });
-    });
+
+function PlusCodeToLatLng(code) {
+  return new Promise((resolve, reject) => {
+    makeRequest('get', `https://marl.io/api/satf/pluscode_to_latlng?code=${code}`)
+      .then((value) => { resolve(value); })
+      .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
+  });
 }
-function AdminLevel2(latitude, longitude) {
-    if (longitude === void 0) { longitude = false; }
-    return __awaiter(this, void 0, void 0, function () {
-        var lat, lng, coords, res, error, data, err_6, error;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 5, , 6]);
-                    lat = latitude;
-                    lng = longitude;
-                    if (!isWhat3WordsString(latitude)) return [3 /*break*/, 2];
-                    return [4 /*yield*/, What3WordsToLatLng(latitude)];
-                case 1:
-                    coords = _a.sent();
-                    lat = coords.lat;
-                    lng = coords.lng;
-                    _a.label = 2;
-                case 2: return [4 /*yield*/, fetch("https://localhost/api/satf/admin_level_2?lat=" + lat + "&lng=" + lng)];
-                case 3:
-                    res = _a.sent();
-                    if (!res.ok) {
-                        error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(res.statusText));
-                        throw error;
-                    }
-                    return [4 /*yield*/, res.text()];
-                case 4:
-                    data = _a.sent();
-                    return [2 /*return*/, data];
-                case 5:
-                    err_6 = _a.sent();
-                    error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_6));
-                    throw error;
-                case 6: return [2 /*return*/];
-            }
-        });
-    });
+
+function getLatLngInfo(baseurl, latitude, longitude = false) {
+  try {
+    if (isValidWhatFreeWords(latitude)) {
+      return What3WordsToLatLng(latitude).then((latlng) => {
+        const coords = JSON.parse(latlng);
+
+        return new Promise(((resolve, reject) => {
+          makeRequest('get', `${baseurl}?lat=${coords[0]}&lng=${coords[1]}`)
+            .then((value) => { resolve(value); })
+            .catch((err) => { reject(err); });
+        }));
+      });
+    }
+
+    if (isValidPluscode(latitude)) {
+      return PlusCodeToLatLng(latitude).then((latlng) => {
+        const coords = JSON.parse(latlng);
+
+        return new Promise(((resolve, reject) => {
+          makeRequest('get', `${baseurl}?lat=${coords[0]}&lng=${coords[1]}`)
+            .then((value) => { resolve(value); })
+            .catch((err) => { reject(err); });
+        }));
+      });
+    }
+
+    return new Promise(((resolve, reject) => {
+      makeRequest('get', `${baseurl}?lat=${latitude}&lng=${longitude}`)
+        .then((value) => { resolve(value); })
+        .catch((err) => { reject(err); });
+    }));
+  } catch (err) {
+    const error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+    throw error;
+  }
 }
+
+function helloWorld() {
+  return 'hello';
+}
+
+function PopulationDensity(latitude, longitude = false) {
+  const baseurl = 'https://marl.io/api/satf/population_density';
+  return new Promise(((resolve, reject) => {
+    getLatLngInfo(baseurl, latitude, longitude)
+      .then((value) => { resolve(value); })
+      .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
+  }));
+}
+
+function PopulationDensityBuffer(buffer_in_meters, latitude, longitude = false) {
+  const url = (buffer, lat, lng) => `https://marl.io/api/satf/population_density_buffer?lat=${lat}&lng=${lng}&buffer=${buffer}`;
+  try {
+    if (isValidWhatFreeWords(latitude)) {
+      return What3WordsToLatLng(latitude).then((latlng) => {
+        const coords = JSON.parse(latlng);
+        const lat = coords[0];
+        const lng = coords[1];
+
+        return makeRequest('get', url(buffer_in_meters, lat, lng))
+          .then((value) => value);
+      });
+    }
+
+    if (isValidPluscode(latitude)) {
+      return PlusCodeToLatLng(latitude).then((latlng) => {
+        const coords = JSON.parse(latlng);
+        const lat = coords[0];
+        const lng = coords[1];
+
+        return makeRequest('get', url(buffer_in_meters, lat, lng))
+          .then((value) => value);
+      });
+    }
+
+    const lat = latitude;
+    const lng = longitude;
+    return makeRequest('get', url(buffer_in_meters, lat, lng))
+      .then((value) => value);
+  } catch (err) {
+    const error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+    throw error;
+  }
+}
+
+
+function AdminLevel1(latitude, longitude = false) {
+  const baseurl = 'https://marl.io/api/satf/admin_level_1';
+  return new Promise(((resolve, reject) => {
+    getLatLngInfo(baseurl, latitude, longitude)
+      .then((value) => { resolve(value); })
+      .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
+  }));
+}
+
+function AdminLevel2(latitude, longitude = false) {
+  const baseurl = 'https://marl.io/api/satf/admin_level_2';
+  return new Promise(((resolve, reject) => {
+    getLatLngInfo(baseurl, latitude, longitude)
+      .then((value) => { resolve(value); })
+      .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
+  }));
+}
+
 function AdminLevel2FuzzyLev(name) {
-    return __awaiter(this, void 0, void 0, function () {
-        var res, error, data, err_7, error;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch("https://localhost/api/satf/admin_level_2_fuzzy_lev?name=" + name)];
-                case 1:
-                    res = _a.sent();
-                    if (!res.ok) {
-                        error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(res.statusText));
-                        throw error;
-                    }
-                    return [4 /*yield*/, res.text()];
-                case 2:
-                    data = _a.sent();
-                    return [2 /*return*/, data];
-                case 3:
-                    err_7 = _a.sent();
-                    error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_7));
-                    throw error;
-                case 4: return [2 /*return*/];
-            }
-        });
-    });
+  return new Promise(((resolve, reject) => {
+    makeRequest('get', `https://marl.io/api/satf/admin_level_2_fuzzy_lev?name=${name}`)
+      .then((value) => { resolve(value); })
+      .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
+  }));
 }
+
 function AdminLevel2FuzzyTri(name) {
-    return __awaiter(this, void 0, void 0, function () {
-        var res, error, data, err_8, error;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch("https://localhost/api/satf/admin_level_2_fuzzy_tri?name=" + name)];
-                case 1:
-                    res = _a.sent();
-                    if (!res.ok) {
-                        error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(res.statusText));
-                        throw error;
-                    }
-                    return [4 /*yield*/, res.text()];
-                case 2:
-                    data = _a.sent();
-                    return [2 /*return*/, data];
-                case 3:
-                    err_8 = _a.sent();
-                    error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_8));
-                    throw error;
-                case 4: return [2 /*return*/];
-            }
-        });
-    });
+  return new Promise(((resolve, reject) => {
+    makeRequest('get', `https://marl.io/api/satf/admin_level_2_fuzzy_tri?name=${name}`)
+      .then((value) => { resolve(value); })
+      .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
+  }));
 }
-function UrbanStatus(latitude, longitude) {
-    if (longitude === void 0) { longitude = false; }
-    return __awaiter(this, void 0, void 0, function () {
-        var lat, lng, coords, res, error, data, err_9, error;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 5, , 6]);
-                    lat = latitude;
-                    lng = longitude;
-                    if (!isWhat3WordsString(latitude)) return [3 /*break*/, 2];
-                    return [4 /*yield*/, What3WordsToLatLng(latitude)];
-                case 1:
-                    coords = _a.sent();
-                    lat = coords.lat;
-                    lng = coords.lng;
-                    _a.label = 2;
-                case 2: return [4 /*yield*/, fetch("https://localhost/api/satf/urban_status?lat=" + lat + "&lng=" + lng)];
-                case 3:
-                    res = _a.sent();
-                    if (!res.ok) {
-                        error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(res.statusText));
-                        throw error;
-                    }
-                    return [4 /*yield*/, res.text()];
-                case 4:
-                    data = _a.sent();
-                    return [2 /*return*/, data];
-                case 5:
-                    err_9 = _a.sent();
-                    error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_9));
-                    throw error;
-                case 6: return [2 /*return*/];
-            }
-        });
-    });
+
+
+function UrbanStatus(latitude, longitude = false) {
+  const baseurl = 'https://marl.io/api/satf/urban_status';
+  return new Promise(((resolve, reject) => {
+    getLatLngInfo(baseurl, latitude, longitude)
+      .then((value) => { resolve(value); })
+      .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
+  }));
 }
-function UrbanStatusSimple(latitude, longitude) {
-    if (longitude === void 0) { longitude = false; }
-    return __awaiter(this, void 0, void 0, function () {
-        var lat, lng, coords, res, error, data, err_10, error;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 5, , 6]);
-                    lat = latitude;
-                    lng = longitude;
-                    if (!isWhat3WordsString(latitude)) return [3 /*break*/, 2];
-                    return [4 /*yield*/, What3WordsToLatLng(latitude)];
-                case 1:
-                    coords = _a.sent();
-                    lat = coords.lat;
-                    lng = coords.lng;
-                    _a.label = 2;
-                case 2: return [4 /*yield*/, fetch("https://localhost/api/satf/urban_status_simple?lat=" + lat + "&lng=" + lng)];
-                case 3:
-                    res = _a.sent();
-                    if (!res.ok) {
-                        error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(res.statusText));
-                        throw error;
-                    }
-                    return [4 /*yield*/, res.text()];
-                case 4:
-                    data = _a.sent();
-                    return [2 /*return*/, data];
-                case 5:
-                    err_10 = _a.sent();
-                    error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_10));
-                    throw error;
-                case 6: return [2 /*return*/];
-            }
-        });
-    });
+
+
+function UrbanStatusSimple(latitude, longitude = false) {
+  const baseurl = 'https://marl.io/api/satf/urban_status_simple';
+  return new Promise(((resolve, reject) => {
+    getLatLngInfo(baseurl, latitude, longitude)
+      .then((value) => { resolve(value); })
+      .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
+  }));
 }
-function NearestPlace(latitude, longitude) {
-    if (longitude === void 0) { longitude = false; }
-    return __awaiter(this, void 0, void 0, function () {
-        var lat, lng, coords, res, error, data, err_11, error;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 5, , 6]);
-                    lat = latitude;
-                    lng = longitude;
-                    if (!isWhat3WordsString(latitude)) return [3 /*break*/, 2];
-                    return [4 /*yield*/, What3WordsToLatLng(latitude)];
-                case 1:
-                    coords = _a.sent();
-                    lat = coords.lat;
-                    lng = coords.lng;
-                    _a.label = 2;
-                case 2: return [4 /*yield*/, fetch("https://localhost/api/satf/nearest_placename?lat=" + lat + "&lng=" + lng)];
-                case 3:
-                    res = _a.sent();
-                    if (!res.ok) {
-                        error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(res.statusText));
-                        throw error;
-                    }
-                    return [4 /*yield*/, res.text()];
-                case 4:
-                    data = _a.sent();
-                    return [2 /*return*/, data];
-                case 5:
-                    err_11 = _a.sent();
-                    error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_11));
-                    throw error;
-                case 6: return [2 /*return*/];
-            }
-        });
-    });
+
+
+function NearestPlace(latitude, longitude = false) {
+  const baseurl = 'https://marl.io/api/satf/nearest_placename';
+  return new Promise(((resolve, reject) => {
+    getLatLngInfo(baseurl, latitude, longitude)
+      .then((value) => { resolve(value); })
+      .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
+  }));
 }
-function NearestPoi(latitude, longitude) {
-    if (longitude === void 0) { longitude = false; }
-    return __awaiter(this, void 0, void 0, function () {
-        var lat, lng, coords, res, error, data, err_12, error;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 5, , 6]);
-                    lat = latitude;
-                    lng = longitude;
-                    if (!isWhat3WordsString(latitude)) return [3 /*break*/, 2];
-                    return [4 /*yield*/, What3WordsToLatLng(latitude)];
-                case 1:
-                    coords = _a.sent();
-                    lat = coords.lat;
-                    lng = coords.lng;
-                    _a.label = 2;
-                case 2: return [4 /*yield*/, fetch("https://localhost/api/satf/nearest_poi?lat=" + lat + "&lng=" + lng)];
-                case 3:
-                    res = _a.sent();
-                    if (!res.ok) {
-                        error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(res.statusText));
-                        throw error;
-                    }
-                    return [4 /*yield*/, res.text()];
-                case 4:
-                    data = _a.sent();
-                    return [2 /*return*/, data];
-                case 5:
-                    err_12 = _a.sent();
-                    error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_12));
-                    throw error;
-                case 6: return [2 /*return*/];
-            }
-        });
-    });
+
+
+function NearestPoi(latitude, longitude = false) {
+  const baseurl = 'https://marl.io/api/satf/nearest_poi';
+  return new Promise(((resolve, reject) => {
+    getLatLngInfo(baseurl, latitude, longitude)
+      .then((value) => { resolve(value); })
+      .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
+  }));
 }
-function NearestBank(latitude, longitude) {
-    if (longitude === void 0) { longitude = false; }
-    return __awaiter(this, void 0, void 0, function () {
-        var lat, lng, coords, res, error, data, err_13, error;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 5, , 6]);
-                    lat = latitude;
-                    lng = longitude;
-                    if (!isWhat3WordsString(latitude)) return [3 /*break*/, 2];
-                    return [4 /*yield*/, What3WordsToLatLng(latitude)];
-                case 1:
-                    coords = _a.sent();
-                    lat = coords.lat;
-                    lng = coords.lng;
-                    _a.label = 2;
-                case 2: return [4 /*yield*/, fetch("https://localhost/api/satf/nearest_bank?lat=" + lat + "&lng=" + lng)];
-                case 3:
-                    res = _a.sent();
-                    if (!res.ok) {
-                        error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(res.statusText));
-                        throw error;
-                    }
-                    return [4 /*yield*/, res.text()];
-                case 4:
-                    data = _a.sent();
-                    return [2 /*return*/, data];
-                case 5:
-                    err_13 = _a.sent();
-                    error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_13));
-                    throw error;
-                case 6: return [2 /*return*/];
-            }
-        });
-    });
+
+
+function NearestBank(latitude, longitude = false) {
+  const baseurl = 'https://marl.io/api/satf/nearest_bank';
+  return new Promise(((resolve, reject) => {
+    getLatLngInfo(baseurl, latitude, longitude)
+      .then((value) => { resolve(value); })
+      .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
+  }));
 }
-function NearestBankDist(latitude, longitude) {
-    if (longitude === void 0) { longitude = false; }
-    return __awaiter(this, void 0, void 0, function () {
-        var lat, lng, coords, res, error, data, err_14, error;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 5, , 6]);
-                    lat = latitude;
-                    lng = longitude;
-                    if (!isWhat3WordsString(latitude)) return [3 /*break*/, 2];
-                    return [4 /*yield*/, What3WordsToLatLng(latitude)];
-                case 1:
-                    coords = _a.sent();
-                    lat = coords.lat;
-                    lng = coords.lng;
-                    _a.label = 2;
-                case 2: return [4 /*yield*/, fetch("https://localhost/api/satf/nearest_bank_distance?lat=" + lat + "&lng=" + lng)];
-                case 3:
-                    res = _a.sent();
-                    if (!res.ok) {
-                        error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(res.statusText));
-                        throw error;
-                    }
-                    return [4 /*yield*/, res.json()];
-                case 4:
-                    data = _a.sent();
-                    return [2 /*return*/, data.distance];
-                case 5:
-                    err_14 = _a.sent();
-                    error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_14));
-                    throw error;
-                case 6: return [2 /*return*/];
-            }
-        });
-    });
-}
-function helloWorld1() {
-    return 'helloWorld1';
+
+
+function NearestBankDist(latitude, longitude = false) {
+  const baseurl = 'https://marl.io/api/satf/nearest_bank_distance';
+  return new Promise(((resolve, reject) => {
+    getLatLngInfo(baseurl, latitude, longitude)
+      .then((value) => { resolve(value); })
+      .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
+  }));
 }

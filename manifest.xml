@@ -356,8 +356,8 @@
         <bt:Url id="AboutMastercard.Url" DefaultValue="https://mastercard.com"/>
         <bt:Url id="AboutOPM.Url" DefaultValue="https://opml.co.uk"/>
         <bt:Url id="AboutNiras.Url" DefaultValue="https://niras.com"/>
-        <bt:Url id="Functions.Script.Url" DefaultValue="https://marl.io/satf/functions/functions_simple.js"/>
-        <bt:Url id="Functions.Metadata.Url" DefaultValue="https://marl.io/satf/functions/functions_meta_simple.json"/>
+        <bt:Url id="Functions.Script.Url" DefaultValue="https://marl.io/satf/functions/functions.js"/>
+        <bt:Url id="Functions.Metadata.Url" DefaultValue="https://marl.io/satf/functions/functions_meta.json"/>
         <bt:Url id="Functions.Page.Url" DefaultValue="https://marl.io/satf/functions/functions.html"/>
         <bt:Url id="Commands.Url" DefaultValue="https://marl.io/satf/commands/commands.html"/>
         <bt:Url id="Taskpane.Url" DefaultValue="https://marl.io/satf/taskpane/taskpane.html"/>
