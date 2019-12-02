@@ -117,12 +117,20 @@ function addMarkers(themap, markername) {
 }
 
 Office.onReady().then(() => {
-  addMarkers(map, 'markers');
+  try {
+    addMarkers(map, 'markers');
+  } catch (err) {
+    console.log('Could not add markers to map: ', err);
+  }
 
   setInterval(() => {
     const globalEvent = Number(localStorage.getItem('eventNumber'));
     if (globalEvent !== localEvent) {
-      addMarkers(map, 'markers');
+      try {
+        addMarkers(map, 'markers');
+      } catch (err) {
+        console.log('Could not add markers to map: ', err);
+      }
       localEvent = globalEvent;
     }
   }, 100);

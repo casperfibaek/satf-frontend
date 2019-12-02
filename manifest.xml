@@ -200,7 +200,7 @@
                     <bt:Image size="80" resid="Icon.Contact.80x80"/>
                   </Icon>
                   <Action xsi:type="ExecuteFunction">
-                    <FunctionName>sendEmail</FunctionName>
+                    <FunctionName>openDialogCONTACT</FunctionName>
                   </Action>
                 </Control>
               </Group>

@@ -114,36 +114,33 @@ async function openDialogPopup(event) {
 }
 
 
-async function openDialogNIRAS(event) {
+function openDialogNIRAS(event) {
   Office.context.ui.displayDialogAsync('https://marl.io/satf/info_niras.html', {
     height: 40,
     width: 30,
-    displayInIframe: true,
+  }, () => {
+    event.completed();
   });
-
-  event.completed();
 }
 
 
-async function openDialogOPM(event) {
+function openDialogOPM() {
   Office.context.ui.displayDialogAsync('https://marl.io/satf/info_opm.html', {
     height: 40,
     width: 30,
-    displayInIframe: true,
+  }, () => {
+    // event.completed();
   });
-
-  event.completed();
 }
 
 
-async function openDialogSATF(event) {
+function openDialogSATF(event) {
   Office.context.ui.displayDialogAsync('https://marl.io/satf/info_satf.html', {
     height: 40,
     width: 30,
-    displayInIframe: true,
+  }, () => {
+    event.completed();
   });
-
-  event.completed();
 }
 
 
@@ -151,15 +148,18 @@ async function openDialogHELP(event) {
   Office.context.ui.displayDialogAsync('https://marl.io/satf/help.html', {
     height: 40,
     width: 30,
-    displayInIframe: true,
   });
 
   event.completed();
 }
 
 
-function sendEmail(event) {
-  window.location.href = 'mailto:cfi@niras.dk';
+async function openDialogCONTACT(event) {
+  Office.context.ui.displayDialogAsync('https://marl.io/satf/contact.html', {
+    height: 40,
+    width: 30,
+  });
+
   event.completed();
 }
 
@@ -218,5 +218,5 @@ g.openDialogOPM = openDialogOPM;
 g.openDialogHELP = openDialogHELP;
 g.openDialogSATF = openDialogSATF;
 g.openDialogMap = openDialogMap;
-g.sendEmail = sendEmail;
+g.openDialogCONTACT = openDialogCONTACT;
 g.addMapData = addMapData;
