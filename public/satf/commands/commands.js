@@ -124,12 +124,12 @@ function openDialogNIRAS(event) {
 }
 
 
-function openDialogOPM() {
+function openDialogOPM(event) {
   Office.context.ui.displayDialogAsync('https://marl.io/satf/info_opm.html', {
     height: 40,
     width: 30,
   }, () => {
-    // event.completed();
+    event.completed();
   });
 }
 
@@ -144,7 +144,7 @@ function openDialogSATF(event) {
 }
 
 
-async function openDialogHELP(event) {
+function openDialogHELP(event) {
   Office.context.ui.displayDialogAsync('https://marl.io/satf/help.html', {
     height: 40,
     width: 30,
@@ -158,9 +158,9 @@ async function openDialogCONTACT(event) {
   Office.context.ui.displayDialogAsync('https://marl.io/satf/contact.html', {
     height: 40,
     width: 30,
+  }, () => {
+    event.completed();
   });
-
-  event.completed();
 }
 
 
