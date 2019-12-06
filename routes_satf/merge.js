@@ -5,7 +5,7 @@ const router = express.Router();
 const endpointSatf = require('./satf');
 const cache = require('./cache');
 
-router.route('/').get((req, res) => res.send('SATF API'));
+router.route('/').get((req, res) => res.send('api.marl.io/satf/'));
 
 // // GET
 router.route('/population_density').get(cache, endpointSatf.population_density);

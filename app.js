@@ -22,9 +22,8 @@ app.use(
 );
 
 // Serve
-app.use(express.static('public'));
-app.get('/api', (req, res) => res.send('API'));
-app.use('/api/satf', routesSatf);
+app.get('/', (req, res) => res.send('api.marl.io'));
+app.use('/satf', routesSatf);
 
 // Compress everything
 app.use(compression());
