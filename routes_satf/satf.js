@@ -320,6 +320,74 @@ async function population_density_walk(req, res) {
   }
 }
 
+async function population_density_bike(req, res) {
+  if (!req.query.lat || !req.query.lng || !req.query.minutes) {
+    res.sendStatus(400);
+    return;
+  }
+
+  const q = `
+        WITH const (pp_geom) AS (
+            values (ST_Buffer(ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography, '${(Number(req.query.minutes) * 155) + 10}')::geometry)
+        )
+        
+        SELECT
+            SUM((ST_SummaryStats(ST_Clip(
+                ppl_per_hectare.rast, 
+                const.pp_geom
+            ))).sum::int) as val
+        FROM
+            ppl_per_hectare, const
+        WHERE ST_Intersects(const.pp_geom, ppl_per_hectare.rast);
+    `;
+
+  try {
+    const r = await pool.query(q);
+    if (r.rowCount > 0) {
+      res.send(r.rows[0].val);
+    } else {
+      res.send('null');
+    }
+  } catch (err) {
+    res.send(err.stack);
+    console.log(err.stack);
+  }
+}
+
+async function population_density_car(req, res) {
+  if (!req.query.lat || !req.query.lng || !req.query.minutes) {
+    res.sendStatus(400);
+    return;
+  }
+
+  const q = `
+        WITH const (pp_geom) AS (
+            values (ST_Buffer(ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography, '${(Number(req.query.minutes) * 444) + 10}')::geometry)
+        )
+        
+        SELECT
+            SUM((ST_SummaryStats(ST_Clip(
+                ppl_per_hectare.rast, 
+                const.pp_geom
+            ))).sum::int) as val
+        FROM
+            ppl_per_hectare, const
+        WHERE ST_Intersects(const.pp_geom, ppl_per_hectare.rast);
+    `;
+
+  try {
+    const r = await pool.query(q);
+    if (r.rowCount > 0) {
+      res.send(r.rows[0].val);
+    } else {
+      res.send('null');
+    }
+  } catch (err) {
+    res.send(err.stack);
+    console.log(err.stack);
+  }
+}
+
 async function nearest_placename(req, res) {
   if (!req.query.lat || !req.query.lng) {
     res.sendStatus(400);
@@ -431,6 +499,8 @@ module.exports = {
   urban_status_simple,
   population_density,
   population_density_walk,
+  population_density_bike,
+  population_density_car,
   population_density_buffer,
   admin_level_1,
   admin_level_2,

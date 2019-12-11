@@ -10,6 +10,8 @@ router.route('/').get((req, res) => res.send('api.marl.io/satf/'));
 // // GET
 router.route('/population_density').get(cache, endpointSatf.population_density);
 router.route('/population_density_walk').get(cache, endpointSatf.population_density_walk);
+router.route('/population_density_bike').get(cache, endpointSatf.population_density_bike);
+router.route('/population_density_car').get(cache, endpointSatf.population_density_car);
 router.route('/population_density_buffer').get(cache, endpointSatf.population_density_buffer);
 router.route('/urban_status').get(cache, endpointSatf.urban_status);
 router.route('/urban_status_simple').get(cache, endpointSatf.urban_status_simple);
