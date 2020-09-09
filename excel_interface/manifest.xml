@@ -11,7 +11,7 @@
   <SupportUrl DefaultValue="https://www.niras.com"/>
   <AppDomains>
     <AppDomain>https://satf.azurewebsites.net</AppDomain>
-    <AppDomain>https://satf.azurewebsites.net/excel_interface</AppDomain>
+    <AppDomain>https://satf.azurewebsites.net/excel_interface/</AppDomain>
   </AppDomains>
   <Hosts>
     <Host Name="Workbook"/>
