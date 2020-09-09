@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./app.js",
+    "test": "tape ./tests/timing.js",
     "prod": "NODE_ENV=production node ./app.js"
   },
   "dependencies": {
@@ -19,6 +20,7 @@
   "devDependencies": {
     "eslint": "^7.8.1",
     "eslint-config-airbnb-base": "^14.2.0",
-    "eslint-plugin-import": "^2.22.0"
+    "eslint-plugin-import": "^2.22.0",
+    "tape": "^5.0.1"
   }
 }
