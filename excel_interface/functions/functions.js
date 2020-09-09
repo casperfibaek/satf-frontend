@@ -176,7 +176,7 @@ function getLatLngInfo(baseurl, latitude, longitude = false) {
 }
 
 function helloWorld() {
-    return 'hello';
+    return 'hello rev2';
 }
 
 function PopulationDensity(latitude, longitude = false) {
