@@ -4,8 +4,8 @@
   <Version>1.0.0.2</Version>
   <ProviderName>NIRAS</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="SATF"/>
-  <Description DefaultValue="Investigate financial inclusion"/>
+  <DisplayName DefaultValue="SATF rev.2"/>
+  <Description DefaultValue="Investigate Financial Inclusion"/>
   <IconUrl DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/icon-80.png"/>
   <HighResolutionIconUrl DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/icon-80.png"/>
   <SupportUrl DefaultValue="https://www.niras.com"/>

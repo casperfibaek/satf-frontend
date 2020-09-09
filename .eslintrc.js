@@ -26,5 +26,6 @@ module.exports = {
         'no-underscore-dangle': 0,
         'max-len': 0,
         indent: ['error', 4],
+        'linebreak-style': 0,
     },
 };
