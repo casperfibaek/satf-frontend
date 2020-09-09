@@ -1,6 +1,10 @@
-/* eslint-disable no-console */
-
 // The Office.onReady command, even empty, is needed by office-js to work at all(?)
+
+(function () {
+    Office.initialize = function (reason) {
+        // If you need to initialize something you can do so here.
+    };
+}());
 
 Office.onReady(() => {
     (async function startDB() {
@@ -192,16 +196,16 @@ async function addMapData(event) {
 }
 
 /* eslint-disable */
-    function getGlobal() {
-        return typeof self !== 'undefined'
+function getGlobal() {
+    return typeof self !== 'undefined'
         ? self
         : typeof window !== 'undefined'
-        ? window
-        : typeof global !== 'undefined'
-        ? global
-        : undefined;
-    }
-    /* eslint-enable */
+            ? window
+            : typeof global !== 'undefined'
+                ? global
+                : undefined;
+}
+/* eslint-enable */
 
 const g = getGlobal();
 
