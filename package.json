@@ -4,8 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./app.js",
-    "prod": "NODE_ENV=production node ./app.js",
-    "reload": "nodemon ./app.js"
+    "prod": "NODE_ENV=production node ./app.js"
   },
   "dependencies": {
     "atob": "^2.1.2",
