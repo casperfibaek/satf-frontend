@@ -99,7 +99,7 @@ async function openDialogPopup(event) {
     localStorage.setItem('clientID', 'casper123');
 
     Office.context.ui.displayDialogAsync(
-        'https://marl.io/satf/popup/popup.html',
+        'https://satf.azurewebsites.net/excel_interface/popup/popup.html',
         {
             height: 40,
             width: 30,
@@ -114,7 +114,7 @@ async function openDialogPopup(event) {
 }
 
 function openDialogNIRAS(event) {
-    Office.context.ui.displayDialogAsync('https://marl.io/satf/info_niras.html', {
+    Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/info_niras.html', {
         height: 40,
         width: 30,
     }, () => {
@@ -123,7 +123,7 @@ function openDialogNIRAS(event) {
 }
 
 function openDialogOPM(event) {
-    Office.context.ui.displayDialogAsync('https://marl.io/satf/info_opm.html', {
+    Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/info_opm.html', {
         height: 40,
         width: 30,
     }, () => {
@@ -132,7 +132,7 @@ function openDialogOPM(event) {
 }
 
 function openDialogSATF(event) {
-    Office.context.ui.displayDialogAsync('https://marl.io/satf/info_satf.html', {
+    Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/info_satf.html', {
         height: 40,
         width: 30,
     }, () => {
@@ -141,7 +141,7 @@ function openDialogSATF(event) {
 }
 
 function openDialogHELP(event) {
-    Office.context.ui.displayDialogAsync('https://marl.io/satf/help.html', {
+    Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/help.html', {
         height: 40,
         width: 30,
     });
@@ -150,7 +150,7 @@ function openDialogHELP(event) {
 }
 
 async function openDialogCONTACT(event) {
-    Office.context.ui.displayDialogAsync('https://marl.io/satf/contact.html', {
+    Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/contact.html', {
         height: 40,
         width: 30,
     }, () => {
@@ -163,7 +163,7 @@ async function openDialogMap(event) {
     localStorage.setItem('markers', markers);
 
     Office.context.ui.displayDialogAsync(
-        'https://marl.io/satf/map/map.html',
+        'https://satf.azurewebsites.net/excel_interface/map/map.html',
         {
             height: 40,
             width: 30,
