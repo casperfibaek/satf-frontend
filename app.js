@@ -1,13 +1,18 @@
-const debug = require('debug')('azure-api:server');
-const http = require('http');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
 const compression = require('compression');
+const path = require('path');
 
 // Custom routes
-const routesSatf = require('./routes_satf/merge');
+const routesApi = require('./api');
+
+// Variables
+const defaults = {
+    cache: 72000000, // 2 hours,
+    port: process.env.PORT || 3000,
+};
 
 // Define app
 const app = express();
@@ -16,76 +21,27 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  }),
+    bodyParser.urlencoded({
+        extended: true,
+    }),
 );
+app.use((req, res, next) => {
+    res.setHeader('Cache-Control', `public, max-age=${String(defaults.cache)}`);
+    next();
+});
 
 // Serve
-app.get('/', (req, res) => res.send('api.marl.io'));
-app.use('/satf', routesSatf);
+app.get('/', (req, res) => { res.send('home'); });
+app.use('/excel_interface',
+    express.static(path.join(__dirname, 'excel_interface'), {
+        cacheControl: true,
+        maxAge: String(defaults.cache),
+    }));
+app.use('/api', routesApi);
 
 // Compress everything
 app.use(compression());
 
-// Normalize a port into a number, string, or false.
-function normalizePort(val) {
-  const iPort = parseInt(val, 10);
-
-  if (Number.isNaN(iPort)) {
-    // named pipe
-    return val;
-  }
-
-  if (iPort >= 0) {
-    // port number
-    return iPort;
-  }
-
-  return false;
-}
-
-const port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
-
-const server = http.createServer(app);
-
-// Event listener for HTTP server "error" event.
-function onError(error) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
-
-  const bind = typeof port === 'string'
-    ? `Pipe ${port}`
-    : `Port ${port}`;
-
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(`${bind} requires elevated privileges`);
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(`${bind} is already in use`);
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
-}
-
-// Event listener for HTTP server "listening" event.
-function onListening() {
-  const addr = server.address();
-  const bind = typeof addr === 'string'
-    ? `pipe ${addr}`
-    : `port ${addr.port}`;
-  debug(`Listening on ${bind}`);
-}
-
-
-// Listen on provided port, on all network interfaces.
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+app.listen(defaults.port, () => {
+    console.log(`Server running on port: ${defaults.port}`);
+});
