@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node ./app.js",
     "test": "tape ./tests/timing.js",
+    "build": "npx babel-cli ./excel_interface --extensions \".ts,.tsx\" --source-maps inline",
     "validate": "office-addin-manifest validate ./excel_interface/manifest.xml",
     "sideload": "office-addin-debugging start ./excel_interface/manifest.xml --debug-method direct"
   },
