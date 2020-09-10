@@ -63,6 +63,30 @@
                   <bt:Image size="32" resid="Icon.32x32"/>
                   <bt:Image size="80" resid="Icon.80x80"/>
                 </Icon>
+
+                <Control xsi:type="Button" id="LoginButton">
+                  <Label resid="LoginButton.Label"/>
+                  <Supertip>
+                    <Title resid="LoginButton.Label"/>
+                    <Description resid="LoginButton.Tooltip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.Login.16x16"/>
+                    <bt:Image size="20" resid="Icon.Login.20x20"/>
+                    <bt:Image size="24" resid="Icon.Login.24x24"/>
+                    <bt:Image size="32" resid="Icon.Login.32x32"/>
+                    <bt:Image size="40" resid="Icon.Login.40x40"/>
+                    <bt:Image size="48" resid="Icon.Login.48x48"/>
+                    <bt:Image size="64" resid="Icon.Login.64x64"/>
+                    <bt:Image size="80" resid="Icon.Login.80x80"/>
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>ButtonId1</TaskpaneId>
+                    <SourceLocation resid="Taskpane.Url"/>
+                  </Action>
+                </Control>
+
+                <!--
                 <Control xsi:type="Button" id="LoginButton">
                   <Label resid="LoginButton.Label"/>
                   <Supertip>
@@ -83,6 +107,8 @@
                     <FunctionName>openDialogPopup</FunctionName>
                   </Action>
                 </Control>
+                -->
+
                 <Control xsi:type="Button" id="ToggleProtection">
                   <Label resid="ProtectionButtonLabel" />
                     <Supertip>            

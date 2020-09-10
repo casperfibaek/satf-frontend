@@ -1,4 +1,6 @@
 module.exports = {
+    root: true,
+    parser: '@typescript-eslint/parser',
     env: {
         browser: true,
         commonjs: true,
@@ -28,4 +30,5 @@ module.exports = {
         indent: ['error', 4],
         'linebreak-style': 0,
     },
+
 };

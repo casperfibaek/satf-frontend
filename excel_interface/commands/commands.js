@@ -236,7 +236,7 @@ function openDialogSATF(event) {
     });
 }
 function openDialogHELP(event) {
-    Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/help.html', {
+    Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/contact_help/help.html', {
         height: 40,
         width: 30,
         promptBeforeOpen: false,
@@ -246,7 +246,7 @@ function openDialogHELP(event) {
 function openDialogCONTACT(event) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/contact.html', {
+            Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/contact_help/contact.html', {
                 height: 40,
                 width: 30,
                 promptBeforeOpen: false,

@@ -18,6 +18,10 @@
     "pg": "^8.3.3"
   },
   "devDependencies": {
+    "@types/custom-functions-runtime": "^1.5.3",
+    "@types/leaflet": "^1.5.17",
+    "@types/office-js": "^1.0.128",
+    "@typescript-eslint/parser": "^4.1.0",
     "eslint": "^7.8.1",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.0",

@@ -3,8 +3,6 @@
  * See LICENSE in the project root for license information.
  */
 
-/* global global, Office, self, window */
-
 Office.initialize = function init() {
     if (!Office.context.requirements.isSetSupported('ExcelApi', '1.7')) {
         console.log('Sorry, this add-in only works with newer versions of Excel.');
@@ -22,7 +20,7 @@ async function insertCell(val) {
     });
 }
 
-function oneDown(adr) {
+function oneDown(adr: String) {
     const sheet = `${adr.split('!')[0]}!`;
     const x = adr.split('!')[1].split(':')[0];
     const y = adr.split('!')[1].split(':')[1];
@@ -142,7 +140,7 @@ function openDialogSATF(event) {
 }
 
 function openDialogHELP(event) {
-    Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/help.html', {
+    Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/contact_help/help.html', {
         height: 40,
         width: 30,
         promptBeforeOpen: false,
@@ -151,7 +149,7 @@ function openDialogHELP(event) {
 }
 
 async function openDialogCONTACT(event) {
-    Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/contact.html', {
+    Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/contact_help/contact.html', {
         height: 40,
         width: 30,
         promptBeforeOpen: false,
