@@ -47,7 +47,7 @@ Office.initialize = function init() {
         context.workbook.customFunctions.addAll();
         return context.sync().then(function () { });
     });
-    return Excel.CustomFunctions.initialise();
+    Excel.CustomFunctions.initialise();
 };
 var dialog = null;
 function insertCell(val) {

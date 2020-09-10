@@ -1,7 +1,7 @@
 {
   "functions": [
       {
-          "description": "Hello Worlds",
+          "description": "Hello Worlds rev",
           "id": "helloWorld",
           "name": "HELLO",
           "parameters": [
