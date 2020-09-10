@@ -43,11 +43,6 @@ Office.initialize = function init() {
     if (!Office.context.requirements.isSetSupported('ExcelApi', '1.7')) {
         console.log('Sorry, this add-in only works with newer versions of Excel.');
     }
-    Excel.run(function (context) {
-        context.workbook.customFunctions.addAll();
-        return context.sync().then(function () { });
-    });
-    Excel.CustomFunctions.initialise();
 };
 var dialog = null;
 function insertCell(val) {
@@ -213,12 +208,41 @@ function openDialogPopup(event) {
     });
 }
 function openDialogNIRAS(event) {
-    Office.context.ui.displayDialogAsync('https://www.niras.com/', {
-        height: 40,
-        width: 30,
-        promptBeforeOpen: false,
-    }, function () {
-        event.completed();
+    return __awaiter(this, void 0, void 0, function () {
+        var error_1;
+        var _this = this;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, Excel.run(function (context) { return __awaiter(_this, void 0, void 0, function () {
+                            var range;
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0:
+                                        range = context.workbook.getSelectedRange();
+                                        // Read the range address
+                                        range.load('address');
+                                        // Update the fill color
+                                        range.format.fill.color = 'yellow';
+                                        return [4 /*yield*/, context.sync()];
+                                    case 1:
+                                        _a.sent();
+                                        console.log("The range address was " + range.address + ".");
+                                        return [2 /*return*/];
+                                }
+                            });
+                        }); })];
+                case 1:
+                    _a.sent();
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_1 = _a.sent();
+                    console.error(error_1);
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
     });
 }
 function openDialogOPM(event) {

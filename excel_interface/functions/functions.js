@@ -168,6 +168,8 @@ function getLatLngInfo(baseurl, latitude, longitude) {
     }
 }
 function helloWorld() {
+    console.log('hello hello - from new - see me?');
+    
     return 'hello rev2';
 }
 function PopulationDensity(latitude, longitude) {

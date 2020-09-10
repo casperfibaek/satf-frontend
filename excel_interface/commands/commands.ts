@@ -7,13 +7,6 @@ Office.initialize = function init() {
     if (!Office.context.requirements.isSetSupported('ExcelApi', '1.7')) {
         console.log('Sorry, this add-in only works with newer versions of Excel.');
     }
-
-    Excel.run((context) => {
-        context.workbook.customFunctions.addAll();
-        return context.sync().then(() => {});
-    });
-
-    Excel.CustomFunctions.initialise();
 };
 
 let dialog = null;
@@ -116,14 +109,34 @@ async function openDialogPopup(event: Office.AddinCommands.Event) {
     event.completed();
 }
 
-function openDialogNIRAS(event: Office.AddinCommands.Event) {
-    Office.context.ui.displayDialogAsync('https://www.niras.com/', {
-        height: 40,
-        width: 30,
-        promptBeforeOpen: false,
-    }, () => {
-        event.completed();
-    });
+async function openDialogNIRAS(event: Office.AddinCommands.Event) {
+    try {
+        await Excel.run(async (context) => {
+            /**
+           * Insert your Excel code here
+           */
+            const range = context.workbook.getSelectedRange();
+
+            // Read the range address
+            range.load('address');
+
+            // Update the fill color
+            range.format.fill.color = 'yellow';
+
+            await context.sync();
+            console.log(`The range address was ${range.address}.`);
+        });
+    } catch (error) {
+        console.error(error);
+    }
+
+    // Office.context.ui.displayDialogAsync('https://www.niras.com/', {
+    //     height: 40,
+    //     width: 30,
+    //     promptBeforeOpen: false,
+    // }, () => {
+    //     event.completed();
+    // });
 }
 
 function openDialogOPM(event: Office.AddinCommands.Event) {

@@ -17,14 +17,16 @@
             ]
         },
         {
-            "type": "office-addin",
+            "name": "Excel Desktop",
+            "type": "node",
             "request": "attach",
-            "name": "Attach to Office Add-ins",
-            "port": 9222,
-            "trace": "verbose",
-            "url": "https://satf.azurewebsites.net/excel_interface/taskpane/taskpane.html?_host_Info=HOST$Win32$16.01$en-US$$$$0",
-            "webRoot": "${workspaceFolder}",
-            "timeout": 45000
-        }
+            "port": 9229,
+            "protocol": "inspector",
+            "timeout": 600000,
+            "trace": true,
+            "preLaunchTask": "Debug",
+            "postDebugTask": "Stop Debug",
+            "outFiles": [ "${workspaceFolder}/excel_interface/**/*.js" ]
+        },
     ]
 }

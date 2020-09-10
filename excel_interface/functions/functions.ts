@@ -176,6 +176,7 @@ function getLatLngInfo(baseurl, latitude, longitude = false) {
 }
 
 function helloWorld() {
+    console.log('hello hello - from new - see me?');
     return 'hello rev2';
 }
 
