@@ -16,7 +16,6 @@
     <AppDomain>https://satf.azurewebsites.net/excel_interface/commands/</AppDomain>
     <AppDomain>https://satf.azurewebsites.net/excel_interface/assets/</AppDomain>
     <AppDomain>https://satf.azurewebsites.net/excel_interface/map/</AppDomain>
-    <AppDomain>https://satf.azurewebsites.net/excel_interface/popup/</AppDomain>
     <AppDomain>https://satf.azurewebsites.net/excel_interface/functions/</AppDomain>
     <AppDomain>https://www.niras.com/</AppDomain>
     <AppDomain>https://mastercard.com</AppDomain>
@@ -26,6 +25,11 @@
   <Hosts>
     <Host Name="Workbook"/>
   </Hosts>
+  <Requirements>
+    <Sets DefaultMinVersion="1.1">
+      <Set Name="CustomFunctionsRuntime" MinVersion="1.1"/>
+    </Sets>
+  </Requirements>
   <DefaultSettings>
     <SourceLocation DefaultValue="https://satf.azurewebsites.net/excel_interface/taskpane"/>
   </DefaultSettings>

@@ -12,6 +12,8 @@ Office.initialize = function init() {
         context.workbook.customFunctions.addAll();
         return context.sync().then(() => {});
     });
+
+    Excel.CustomFunctions.initialise();
 };
 
 let dialog = null;
@@ -71,7 +73,7 @@ async function getSelectedCells() {
     return JSON.stringify(values);
 }
 
-function toggleProtection(event) {
+function toggleProtection(event: Office.AddinCommands.Event) {
     Excel.run((context) => {
         const sheet = context.workbook.worksheets.getActiveWorksheet();
         sheet.load('protection/protected');
@@ -94,7 +96,7 @@ function toggleProtection(event) {
     event.completed();
 }
 
-async function openDialogPopup(event) {
+async function openDialogPopup(event: Office.AddinCommands.Event) {
     const range = await getSelectedCells();
     localStorage.setItem('range', range);
     localStorage.setItem('clientID', 'casper123');
@@ -114,7 +116,7 @@ async function openDialogPopup(event) {
     event.completed();
 }
 
-function openDialogNIRAS(event) {
+function openDialogNIRAS(event: Office.AddinCommands.Event) {
     Office.context.ui.displayDialogAsync('https://www.niras.com/', {
         height: 40,
         width: 30,
@@ -124,7 +126,7 @@ function openDialogNIRAS(event) {
     });
 }
 
-function openDialogOPM(event) {
+function openDialogOPM(event: Office.AddinCommands.Event) {
     Office.context.ui.displayDialogAsync('https://www.opml.co.uk', {
         height: 40,
         width: 30,
@@ -134,7 +136,7 @@ function openDialogOPM(event) {
     });
 }
 
-function openDialogSATF(event) {
+function openDialogSATF(event: Office.AddinCommands.Event) {
     Office.context.ui.displayDialogAsync('https://www.opml.co.uk/projects/savings-frontier', {
         height: 40,
         width: 30,
@@ -144,7 +146,7 @@ function openDialogSATF(event) {
     });
 }
 
-function openDialogHELP(event) {
+function openDialogHELP(event: Office.AddinCommands.Event) {
     Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/contact_help/help.html', {
         height: 40,
         width: 30,
@@ -153,7 +155,7 @@ function openDialogHELP(event) {
     event.completed();
 }
 
-async function openDialogCONTACT(event) {
+async function openDialogCONTACT(event: Office.AddinCommands.Event) {
     Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/contact_help/contact.html', {
         height: 40,
         width: 30,
@@ -163,7 +165,7 @@ async function openDialogCONTACT(event) {
     });
 }
 
-async function openDialogMap(event) {
+async function openDialogMap(event: Office.AddinCommands.Event) {
     const markers = await getSelectedCells();
     localStorage.setItem('markers', markers);
 
@@ -183,7 +185,7 @@ async function openDialogMap(event) {
     event.completed();
 }
 
-async function addMapData(event) {
+async function addMapData(event: Office.AddinCommands.Event) {
     const markers = await getSelectedCells();
     localStorage.setItem('markers', markers);
 
