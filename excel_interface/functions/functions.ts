@@ -1,6 +1,3 @@
-// global CustomFunctions
-/* eslint-disable no-unused-vars */
-
 function makeRequest(method, url, timeout = 12000) {
     return new Promise(((resolve, reject) => {
         const xhr = new XMLHttpRequest();
@@ -106,25 +103,9 @@ function isValidWhatFreeWords(str) {
     return true;
 }
 
-function LatLngToWhatFreeWords(latitude, longitude) {
-    return new Promise((resolve, reject) => {
-        makeRequest('get', `https://satf.azurewebsites.net/api/latlng_to_whatfreewords?lat=${latitude}&lng=${longitude}`)
-            .then((value) => { resolve(value); })
-            .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
-    });
-}
-
 function What3WordsToLatLng(words) {
     return new Promise((resolve, reject) => {
         makeRequest('get', `https://satf.azurewebsites.net/api/whatfreewords_to_latlng?words=${words}`)
-            .then((value) => { resolve(value); })
-            .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
-    });
-}
-
-function LatLngToPluscode(latitude, longitude) {
-    return new Promise((resolve, reject) => {
-        makeRequest('get', `https://satf.azurewebsites.net/api/latlng_to_pluscode?lat=${latitude}&lng=${longitude}`)
             .then((value) => { resolve(value); })
             .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
     });
@@ -175,21 +156,37 @@ function getLatLngInfo(baseurl, latitude, longitude = false) {
     }
 }
 
-function helloWorld() {
+window.LatLngToWhatFreeWords = function LatLngToWhatFreeWords(latitude, longitude) {
+    return new Promise((resolve, reject) => {
+        makeRequest('get', `https://satf.azurewebsites.net/api/latlng_to_whatfreewords?lat=${latitude}&lng=${longitude}`)
+            .then((value) => { resolve(value); })
+            .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
+    });
+};
+
+window.LatLngToPluscode = function LatLngToPluscode(latitude, longitude) {
+    return new Promise((resolve, reject) => {
+        makeRequest('get', `https://satf.azurewebsites.net/api/latlng_to_pluscode?lat=${latitude}&lng=${longitude}`)
+            .then((value) => { resolve(value); })
+            .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
+    });
+};
+
+window.helloWorld = function helloWorld() {
     console.log('hello hello - from new - see me?');
     return 'hello rev2';
-}
+};
 
-function PopulationDensity(latitude, longitude = false) {
+window.PopulationDensity = function PopulationDensity(latitude, longitude = false) {
     const baseurl = 'https://satf.azurewebsites.net/api/population_density';
     return new Promise(((resolve, reject) => {
         getLatLngInfo(baseurl, latitude, longitude)
             .then((value) => { resolve(Number(value)); })
             .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
     }));
-}
+};
 
-function PopulationDensityBuffer(buffer_in_meters, latitude, longitude = false) {
+window.PopulationDensityBuffer = function PopulationDensityBuffer(buffer_in_meters, latitude, longitude = false) {
     const url = (buffer, lat, lng) => `https://satf.azurewebsites.net/api/population_density_buffer?lat=${lat}&lng=${lng}&buffer=${buffer}`;
     try {
         if (isValidWhatFreeWords(latitude)) {
@@ -232,9 +229,9 @@ function PopulationDensityBuffer(buffer_in_meters, latitude, longitude = false) 
         const error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
         throw error;
     }
-}
+};
 
-function PopulationDensityWalk(minutes, latitude, longitude = false) {
+window.PopulationDensityWalk = function PopulationDensityWalk(minutes, latitude, longitude = false) {
     const url = (buffer, lat, lng) => `https://satf.azurewebsites.net/api/population_density_walk?lat=${lat}&lng=${lng}&minutes=${buffer}`;
     try {
         if (isValidWhatFreeWords(latitude)) {
@@ -277,9 +274,9 @@ function PopulationDensityWalk(minutes, latitude, longitude = false) {
         const error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
         throw error;
     }
-}
+};
 
-function PopulationDensityBike(minutes, latitude, longitude = false) {
+window.PopulationDensityBike = function PopulationDensityBike(minutes, latitude, longitude = false) {
     const url = (buffer, lat, lng) => `https://satf.azurewebsites.net/api/population_density_bike?lat=${lat}&lng=${lng}&minutes=${buffer}`;
     try {
         if (isValidWhatFreeWords(latitude)) {
@@ -322,9 +319,9 @@ function PopulationDensityBike(minutes, latitude, longitude = false) {
         const error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
         throw error;
     }
-}
+};
 
-function PopulationDensityCar(minutes, latitude, longitude = false) {
+window.PopulationDensityCar = function PopulationDensityCar(minutes, latitude, longitude = false) {
     const url = (buffer, lat, lng) => `https://satf.azurewebsites.net/api/population_density_car?lat=${lat}&lng=${lng}&minutes=${buffer}`;
     try {
         if (isValidWhatFreeWords(latitude)) {
@@ -367,92 +364,92 @@ function PopulationDensityCar(minutes, latitude, longitude = false) {
         const error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
         throw error;
     }
-}
+};
 
-function AdminLevel1(latitude, longitude = false) {
+window.AdminLevel1 = function AdminLevel1(latitude, longitude = false) {
     const baseurl = 'https://satf.azurewebsites.net/api/admin_level_1';
     return new Promise(((resolve, reject) => {
         getLatLngInfo(baseurl, latitude, longitude)
             .then((value) => { resolve(value); })
             .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
     }));
-}
+};
 
-function AdminLevel2(latitude, longitude = false) {
+window.AdminLevel2 = function AdminLevel2(latitude, longitude = false) {
     const baseurl = 'https://satf.azurewebsites.net/api/admin_level_2';
     return new Promise(((resolve, reject) => {
         getLatLngInfo(baseurl, latitude, longitude)
             .then((value) => { resolve(value); })
             .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
     }));
-}
+};
 
-function AdminLevel2FuzzyLev(name) {
+window.AdminLevel2FuzzyLev = function AdminLevel2FuzzyLev(name) {
     return new Promise(((resolve, reject) => {
         makeRequest('get', `https://satf.azurewebsites.net/api/admin_level_2_fuzzy_lev?name=${name}`)
             .then((value) => { resolve(value); })
             .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
     }));
-}
+};
 
-function AdminLevel2FuzzyTri(name) {
+window.AdminLevel2FuzzyTri = function AdminLevel2FuzzyTri(name) {
     return new Promise(((resolve, reject) => {
         makeRequest('get', `https://satf.azurewebsites.net/api/admin_level_2_fuzzy_tri?name=${name}`)
             .then((value) => { resolve(value); })
             .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
     }));
-}
+};
 
-function UrbanStatus(latitude, longitude = false) {
+window.UrbanStatus = function UrbanStatus(latitude, longitude = false) {
     const baseurl = 'https://satf.azurewebsites.net/api/urban_status';
     return new Promise(((resolve, reject) => {
         getLatLngInfo(baseurl, latitude, longitude)
             .then((value) => { resolve(value); })
             .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
     }));
-}
+};
 
-function UrbanStatusSimple(latitude, longitude = false) {
+window.UrbanStatusSimple = function UrbanStatusSimple(latitude, longitude = false) {
     const baseurl = 'https://satf.azurewebsites.net/api/urban_status_simple';
     return new Promise(((resolve, reject) => {
         getLatLngInfo(baseurl, latitude, longitude)
             .then((value) => { resolve(value); })
             .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
     }));
-}
+};
 
-function NearestPlace(latitude, longitude = false) {
+window.NearestPlace = function NearestPlace(latitude, longitude = false) {
     const baseurl = 'https://satf.azurewebsites.net/api/nearest_placename';
     return new Promise(((resolve, reject) => {
         getLatLngInfo(baseurl, latitude, longitude)
             .then((value) => { resolve(value); })
             .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
     }));
-}
+};
 
-function NearestPoi(latitude, longitude = false) {
+window.NearestPoi = function NearestPoi(latitude, longitude = false) {
     const baseurl = 'https://satf.azurewebsites.net/api/nearest_poi';
     return new Promise(((resolve, reject) => {
         getLatLngInfo(baseurl, latitude, longitude)
             .then((value) => { resolve(value); })
             .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
     }));
-}
+};
 
-function NearestBank(latitude, longitude = false) {
+window.NearestBank = function NearestBank(latitude, longitude = false) {
     const baseurl = 'https://satf.azurewebsites.net/api/nearest_bank';
     return new Promise(((resolve, reject) => {
         getLatLngInfo(baseurl, latitude, longitude)
             .then((value) => { resolve(value); })
             .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
     }));
-}
+};
 
-function NearestBankDist(latitude, longitude = false) {
+window.NearestBankDist = function NearestBankDist(latitude, longitude = false) {
     const baseurl = 'https://satf.azurewebsites.net/api/nearest_bank_distance';
     return new Promise(((resolve, reject) => {
         getLatLngInfo(baseurl, latitude, longitude)
             .then((value) => { resolve(value); })
             .catch((err) => { reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err))); });
     }));
-}
+};
