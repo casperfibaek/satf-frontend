@@ -4,14 +4,14 @@ Office.onReady((info) => {
         document.getElementById('app-body').style.display = 'flex';
     }
 
-    Excel.run((context) => {
-        context.workbook.customFunctions.addAll();
-        return context.sync().then(() => {
-            console.log('Added all custom functions');
-        });
-    }).catch((error) => {
-        console.error(error);
-    });
+    // Excel.run((context) => {
+    //     context.workbook.customFunctions.addAll();
+    //     return context.sync().then(() => {
+    //         console.log('Added all custom functions');
+    //     });
+    // }).catch((error) => {
+    //     console.error(error);
+    // });
 
     // Determine if the user's version of Office supports all the Office.js APIs that are used in the tutorial.
     if (!Office.context.requirements.isSetSupported('ExcelApi', '1.7')) {

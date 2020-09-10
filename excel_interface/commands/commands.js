@@ -43,6 +43,10 @@ Office.initialize = function init() {
     if (!Office.context.requirements.isSetSupported('ExcelApi', '1.7')) {
         console.log('Sorry, this add-in only works with newer versions of Excel.');
     }
+    Excel.run(function (context) {
+        context.workbook.customFunctions.addAll();
+        return context.sync().then(function () { });
+    });
 };
 var dialog = null;
 function insertCell(val) {
