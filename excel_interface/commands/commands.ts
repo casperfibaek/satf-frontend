@@ -1,21 +1,15 @@
-// The Office.onReady command, even empty, is needed by office-js to work at all(?)
+/*
+ * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
+ * See LICENSE in the project root for license information.
+ */
 
-(function () {
-    Office.initialize = function (reason) {
-        // If you need to initialize something you can do so here.
-    };
-}());
+/* global global, Office, self, window */
 
-Office.onReady(() => {
-    (async function startDB() {
-        idbKeyval
-            .set('hello', { cat: 'drives' })
-        // .then(() => console.log('It worked!'))
-            .catch((err) => {
-                console.log('It failed!', err);
-            });
-    }());
-});
+Office.initialize = function init() {
+    if (!Office.context.requirements.isSetSupported('ExcelApi', '1.7')) {
+        console.log('Sorry, this add-in only works with newer versions of Excel.');
+    }
+};
 
 let dialog = null;
 
@@ -121,7 +115,7 @@ function openDialogNIRAS(event) {
     Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/info_niras.html', {
         height: 40,
         width: 30,
-        displayInIframe: true,
+        promptBeforeOpen: false,
     }, () => {
         event.completed();
     });
@@ -131,6 +125,7 @@ function openDialogOPM(event) {
     Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/info_opm.html', {
         height: 40,
         width: 30,
+        promptBeforeOpen: false,
     }, () => {
         event.completed();
     });
@@ -140,6 +135,7 @@ function openDialogSATF(event) {
     Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/info_satf.html', {
         height: 40,
         width: 30,
+        promptBeforeOpen: false,
     }, () => {
         event.completed();
     });
@@ -149,73 +145,65 @@ function openDialogHELP(event) {
     Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/help.html', {
         height: 40,
         width: 30,
+        promptBeforeOpen: false,
     });
-
     event.completed();
 }
 
-async function openDialogCONTACT(event) {
-    Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/contact.html', {
-        height: 40,
-        width: 30,
-    }, () => {
-        event.completed();
-    });
-}
+// async function openDialogCONTACT(event) {
+//     Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/contact.html', {
+//         height: 40,
+//         width: 30,
+//     }, () => {
+//         event.completed();
+//     });
+// }
 
-async function openDialogMap(event) {
-    const markers = await getSelectedCells();
-    localStorage.setItem('markers', markers);
+// async function openDialogMap(event) {
+//     const markers = await getSelectedCells();
+//     localStorage.setItem('markers', markers);
 
-    Office.context.ui.displayDialogAsync(
-        'https://satf.azurewebsites.net/excel_interface/map/map.html',
-        {
-            height: 40,
-            width: 30,
-        },
-        (asyncResult) => {
-            dialog = asyncResult.value;
-            dialog.addEventHandler(Office.EventType.DialogMessageReceived, processMessage);
-        },
-    );
+//     Office.context.ui.displayDialogAsync(
+//         'https://satf.azurewebsites.net/excel_interface/map/map.html',
+//         {
+//             height: 40,
+//             width: 30,
+//         },
+//         (asyncResult) => {
+//             dialog = asyncResult.value;
+//             dialog.addEventHandler(Office.EventType.DialogMessageReceived, processMessage);
+//         },
+//     );
 
-    event.completed();
-}
+//     event.completed();
+// }
 
-async function addMapData(event) {
-    const markers = await getSelectedCells();
-    localStorage.setItem('markers', markers);
+// async function addMapData(event) {
+//     const markers = await getSelectedCells();
+//     localStorage.setItem('markers', markers);
 
-    const localEventNumber = localStorage.getItem('eventNumber');
-    if (localEventNumber === null) {
-        localStorage.setItem('eventNumber', '0');
-    }
-    localStorage.setItem('eventNumber', String(Number(localEventNumber) + 1));
+//     const localEventNumber = localStorage.getItem('eventNumber');
+//     if (localEventNumber === null) {
+//         localStorage.setItem('eventNumber', '0');
+//     }
+//     localStorage.setItem('eventNumber', String(Number(localEventNumber) + 1));
 
-    event.completed();
-}
+//     event.completed();
+// }
 
-/* eslint-disable */
-function getGlobal() {
-    return typeof self !== 'undefined'
-        ? self
-        : typeof window !== 'undefined'
-            ? window
-            : typeof global !== 'undefined'
-                ? global
-                : undefined;
-}
-/* eslint-enable */
+// (() => {
+//     Office.initialize = (reason) => {
+//         console.log('Office has been successfully initialized. Reason = ', reason);
+//     };
+// })();
 
-const g = getGlobal();
-
-// the add-in command functions need to be available in global scope
-g.toggleProtection = toggleProtection;
-g.openDialogPopup = openDialogPopup;
-g.openDialogNIRAS = openDialogNIRAS;
-g.openDialogOPM = openDialogOPM;
-g.openDialogHELP = openDialogHELP;
-g.openDialogSATF = openDialogSATF;
-g.openDialogMap = openDialogMap;
-g.openDialogCONTACT = openDialogCONTACT;
-g.addMapData = addMapData;
+// // the add-in command functions need to be available in global scope
+// window.toggleProtection = toggleProtection;
+// window.openDialogPopup = openDialogPopup;
+// window.openDialogNIRAS = openDialogNIRAS;
+// window.openDialogOPM = openDialogOPM;
+// window.openDialogHELP = openDialogHELP;
+// window.openDialogSATF = openDialogSATF;
+// window.openDialogMap = openDialogMap;
+// window.openDialogCONTACT = openDialogCONTACT;
+// window.addMapData = addMapData;

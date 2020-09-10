@@ -1,0 +1,30 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\app.js",
+            "outFiles": [
+                "${workspaceFolder}/**/*.js"
+            ]
+        },
+        {
+            "type": "office-addin",
+            "request": "attach",
+            "name": "Attach to Office Add-ins",
+            "port": 9222,
+            "trace": "verbose",
+            "url": "https://satf.azurewebsites.net/excel_interface/taskpane/taskpane.html?_host_Info=HOST$Win32$16.01$en-US$$$$0",
+            "webRoot": "${workspaceFolder}",
+            "timeout": 45000
+        }
+    ]
+}

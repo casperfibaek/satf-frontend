@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0" xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="TaskPaneApp">
   <Id>1a3b85bb-5dfc-5684-87a6-ed7ccb48c920</Id>
-  <Version>1.0.0.2</Version>
+  <Version>1.0.0.5</Version>
   <ProviderName>NIRAS</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="SATF rev.2"/>
@@ -11,13 +11,22 @@
   <SupportUrl DefaultValue="https://www.niras.com"/>
   <AppDomains>
     <AppDomain>https://satf.azurewebsites.net</AppDomain>
-    <AppDomain>https://satf.azurewebsites.net/excel_interface/</AppDomain>
+    <AppDomain>https://satf.azurewebsites.net/excel_interface</AppDomain>
+    <AppDomain>https://satf.azurewebsites.net/excel_interface/taskpane/</AppDomain>
+    <AppDomain>https://satf.azurewebsites.net/excel_interface/commands/</AppDomain>
+    <AppDomain>https://satf.azurewebsites.net/excel_interface/assets/</AppDomain>
+    <AppDomain>https://satf.azurewebsites.net/excel_interface/map/</AppDomain>
+    <AppDomain>https://satf.azurewebsites.net/excel_interface/popup/</AppDomain>
+    <AppDomain>https://satf.azurewebsites.net/excel_interface/functions/</AppDomain>
+    <AppDomain>https://www.niras.com/</AppDomain>
+    <AppDomain>https://mastercard.com</AppDomain>
+    <AppDomain>https://opml.co.uk</AppDomain>
   </AppDomains>
   <Hosts>
     <Host Name="Workbook"/>
   </Hosts>
   <DefaultSettings>
-    <SourceLocation DefaultValue="https://satf.azurewebsites.net/excel_interface/taskpane/taskpane.html"/>
+    <SourceLocation DefaultValue="https://satf.azurewebsites.net"/>
   </DefaultSettings>
   <Permissions>ReadWriteDocument</Permissions>
   <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
@@ -353,10 +362,10 @@
         <bt:Image id="Icon.OnlyMarker.80x80" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/only_marker_80x80.png"/>
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="GetStarted.LearnMoreUrl" DefaultValue="https://niras.com"/>
+        <bt:Url id="GetStarted.LearnMoreUrl" DefaultValue="https://www.niras.com/"/>
         <bt:Url id="AboutMastercard.Url" DefaultValue="https://mastercard.com"/>
         <bt:Url id="AboutOPM.Url" DefaultValue="https://opml.co.uk"/>
-        <bt:Url id="AboutNiras.Url" DefaultValue="https://niras.com"/>
+        <bt:Url id="AboutNiras.Url" DefaultValue="https://www.niras.com/"/>
         <bt:Url id="Functions.Script.Url" DefaultValue="https://satf.azurewebsites.net/excel_interface/functions/functions.js"/>
         <bt:Url id="Functions.Metadata.Url" DefaultValue="https://satf.azurewebsites.net/excel_interface/functions/functions_meta.json"/>
         <bt:Url id="Functions.Page.Url" DefaultValue="https://satf.azurewebsites.net/excel_interface/functions/functions.html"/>
