@@ -9,3 +9,6 @@ declare function openDialogNIRAS(event: any): void;
 declare function openDialogOPM(event: any): void;
 declare function openDialogSATF(event: any): void;
 declare function openDialogHELP(event: any): void;
+declare function openDialogCONTACT(event: any): Promise<void>;
+declare function openDialogMap(event: any): Promise<void>;
+declare function addMapData(event: any): Promise<void>;

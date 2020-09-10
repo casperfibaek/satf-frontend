@@ -112,7 +112,7 @@ async function openDialogPopup(event) {
 }
 
 function openDialogNIRAS(event) {
-    Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/info_niras.html', {
+    Office.context.ui.displayDialogAsync('https://www.niras.com/', {
         height: 40,
         width: 30,
         promptBeforeOpen: false,
@@ -122,7 +122,7 @@ function openDialogNIRAS(event) {
 }
 
 function openDialogOPM(event) {
-    Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/info_opm.html', {
+    Office.context.ui.displayDialogAsync('https://www.opml.co.uk', {
         height: 40,
         width: 30,
         promptBeforeOpen: false,
@@ -132,7 +132,7 @@ function openDialogOPM(event) {
 }
 
 function openDialogSATF(event) {
-    Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/info_satf.html', {
+    Office.context.ui.displayDialogAsync('https://www.opml.co.uk/projects/savings-frontier', {
         height: 40,
         width: 30,
         promptBeforeOpen: false,
@@ -150,60 +150,56 @@ function openDialogHELP(event) {
     event.completed();
 }
 
-// async function openDialogCONTACT(event) {
-//     Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/contact.html', {
-//         height: 40,
-//         width: 30,
-//     }, () => {
-//         event.completed();
-//     });
-// }
+async function openDialogCONTACT(event) {
+    Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/contact.html', {
+        height: 40,
+        width: 30,
+        promptBeforeOpen: false,
+    }, () => {
+        event.completed();
+    });
+}
 
-// async function openDialogMap(event) {
-//     const markers = await getSelectedCells();
-//     localStorage.setItem('markers', markers);
+async function openDialogMap(event) {
+    const markers = await getSelectedCells();
+    localStorage.setItem('markers', markers);
 
-//     Office.context.ui.displayDialogAsync(
-//         'https://satf.azurewebsites.net/excel_interface/map/map.html',
-//         {
-//             height: 40,
-//             width: 30,
-//         },
-//         (asyncResult) => {
-//             dialog = asyncResult.value;
-//             dialog.addEventHandler(Office.EventType.DialogMessageReceived, processMessage);
-//         },
-//     );
+    Office.context.ui.displayDialogAsync(
+        'https://satf.azurewebsites.net/excel_interface/map/map.html',
+        {
+            height: 40,
+            width: 30,
+            promptBeforeOpen: false,
+        },
+        (asyncResult) => {
+            dialog = asyncResult.value;
+            dialog.addEventHandler(Office.EventType.DialogMessageReceived, processMessage);
+        },
+    );
 
-//     event.completed();
-// }
+    event.completed();
+}
 
-// async function addMapData(event) {
-//     const markers = await getSelectedCells();
-//     localStorage.setItem('markers', markers);
+async function addMapData(event) {
+    const markers = await getSelectedCells();
+    localStorage.setItem('markers', markers);
 
-//     const localEventNumber = localStorage.getItem('eventNumber');
-//     if (localEventNumber === null) {
-//         localStorage.setItem('eventNumber', '0');
-//     }
-//     localStorage.setItem('eventNumber', String(Number(localEventNumber) + 1));
+    const localEventNumber = localStorage.getItem('eventNumber');
+    if (localEventNumber === null) {
+        localStorage.setItem('eventNumber', '0');
+    }
+    localStorage.setItem('eventNumber', String(Number(localEventNumber) + 1));
 
-//     event.completed();
-// }
+    event.completed();
+}
 
-// (() => {
-//     Office.initialize = (reason) => {
-//         console.log('Office has been successfully initialized. Reason = ', reason);
-//     };
-// })();
-
-// // the add-in command functions need to be available in global scope
-// window.toggleProtection = toggleProtection;
-// window.openDialogPopup = openDialogPopup;
-// window.openDialogNIRAS = openDialogNIRAS;
-// window.openDialogOPM = openDialogOPM;
-// window.openDialogHELP = openDialogHELP;
-// window.openDialogSATF = openDialogSATF;
-// window.openDialogMap = openDialogMap;
-// window.openDialogCONTACT = openDialogCONTACT;
-// window.addMapData = addMapData;
+// the add-in command functions need to be available in global scope
+window.toggleProtection = toggleProtection;
+window.openDialogPopup = openDialogPopup;
+window.openDialogNIRAS = openDialogNIRAS;
+window.openDialogOPM = openDialogOPM;
+window.openDialogHELP = openDialogHELP;
+window.openDialogSATF = openDialogSATF;
+window.openDialogMap = openDialogMap;
+window.openDialogCONTACT = openDialogCONTACT;
+window.addMapData = addMapData;

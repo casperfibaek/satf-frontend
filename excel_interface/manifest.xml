@@ -20,7 +20,8 @@
     <AppDomain>https://satf.azurewebsites.net/excel_interface/functions/</AppDomain>
     <AppDomain>https://www.niras.com/</AppDomain>
     <AppDomain>https://mastercard.com</AppDomain>
-    <AppDomain>https://opml.co.uk</AppDomain>
+    <AppDomain>https://www.opml.co.uk/</AppDomain>
+    <AppDomain>https://www.opml.co.uk/projects/savings-frontier</AppDomain>
   </AppDomains>
   <Hosts>
     <Host Name="Workbook"/>
@@ -363,8 +364,8 @@
       </bt:Images>
       <bt:Urls>
         <bt:Url id="GetStarted.LearnMoreUrl" DefaultValue="https://www.niras.com/"/>
-        <bt:Url id="AboutMastercard.Url" DefaultValue="https://mastercard.com"/>
-        <bt:Url id="AboutOPM.Url" DefaultValue="https://opml.co.uk"/>
+        <bt:Url id="AboutMastercard.Url" DefaultValue="https://www.mastercard.com/"/>
+        <bt:Url id="AboutOPM.Url" DefaultValue="https://www.opml.co.uk/"/>
         <bt:Url id="AboutNiras.Url" DefaultValue="https://www.niras.com/"/>
         <bt:Url id="Functions.Script.Url" DefaultValue="https://satf.azurewebsites.net/excel_interface/functions/functions.js"/>
         <bt:Url id="Functions.Metadata.Url" DefaultValue="https://satf.azurewebsites.net/excel_interface/functions/functions_meta.json"/>

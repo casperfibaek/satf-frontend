@@ -209,7 +209,7 @@ function openDialogPopup(event) {
     });
 }
 function openDialogNIRAS(event) {
-    Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/info_niras.html', {
+    Office.context.ui.displayDialogAsync('https://www.niras.com/', {
         height: 40,
         width: 30,
         promptBeforeOpen: false,
@@ -218,7 +218,7 @@ function openDialogNIRAS(event) {
     });
 }
 function openDialogOPM(event) {
-    Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/info_opm.html', {
+    Office.context.ui.displayDialogAsync('https://www.opml.co.uk', {
         height: 40,
         width: 30,
         promptBeforeOpen: false,
@@ -227,7 +227,7 @@ function openDialogOPM(event) {
     });
 }
 function openDialogSATF(event) {
-    Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/info_satf.html', {
+    Office.context.ui.displayDialogAsync('https://www.opml.co.uk/projects/savings-frontier', {
         height: 40,
         width: 30,
         promptBeforeOpen: false,
@@ -243,52 +243,70 @@ function openDialogHELP(event) {
     });
     event.completed();
 }
-// async function openDialogCONTACT(event) {
-//     Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/contact.html', {
-//         height: 40,
-//         width: 30,
-//     }, () => {
-//         event.completed();
-//     });
-// }
-// async function openDialogMap(event) {
-//     const markers = await getSelectedCells();
-//     localStorage.setItem('markers', markers);
-//     Office.context.ui.displayDialogAsync(
-//         'https://satf.azurewebsites.net/excel_interface/map/map.html',
-//         {
-//             height: 40,
-//             width: 30,
-//         },
-//         (asyncResult) => {
-//             dialog = asyncResult.value;
-//             dialog.addEventHandler(Office.EventType.DialogMessageReceived, processMessage);
-//         },
-//     );
-//     event.completed();
-// }
-// async function addMapData(event) {
-//     const markers = await getSelectedCells();
-//     localStorage.setItem('markers', markers);
-//     const localEventNumber = localStorage.getItem('eventNumber');
-//     if (localEventNumber === null) {
-//         localStorage.setItem('eventNumber', '0');
-//     }
-//     localStorage.setItem('eventNumber', String(Number(localEventNumber) + 1));
-//     event.completed();
-// }
-// (() => {
-//     Office.initialize = (reason) => {
-//         console.log('Office has been successfully initialized. Reason = ', reason);
-//     };
-// })();
-// // the add-in command functions need to be available in global scope
-// window.toggleProtection = toggleProtection;
-// window.openDialogPopup = openDialogPopup;
-// window.openDialogNIRAS = openDialogNIRAS;
-// window.openDialogOPM = openDialogOPM;
-// window.openDialogHELP = openDialogHELP;
-// window.openDialogSATF = openDialogSATF;
-// window.openDialogMap = openDialogMap;
-// window.openDialogCONTACT = openDialogCONTACT;
-// window.addMapData = addMapData;
+function openDialogCONTACT(event) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/contact.html', {
+                height: 40,
+                width: 30,
+                promptBeforeOpen: false,
+            }, function () {
+                event.completed();
+            });
+            return [2 /*return*/];
+        });
+    });
+}
+function openDialogMap(event) {
+    return __awaiter(this, void 0, void 0, function () {
+        var markers;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, getSelectedCells()];
+                case 1:
+                    markers = _a.sent();
+                    localStorage.setItem('markers', markers);
+                    Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/map/map.html', {
+                        height: 40,
+                        width: 30,
+                        promptBeforeOpen: false,
+                    }, function (asyncResult) {
+                        dialog = asyncResult.value;
+                        dialog.addEventHandler(Office.EventType.DialogMessageReceived, processMessage);
+                    });
+                    event.completed();
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function addMapData(event) {
+    return __awaiter(this, void 0, void 0, function () {
+        var markers, localEventNumber;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, getSelectedCells()];
+                case 1:
+                    markers = _a.sent();
+                    localStorage.setItem('markers', markers);
+                    localEventNumber = localStorage.getItem('eventNumber');
+                    if (localEventNumber === null) {
+                        localStorage.setItem('eventNumber', '0');
+                    }
+                    localStorage.setItem('eventNumber', String(Number(localEventNumber) + 1));
+                    event.completed();
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+// the add-in command functions need to be available in global scope
+window.toggleProtection = toggleProtection;
+window.openDialogPopup = openDialogPopup;
+window.openDialogNIRAS = openDialogNIRAS;
+window.openDialogOPM = openDialogOPM;
+window.openDialogHELP = openDialogHELP;
+window.openDialogSATF = openDialogSATF;
+window.openDialogMap = openDialogMap;
+window.openDialogCONTACT = openDialogCONTACT;
+window.addMapData = addMapData;
