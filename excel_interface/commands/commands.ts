@@ -1,9 +1,6 @@
-/*
- * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
- * See LICENSE in the project root for license information.
- */
-
-Office.initialize = function init() {};
+Office.onReady(() => {
+  // If needed, Office.js is ready to be called
+});
 
 let dialog = null;
 
@@ -135,16 +132,7 @@ function openDialogSATF(event) {
   });
 }
 
-function openDialogHELP(event) {
-  Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/contact_help/help.html', {
-    height: 40,
-    width: 30,
-    promptBeforeOpen: false,
-  });
-  event.completed();
-}
-
-async function openDialogCONTACT(event) {
+async function openDialogSUPPORT(event) {
   Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/contact_help/contact.html', {
     height: 40,
     width: 30,
@@ -204,8 +192,7 @@ const g = getGlobal() as any;
 g.toggleProtection = toggleProtection;
 g.openDialogNIRAS = openDialogNIRAS;
 g.openDialogOPM = openDialogOPM;
-g.openDialogHELP = openDialogHELP;
 g.openDialogSATF = openDialogSATF;
 g.openDialogMap = openDialogMap;
-g.openDialogCONTACT = openDialogCONTACT;
+g.openDialogSUPPORT = openDialogSUPPORT;
 g.addMapData = addMapData;
