@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0" xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="TaskPaneApp">
   <Id>1a3b85bb-5dfc-5684-87a6-ed7ccb48c920</Id>
-  <Version>1.0.0.7</Version>
+  <Version>1.0.0.8</Version>
   <ProviderName>NIRAS</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="SATF rev.2"/>
@@ -88,22 +88,6 @@
                     <TaskpaneId>ButtonId1</TaskpaneId>
                     <SourceLocation resid="Taskpane.Url"/>
                   </Action>
-                </Control>
-
-                <Control xsi:type="Button" id="ToggleProtection">
-                  <Label resid="ProtectionButtonLabel" />
-                    <Supertip>            
-                      <Title resid="ProtectionButtonLabel" />
-                      <Description resid="ProtectionButtonToolTip" />
-                    </Supertip>
-                    <Icon>
-                      <bt:Image size="16" resid="Icon.16x16"/>
-                      <bt:Image size="32" resid="Icon.32x32"/>
-                      <bt:Image size="80" resid="Icon.80x80"/>
-                    </Icon>
-                    <Action xsi:type="ExecuteFunction">
-                      <FunctionName>toggleProtection</FunctionName>
-                    </Action>
                 </Control>
 
               </Group>
@@ -327,7 +311,7 @@
         <bt:String id="AboutSATFButton.Tooltip" DefaultValue="Information about Savings at the Frontier"/>
         <bt:String id="AboutNIRASButton.Tooltip" DefaultValue="Information about Niras Consulting"/>
         <bt:String id="AboutOPMButton.Tooltip" DefaultValue="Information about Oxford Policy Management"/>
-        <bt:String id="Support.Tooltip" DefaultValue="Get help to using the custom functions"/>
+        <bt:String id="SupportButton.Tooltip" DefaultValue="Get help to using the custom functions"/>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>

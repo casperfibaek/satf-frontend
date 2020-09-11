@@ -133,7 +133,7 @@ function openDialogSATF(event) {
 }
 
 async function openDialogSUPPORT(event) {
-  Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/contact_help/contact.html', {
+  Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/support/support.html', {
     height: 40,
     width: 30,
     promptBeforeOpen: false,
