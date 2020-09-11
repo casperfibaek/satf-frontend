@@ -13,6 +13,8 @@ module.exports = {
   rules: {
     'linebreak-style': 0,
     'no-console': 0,
+    'no-restricted-globals': 0,
+    'no-underscore-dangle': 0,
     'max-len': ['error', { code: 120 }],
   },
   globals: {
@@ -20,5 +22,6 @@ module.exports = {
     Excel: 'readonly',
     CustomFunctions: 'readonly',
     OfficeExtension: 'readonly',
+    L: 'readonly', // Leaflet
   },
 };
