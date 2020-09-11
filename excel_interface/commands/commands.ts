@@ -152,7 +152,6 @@ async function openDialogDOCUMENTATION(event) {
   });
 }
 
-
 async function openDialogMap(event) {
   const markers = await getSelectedCells();
   localStorage.setItem('markers', markers);
