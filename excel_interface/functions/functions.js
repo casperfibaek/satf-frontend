@@ -175,6 +175,20 @@ function getLatLngInfo(baseurl, latitude, longitude = false) {
   }
 }
 
+/* eslint-disable */
+function getGlobal() {
+  return typeof self !== 'undefined'
+    ? self
+    : typeof window !== 'undefined'
+      ? window
+      : typeof global !== 'undefined'
+        ? global
+        : undefined;
+}
+/* eslint-enable */
+
+const g = getGlobal();
+
 // ----------------------- CustomFunctions -----------------------
 
 function LatLngToWhatFreeWords(latitude, longitude) {
@@ -188,7 +202,7 @@ function LatLngToWhatFreeWords(latitude, longitude) {
       });
   });
 }
-window.LatLngToWhatFreeWords = LatLngToWhatFreeWords;
+g.LatLngToWhatFreeWords = LatLngToWhatFreeWords;
 
 function LatLngToPluscode(latitude, longitude) {
   return new Promise((resolve, reject) => {
@@ -201,13 +215,13 @@ function LatLngToPluscode(latitude, longitude) {
       });
   });
 }
-window.LatLngToPluscode = LatLngToPluscode;
+g.LatLngToPluscode = LatLngToPluscode;
 
 function helloWorld() {
   console.log('hello hello - from new - see me?');
   return 'hello rev2';
 }
-window.helloWorld = helloWorld;
+g.helloWorld = helloWorld;
 
 function PopulationDensity(latitude, longitude = false) {
   const baseurl = 'https://satf.azurewebsites.net/api/population_density';
@@ -221,7 +235,7 @@ function PopulationDensity(latitude, longitude = false) {
       });
   }));
 }
-window.PopulationDensity = PopulationDensity;
+g.PopulationDensity = PopulationDensity;
 
 function PopulationDensityBuffer(bufferMeters, latitude, longitude = false) {
   const url = (buffer, lat, lng) => `https://satf.azurewebsites.net/api/population_density_buffer?lat=${lat}&lng=${lng}&buffer=${buffer}`; // eslint-disable-line
@@ -277,7 +291,7 @@ function PopulationDensityBuffer(bufferMeters, latitude, longitude = false) {
     throw error;
   }
 }
-window.PopulationDensityBuffer = PopulationDensityBuffer;
+g.PopulationDensityBuffer = PopulationDensityBuffer;
 
 function PopulationDensityWalk(minutes, latitude, longitude = false) {
   const url = (buffer, lat, lng) => `https://satf.azurewebsites.net/api/population_density_walk?lat=${lat}&lng=${lng}&minutes=${buffer}`; // eslint-disable-line
@@ -329,7 +343,7 @@ function PopulationDensityWalk(minutes, latitude, longitude = false) {
     throw error;
   }
 }
-window.PopulationDensityWalk = PopulationDensityWalk;
+g.PopulationDensityWalk = PopulationDensityWalk;
 
 function PopulationDensityBike(minutes, latitude, longitude = false) {
   const url = (buffer, lat, lng) => `https://satf.azurewebsites.net/api/population_density_bike?lat=${lat}&lng=${lng}&minutes=${buffer}`; // eslint-disable-line
@@ -381,7 +395,7 @@ function PopulationDensityBike(minutes, latitude, longitude = false) {
     throw error;
   }
 }
-window.PopulationDensityBike = PopulationDensityBike;
+g.PopulationDensityBike = PopulationDensityBike;
 
 function PopulationDensityCar(minutes, latitude, longitude = false) {
   const url = (buffer, lat, lng) => `https://satf.azurewebsites.net/api/population_density_car?lat=${lat}&lng=${lng}&minutes=${buffer}`; // eslint-disable-line
@@ -433,7 +447,7 @@ function PopulationDensityCar(minutes, latitude, longitude = false) {
     throw error;
   }
 }
-window.PopulationDensityCar = PopulationDensityCar;
+g.PopulationDensityCar = PopulationDensityCar;
 
 function AdminLevel1(latitude, longitude = false) {
   const baseurl = 'https://satf.azurewebsites.net/api/admin_level_1';
@@ -447,7 +461,7 @@ function AdminLevel1(latitude, longitude = false) {
       });
   }));
 }
-window.AdminLevel1 = AdminLevel1;
+g.AdminLevel1 = AdminLevel1;
 
 function AdminLevel2(latitude, longitude = false) {
   const baseurl = 'https://satf.azurewebsites.net/api/admin_level_2';
@@ -461,7 +475,7 @@ function AdminLevel2(latitude, longitude = false) {
       });
   }));
 }
-window.AdminLevel2 = AdminLevel2;
+g.AdminLevel2 = AdminLevel2;
 
 function AdminLevel2FuzzyLev(name) {
   return new Promise(((resolve, reject) => {
@@ -474,7 +488,7 @@ function AdminLevel2FuzzyLev(name) {
       });
   }));
 }
-window.AdminLevel2FuzzyLev = AdminLevel2FuzzyLev;
+g.AdminLevel2FuzzyLev = AdminLevel2FuzzyLev;
 
 function AdminLevel2FuzzyTri(name) {
   return new Promise(((resolve, reject) => {
@@ -487,7 +501,7 @@ function AdminLevel2FuzzyTri(name) {
       });
   }));
 }
-window.AdminLevel2FuzzyTri = AdminLevel2FuzzyTri;
+g.AdminLevel2FuzzyTri = AdminLevel2FuzzyTri;
 
 function UrbanStatus(latitude, longitude = false) {
   const baseurl = 'https://satf.azurewebsites.net/api/urban_status';
@@ -501,7 +515,7 @@ function UrbanStatus(latitude, longitude = false) {
       });
   }));
 }
-window.UrbanStatus = UrbanStatus;
+g.UrbanStatus = UrbanStatus;
 
 function UrbanStatusSimple(latitude, longitude = false) {
   const baseurl = 'https://satf.azurewebsites.net/api/urban_status_simple';
@@ -515,7 +529,7 @@ function UrbanStatusSimple(latitude, longitude = false) {
       });
   }));
 }
-window.UrbanStatusSimple = UrbanStatusSimple;
+g.UrbanStatusSimple = UrbanStatusSimple;
 
 function NearestPlace(latitude, longitude = false) {
   const baseurl = 'https://satf.azurewebsites.net/api/nearest_placename';
@@ -529,7 +543,7 @@ function NearestPlace(latitude, longitude = false) {
       });
   }));
 }
-window.NearestPlace = NearestPlace;
+g.NearestPlace = NearestPlace;
 
 function NearestPoi(latitude, longitude = false) {
   const baseurl = 'https://satf.azurewebsites.net/api/nearest_poi';
@@ -543,7 +557,7 @@ function NearestPoi(latitude, longitude = false) {
       });
   }));
 }
-window.NearestPoi = NearestPoi;
+g.NearestPoi = NearestPoi;
 
 function NearestBank(latitude, longitude = false) {
   const baseurl = 'https://satf.azurewebsites.net/api/nearest_bank';
@@ -557,7 +571,7 @@ function NearestBank(latitude, longitude = false) {
       });
   }));
 }
-window.NearestBank = NearestBank;
+g.NearestBank = NearestBank;
 
 function NearestBankDist(latitude, longitude = false) {
   const baseurl = 'https://satf.azurewebsites.net/api/nearest_bank_distance';
@@ -571,4 +585,4 @@ function NearestBankDist(latitude, longitude = false) {
       });
   }));
 }
-window.NearestBankDist = NearestBankDist;
+g.NearestBankDist = NearestBankDist;

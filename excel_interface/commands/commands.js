@@ -211,13 +211,27 @@ async function addMapData(event) {
   event.completed();
 }
 
+/* eslint-disable */
+function getGlobal() {
+  return typeof self !== 'undefined'
+    ? self
+    : typeof window !== 'undefined'
+      ? window
+      : typeof global !== 'undefined'
+        ? global
+        : undefined;
+}
+/* eslint-enable */
+
+const g = getGlobal();
+
 // the add-in command functions need to be available in global scope
-window.toggleProtection = toggleProtection;
-window.openDialogPopup = openDialogPopup;
-window.openDialogNIRAS = openDialogNIRAS;
-window.openDialogOPM = openDialogOPM;
-window.openDialogHELP = openDialogHELP;
-window.openDialogSATF = openDialogSATF;
-window.openDialogMap = openDialogMap;
-window.openDialogCONTACT = openDialogCONTACT;
-window.addMapData = addMapData;
+g.toggleProtection = toggleProtection;
+g.openDialogPopup = openDialogPopup;
+g.openDialogNIRAS = openDialogNIRAS;
+g.openDialogOPM = openDialogOPM;
+g.openDialogHELP = openDialogHELP;
+g.openDialogSATF = openDialogSATF;
+g.openDialogMap = openDialogMap;
+g.openDialogCONTACT = openDialogCONTACT;
+g.addMapData = addMapData;
