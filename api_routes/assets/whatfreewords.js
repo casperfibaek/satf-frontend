@@ -17,7 +17,9 @@
 
 // src/head.js:
 
-var atob = require('atob');
+// https://git.coolaj86.com/coolaj86/atob.js
+function atob(str) { return Buffer.from(str, 'base64').toString('binary'); }
+
 
 var WhatFreeWords = function() {
     throw "do not instantiate WhatFreeWords";
