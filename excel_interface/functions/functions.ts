@@ -175,19 +175,20 @@ function getLatLngInfo(baseurl, latitude, longitude = false) {
   }
 }
 
-/* eslint-disable */
 function getGlobal() {
-  return typeof self !== 'undefined'
-    ? self
-    : typeof window !== 'undefined'
-      ? window
-      : typeof global !== 'undefined'
-        ? global
-        : undefined;
+  if (typeof self !== 'undefined') {
+    return self;
+  } if (typeof window !== 'undefined') {
+    return window;
+  } if (typeof global !== 'undefined') {
+    return global;
+  }
+  throw new Error('Unable to get global namespace.');
 }
-/* eslint-enable */
 
-const g = getGlobal();
+const g = getGlobal() as any;
+
+// the add-in command functions need to be available in global scope
 
 // ----------------------- CustomFunctions -----------------------
 

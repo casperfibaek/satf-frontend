@@ -309,12 +309,25 @@ function addMapData(event) {
         });
     });
 }
+function getGlobal() {
+    if (typeof self !== 'undefined') {
+        return self;
+    }
+    if (typeof window !== 'undefined') {
+        return window;
+    }
+    if (typeof global !== 'undefined') {
+        return global;
+    }
+    throw new Error('Unable to get global namespace.');
+}
+var g = getGlobal();
 // the add-in command functions need to be available in global scope
-window.toggleProtection = toggleProtection;
-window.openDialogNIRAS = openDialogNIRAS;
-window.openDialogOPM = openDialogOPM;
-window.openDialogHELP = openDialogHELP;
-window.openDialogSATF = openDialogSATF;
-window.openDialogMap = openDialogMap;
-window.openDialogCONTACT = openDialogCONTACT;
-window.addMapData = addMapData;
+g.toggleProtection = toggleProtection;
+g.openDialogNIRAS = openDialogNIRAS;
+g.openDialogOPM = openDialogOPM;
+g.openDialogHELP = openDialogHELP;
+g.openDialogSATF = openDialogSATF;
+g.openDialogMap = openDialogMap;
+g.openDialogCONTACT = openDialogCONTACT;
+g.addMapData = addMapData;

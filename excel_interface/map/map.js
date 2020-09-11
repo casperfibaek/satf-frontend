@@ -17,6 +17,23 @@ function htmlTable(obj) {
     table += '</tbody></table>';
     return table;
 }
+function arrayToGeojson(arr) {
+    var geojson = {
+        type: 'FeatureCollection',
+        features: [],
+    };
+    for (var i = 0; i < arr.length; i += 1) {
+        geojson.features.push({
+            type: 'Feature',
+            properties: {},
+            geometry: {
+                type: 'Point',
+                coordinates: [arr[i]],
+            },
+        });
+    }
+    return geojson;
+}
 if (localStorage.getItem('eventNumber') === null) {
     localStorage.setItem('eventNumber', '0');
 }

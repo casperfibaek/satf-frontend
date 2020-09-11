@@ -167,18 +167,20 @@ function getLatLngInfo(baseurl, latitude, longitude) {
         throw error;
     }
 }
-/* eslint-disable */
 function getGlobal() {
-    return typeof self !== 'undefined'
-        ? self
-        : typeof window !== 'undefined'
-            ? window
-            : typeof global !== 'undefined'
-                ? global
-                : undefined;
+    if (typeof self !== 'undefined') {
+        return self;
+    }
+    if (typeof window !== 'undefined') {
+        return window;
+    }
+    if (typeof global !== 'undefined') {
+        return global;
+    }
+    throw new Error('Unable to get global namespace.');
 }
-/* eslint-enable */
 var g = getGlobal();
+// the add-in command functions need to be available in global scope
 // ----------------------- CustomFunctions -----------------------
 function LatLngToWhatFreeWords(latitude, longitude) {
     return new Promise(function (resolve, reject) {

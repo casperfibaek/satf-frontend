@@ -20,6 +20,27 @@ function htmlTable(obj) {
   return table;
 }
 
+function arrayToGeojson(arr) {
+  const geojson = {
+    type: 'FeatureCollection',
+    features: [
+    ],
+  };
+
+  for (let i = 0; i < arr.length; i += 1) {
+    geojson.features.push({
+      type: 'Feature',
+      properties: {},
+      geometry: {
+        type: 'Point',
+        coordinates: [arr[i]],
+      },
+    });
+  }
+
+  return geojson;
+}
+
 if (localStorage.getItem('eventNumber') === null) {
   localStorage.setItem('eventNumber', '0');
 }
