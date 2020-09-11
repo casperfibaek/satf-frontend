@@ -245,7 +245,21 @@ function openDialogSATF(event) {
 function openDialogSUPPORT(event) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/contact_help/contact.html', {
+            Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/support/support.html', {
+                height: 40,
+                width: 30,
+                promptBeforeOpen: false,
+            }, function () {
+                event.completed();
+            });
+            return [2 /*return*/];
+        });
+    });
+}
+function openDialogDOCUMENTATION(event) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/documentation/documentation.html', {
                 height: 40,
                 width: 30,
                 promptBeforeOpen: false,
@@ -319,4 +333,5 @@ g.openDialogOPM = openDialogOPM;
 g.openDialogSATF = openDialogSATF;
 g.openDialogMap = openDialogMap;
 g.openDialogSUPPORT = openDialogSUPPORT;
+g.openDialogDOCUMENTATION = openDialogDOCUMENTATION;
 g.addMapData = addMapData;

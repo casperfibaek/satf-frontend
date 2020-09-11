@@ -150,6 +150,22 @@
                   </Action>
                 </Control>
 
+                <Control xsi:type="Button" id="DocumentationButton">
+                  <Label resid="DocumentationButton.Label"/>
+                  <Supertip>
+                    <Title resid="DocumentationButton.Label"/>
+                    <Description resid="DocumentationButton.Tooltip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16x16"/>
+                    <bt:Image size="32" resid="Icon.32x32"/>
+                    <bt:Image size="80" resid="Icon.80x80"/>
+                  </Icon>
+                  <Action xsi:type="ExecuteFunction">
+                    <FunctionName>openDialogDOCUMENTATION</FunctionName>
+                  </Action>
+                </Control>
+
               </Group>
               <Group id="AboutGroup">
                 <Label resid="AboutGroup.Label"/>
@@ -303,6 +319,7 @@
         <bt:String id="AboutOPMButton.Label" DefaultValue="Oxford Policy Management"/>
         <bt:String id="HelpGroup.Label" DefaultValue="Help"/>
         <bt:String id="SupportButton.Label" DefaultValue="Support"/>
+        <bt:String id="DocumentationButton.Label" DefaultValue="Documentation"/>
       </bt:ShortStrings>
       <bt:LongStrings>
         <bt:String id="GetStarted.Description" DefaultValue="The SATF add-in loaded successfully. Navigate to the SATF tab to start analysing!"/>
@@ -312,6 +329,7 @@
         <bt:String id="AboutNIRASButton.Tooltip" DefaultValue="Information about Niras Consulting"/>
         <bt:String id="AboutOPMButton.Tooltip" DefaultValue="Information about Oxford Policy Management"/>
         <bt:String id="SupportButton.Tooltip" DefaultValue="Get help to using the custom functions"/>
+        <bt:String id="DocumentationButton.Tooltip" DefaultValue="View documentation"/>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>
