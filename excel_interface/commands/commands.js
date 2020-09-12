@@ -171,6 +171,64 @@ function toggleProtection(event) {
     });
     event.completed();
 }
+var dialog;
+function messageHandler(arg) {
+    dialog.close();
+    console.log(arg.message);
+}
+function eventHandler(arg) {
+    // In addition to general system errors, there are 2 specific errors
+    // and one event that you can handle individually.
+    switch (arg.error) {
+        case 12002:
+            console.log('Cannot load URL, no such page or bad URL syntax.');
+            break;
+        case 12003:
+            console.log('HTTPS is required.');
+            break;
+        case 12006:
+            // The dialog was closed, typically because the user the pressed X button.
+            console.log('Dialog closed by user');
+            break;
+        default:
+            console.log('Undefined error in dialog window');
+            break;
+    }
+}
+function dialogCallback(asyncResult) {
+    if (asyncResult.status === 'failed') {
+        // In addition to general system errors, there are 3 specific errors for
+        // displayDialogAsync that you can handle individually.
+        switch (asyncResult.error.code) {
+            case 12004:
+                console.log('Domain is not trusted');
+                break;
+            case 12005:
+                console.log('HTTPS is required');
+                break;
+            case 12007:
+                console.log('A dialog is already opened.');
+                break;
+            default:
+                console.log(asyncResult.error.message);
+                break;
+        }
+    }
+    else {
+        dialog = asyncResult.value;
+        /* Messages are sent by developers programatically from the dialog using office.context.ui.messageParent(...) */
+        dialog.addEventHandler(Office.EventType.DialogMessageReceived, messageHandler);
+        /* Events are sent by the platform in response to user actions or errors. For example, the dialog is closed via the 'x' button */
+        dialog.addEventHandler(Office.EventType.DialogEventReceived, eventHandler);
+    }
+}
+function openDialogOPM() {
+    Office.context.ui.displayDialogAsync('https://www.opml.co.uk', { height: 50, width: 50 }, dialogCallback);
+}
+function openDialogNIRAS() {
+    // IMPORTANT: IFrame mode only works in Online (Web) clients. Desktop clients (Windows, IOS, Mac) always display as a pop-up inside of Office apps.
+    Office.context.ui.displayDialogAsync('https://www.niras.com', { height: 50, width: 50, displayInIframe: true }, dialogCallback);
+}
 function openDialogWindow(link, event, height, width, prompt) {
     if (height === void 0) { height = 40; }
     if (width === void 0) { width = 30; }
@@ -190,14 +248,27 @@ function openDialogWindow(link, event, height, width, prompt) {
         }
     });
 }
-function openDialogNIRAS(event) {
-    openDialogWindow('https://www.niras.com', event);
-}
-function openDialogOPM(event) {
-    openDialogWindow('https://www.opml.co.uk', event);
-}
+// async function openDialogNIRAS(event) {
+//   Office.context.ui.displayDialogAsync('https://www.niras.com', {
+//     height: 40,
+//     width: 30,
+//     promptBeforeOpen: false,
+//   }, () => {
+//     event.completed();
+//   });
+//   // openDialogWindow('https://www.niras.com', event);
+// }
+// async function openDialogOPM(event) {
+//   openDialogWindow('https://www.opml.co.uk', event);
+//   event.completed();
+// }
 function openDialogSATF(event) {
-    openDialogWindow('https://www.opml.co.uk/projects/savings-frontier', event);
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            openDialogWindow('https://www.opml.co.uk/projects/savings-frontier', event);
+            return [2 /*return*/];
+        });
+    });
 }
 function openDialogSUPPORT(event) {
     openDialogWindow('https://satf.azurewebsites.net/excel_interface/support/support.html', event);
@@ -214,7 +285,7 @@ function openDialogMAP(event) {
                 case 1:
                     markers = _a.sent();
                     localStorage.setItem('markers', markers);
-                    openDialogWindow('https://www.niras.com', event);
+                    openDialogWindow('https://satf.azurewebsites.net/excel_interface/map/map.html', event);
                     return [2 /*return*/];
             }
         });

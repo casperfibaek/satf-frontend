@@ -26,10 +26,10 @@ app.use(
     extended: true,
   }),
 );
-app.use((req, res, next) => {
-  res.setHeader('Cache-Control', `public, max-age=${String(defaults.cache)}`);
-  next();
-});
+// app.use((req, res, next) => {
+//   res.setHeader('Cache-Control', `public, max-age=${String(defaults.cache)}`);
+//   next();
+// });
 
 app.use(cors());
 
