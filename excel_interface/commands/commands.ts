@@ -2,7 +2,18 @@ Office.onReady(() => {
   // If needed, Office.js is ready to be called
 });
 
-let dialog = null;
+function getGlobal() {
+  if (typeof self !== 'undefined') {
+    return self;
+  } if (typeof window !== 'undefined') {
+    return window;
+  } if (typeof global !== 'undefined') {
+    return global;
+  }
+  throw new Error('Unable to get global namespace.');
+}
+
+const g = getGlobal() as any;
 
 async function insertCell(val) {
   await Excel.run(async (context) => {
@@ -42,7 +53,7 @@ async function processMessage(arg) {
   } else {
     insertCell(arg.message);
     document.getElementById('user-name').innerHTML = arg.message;
-    dialog.close();
+    g.dialog.close();
   }
 }
 
@@ -82,77 +93,35 @@ function toggleProtection(event) {
   event.completed();
 }
 
-async function openDialogNIRAS(event) {
-  try {
-    await Excel.run(async (context) => {
-      /**
-           * Insert your Excel code here
-           */
-      const range = context.workbook.getSelectedRange();
-
-      // Read the range address
-      range.load('address');
-
-      // Update the fill color
-      range.format.fill.color = 'yellow';
-
-      await context.sync();
-      console.log(`The range address was ${range.address}.`);
-    });
-  } catch (error) {
-    console.error(error);
-  }
-
-  Office.context.ui.displayDialogAsync('https://www.niras.com/', {
-    height: 40,
-    width: 30,
-    promptBeforeOpen: false,
-  }, () => {
-    event.completed();
+function openDialogWindow(link, height = 40, width = 30, prompt = false) {
+  Office.context.ui.displayDialogAsync(link, {
+    height,
+    width,
+    promptBeforeOpen: prompt,
+  }, (asyncResult) => {
+    if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+      console.log(`${asyncResult.error.code}: ${asyncResult.error.message}`);
+    }
   });
 }
 
-function openDialogOPM(event) {
-  Office.context.ui.displayDialogAsync('https://www.opml.co.uk', {
-    height: 40,
-    width: 30,
-    promptBeforeOpen: false,
-  }, () => {
-    event.completed();
-  });
+function openDialogNIRAS() {
+  openDialogWindow('https://www.niras.com');
+}
+function openDialogOPM() {
+  openDialogWindow('https://www.opml.co.uk');
+}
+function openDialogSATF() {
+  openDialogWindow('https://www.opml.co.uk/projects/savings-frontier');
+}
+function openDialogSUPPORT() {
+  openDialogWindow('https://satf.azurewebsites.net/excel_interface/support/support.html');
+}
+function openDialogDOCUMENTATION() {
+  openDialogWindow('https://satf.azurewebsites.net/excel_interface/documentation/documentation.html');
 }
 
-function openDialogSATF(event) {
-  Office.context.ui.displayDialogAsync('https://www.opml.co.uk/projects/savings-frontier', {
-    height: 40,
-    width: 30,
-    promptBeforeOpen: false,
-  }, () => {
-    event.completed();
-  });
-}
-
-async function openDialogSUPPORT(event) {
-  Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/support/support.html', {
-    height: 40,
-    width: 30,
-    promptBeforeOpen: false,
-  }, () => {
-    event.completed();
-  });
-}
-
-async function openDialogDOCUMENTATION(event) {
-  Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/documentation/documentation.html', {
-    height: 40,
-    width: 30,
-    promptBeforeOpen: false,
-  }, () => {
-    event.completed();
-  });
-}
-
-async function openDialogMap(event) {
+async function openDialogMAP(event) {
   const markers = await getSelectedCells();
   localStorage.setItem('markers', markers);
 
@@ -164,8 +133,8 @@ async function openDialogMap(event) {
       promptBeforeOpen: false,
     },
     (asyncResult) => {
-      dialog = asyncResult.value;
-      dialog.addEventHandler(Office.EventType.DialogMessageReceived, processMessage);
+      g.dialog = asyncResult.value;
+      g.dialog.addEventHandler(Office.EventType.DialogMessageReceived, processMessage);
     },
   );
 
@@ -185,25 +154,12 @@ async function addMapData(event) {
   event.completed();
 }
 
-function getGlobal() {
-  if (typeof self !== 'undefined') {
-    return self;
-  } if (typeof window !== 'undefined') {
-    return window;
-  } if (typeof global !== 'undefined') {
-    return global;
-  }
-  throw new Error('Unable to get global namespace.');
-}
-
-const g = getGlobal() as any;
-
 // the add-in command functions need to be available in global scope
 g.toggleProtection = toggleProtection;
 g.openDialogNIRAS = openDialogNIRAS;
 g.openDialogOPM = openDialogOPM;
 g.openDialogSATF = openDialogSATF;
-g.openDialogMap = openDialogMap;
+g.openDialogMAP = openDialogMAP;
 g.openDialogSUPPORT = openDialogSUPPORT;
 g.openDialogDOCUMENTATION = openDialogDOCUMENTATION;
 g.addMapData = addMapData;

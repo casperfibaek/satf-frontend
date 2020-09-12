@@ -116,7 +116,7 @@
                     <bt:Image size="80" resid="Icon.Map.80x80"/>
                   </Icon>
                   <Action xsi:type="ExecuteFunction">
-                    <FunctionName>openDialogMap</FunctionName>
+                    <FunctionName>openDialogMAP</FunctionName>
                   </Action>
                 </Control>
 
@@ -146,7 +146,7 @@
                     <bt:Image size="80" resid="Icon.Contact.80x80"/>
                   </Icon>
                   <Action xsi:type="ExecuteFunction">
-                    <FunctionName>openDialogSupport</FunctionName>
+                    <FunctionName>openDialogSUPPORT</FunctionName>
                   </Action>
                 </Control>
 

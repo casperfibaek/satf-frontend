@@ -38,7 +38,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Office.onReady(function () {
     // If needed, Office.js is ready to be called
 });
-var dialog = null;
+function getGlobal() {
+    if (typeof self !== 'undefined') {
+        return self;
+    }
+    if (typeof window !== 'undefined') {
+        return window;
+    }
+    if (typeof global !== 'undefined') {
+        return global;
+    }
+    throw new Error('Unable to get global namespace.');
+}
+var g = getGlobal();
 function insertCell(val) {
     return __awaiter(this, void 0, void 0, function () {
         var _this = this;
@@ -118,7 +130,7 @@ function processMessage(arg) {
                 case 2:
                     insertCell(arg.message);
                     document.getElementById('user-name').innerHTML = arg.message;
-                    dialog.close();
+                    g.dialog.close();
                     _a.label = 3;
                 case 3: return [2 /*return*/];
             }
@@ -178,99 +190,36 @@ function toggleProtection(event) {
     });
     event.completed();
 }
-function openDialogNIRAS(event) {
-    return __awaiter(this, void 0, void 0, function () {
-        var error_1;
-        var _this = this;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, Excel.run(function (context) { return __awaiter(_this, void 0, void 0, function () {
-                            var range;
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0:
-                                        range = context.workbook.getSelectedRange();
-                                        // Read the range address
-                                        range.load('address');
-                                        // Update the fill color
-                                        range.format.fill.color = 'yellow';
-                                        return [4 /*yield*/, context.sync()];
-                                    case 1:
-                                        _a.sent();
-                                        console.log("The range address was " + range.address + ".");
-                                        return [2 /*return*/];
-                                }
-                            });
-                        }); })];
-                case 1:
-                    _a.sent();
-                    return [3 /*break*/, 3];
-                case 2:
-                    error_1 = _a.sent();
-                    console.error(error_1);
-                    return [3 /*break*/, 3];
-                case 3:
-                    Office.context.ui.displayDialogAsync('https://www.niras.com/', {
-                        height: 40,
-                        width: 30,
-                        promptBeforeOpen: false,
-                    }, function () {
-                        event.completed();
-                    });
-                    return [2 /*return*/];
-            }
-        });
+function openDialogWindow(link, height, width, prompt) {
+    if (height === void 0) { height = 40; }
+    if (width === void 0) { width = 30; }
+    if (prompt === void 0) { prompt = false; }
+    Office.context.ui.displayDialogAsync(link, {
+        height: height,
+        width: width,
+        promptBeforeOpen: prompt,
+    }, function (asyncResult) {
+        if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+            console.log(asyncResult.error.code + ": " + asyncResult.error.message);
+        }
     });
 }
-function openDialogOPM(event) {
-    Office.context.ui.displayDialogAsync('https://www.opml.co.uk', {
-        height: 40,
-        width: 30,
-        promptBeforeOpen: false,
-    }, function () {
-        event.completed();
-    });
+function openDialogNIRAS() {
+    openDialogWindow('https://www.niras.com');
 }
-function openDialogSATF(event) {
-    Office.context.ui.displayDialogAsync('https://www.opml.co.uk/projects/savings-frontier', {
-        height: 40,
-        width: 30,
-        promptBeforeOpen: false,
-    }, function () {
-        event.completed();
-    });
+function openDialogOPM() {
+    openDialogWindow('https://www.opml.co.uk');
 }
-function openDialogSUPPORT(event) {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/support/support.html', {
-                height: 40,
-                width: 30,
-                promptBeforeOpen: false,
-            }, function () {
-                event.completed();
-            });
-            return [2 /*return*/];
-        });
-    });
+function openDialogSATF() {
+    openDialogWindow('https://www.opml.co.uk/projects/savings-frontier');
 }
-function openDialogDOCUMENTATION(event) {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/documentation/documentation.html', {
-                height: 40,
-                width: 30,
-                promptBeforeOpen: false,
-            }, function () {
-                event.completed();
-            });
-            return [2 /*return*/];
-        });
-    });
+function openDialogSUPPORT() {
+    openDialogWindow('https://satf.azurewebsites.net/excel_interface/support/support.html');
 }
-function openDialogMap(event) {
+function openDialogDOCUMENTATION() {
+    openDialogWindow('https://satf.azurewebsites.net/excel_interface/documentation/documentation.html');
+}
+function openDialogMAP(event) {
     return __awaiter(this, void 0, void 0, function () {
         var markers;
         return __generator(this, function (_a) {
@@ -284,8 +233,8 @@ function openDialogMap(event) {
                         width: 30,
                         promptBeforeOpen: false,
                     }, function (asyncResult) {
-                        dialog = asyncResult.value;
-                        dialog.addEventHandler(Office.EventType.DialogMessageReceived, processMessage);
+                        g.dialog = asyncResult.value;
+                        g.dialog.addEventHandler(Office.EventType.DialogMessageReceived, processMessage);
                     });
                     event.completed();
                     return [2 /*return*/];
@@ -313,25 +262,12 @@ function addMapData(event) {
         });
     });
 }
-function getGlobal() {
-    if (typeof self !== 'undefined') {
-        return self;
-    }
-    if (typeof window !== 'undefined') {
-        return window;
-    }
-    if (typeof global !== 'undefined') {
-        return global;
-    }
-    throw new Error('Unable to get global namespace.');
-}
-var g = getGlobal();
 // the add-in command functions need to be available in global scope
 g.toggleProtection = toggleProtection;
 g.openDialogNIRAS = openDialogNIRAS;
 g.openDialogOPM = openDialogOPM;
 g.openDialogSATF = openDialogSATF;
-g.openDialogMap = openDialogMap;
+g.openDialogMAP = openDialogMAP;
 g.openDialogSUPPORT = openDialogSUPPORT;
 g.openDialogDOCUMENTATION = openDialogDOCUMENTATION;
 g.addMapData = addMapData;

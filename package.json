@@ -1,6 +1,6 @@
 {
   "name": "satf",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "private": true,
   "scripts": {
     "start": "node ./app.js",
@@ -13,10 +13,8 @@
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
     "cookie-parser": "~1.4.5",
-    "core-js": "^3.6.5",
     "cors": "^2.8.5",
     "express": "~4.17.1",
-    "glob": "^7.1.6",
     "morgan": "~1.10.0",
     "pg": "^8.3.3"
   },
