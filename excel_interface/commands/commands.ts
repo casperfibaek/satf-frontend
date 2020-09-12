@@ -93,7 +93,7 @@ function toggleProtection(event) {
   event.completed();
 }
 
-function openDialogWindow(link, height = 40, width = 30, prompt = false) {
+function openDialogWindow(link, event, height = 40, width = 30, prompt = false) {
   Office.context.ui.displayDialogAsync(link, {
     height,
     width,
@@ -102,23 +102,24 @@ function openDialogWindow(link, height = 40, width = 30, prompt = false) {
     if (asyncResult.status === Office.AsyncResultStatus.Failed) {
       console.log(`${asyncResult.error.code}: ${asyncResult.error.message}`);
     }
+    event.completed();
   });
 }
 
-function openDialogNIRAS() {
-  openDialogWindow('https://www.niras.com');
+function openDialogNIRAS(event) {
+  openDialogWindow('https://www.niras.com', event);
 }
-function openDialogOPM() {
-  openDialogWindow('https://www.opml.co.uk');
+function openDialogOPM(event) {
+  openDialogWindow('https://www.opml.co.uk', event);
 }
-function openDialogSATF() {
-  openDialogWindow('https://www.opml.co.uk/projects/savings-frontier');
+function openDialogSATF(event) {
+  openDialogWindow('https://www.opml.co.uk/projects/savings-frontier', event);
 }
-function openDialogSUPPORT() {
-  openDialogWindow('https://satf.azurewebsites.net/excel_interface/support/support.html');
+function openDialogSUPPORT(event) {
+  openDialogWindow('https://satf.azurewebsites.net/excel_interface/support/support.html', event);
 }
-function openDialogDOCUMENTATION() {
-  openDialogWindow('https://satf.azurewebsites.net/excel_interface/documentation/documentation.html');
+function openDialogDOCUMENTATION(event) {
+  openDialogWindow('https://satf.azurewebsites.net/excel_interface/documentation/documentation.html', event);
 }
 
 async function openDialogMAP(event) {
