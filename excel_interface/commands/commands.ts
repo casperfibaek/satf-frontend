@@ -15,15 +15,6 @@ function getGlobal() {
 
 const g = getGlobal() as any;
 
-async function insertCell(val) {
-  await Excel.run(async (context) => {
-    const range = context.workbook.getSelectedRange();
-    range.values = [[val]];
-
-    await context.sync();
-  });
-}
-
 function oneDown(adr) {
   const sheet = `${adr.split('!')[0]}!`;
   const x = adr.split('!')[1].split(':')[0];
@@ -34,26 +25,29 @@ function oneDown(adr) {
   return `${sheet + xn}:${yn}`;
 }
 
-async function processMessage(arg) {
-  if (arg.message === 'newCoords') {
-    const coords = JSON.parse(localStorage.getItem('newCoords'));
-    await Excel.run(async (context) => {
-      const range = context.workbook.getSelectedRange();
-      const sheet = context.workbook.worksheets.getActiveWorksheet();
-      range.values = [[coords.lat, coords.lng]];
-      range.load('address');
+async function handleCoords(event) {
+  const coords = JSON.parse(localStorage.getItem('newCoords'));
+  await Excel.run(async (context) => {
+    const range = context.workbook.getSelectedRange();
+    const sheet = context.workbook.worksheets.getActiveWorksheet();
+    range.values = [[coords.lat, coords.lng]];
+    range.load('address');
 
-      await context.sync().then(async () => {
-        const downrange = sheet.getRange(oneDown(range.address));
-        downrange.select();
+    await context.sync().then(async () => {
+      const downrange = sheet.getRange(oneDown(range.address));
+      downrange.select();
 
-        await context.sync();
-      });
+      await context.sync();
     });
+  });
+  event.completed();
+}
+
+async function processMessage(event) {
+  if (event.message === 'newCoords') {
+    handleCoords(event);
   } else {
-    insertCell(arg.message);
-    document.getElementById('user-name').innerHTML = arg.message;
-    g.dialog.close();
+    event.completed();
   }
 }
 
@@ -101,8 +95,11 @@ function openDialogWindow(link, event, height = 40, width = 30, prompt = false) 
   }, (asyncResult) => {
     if (asyncResult.status === Office.AsyncResultStatus.Failed) {
       console.log(`${asyncResult.error.code}: ${asyncResult.error.message}`);
+      event.completed();
+    } else {
+      g.dialog = asyncResult.value;
+      g.dialog.addEventHandler(Office.EventType.DialogMessageReceived, processMessage);
     }
-    event.completed();
   });
 }
 
@@ -126,33 +123,7 @@ async function openDialogMAP(event) {
   const markers = await getSelectedCells();
   localStorage.setItem('markers', markers);
 
-  Office.context.ui.displayDialogAsync(
-    'https://satf.azurewebsites.net/excel_interface/map/map.html',
-    {
-      height: 40,
-      width: 30,
-      promptBeforeOpen: false,
-    },
-    (asyncResult) => {
-      g.dialog = asyncResult.value;
-      g.dialog.addEventHandler(Office.EventType.DialogMessageReceived, processMessage);
-    },
-  );
-
-  event.completed();
-}
-
-async function addMapData(event) {
-  const markers = await getSelectedCells();
-  localStorage.setItem('markers', markers);
-
-  const localEventNumber = localStorage.getItem('eventNumber');
-  if (localEventNumber === null) {
-    localStorage.setItem('eventNumber', '0');
-  }
-  localStorage.setItem('eventNumber', String(Number(localEventNumber) + 1));
-
-  event.completed();
+  openDialogWindow('https://www.niras.com', event);
 }
 
 // the add-in command functions need to be available in global scope
@@ -163,4 +134,3 @@ g.openDialogSATF = openDialogSATF;
 g.openDialogMAP = openDialogMAP;
 g.openDialogSUPPORT = openDialogSUPPORT;
 g.openDialogDOCUMENTATION = openDialogDOCUMENTATION;
-g.addMapData = addMapData;

@@ -51,32 +51,6 @@ function getGlobal() {
     throw new Error('Unable to get global namespace.');
 }
 var g = getGlobal();
-function insertCell(val) {
-    return __awaiter(this, void 0, void 0, function () {
-        var _this = this;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, Excel.run(function (context) { return __awaiter(_this, void 0, void 0, function () {
-                        var range;
-                        return __generator(this, function (_a) {
-                            switch (_a.label) {
-                                case 0:
-                                    range = context.workbook.getSelectedRange();
-                                    range.values = [[val]];
-                                    return [4 /*yield*/, context.sync()];
-                                case 1:
-                                    _a.sent();
-                                    return [2 /*return*/];
-                            }
-                        });
-                    }); })];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
 function oneDown(adr) {
     var sheet = adr.split('!')[0] + "!";
     var x = adr.split('!')[1].split(':')[0];
@@ -85,15 +59,14 @@ function oneDown(adr) {
     var yn = y.replace(/\d+/g, '') + (Number(y.match(/\d+/)[0]) + 1);
     return sheet + xn + ":" + yn;
 }
-function processMessage(arg) {
+function handleCoords(event) {
     return __awaiter(this, void 0, void 0, function () {
-        var coords_1;
+        var coords;
         var _this = this;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (!(arg.message === 'newCoords')) return [3 /*break*/, 2];
-                    coords_1 = JSON.parse(localStorage.getItem('newCoords'));
+                    coords = JSON.parse(localStorage.getItem('newCoords'));
                     return [4 /*yield*/, Excel.run(function (context) { return __awaiter(_this, void 0, void 0, function () {
                             var range, sheet;
                             var _this = this;
@@ -102,7 +75,7 @@ function processMessage(arg) {
                                     case 0:
                                         range = context.workbook.getSelectedRange();
                                         sheet = context.workbook.worksheets.getActiveWorksheet();
-                                        range.values = [[coords_1.lat, coords_1.lng]];
+                                        range.values = [[coords.lat, coords.lng]];
                                         range.load('address');
                                         return [4 /*yield*/, context.sync().then(function () { return __awaiter(_this, void 0, void 0, function () {
                                                 var downrange;
@@ -126,14 +99,22 @@ function processMessage(arg) {
                         }); })];
                 case 1:
                     _a.sent();
-                    return [3 /*break*/, 3];
-                case 2:
-                    insertCell(arg.message);
-                    document.getElementById('user-name').innerHTML = arg.message;
-                    g.dialog.close();
-                    _a.label = 3;
-                case 3: return [2 /*return*/];
+                    event.completed();
+                    return [2 /*return*/];
             }
+        });
+    });
+}
+function processMessage(event) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            if (event.message === 'newCoords') {
+                handleCoords(event);
+            }
+            else {
+                event.completed();
+            }
+            return [2 /*return*/];
         });
     });
 }
@@ -190,7 +171,7 @@ function toggleProtection(event) {
     });
     event.completed();
 }
-function openDialogWindow(link, height, width, prompt) {
+function openDialogWindow(link, event, height, width, prompt) {
     if (height === void 0) { height = 40; }
     if (width === void 0) { width = 30; }
     if (prompt === void 0) { prompt = false; }
@@ -201,23 +182,28 @@ function openDialogWindow(link, height, width, prompt) {
     }, function (asyncResult) {
         if (asyncResult.status === Office.AsyncResultStatus.Failed) {
             console.log(asyncResult.error.code + ": " + asyncResult.error.message);
+            event.completed();
+        }
+        else {
+            g.dialog = asyncResult.value;
+            g.dialog.addEventHandler(Office.EventType.DialogMessageReceived, processMessage);
         }
     });
 }
-function openDialogNIRAS() {
-    openDialogWindow('https://www.niras.com');
+function openDialogNIRAS(event) {
+    openDialogWindow('https://www.niras.com', event);
 }
-function openDialogOPM() {
-    openDialogWindow('https://www.opml.co.uk');
+function openDialogOPM(event) {
+    openDialogWindow('https://www.opml.co.uk', event);
 }
-function openDialogSATF() {
-    openDialogWindow('https://www.opml.co.uk/projects/savings-frontier');
+function openDialogSATF(event) {
+    openDialogWindow('https://www.opml.co.uk/projects/savings-frontier', event);
 }
-function openDialogSUPPORT() {
-    openDialogWindow('https://satf.azurewebsites.net/excel_interface/support/support.html');
+function openDialogSUPPORT(event) {
+    openDialogWindow('https://satf.azurewebsites.net/excel_interface/support/support.html', event);
 }
-function openDialogDOCUMENTATION() {
-    openDialogWindow('https://satf.azurewebsites.net/excel_interface/documentation/documentation.html');
+function openDialogDOCUMENTATION(event) {
+    openDialogWindow('https://satf.azurewebsites.net/excel_interface/documentation/documentation.html', event);
 }
 function openDialogMAP(event) {
     return __awaiter(this, void 0, void 0, function () {
@@ -228,35 +214,7 @@ function openDialogMAP(event) {
                 case 1:
                     markers = _a.sent();
                     localStorage.setItem('markers', markers);
-                    Office.context.ui.displayDialogAsync('https://satf.azurewebsites.net/excel_interface/map/map.html', {
-                        height: 40,
-                        width: 30,
-                        promptBeforeOpen: false,
-                    }, function (asyncResult) {
-                        g.dialog = asyncResult.value;
-                        g.dialog.addEventHandler(Office.EventType.DialogMessageReceived, processMessage);
-                    });
-                    event.completed();
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
-function addMapData(event) {
-    return __awaiter(this, void 0, void 0, function () {
-        var markers, localEventNumber;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, getSelectedCells()];
-                case 1:
-                    markers = _a.sent();
-                    localStorage.setItem('markers', markers);
-                    localEventNumber = localStorage.getItem('eventNumber');
-                    if (localEventNumber === null) {
-                        localStorage.setItem('eventNumber', '0');
-                    }
-                    localStorage.setItem('eventNumber', String(Number(localEventNumber) + 1));
-                    event.completed();
+                    openDialogWindow('https://www.niras.com', event);
                     return [2 /*return*/];
             }
         });
@@ -270,4 +228,3 @@ g.openDialogSATF = openDialogSATF;
 g.openDialogMAP = openDialogMAP;
 g.openDialogSUPPORT = openDialogSUPPORT;
 g.openDialogDOCUMENTATION = openDialogDOCUMENTATION;
-g.addMapData = addMapData;
