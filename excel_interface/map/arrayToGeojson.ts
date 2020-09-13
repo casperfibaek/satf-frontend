@@ -1,6 +1,5 @@
-/* eslint-disable no-continue, max-len, no-console, no-underscore-dangle */
-/* globals pluscodes, WhatFreeWords */
-
+import WhatFreeWords from './whatfreewords'; // eslint-disable-line
+import OpenLocationCodeClass from './pluscodes'; // eslint-disable-line
 
 const valid = {
   isValidPluscode(code) {
@@ -103,7 +102,6 @@ const valid = {
     return true;
   },
 };
-
 
 // Check if valid non-empty 2D array
 function arrayIsValid(arr) {
@@ -271,8 +269,7 @@ function generateGeojson(geometry, attributeArray) {
   return collection;
 }
 
-
-window.arrayToGeojson = function arrayToGeojson(eArr) {
+function arrayToGeojson(eArr) {
   // Validate array
   if (!arrayIsValid(eArr)) { return false; }
 
@@ -449,7 +446,7 @@ window.arrayToGeojson = function arrayToGeojson(eArr) {
         if (valid.isValidPluscode(val)) {
           validatedRows.push(arr[row]);
 
-          const decoded = pluscodes.decode(val);
+          const decoded = OpenLocationCodeClass.decode(val);
           geometry.push([decoded.latitudeCenter, decoded.longitudeCenter]);
 
           const rowProperies = {};
@@ -505,8 +502,7 @@ window.arrayToGeojson = function arrayToGeojson(eArr) {
   return generateGeojson(geometry, properties);
 
   // TODO: Add error messages
-};
-
+}
 
 const usedRanges = 'random_points_25!A1:J27';
 const selected1 = 'random_points_25!D:D';
@@ -611,7 +607,6 @@ function isWithinRange(src, target) {
 // mergeRanges
 // getValues and addresses from multiSelection
 
-
 function isWithinRangeOld(str, targetStr) {
   const targetRange = getRange(targetStr);
   const min = targetRange[0];
@@ -655,3 +650,5 @@ function isWithinRangeOld(str, targetStr) {
 
   return false;
 }
+
+export default arrayToGeojson;

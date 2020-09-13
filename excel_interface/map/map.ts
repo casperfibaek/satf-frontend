@@ -1,3 +1,5 @@
+import arrayToGeojson from './arrayToGeojson';
+
 function htmlTable(obj) {
   let table = '<table class=""><tbody>';
 
@@ -20,27 +22,6 @@ function htmlTable(obj) {
   return table;
 }
 
-function arrayToGeojson(arr) {
-  const geojson = {
-    type: 'FeatureCollection',
-    features: [
-    ],
-  };
-
-  for (let i = 0; i < arr.length; i += 1) {
-    geojson.features.push({
-      type: 'Feature',
-      properties: {},
-      geometry: {
-        type: 'Point',
-        coordinates: [arr[i]],
-      },
-    });
-  }
-
-  return geojson;
-}
-
 if (localStorage.getItem('eventNumber') === null) {
   localStorage.setItem('eventNumber', '0');
 }
@@ -53,7 +34,11 @@ const northEast = L.latLng(6.1770972290384405, 0.4266650607723487);
 const bounds = L.latLngBounds(southWest, northEast);
 
 // Base layers
-const osm = L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors', minZoom: 9, maxZoom: 18 });
+const osm = L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+  minZoom: 9,
+  maxZoom: 18,
+});
 const esri = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
   attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
 });

@@ -1,4 +1,9 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var arrayToGeojson_1 = __importDefault(require("./arrayToGeojson"));
 function htmlTable(obj) {
     var table = '<table class=""><tbody>';
     if (obj._data) {
@@ -17,23 +22,6 @@ function htmlTable(obj) {
     table += '</tbody></table>';
     return table;
 }
-function arrayToGeojson(arr) {
-    var geojson = {
-        type: 'FeatureCollection',
-        features: [],
-    };
-    for (var i = 0; i < arr.length; i += 1) {
-        geojson.features.push({
-            type: 'Feature',
-            properties: {},
-            geometry: {
-                type: 'Point',
-                coordinates: [arr[i]],
-            },
-        });
-    }
-    return geojson;
-}
 if (localStorage.getItem('eventNumber') === null) {
     localStorage.setItem('eventNumber', '0');
 }
@@ -43,7 +31,11 @@ var southWest = L.latLng(5.3353253293190095, -1.1842325491159249);
 var northEast = L.latLng(6.1770972290384405, 0.4266650607723487);
 var bounds = L.latLngBounds(southWest, northEast);
 // Base layers
-var osm = L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors', minZoom: 9, maxZoom: 18 });
+var osm = L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+    minZoom: 9,
+    maxZoom: 18,
+});
 var esri = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
 });
@@ -130,7 +122,7 @@ L.control.layers(basemaps, overlaymaps, { collapsed: true }).addTo(map);
 function addMarkers(themap, markername) {
     try {
         var markerArray = JSON.parse(localStorage[markername]);
-        var geojson = arrayToGeojson(markerArray);
+        var geojson = arrayToGeojson_1.default(markerArray);
         var geojsonMarkerOptions_1 = {
             radius: 8,
             fillColor: '#ff7800',

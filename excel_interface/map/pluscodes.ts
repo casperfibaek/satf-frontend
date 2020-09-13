@@ -1,3 +1,6 @@
+/* eslint-disable */
+// @ts-nocheck
+
 function OpenLocationCodeClass() {
   const OpenLocationCode = {};
 
@@ -59,7 +62,7 @@ function OpenLocationCodeClass() {
   /**
     Returns the OLC alphabet.
    */
-  const getAlphabet = (OpenLocationCode.getAlphabet = function() {
+  const getAlphabet = (OpenLocationCode.getAlphabet = function () {
     return CODE_ALPHABET_;
   });
 
@@ -73,7 +76,7 @@ function OpenLocationCodeClass() {
    * @param {string} code The string to check.
    * @return {boolean} True if the string is a valid code.
    */
-  const isValid = (OpenLocationCode.isValid = function(code) {
+  const isValid = (OpenLocationCode.isValid = function (code) {
     if (!code || typeof code !== 'string') {
       return false;
     }
@@ -100,7 +103,7 @@ function OpenLocationCodeClass() {
         return false;
       }
       // There can only be one group and it must have even length.
-      const padMatch = code.match(new RegExp('(' + PADDING_CHARACTER_ + '+)', 'g'));
+      const padMatch = code.match(new RegExp(`(${PADDING_CHARACTER_}+)`, 'g'));
       if (padMatch.length > 1 || padMatch[0].length % 2 == 1 || padMatch[0].length > SEPARATOR_POSITION_ - 2) {
         return false;
       }
@@ -116,7 +119,7 @@ function OpenLocationCodeClass() {
     }
 
     // Strip the separator and any padding characters.
-    code = code.replace(new RegExp('\\' + SEPARATOR_ + '+'), '').replace(new RegExp(PADDING_CHARACTER_ + '+'), '');
+    code = code.replace(new RegExp(`\\${SEPARATOR_}+`), '').replace(new RegExp(`${PADDING_CHARACTER_}+`), '');
     // Check the code contains only valid characters.
     for (let i = 0, len = code.length; i < len; i++) {
       const character = code.charAt(i).toUpperCase();
@@ -134,7 +137,7 @@ function OpenLocationCodeClass() {
    * @return {boolean} True if the string can be produced by removing four or
    *     more characters from the start of a valid code.
    */
-  const isShort = (OpenLocationCode.isShort = function(code) {
+  const isShort = (OpenLocationCode.isShort = function (code) {
     // Check it's valid.
     if (!isValid(code)) {
       return false;
@@ -153,7 +156,7 @@ function OpenLocationCodeClass() {
    * @return {boolean} True if the code represents a valid latitude and
    *     longitude combination.
    */
-  const isFull = (OpenLocationCode.isFull = function(code) {
+  const isFull = (OpenLocationCode.isFull = function (code) {
     if (!isValid(code)) {
       return false;
     }
@@ -193,10 +196,10 @@ function OpenLocationCodeClass() {
    * @return {string} The code.
    * @throws {Exception} if any of the input values are not numbers.
    */
-  const encode = (OpenLocationCode.encode = function(latitude, longitude, codeLength) {
+  const encode = (OpenLocationCode.encode = function (latitude, longitude, codeLength) {
     latitude = Number(latitude);
     longitude = Number(longitude);
-    if (typeof codeLength == 'undefined') {
+    if (typeof codeLength === 'undefined') {
       codeLength = OpenLocationCode.CODE_PRECISION_NORMAL;
     } else {
       codeLength = Number(codeLength);
@@ -213,7 +216,7 @@ function OpenLocationCodeClass() {
     // Latitude 90 needs to be adjusted to be just less, so the returned code
     // can also be decoded.
     if (latitude == 90) {
-      latitude = latitude - computeLatitudePrecision(codeLength);
+      latitude -= computeLatitudePrecision(codeLength);
     }
     let code = encodePairs(latitude, longitude, Math.min(codeLength, PAIR_CODE_LENGTH_));
     // If the requested length indicates we want grid refined codes.
@@ -234,15 +237,15 @@ function OpenLocationCodeClass() {
    *     area of the code.
    * @throws {Exception} If the code is not valid.
    */
-  const decode = (OpenLocationCode.decode = function(code) {
+  const decode = (OpenLocationCode.decode = function (code) {
     if (!isFull(code)) {
-      throw 'IllegalArgumentException: ' + 'Passed Open Location Code is not a valid full code: ' + code;
+      throw `${'IllegalArgumentException: ' + 'Passed Open Location Code is not a valid full code: '}${code}`;
     }
     // Strip out separator character (we've already established the code is
     // valid so the maximum is one), padding characters and convert to upper
     // case.
     code = code.replace(SEPARATOR_, '');
-    code = code.replace(new RegExp(PADDING_CHARACTER_ + '+'), '');
+    code = code.replace(new RegExp(`${PADDING_CHARACTER_}+`), '');
     code = code.toUpperCase();
     // Decode the lat/lng pair component.
     const codeArea = decodePairs(code.substring(0, PAIR_CODE_LENGTH_));
@@ -275,13 +278,12 @@ function OpenLocationCodeClass() {
    * @throws {Exception} if the short code is not valid, or the reference
    *     position values are not numbers.
    */
-  const recoverNearest = (OpenLocationCode.recoverNearest = function(shortCode, referenceLatitude, referenceLongitude) {
+  const recoverNearest = (OpenLocationCode.recoverNearest = function (shortCode, referenceLatitude, referenceLongitude) {
     if (!isShort(shortCode)) {
       if (isFull(shortCode)) {
         return shortCode;
-      } else {
-        throw 'ValueError: Passed short code is not valid: ' + shortCode;
       }
+      throw `ValueError: Passed short code is not valid: ${shortCode}`;
     }
     referenceLatitude = Number(referenceLatitude);
     referenceLongitude = Number(referenceLongitude);
@@ -343,17 +345,17 @@ function OpenLocationCodeClass() {
    * @throws {Exception} if the passed code is not a valid full code or the
    *     reference location values are not numbers.
    */
-  const shorten = (OpenLocationCode.shorten = function(code, latitude, longitude) {
+  const shorten = (OpenLocationCode.shorten = function (code, latitude, longitude) {
     if (!isFull(code)) {
-      throw 'ValueError: Passed code is not valid and full: ' + code;
+      throw `ValueError: Passed code is not valid and full: ${code}`;
     }
     if (code.indexOf(PADDING_CHARACTER_) != -1) {
-      throw 'ValueError: Cannot shorten padded codes: ' + code;
+      throw `ValueError: Cannot shorten padded codes: ${code}`;
     }
     var code = code.toUpperCase();
     const codeArea = decode(code);
     if (codeArea.codeLength < MIN_TRIMMABLE_CODE_LEN_) {
-      throw 'ValueError: Code length must be at least ' + MIN_TRIMMABLE_CODE_LEN_;
+      throw `ValueError: Code length must be at least ${MIN_TRIMMABLE_CODE_LEN_}`;
     }
     // Ensure that latitude and longitude are valid.
     latitude = Number(latitude);
@@ -386,7 +388,7 @@ function OpenLocationCodeClass() {
    * @param {number} latitude
    * @return {number} The latitude value clipped to be in the range.
    */
-  var clipLatitude = function(latitude) {
+  var clipLatitude = function (latitude) {
     return Math.min(90, Math.max(-90, latitude));
   };
 
@@ -398,7 +400,7 @@ function OpenLocationCodeClass() {
    * @param {number} codeLength
    * @return {number} The latitude precision in degrees.
    */
-  var computeLatitudePrecision = function(codeLength) {
+  var computeLatitudePrecision = function (codeLength) {
     if (codeLength <= 10) {
       return Math.pow(20, Math.floor(codeLength / -2 + 2));
     }
@@ -411,12 +413,12 @@ function OpenLocationCodeClass() {
    * @param {number} longitude
    * @return {number} Normalized into the range -180 to 180.
    */
-  var normalizeLongitude = function(longitude) {
+  var normalizeLongitude = function (longitude) {
     while (longitude < -180) {
-      longitude = longitude + 360;
+      longitude += 360;
     }
     while (longitude >= 180) {
-      longitude = longitude - 360;
+      longitude -= 360;
     }
     return longitude;
   };
@@ -435,7 +437,7 @@ function OpenLocationCodeClass() {
    * @param {number} codeLength Requested code length.
    * @return {string} The up to 10-digit OLC code for the location.
    */
-  var encodePairs = function(latitude, longitude, codeLength) {
+  var encodePairs = function (latitude, longitude, codeLength) {
     let code = '';
     // Adjust latitude and longitude so they fall into positive ranges.
     let adjustedLatitude = latitude + LATITUDE_MAX_;
@@ -464,10 +466,10 @@ function OpenLocationCodeClass() {
       }
     }
     if (code.length < SEPARATOR_POSITION_) {
-      code = code + Array(SEPARATOR_POSITION_ - code.length + 1).join(PADDING_CHARACTER_);
+      code += Array(SEPARATOR_POSITION_ - code.length + 1).join(PADDING_CHARACTER_);
     }
     if (code.length == SEPARATOR_POSITION_) {
-      code = code + SEPARATOR_;
+      code += SEPARATOR_;
     }
     return code;
   };
@@ -486,7 +488,7 @@ function OpenLocationCodeClass() {
    * @param {number} codeLength Requested code length.
    * @return {string} The OLC code digits from the 11th digit on.
    */
-  var encodeGrid = function(latitude, longitude, codeLength) {
+  var encodeGrid = function (latitude, longitude, codeLength) {
     let code = '';
     let latPlaceValue = GRID_SIZE_DEGREES_;
     let lngPlaceValue = GRID_SIZE_DEGREES_;
@@ -517,7 +519,7 @@ function OpenLocationCodeClass() {
    *     but with the separator removed.
    * @return {OpenLocationCode.CodeArea} The code area object.
    */
-  var decodePairs = function(code) {
+  var decodePairs = function (code) {
     // Get the latitude and longitude values. These will need correcting from
     // positive ranges.
     const latitude = decodePairsSequence(code, 0);
@@ -545,7 +547,7 @@ function OpenLocationCodeClass() {
    *     upper range in decimal degrees. These are in positive ranges and will
    *     need to be corrected appropriately.
    */
-  var decodePairsSequence = function(code, offset) {
+  var decodePairsSequence = function (code, offset) {
     let i = 0;
     let value = 0;
     while (i * 2 + offset < code.length) {
@@ -561,7 +563,7 @@ function OpenLocationCodeClass() {
    * @param {string} code The grid refinement section of a code.
    * @return {OpenLocationCode.CodeArea} The area of the code.
    */
-  var decodeGrid = function(code) {
+  var decodeGrid = function (code) {
     let latitudeLo = 0.0;
     let longitudeLo = 0.0;
     let latPlaceValue = GRID_SIZE_DEGREES_;
@@ -591,11 +593,11 @@ function OpenLocationCodeClass() {
    *
    * @constructor
    */
-  var CodeArea = (OpenLocationCode.CodeArea = function(latitudeLo, longitudeLo, latitudeHi, longitudeHi, codeLength) {
+  var CodeArea = (OpenLocationCode.CodeArea = function (latitudeLo, longitudeLo, latitudeHi, longitudeHi, codeLength) {
     return new OpenLocationCode.CodeArea.fn.init(latitudeLo, longitudeLo, latitudeHi, longitudeHi, codeLength);
   });
   CodeArea.fn = CodeArea.prototype = {
-    init: function(latitudeLo, longitudeLo, latitudeHi, longitudeHi, codeLength) {
+    init(latitudeLo, longitudeLo, latitudeHi, longitudeHi, codeLength) {
       /**
        * The latitude of the SW corner.
        * @type {number}
@@ -638,4 +640,4 @@ function OpenLocationCodeClass() {
   return OpenLocationCode;
 }
 
-var pluscodes = OpenLocationCodeClass();
+export default OpenLocationCodeClass;
