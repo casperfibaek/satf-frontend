@@ -214,7 +214,7 @@ function helloWorld() {
 g.helloWorld = helloWorld;
 function PopulationDensity(latitude, longitude) {
     if (longitude === void 0) { longitude = false; }
-    var baseurl = '${api_url}population_density';
+    var baseurl = apiUrl + "population_density";
     return new Promise((function (resolve, reject) {
         getLatLngInfo(baseurl, latitude, longitude)
             .then(function (value) {
@@ -424,7 +424,7 @@ function PopulationDensityCar(minutes, latitude, longitude) {
 g.PopulationDensityCar = PopulationDensityCar;
 function AdminLevel1(latitude, longitude) {
     if (longitude === void 0) { longitude = false; }
-    var baseurl = '${api_url}admin_level_1';
+    var baseurl = apiUrl + "admin_level_1";
     return new Promise((function (resolve, reject) {
         getLatLngInfo(baseurl, latitude, longitude)
             .then(function (value) {
@@ -438,7 +438,7 @@ function AdminLevel1(latitude, longitude) {
 g.AdminLevel1 = AdminLevel1;
 function AdminLevel2(latitude, longitude) {
     if (longitude === void 0) { longitude = false; }
-    var baseurl = '${api_url}admin_level_2';
+    var baseurl = apiUrl + "admin_level_2";
     return new Promise((function (resolve, reject) {
         getLatLngInfo(baseurl, latitude, longitude)
             .then(function (value) {
@@ -476,7 +476,7 @@ function AdminLevel2FuzzyTri(name) {
 g.AdminLevel2FuzzyTri = AdminLevel2FuzzyTri;
 function UrbanStatus(latitude, longitude) {
     if (longitude === void 0) { longitude = false; }
-    var baseurl = '${api_url}urban_status';
+    var baseurl = apiUrl + "urban_status";
     return new Promise((function (resolve, reject) {
         getLatLngInfo(baseurl, latitude, longitude)
             .then(function (value) {
@@ -490,7 +490,7 @@ function UrbanStatus(latitude, longitude) {
 g.UrbanStatus = UrbanStatus;
 function UrbanStatusSimple(latitude, longitude) {
     if (longitude === void 0) { longitude = false; }
-    var baseurl = '${api_url}urban_status_simple';
+    var baseurl = apiUrl + "urban_status_simple";
     return new Promise((function (resolve, reject) {
         getLatLngInfo(baseurl, latitude, longitude)
             .then(function (value) {
@@ -504,7 +504,7 @@ function UrbanStatusSimple(latitude, longitude) {
 g.UrbanStatusSimple = UrbanStatusSimple;
 function NearestPlace(latitude, longitude) {
     if (longitude === void 0) { longitude = false; }
-    var baseurl = '${api_url}nearest_placename';
+    var baseurl = apiUrl + "nearest_placename";
     return new Promise((function (resolve, reject) {
         getLatLngInfo(baseurl, latitude, longitude)
             .then(function (value) {
@@ -518,7 +518,7 @@ function NearestPlace(latitude, longitude) {
 g.NearestPlace = NearestPlace;
 function NearestPoi(latitude, longitude) {
     if (longitude === void 0) { longitude = false; }
-    var baseurl = '${api_url}nearest_poi';
+    var baseurl = apiUrl + "nearest_poi";
     return new Promise((function (resolve, reject) {
         getLatLngInfo(baseurl, latitude, longitude)
             .then(function (value) {
@@ -532,7 +532,7 @@ function NearestPoi(latitude, longitude) {
 g.NearestPoi = NearestPoi;
 function NearestBank(latitude, longitude) {
     if (longitude === void 0) { longitude = false; }
-    var baseurl = '${api_url}nearest_bank';
+    var baseurl = apiUrl + "nearest_bank";
     return new Promise((function (resolve, reject) {
         getLatLngInfo(baseurl, latitude, longitude)
             .then(function (value) {
@@ -546,7 +546,7 @@ function NearestBank(latitude, longitude) {
 g.NearestBank = NearestBank;
 function NearestBankDist(latitude, longitude) {
     if (longitude === void 0) { longitude = false; }
-    var baseurl = '${api_url}nearest_bank_distance';
+    var baseurl = apiUrl + "nearest_bank_distance";
     return new Promise((function (resolve, reject) {
         getLatLngInfo(baseurl, latitude, longitude)
             .then(function (value) {

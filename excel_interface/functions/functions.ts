@@ -227,7 +227,7 @@ function helloWorld() {
 g.helloWorld = helloWorld;
 
 function PopulationDensity(latitude, longitude = false) {
-  const baseurl = '${api_url}population_density';
+  const baseurl = `${apiUrl}population_density`;
   return new Promise(((resolve, reject) => {
     getLatLngInfo(baseurl, latitude, longitude)
       .then((value) => {
@@ -453,7 +453,7 @@ function PopulationDensityCar(minutes, latitude, longitude = false) {
 g.PopulationDensityCar = PopulationDensityCar;
 
 function AdminLevel1(latitude, longitude = false) {
-  const baseurl = '${api_url}admin_level_1';
+  const baseurl = `${apiUrl}admin_level_1`;
   return new Promise(((resolve, reject) => {
     getLatLngInfo(baseurl, latitude, longitude)
       .then((value) => {
@@ -467,7 +467,7 @@ function AdminLevel1(latitude, longitude = false) {
 g.AdminLevel1 = AdminLevel1;
 
 function AdminLevel2(latitude, longitude = false) {
-  const baseurl = '${api_url}admin_level_2';
+  const baseurl = `${apiUrl}admin_level_2`;
   return new Promise(((resolve, reject) => {
     getLatLngInfo(baseurl, latitude, longitude)
       .then((value) => {
@@ -507,7 +507,7 @@ function AdminLevel2FuzzyTri(name) {
 g.AdminLevel2FuzzyTri = AdminLevel2FuzzyTri;
 
 function UrbanStatus(latitude, longitude = false) {
-  const baseurl = '${api_url}urban_status';
+  const baseurl = `${apiUrl}urban_status`;
   return new Promise(((resolve, reject) => {
     getLatLngInfo(baseurl, latitude, longitude)
       .then((value) => {
@@ -521,7 +521,7 @@ function UrbanStatus(latitude, longitude = false) {
 g.UrbanStatus = UrbanStatus;
 
 function UrbanStatusSimple(latitude, longitude = false) {
-  const baseurl = '${api_url}urban_status_simple';
+  const baseurl = `${apiUrl}urban_status_simple`;
   return new Promise(((resolve, reject) => {
     getLatLngInfo(baseurl, latitude, longitude)
       .then((value) => {
@@ -535,7 +535,7 @@ function UrbanStatusSimple(latitude, longitude = false) {
 g.UrbanStatusSimple = UrbanStatusSimple;
 
 function NearestPlace(latitude, longitude = false) {
-  const baseurl = '${api_url}nearest_placename';
+  const baseurl = `${apiUrl}nearest_placename`;
   return new Promise(((resolve, reject) => {
     getLatLngInfo(baseurl, latitude, longitude)
       .then((value) => {
@@ -549,7 +549,7 @@ function NearestPlace(latitude, longitude = false) {
 g.NearestPlace = NearestPlace;
 
 function NearestPoi(latitude, longitude = false) {
-  const baseurl = '${api_url}nearest_poi';
+  const baseurl = `${apiUrl}nearest_poi`;
   return new Promise(((resolve, reject) => {
     getLatLngInfo(baseurl, latitude, longitude)
       .then((value) => {
@@ -563,7 +563,7 @@ function NearestPoi(latitude, longitude = false) {
 g.NearestPoi = NearestPoi;
 
 function NearestBank(latitude, longitude = false) {
-  const baseurl = '${api_url}nearest_bank';
+  const baseurl = `${apiUrl}nearest_bank`;
   return new Promise(((resolve, reject) => {
     getLatLngInfo(baseurl, latitude, longitude)
       .then((value) => {
@@ -577,7 +577,7 @@ function NearestBank(latitude, longitude = false) {
 g.NearestBank = NearestBank;
 
 function NearestBankDist(latitude, longitude = false) {
-  const baseurl = '${api_url}nearest_bank_distance';
+  const baseurl = `${apiUrl}nearest_bank_distance`;
   return new Promise(((resolve, reject) => {
     getLatLngInfo(baseurl, latitude, longitude)
       .then((value) => {

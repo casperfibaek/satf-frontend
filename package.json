@@ -5,8 +5,7 @@
   "scripts": {
     "start": "node ./app.js",
     "test": "tape ./tests/timing.js",
-    "debug": "office-addin-debugging start ./excel_interface/manifest_local.xml",
-    "debug:stop": "office-addin-debugging stop ./excel_interface/manifest_local.xml",
+    "debug": "office-addin-debugging start ./excel_interface/manifest.xml",
     "validate": "office-addin-manifest validate ./excel_interface/manifest_local.xml"
   },
   "dependencies": {
