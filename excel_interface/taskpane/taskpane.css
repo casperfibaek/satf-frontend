@@ -25,7 +25,7 @@
     -webkit-flex-direction: column;
     flex-direction: column;
     align-items: center;
-    background-image: url(https://satf.azurewebsites.net/excel_interface/assets/images/savings-frontier-banner.png);
+    background-image: url(../assets/images/savings-frontier-banner.png);
     background-size: cover;
  }
 

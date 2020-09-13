@@ -13,3 +13,5 @@ Office.initialize = () => {
   const funEl = document.getElementById('run');
   funEl.onclick = function run() { console.log('run!'); };
 };
+
+console.log('Loaded: taskpane.js');

@@ -229,7 +229,8 @@ function openDialogNIRAS() {
     // IMPORTANT: IFrame mode only works in Online (Web) clients. Desktop clients (Windows, IOS, Mac) always display as a pop-up inside of Office apps.
     Office.context.ui.displayDialogAsync('https://www.niras.com', { height: 50, width: 50, displayInIframe: true }, dialogCallback);
 }
-function openDialogWindow(link, event, height, width, prompt) {
+function openDialogWindow(link, event, iframe, height, width, prompt) {
+    if (iframe === void 0) { iframe = false; }
     if (height === void 0) { height = 40; }
     if (width === void 0) { width = 30; }
     if (prompt === void 0) { prompt = false; }
@@ -237,6 +238,7 @@ function openDialogWindow(link, event, height, width, prompt) {
         height: height,
         width: width,
         promptBeforeOpen: prompt,
+        displayInIframe: iframe,
     }, function (asyncResult) {
         if (asyncResult.status === Office.AsyncResultStatus.Failed) {
             console.log(asyncResult.error.code + ": " + asyncResult.error.message);
@@ -271,10 +273,21 @@ function openDialogSATF(event) {
     });
 }
 function openDialogSUPPORT(event) {
-    openDialogWindow('https://satf.azurewebsites.net/excel_interface/support/support.html', event);
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            // openDialogWindow('../support/support.html', event);
+            openDialogWindow('https://127.0.0.1/excel_interface/support/support.html', event, true);
+            return [2 /*return*/];
+        });
+    });
 }
 function openDialogDOCUMENTATION(event) {
-    openDialogWindow('https://satf.azurewebsites.net/excel_interface/documentation/documentation.html', event);
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            openDialogWindow('../documentation/documentation.html', event, true);
+            return [2 /*return*/];
+        });
+    });
 }
 function openDialogMAP(event) {
     return __awaiter(this, void 0, void 0, function () {
@@ -285,7 +298,7 @@ function openDialogMAP(event) {
                 case 1:
                     markers = _a.sent();
                     localStorage.setItem('markers', markers);
-                    openDialogWindow('https://satf.azurewebsites.net/excel_interface/map/map.html', event);
+                    openDialogWindow('../map/map.html', event);
                     return [2 /*return*/];
             }
         });
@@ -299,3 +312,5 @@ g.openDialogSATF = openDialogSATF;
 g.openDialogMAP = openDialogMAP;
 g.openDialogSUPPORT = openDialogSUPPORT;
 g.openDialogDOCUMENTATION = openDialogDOCUMENTATION;
+console.log('Loaded: commands.js');
+//# sourceMappingURL=commands.js.map

@@ -648,3 +648,4 @@ System.register(["./whatfreewords.js", "./pluscodes.js"], function (exports_1, c
         }
     };
 });
+//# sourceMappingURL=arrayToGeojson.js.map

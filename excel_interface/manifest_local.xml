@@ -4,19 +4,19 @@
   <Version>1.0.0.11</Version>
   <ProviderName>NIRAS</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="SATF rev.2"/>
+  <DisplayName DefaultValue="SATF local"/>
   <Description DefaultValue="Investigate Financial Inclusion"/>
-  <IconUrl DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/icon-80.png"/>
-  <HighResolutionIconUrl DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/icon-80.png"/>
+  <IconUrl DefaultValue="https://localhost/excel_interface/assets/icons/icon-80.png"/>
+  <HighResolutionIconUrl DefaultValue="https://localhost/excel_interface/assets/icons/icon-80.png"/>
   <SupportUrl DefaultValue="https://www.niras.com"/>
   <AppDomains>
-    <AppDomain>https://satf.azurewebsites.net</AppDomain>
-    <AppDomain>https://satf.azurewebsites.net/excel_interface</AppDomain>
-    <AppDomain>https://satf.azurewebsites.net/excel_interface/taskpane/</AppDomain>
-    <AppDomain>https://satf.azurewebsites.net/excel_interface/commands/</AppDomain>
-    <AppDomain>https://satf.azurewebsites.net/excel_interface/assets/</AppDomain>
-    <AppDomain>https://satf.azurewebsites.net/excel_interface/map/</AppDomain>
-    <AppDomain>https://satf.azurewebsites.net/excel_interface/functions/</AppDomain>
+    <AppDomain>https://localhost</AppDomain>
+    <AppDomain>https://localhost/excel_interface</AppDomain>
+    <AppDomain>https://localhost/excel_interface/taskpane/</AppDomain>
+    <AppDomain>https://localhost/excel_interface/commands/</AppDomain>
+    <AppDomain>https://localhost/excel_interface/assets/</AppDomain>
+    <AppDomain>https://localhost/excel_interface/map/</AppDomain>
+    <AppDomain>https://localhost/excel_interface/functions/</AppDomain>
     <AppDomain>https://www.niras.com/</AppDomain>
     <AppDomain>https://mastercard.com</AppDomain>
     <AppDomain>https://www.opml.co.uk/</AppDomain>
@@ -31,7 +31,7 @@
     </Sets>
   </Requirements>
   <DefaultSettings>
-    <SourceLocation DefaultValue="https://satf.azurewebsites.net/excel_interface/taskpane/taskpane.html"/>
+    <SourceLocation DefaultValue="https://localhost/excel_interface/taskpane/taskpane.html"/>
   </DefaultSettings>
   <Permissions>ReadWriteDocument</Permissions>
   <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
@@ -242,68 +242,68 @@
     </Hosts>
     <Resources>
       <bt:Images>
-        <bt:Image id="Icon.16x16" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/icon-16.png"/>
-        <bt:Image id="Icon.32x32" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/icon-32.png"/>
-        <bt:Image id="Icon.80x80" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/icon-80.png"/>
-        <bt:Image id="Icon.Mastercard.16x16" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/mastercard_16x16.png"/>
-        <bt:Image id="Icon.Mastercard.20x20" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/mastercard_20x20.png"/>
-        <bt:Image id="Icon.Mastercard.24x24" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/mastercard_24x24.png"/>
-        <bt:Image id="Icon.Mastercard.32x32" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/mastercard_32x32.png"/>
-        <bt:Image id="Icon.Mastercard.40x40" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/mastercard_40x40.png"/>
-        <bt:Image id="Icon.Mastercard.48x48" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/mastercard_48x48.png"/>
-        <bt:Image id="Icon.Mastercard.64x64" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/mastercard_64x64.png"/>
-        <bt:Image id="Icon.Mastercard.80x80" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/mastercard_80x80.png"/>
-        <bt:Image id="Icon.Niras.16x16" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/niras_16x16.png"/>
-        <bt:Image id="Icon.Niras.20x20" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/niras_20x20.png"/>
-        <bt:Image id="Icon.Niras.24x24" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/niras_24x24.png"/>
-        <bt:Image id="Icon.Niras.32x32" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/niras_32x32.png"/>
-        <bt:Image id="Icon.Niras.40x40" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/niras_40x40.png"/>
-        <bt:Image id="Icon.Niras.48x48" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/niras_48x48.png"/>
-        <bt:Image id="Icon.Niras.64x64" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/niras_64x64.png"/>
-        <bt:Image id="Icon.Niras.80x80" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/niras_80x80.png"/>
-        <bt:Image id="Icon.OPM.16x16" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/opm_16x16.png"/>
-        <bt:Image id="Icon.OPM.20x20" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/opm_20x20.png"/>
-        <bt:Image id="Icon.OPM.24x24" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/opm_24x24.png"/>
-        <bt:Image id="Icon.OPM.32x32" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/opm_32x32.png"/>
-        <bt:Image id="Icon.OPM.40x40" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/opm_40x40.png"/>
-        <bt:Image id="Icon.OPM.48x48" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/opm_48x48.png"/>
-        <bt:Image id="Icon.OPM.64x64" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/opm_64x64.png"/>
-        <bt:Image id="Icon.OPM.80x80" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/opm_80x80.png"/>
-        <bt:Image id="Icon.Contact.16x16" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/contact_16x16.png"/>
-        <bt:Image id="Icon.Contact.20x20" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/contact_20x20.png"/>
-        <bt:Image id="Icon.Contact.24x24" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/contact_24x24.png"/>
-        <bt:Image id="Icon.Contact.32x32" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/contact_32x32.png"/>
-        <bt:Image id="Icon.Contact.40x40" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/contact_40x40.png"/>
-        <bt:Image id="Icon.Contact.48x48" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/contact_48x48.png"/>
-        <bt:Image id="Icon.Contact.64x64" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/contact_64x64.png"/>
-        <bt:Image id="Icon.Contact.80x80" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/contact_80x80.png"/>
-        <bt:Image id="Icon.Login.16x16" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/login_16x16.png"/>
-        <bt:Image id="Icon.Login.20x20" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/login_20x20.png"/>
-        <bt:Image id="Icon.Login.24x24" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/login_24x24.png"/>
-        <bt:Image id="Icon.Login.32x32" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/login_32x32.png"/>
-        <bt:Image id="Icon.Login.40x40" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/login_40x40.png"/>
-        <bt:Image id="Icon.Login.48x48" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/login_48x48.png"/>
-        <bt:Image id="Icon.Login.64x64" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/login_64x64.png"/>
-        <bt:Image id="Icon.Login.80x80" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/login_80x80.png"/>
-        <bt:Image id="Icon.Map.16x16" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/map_16x16.png"/>
-        <bt:Image id="Icon.Map.20x20" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/map_20x20.png"/>
-        <bt:Image id="Icon.Map.24x24" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/map_24x24.png"/>
-        <bt:Image id="Icon.Map.32x32" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/map_32x32.png"/>
-        <bt:Image id="Icon.Map.40x40" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/map_40x40.png"/>
-        <bt:Image id="Icon.Map.48x48" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/map_48x48.png"/>
-        <bt:Image id="Icon.Map.64x64" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/map_64x64.png"/>
-        <bt:Image id="Icon.Map.80x80" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/map_80x80.png"/>
+        <bt:Image id="Icon.16x16" DefaultValue="https://localhost/excel_interface/assets/icons/icon-16.png"/>
+        <bt:Image id="Icon.32x32" DefaultValue="https://localhost/excel_interface/assets/icons/icon-32.png"/>
+        <bt:Image id="Icon.80x80" DefaultValue="https://localhost/excel_interface/assets/icons/icon-80.png"/>
+        <bt:Image id="Icon.Mastercard.16x16" DefaultValue="https://localhost/excel_interface/assets/icons/mastercard_16x16.png"/>
+        <bt:Image id="Icon.Mastercard.20x20" DefaultValue="https://localhost/excel_interface/assets/icons/mastercard_20x20.png"/>
+        <bt:Image id="Icon.Mastercard.24x24" DefaultValue="https://localhost/excel_interface/assets/icons/mastercard_24x24.png"/>
+        <bt:Image id="Icon.Mastercard.32x32" DefaultValue="https://localhost/excel_interface/assets/icons/mastercard_32x32.png"/>
+        <bt:Image id="Icon.Mastercard.40x40" DefaultValue="https://localhost/excel_interface/assets/icons/mastercard_40x40.png"/>
+        <bt:Image id="Icon.Mastercard.48x48" DefaultValue="https://localhost/excel_interface/assets/icons/mastercard_48x48.png"/>
+        <bt:Image id="Icon.Mastercard.64x64" DefaultValue="https://localhost/excel_interface/assets/icons/mastercard_64x64.png"/>
+        <bt:Image id="Icon.Mastercard.80x80" DefaultValue="https://localhost/excel_interface/assets/icons/mastercard_80x80.png"/>
+        <bt:Image id="Icon.Niras.16x16" DefaultValue="https://localhost/excel_interface/assets/icons/niras_16x16.png"/>
+        <bt:Image id="Icon.Niras.20x20" DefaultValue="https://localhost/excel_interface/assets/icons/niras_20x20.png"/>
+        <bt:Image id="Icon.Niras.24x24" DefaultValue="https://localhost/excel_interface/assets/icons/niras_24x24.png"/>
+        <bt:Image id="Icon.Niras.32x32" DefaultValue="https://localhost/excel_interface/assets/icons/niras_32x32.png"/>
+        <bt:Image id="Icon.Niras.40x40" DefaultValue="https://localhost/excel_interface/assets/icons/niras_40x40.png"/>
+        <bt:Image id="Icon.Niras.48x48" DefaultValue="https://localhost/excel_interface/assets/icons/niras_48x48.png"/>
+        <bt:Image id="Icon.Niras.64x64" DefaultValue="https://localhost/excel_interface/assets/icons/niras_64x64.png"/>
+        <bt:Image id="Icon.Niras.80x80" DefaultValue="https://localhost/excel_interface/assets/icons/niras_80x80.png"/>
+        <bt:Image id="Icon.OPM.16x16" DefaultValue="https://localhost/excel_interface/assets/icons/opm_16x16.png"/>
+        <bt:Image id="Icon.OPM.20x20" DefaultValue="https://localhost/excel_interface/assets/icons/opm_20x20.png"/>
+        <bt:Image id="Icon.OPM.24x24" DefaultValue="https://localhost/excel_interface/assets/icons/opm_24x24.png"/>
+        <bt:Image id="Icon.OPM.32x32" DefaultValue="https://localhost/excel_interface/assets/icons/opm_32x32.png"/>
+        <bt:Image id="Icon.OPM.40x40" DefaultValue="https://localhost/excel_interface/assets/icons/opm_40x40.png"/>
+        <bt:Image id="Icon.OPM.48x48" DefaultValue="https://localhost/excel_interface/assets/icons/opm_48x48.png"/>
+        <bt:Image id="Icon.OPM.64x64" DefaultValue="https://localhost/excel_interface/assets/icons/opm_64x64.png"/>
+        <bt:Image id="Icon.OPM.80x80" DefaultValue="https://localhost/excel_interface/assets/icons/opm_80x80.png"/>
+        <bt:Image id="Icon.Contact.16x16" DefaultValue="https://localhost/excel_interface/assets/icons/contact_16x16.png"/>
+        <bt:Image id="Icon.Contact.20x20" DefaultValue="https://localhost/excel_interface/assets/icons/contact_20x20.png"/>
+        <bt:Image id="Icon.Contact.24x24" DefaultValue="https://localhost/excel_interface/assets/icons/contact_24x24.png"/>
+        <bt:Image id="Icon.Contact.32x32" DefaultValue="https://localhost/excel_interface/assets/icons/contact_32x32.png"/>
+        <bt:Image id="Icon.Contact.40x40" DefaultValue="https://localhost/excel_interface/assets/icons/contact_40x40.png"/>
+        <bt:Image id="Icon.Contact.48x48" DefaultValue="https://localhost/excel_interface/assets/icons/contact_48x48.png"/>
+        <bt:Image id="Icon.Contact.64x64" DefaultValue="https://localhost/excel_interface/assets/icons/contact_64x64.png"/>
+        <bt:Image id="Icon.Contact.80x80" DefaultValue="https://localhost/excel_interface/assets/icons/contact_80x80.png"/>
+        <bt:Image id="Icon.Login.16x16" DefaultValue="https://localhost/excel_interface/assets/icons/login_16x16.png"/>
+        <bt:Image id="Icon.Login.20x20" DefaultValue="https://localhost/excel_interface/assets/icons/login_20x20.png"/>
+        <bt:Image id="Icon.Login.24x24" DefaultValue="https://localhost/excel_interface/assets/icons/login_24x24.png"/>
+        <bt:Image id="Icon.Login.32x32" DefaultValue="https://localhost/excel_interface/assets/icons/login_32x32.png"/>
+        <bt:Image id="Icon.Login.40x40" DefaultValue="https://localhost/excel_interface/assets/icons/login_40x40.png"/>
+        <bt:Image id="Icon.Login.48x48" DefaultValue="https://localhost/excel_interface/assets/icons/login_48x48.png"/>
+        <bt:Image id="Icon.Login.64x64" DefaultValue="https://localhost/excel_interface/assets/icons/login_64x64.png"/>
+        <bt:Image id="Icon.Login.80x80" DefaultValue="https://localhost/excel_interface/assets/icons/login_80x80.png"/>
+        <bt:Image id="Icon.Map.16x16" DefaultValue="https://localhost/excel_interface/assets/icons/map_16x16.png"/>
+        <bt:Image id="Icon.Map.20x20" DefaultValue="https://localhost/excel_interface/assets/icons/map_20x20.png"/>
+        <bt:Image id="Icon.Map.24x24" DefaultValue="https://localhost/excel_interface/assets/icons/map_24x24.png"/>
+        <bt:Image id="Icon.Map.32x32" DefaultValue="https://localhost/excel_interface/assets/icons/map_32x32.png"/>
+        <bt:Image id="Icon.Map.40x40" DefaultValue="https://localhost/excel_interface/assets/icons/map_40x40.png"/>
+        <bt:Image id="Icon.Map.48x48" DefaultValue="https://localhost/excel_interface/assets/icons/map_48x48.png"/>
+        <bt:Image id="Icon.Map.64x64" DefaultValue="https://localhost/excel_interface/assets/icons/map_64x64.png"/>
+        <bt:Image id="Icon.Map.80x80" DefaultValue="https://localhost/excel_interface/assets/icons/map_80x80.png"/>
       </bt:Images>
       <bt:Urls>
         <bt:Url id="GetStarted.LearnMoreUrl" DefaultValue="https://www.niras.com/"/>
         <bt:Url id="AboutMastercard.Url" DefaultValue="https://www.mastercard.com/"/>
         <bt:Url id="AboutOPM.Url" DefaultValue="https://www.opml.co.uk/"/>
         <bt:Url id="AboutNiras.Url" DefaultValue="https://www.niras.com/"/>
-        <bt:Url id="Functions.Script.Url" DefaultValue="https://satf.azurewebsites.net/excel_interface/functions/functions.js"/>
-        <bt:Url id="Functions.Metadata.Url" DefaultValue="https://satf.azurewebsites.net/excel_interface/functions/functions_meta.json"/>
-        <bt:Url id="Functions.Page.Url" DefaultValue="https://satf.azurewebsites.net/excel_interface/functions/functions.html"/>
-        <bt:Url id="Commands.Url" DefaultValue="https://satf.azurewebsites.net/excel_interface/commands/commands.html"/>
-        <bt:Url id="Taskpane.Url" DefaultValue="https://satf.azurewebsites.net/excel_interface/taskpane/taskpane.html"/>
+        <bt:Url id="Functions.Script.Url" DefaultValue="https://localhost/excel_interface/functions/functions.js"/>
+        <bt:Url id="Functions.Metadata.Url" DefaultValue="https://localhost/excel_interface/functions/functions_meta.json"/>
+        <bt:Url id="Functions.Page.Url" DefaultValue="https://localhost/excel_interface/functions/functions.html"/>
+        <bt:Url id="Commands.Url" DefaultValue="https://localhost/excel_interface/commands/commands.html"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://localhost/excel_interface/taskpane/taskpane.html"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="Functions.Namespace" DefaultValue="SATF"/>

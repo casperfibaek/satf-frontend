@@ -199,3 +199,5 @@ Office.onReady().then(() => {
 
   map.on('click', onMapClick);
 });
+
+console.log('Loaded: map.js');

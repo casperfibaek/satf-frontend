@@ -25,5 +25,18 @@ Steps for installing:
         %userprofile%\AppData\Local\Packages\Microsoft.Win32WebViewHost_cw5n1h2txyewy\AC\#!123\INetCache\
         %LOCALAPPDATA%\Microsoft\Office\16.0\Wef\
 
+    Loopback exception for local dev: 
+        CheckNetIsolation LoopbackExempt -a -n="microsoft.win32webviewhost_cw5n1h2txyewy" 
+    
+    Remeber to install certificate in certs.
+        1. Go to {project root}\certs.
+        2. Double-click server.crt, and select Install Certificate.
+        3. Select Local Machine and select Next to continue.
+        4. Select Place all certificates in the following store and then select Browse.
+        5. Select Trusted Root Certification Authorities and then select OK.
+        6. Select Next and then Finish.
+
+        chrome://flags/#allow-insecure-localhost
+
 Copyright: NIRAS A/S
 License: Undisclosed

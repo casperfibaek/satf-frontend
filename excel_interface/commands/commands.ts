@@ -153,11 +153,12 @@ function openDialogNIRAS() {
     { height: 50, width: 50, displayInIframe: true }, dialogCallback);
 }
 
-function openDialogWindow(link, event, height = 40, width = 30, prompt = false) {
+function openDialogWindow(link, event, iframe = false, height = 40, width = 30, prompt = false) {
   Office.context.ui.displayDialogAsync(link, {
     height,
     width,
     promptBeforeOpen: prompt,
+    displayInIframe: iframe,
   }, (asyncResult) => {
     if (asyncResult.status === Office.AsyncResultStatus.Failed) {
       console.log(`${asyncResult.error.code}: ${asyncResult.error.message}`);
@@ -186,18 +187,19 @@ function openDialogWindow(link, event, height = 40, width = 30, prompt = false) 
 async function openDialogSATF(event) {
   openDialogWindow('https://www.opml.co.uk/projects/savings-frontier', event);
 }
-function openDialogSUPPORT(event) {
-  openDialogWindow('https://satf.azurewebsites.net/excel_interface/support/support.html', event);
+async function openDialogSUPPORT(event) {
+  // openDialogWindow('../support/support.html', event);
+  openDialogWindow('https://127.0.0.1/excel_interface/support/support.html', event, true);
 }
-function openDialogDOCUMENTATION(event) {
-  openDialogWindow('https://satf.azurewebsites.net/excel_interface/documentation/documentation.html', event);
+async function openDialogDOCUMENTATION(event) {
+  openDialogWindow('../documentation/documentation.html', event, true);
 }
 
 async function openDialogMAP(event) {
   const markers = await getSelectedCells();
   localStorage.setItem('markers', markers);
 
-  openDialogWindow('https://satf.azurewebsites.net/excel_interface/map/map.html', event);
+  openDialogWindow('../map/map.html', event);
 }
 
 // the add-in command functions need to be available in global scope
@@ -208,3 +210,5 @@ g.openDialogSATF = openDialogSATF;
 g.openDialogMAP = openDialogMAP;
 g.openDialogSUPPORT = openDialogSUPPORT;
 g.openDialogDOCUMENTATION = openDialogDOCUMENTATION;
+
+console.log('Loaded: commands.js');

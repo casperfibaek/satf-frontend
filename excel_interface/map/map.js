@@ -199,6 +199,8 @@ System.register(["./arrayToGeojson.js", "./keyval.js"], function (exports_1, con
                 }
                 map.on('click', onMapClick);
             });
+            console.log('Loaded: map.js');
         }
     };
 });
+//# sourceMappingURL=map.js.map
