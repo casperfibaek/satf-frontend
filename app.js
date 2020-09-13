@@ -5,6 +5,7 @@ const logger = require('morgan');
 const compression = require('compression');
 const path = require('path');
 const cors = require('cors');
+const nocache = require('nocache');
 
 // Custom routes
 const routesApi = require('./api_routes');
@@ -20,18 +21,16 @@ const app = express();
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  }),
-);
+
 // app.use((req, res, next) => {
 //   res.setHeader('Cache-Control', `public, max-age=${String(defaults.cache)}`);
 //   next();
 // });
 
 app.use(cors());
+app.use(nocache());
 
 // Serve
 app.get('/', (req, res) => { res.send('home'); });
