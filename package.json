@@ -3,14 +3,11 @@
   "version": "0.2.3",
   "private": true,
   "scripts": {
-    "start": "set NODE_ENV=production && node ./app.js",
-    "start:dev": "set NODE_ENV=development && node ./app.js",
+    "start": "node ./app.js",
     "test": "tape ./tests/timing.js",
     "debug": "office-addin-debugging start ./excel_interface/manifest_local.xml",
     "debug:stop": "office-addin-debugging stop ./excel_interface/manifest_local.xml",
-    "validate": "office-addin-manifest validate ./excel_interface/manifest_local.xml",
-    "cert:install": "office-addin-dev-certs install",
-    "cert:uninstall": "office-addin-dev-certs uninstall"
+    "validate": "office-addin-manifest validate ./excel_interface/manifest_local.xml"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
@@ -20,7 +17,6 @@
     "express": "~4.17.1",
     "morgan": "~1.10.0",
     "nocache": "^2.1.0",
-    "office-addin-dev-certs": "^1.5.4",
     "pg": "^8.3.3"
   },
   "devDependencies": {

@@ -1,5 +1,6 @@
 "use strict";
 /* CustomFunctions, executed in Excel cells. Metadata defined in ./functions_meta.json */
+var apiUrl = 'https://satf.azurewebsites.net/api/';
 // ----------------------- Utils -----------------------
 function makeRequest(method, url, timeout) {
     if (timeout === void 0) { timeout = 12000; }
@@ -107,7 +108,7 @@ function isValidWhatFreeWords(str) {
 }
 function What3WordsToLatLng(words) {
     return new Promise(function (resolve, reject) {
-        makeRequest('get', "../../api/whatfreewords_to_latlng?words=" + words)
+        makeRequest('get', apiUrl + "whatfreewords_to_latlng?words=" + words)
             .then(function (value) {
             resolve(value);
         })
@@ -118,7 +119,7 @@ function What3WordsToLatLng(words) {
 }
 function PlusCodeToLatLng(code) {
     return new Promise(function (resolve, reject) {
-        makeRequest('get', "../../api/pluscode_to_latlng?code=" + code)
+        makeRequest('get', apiUrl + "pluscode_to_latlng?code=" + code)
             .then(function (value) {
             resolve(value);
         })
@@ -184,7 +185,7 @@ var g = getGlobal();
 // ----------------------- CustomFunctions -----------------------
 function LatLngToWhatFreeWords(latitude, longitude) {
     return new Promise(function (resolve, reject) {
-        makeRequest('get', "../../api/latlng_to_whatfreewords?lat=" + latitude + "&lng=" + longitude)
+        makeRequest('get', apiUrl + "latlng_to_whatfreewords?lat=" + latitude + "&lng=" + longitude)
             .then(function (value) {
             resolve(value);
         })
@@ -196,7 +197,7 @@ function LatLngToWhatFreeWords(latitude, longitude) {
 g.LatLngToWhatFreeWords = LatLngToWhatFreeWords;
 function LatLngToPluscode(latitude, longitude) {
     return new Promise(function (resolve, reject) {
-        makeRequest('get', "../../api/latlng_to_pluscode?lat=" + latitude + "&lng=" + longitude)
+        makeRequest('get', apiUrl + "latlng_to_pluscode?lat=" + latitude + "&lng=" + longitude)
             .then(function (value) {
             resolve(value);
         })
@@ -213,7 +214,7 @@ function helloWorld() {
 g.helloWorld = helloWorld;
 function PopulationDensity(latitude, longitude) {
     if (longitude === void 0) { longitude = false; }
-    var baseurl = '../../api/population_density';
+    var baseurl = '${api_url}population_density';
     return new Promise((function (resolve, reject) {
         getLatLngInfo(baseurl, latitude, longitude)
             .then(function (value) {
@@ -227,7 +228,7 @@ function PopulationDensity(latitude, longitude) {
 g.PopulationDensity = PopulationDensity;
 function PopulationDensityBuffer(bufferMeters, latitude, longitude) {
     if (longitude === void 0) { longitude = false; }
-    var url = function (buffer, lat, lng) { return "../../api/population_density_buffer?lat=" + lat + "&lng=" + lng + "&buffer=" + buffer; }; // eslint-disable-line
+    var url = function (buffer, lat, lng) { return apiUrl + "population_density_buffer?lat=" + lat + "&lng=" + lng + "&buffer=" + buffer; }; // eslint-disable-line
     try {
         if (isValidWhatFreeWords(latitude)) {
             return What3WordsToLatLng(latitude).then(function (latlng) {
@@ -279,7 +280,7 @@ function PopulationDensityBuffer(bufferMeters, latitude, longitude) {
 g.PopulationDensityBuffer = PopulationDensityBuffer;
 function PopulationDensityWalk(minutes, latitude, longitude) {
     if (longitude === void 0) { longitude = false; }
-    var url = function (buffer, lat, lng) { return "../../api/population_density_walk?lat=" + lat + "&lng=" + lng + "&minutes=" + buffer; }; // eslint-disable-line
+    var url = function (buffer, lat, lng) { return apiUrl + "population_density_walk?lat=" + lat + "&lng=" + lng + "&minutes=" + buffer; }; // eslint-disable-line
     try {
         if (isValidWhatFreeWords(latitude)) {
             return What3WordsToLatLng(latitude).then(function (latlng) {
@@ -327,7 +328,7 @@ function PopulationDensityWalk(minutes, latitude, longitude) {
 g.PopulationDensityWalk = PopulationDensityWalk;
 function PopulationDensityBike(minutes, latitude, longitude) {
     if (longitude === void 0) { longitude = false; }
-    var url = function (buffer, lat, lng) { return "../../api/population_density_bike?lat=" + lat + "&lng=" + lng + "&minutes=" + buffer; }; // eslint-disable-line
+    var url = function (buffer, lat, lng) { return apiUrl + "population_density_bike?lat=" + lat + "&lng=" + lng + "&minutes=" + buffer; }; // eslint-disable-line
     try {
         if (isValidWhatFreeWords(latitude)) {
             return What3WordsToLatLng(latitude).then(function (latlng) {
@@ -375,7 +376,7 @@ function PopulationDensityBike(minutes, latitude, longitude) {
 g.PopulationDensityBike = PopulationDensityBike;
 function PopulationDensityCar(minutes, latitude, longitude) {
     if (longitude === void 0) { longitude = false; }
-    var url = function (buffer, lat, lng) { return "../../api/population_density_car?lat=" + lat + "&lng=" + lng + "&minutes=" + buffer; }; // eslint-disable-line
+    var url = function (buffer, lat, lng) { return apiUrl + "population_density_car?lat=" + lat + "&lng=" + lng + "&minutes=" + buffer; }; // eslint-disable-line
     try {
         if (isValidWhatFreeWords(latitude)) {
             return What3WordsToLatLng(latitude).then(function (latlng) {
@@ -423,7 +424,7 @@ function PopulationDensityCar(minutes, latitude, longitude) {
 g.PopulationDensityCar = PopulationDensityCar;
 function AdminLevel1(latitude, longitude) {
     if (longitude === void 0) { longitude = false; }
-    var baseurl = '../../api/admin_level_1';
+    var baseurl = '${api_url}admin_level_1';
     return new Promise((function (resolve, reject) {
         getLatLngInfo(baseurl, latitude, longitude)
             .then(function (value) {
@@ -437,7 +438,7 @@ function AdminLevel1(latitude, longitude) {
 g.AdminLevel1 = AdminLevel1;
 function AdminLevel2(latitude, longitude) {
     if (longitude === void 0) { longitude = false; }
-    var baseurl = '../../api/admin_level_2';
+    var baseurl = '${api_url}admin_level_2';
     return new Promise((function (resolve, reject) {
         getLatLngInfo(baseurl, latitude, longitude)
             .then(function (value) {
@@ -451,7 +452,7 @@ function AdminLevel2(latitude, longitude) {
 g.AdminLevel2 = AdminLevel2;
 function AdminLevel2FuzzyLev(name) {
     return new Promise((function (resolve, reject) {
-        makeRequest('get', "../../api/admin_level_2_fuzzy_lev?name=" + name)
+        makeRequest('get', apiUrl + "admin_level_2_fuzzy_lev?name=" + name)
             .then(function (value) {
             resolve(value);
         })
@@ -463,7 +464,7 @@ function AdminLevel2FuzzyLev(name) {
 g.AdminLevel2FuzzyLev = AdminLevel2FuzzyLev;
 function AdminLevel2FuzzyTri(name) {
     return new Promise((function (resolve, reject) {
-        makeRequest('get', "../../api/admin_level_2_fuzzy_tri?name=" + name)
+        makeRequest('get', apiUrl + "admin_level_2_fuzzy_tri?name=" + name)
             .then(function (value) {
             resolve(value);
         })
@@ -475,7 +476,7 @@ function AdminLevel2FuzzyTri(name) {
 g.AdminLevel2FuzzyTri = AdminLevel2FuzzyTri;
 function UrbanStatus(latitude, longitude) {
     if (longitude === void 0) { longitude = false; }
-    var baseurl = '../../api/urban_status';
+    var baseurl = '${api_url}urban_status';
     return new Promise((function (resolve, reject) {
         getLatLngInfo(baseurl, latitude, longitude)
             .then(function (value) {
@@ -489,7 +490,7 @@ function UrbanStatus(latitude, longitude) {
 g.UrbanStatus = UrbanStatus;
 function UrbanStatusSimple(latitude, longitude) {
     if (longitude === void 0) { longitude = false; }
-    var baseurl = '../../api/urban_status_simple';
+    var baseurl = '${api_url}urban_status_simple';
     return new Promise((function (resolve, reject) {
         getLatLngInfo(baseurl, latitude, longitude)
             .then(function (value) {
@@ -503,7 +504,7 @@ function UrbanStatusSimple(latitude, longitude) {
 g.UrbanStatusSimple = UrbanStatusSimple;
 function NearestPlace(latitude, longitude) {
     if (longitude === void 0) { longitude = false; }
-    var baseurl = '../../api/nearest_placename';
+    var baseurl = '${api_url}nearest_placename';
     return new Promise((function (resolve, reject) {
         getLatLngInfo(baseurl, latitude, longitude)
             .then(function (value) {
@@ -517,7 +518,7 @@ function NearestPlace(latitude, longitude) {
 g.NearestPlace = NearestPlace;
 function NearestPoi(latitude, longitude) {
     if (longitude === void 0) { longitude = false; }
-    var baseurl = '../../api/nearest_poi';
+    var baseurl = '${api_url}nearest_poi';
     return new Promise((function (resolve, reject) {
         getLatLngInfo(baseurl, latitude, longitude)
             .then(function (value) {
@@ -531,7 +532,7 @@ function NearestPoi(latitude, longitude) {
 g.NearestPoi = NearestPoi;
 function NearestBank(latitude, longitude) {
     if (longitude === void 0) { longitude = false; }
-    var baseurl = '../../api/nearest_bank';
+    var baseurl = '${api_url}nearest_bank';
     return new Promise((function (resolve, reject) {
         getLatLngInfo(baseurl, latitude, longitude)
             .then(function (value) {
@@ -545,7 +546,7 @@ function NearestBank(latitude, longitude) {
 g.NearestBank = NearestBank;
 function NearestBankDist(latitude, longitude) {
     if (longitude === void 0) { longitude = false; }
-    var baseurl = '../../api/nearest_bank_distance';
+    var baseurl = '${api_url}nearest_bank_distance';
     return new Promise((function (resolve, reject) {
         getLatLngInfo(baseurl, latitude, longitude)
             .then(function (value) {

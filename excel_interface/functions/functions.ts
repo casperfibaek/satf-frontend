@@ -1,5 +1,7 @@
 /* CustomFunctions, executed in Excel cells. Metadata defined in ./functions_meta.json */
 
+const apiUrl = 'https://satf.azurewebsites.net/api/';
+
 // ----------------------- Utils -----------------------
 function makeRequest(method, url, timeout = 12000) {
   return new Promise(((resolve, reject) => {
@@ -110,7 +112,7 @@ function isValidWhatFreeWords(str) {
 
 function What3WordsToLatLng(words) {
   return new Promise((resolve, reject) => {
-    makeRequest('get', `../../api/whatfreewords_to_latlng?words=${words}`)
+    makeRequest('get', `${apiUrl}whatfreewords_to_latlng?words=${words}`)
       .then((value) => {
         resolve(value);
       })
@@ -122,7 +124,7 @@ function What3WordsToLatLng(words) {
 
 function PlusCodeToLatLng(code) {
   return new Promise((resolve, reject) => {
-    makeRequest('get', `../../api/pluscode_to_latlng?code=${code}`)
+    makeRequest('get', `${apiUrl}pluscode_to_latlng?code=${code}`)
       .then((value) => {
         resolve(value);
       })
@@ -194,7 +196,7 @@ const g = getGlobal() as any;
 
 function LatLngToWhatFreeWords(latitude, longitude) {
   return new Promise((resolve, reject) => {
-    makeRequest('get', `../../api/latlng_to_whatfreewords?lat=${latitude}&lng=${longitude}`)
+    makeRequest('get', `${apiUrl}latlng_to_whatfreewords?lat=${latitude}&lng=${longitude}`)
       .then((value) => {
         resolve(value);
       })
@@ -207,7 +209,7 @@ g.LatLngToWhatFreeWords = LatLngToWhatFreeWords;
 
 function LatLngToPluscode(latitude, longitude) {
   return new Promise((resolve, reject) => {
-    makeRequest('get', `../../api/latlng_to_pluscode?lat=${latitude}&lng=${longitude}`)
+    makeRequest('get', `${apiUrl}latlng_to_pluscode?lat=${latitude}&lng=${longitude}`)
       .then((value) => {
         resolve(value);
       })
@@ -225,7 +227,7 @@ function helloWorld() {
 g.helloWorld = helloWorld;
 
 function PopulationDensity(latitude, longitude = false) {
-  const baseurl = '../../api/population_density';
+  const baseurl = '${api_url}population_density';
   return new Promise(((resolve, reject) => {
     getLatLngInfo(baseurl, latitude, longitude)
       .then((value) => {
@@ -239,7 +241,7 @@ function PopulationDensity(latitude, longitude = false) {
 g.PopulationDensity = PopulationDensity;
 
 function PopulationDensityBuffer(bufferMeters, latitude, longitude = false) {
-  const url = (buffer, lat, lng) => `../../api/population_density_buffer?lat=${lat}&lng=${lng}&buffer=${buffer}`; // eslint-disable-line
+  const url = (buffer, lat, lng) => `${apiUrl}population_density_buffer?lat=${lat}&lng=${lng}&buffer=${buffer}`; // eslint-disable-line
   try {
     if (isValidWhatFreeWords(latitude)) {
       return What3WordsToLatLng(latitude).then((latlng) => {
@@ -295,7 +297,7 @@ function PopulationDensityBuffer(bufferMeters, latitude, longitude = false) {
 g.PopulationDensityBuffer = PopulationDensityBuffer;
 
 function PopulationDensityWalk(minutes, latitude, longitude = false) {
-  const url = (buffer, lat, lng) => `../../api/population_density_walk?lat=${lat}&lng=${lng}&minutes=${buffer}`; // eslint-disable-line
+  const url = (buffer, lat, lng) => `${apiUrl}population_density_walk?lat=${lat}&lng=${lng}&minutes=${buffer}`; // eslint-disable-line
   try {
     if (isValidWhatFreeWords(latitude)) {
       return What3WordsToLatLng(latitude).then((latlng) => {
@@ -347,7 +349,7 @@ function PopulationDensityWalk(minutes, latitude, longitude = false) {
 g.PopulationDensityWalk = PopulationDensityWalk;
 
 function PopulationDensityBike(minutes, latitude, longitude = false) {
-  const url = (buffer, lat, lng) => `../../api/population_density_bike?lat=${lat}&lng=${lng}&minutes=${buffer}`; // eslint-disable-line
+  const url = (buffer, lat, lng) => `${apiUrl}population_density_bike?lat=${lat}&lng=${lng}&minutes=${buffer}`; // eslint-disable-line
   try {
     if (isValidWhatFreeWords(latitude)) {
       return What3WordsToLatLng(latitude).then((latlng) => {
@@ -399,7 +401,7 @@ function PopulationDensityBike(minutes, latitude, longitude = false) {
 g.PopulationDensityBike = PopulationDensityBike;
 
 function PopulationDensityCar(minutes, latitude, longitude = false) {
-  const url = (buffer, lat, lng) => `../../api/population_density_car?lat=${lat}&lng=${lng}&minutes=${buffer}`; // eslint-disable-line
+  const url = (buffer, lat, lng) => `${apiUrl}population_density_car?lat=${lat}&lng=${lng}&minutes=${buffer}`; // eslint-disable-line
   try {
     if (isValidWhatFreeWords(latitude)) {
       return What3WordsToLatLng(latitude).then((latlng) => {
@@ -451,7 +453,7 @@ function PopulationDensityCar(minutes, latitude, longitude = false) {
 g.PopulationDensityCar = PopulationDensityCar;
 
 function AdminLevel1(latitude, longitude = false) {
-  const baseurl = '../../api/admin_level_1';
+  const baseurl = '${api_url}admin_level_1';
   return new Promise(((resolve, reject) => {
     getLatLngInfo(baseurl, latitude, longitude)
       .then((value) => {
@@ -465,7 +467,7 @@ function AdminLevel1(latitude, longitude = false) {
 g.AdminLevel1 = AdminLevel1;
 
 function AdminLevel2(latitude, longitude = false) {
-  const baseurl = '../../api/admin_level_2';
+  const baseurl = '${api_url}admin_level_2';
   return new Promise(((resolve, reject) => {
     getLatLngInfo(baseurl, latitude, longitude)
       .then((value) => {
@@ -480,7 +482,7 @@ g.AdminLevel2 = AdminLevel2;
 
 function AdminLevel2FuzzyLev(name) {
   return new Promise(((resolve, reject) => {
-    makeRequest('get', `../../api/admin_level_2_fuzzy_lev?name=${name}`)
+    makeRequest('get', `${apiUrl}admin_level_2_fuzzy_lev?name=${name}`)
       .then((value) => {
         resolve(value);
       })
@@ -493,7 +495,7 @@ g.AdminLevel2FuzzyLev = AdminLevel2FuzzyLev;
 
 function AdminLevel2FuzzyTri(name) {
   return new Promise(((resolve, reject) => {
-    makeRequest('get', `../../api/admin_level_2_fuzzy_tri?name=${name}`)
+    makeRequest('get', `${apiUrl}admin_level_2_fuzzy_tri?name=${name}`)
       .then((value) => {
         resolve(value);
       })
@@ -505,7 +507,7 @@ function AdminLevel2FuzzyTri(name) {
 g.AdminLevel2FuzzyTri = AdminLevel2FuzzyTri;
 
 function UrbanStatus(latitude, longitude = false) {
-  const baseurl = '../../api/urban_status';
+  const baseurl = '${api_url}urban_status';
   return new Promise(((resolve, reject) => {
     getLatLngInfo(baseurl, latitude, longitude)
       .then((value) => {
@@ -519,7 +521,7 @@ function UrbanStatus(latitude, longitude = false) {
 g.UrbanStatus = UrbanStatus;
 
 function UrbanStatusSimple(latitude, longitude = false) {
-  const baseurl = '../../api/urban_status_simple';
+  const baseurl = '${api_url}urban_status_simple';
   return new Promise(((resolve, reject) => {
     getLatLngInfo(baseurl, latitude, longitude)
       .then((value) => {
@@ -533,7 +535,7 @@ function UrbanStatusSimple(latitude, longitude = false) {
 g.UrbanStatusSimple = UrbanStatusSimple;
 
 function NearestPlace(latitude, longitude = false) {
-  const baseurl = '../../api/nearest_placename';
+  const baseurl = '${api_url}nearest_placename';
   return new Promise(((resolve, reject) => {
     getLatLngInfo(baseurl, latitude, longitude)
       .then((value) => {
@@ -547,7 +549,7 @@ function NearestPlace(latitude, longitude = false) {
 g.NearestPlace = NearestPlace;
 
 function NearestPoi(latitude, longitude = false) {
-  const baseurl = '../../api/nearest_poi';
+  const baseurl = '${api_url}nearest_poi';
   return new Promise(((resolve, reject) => {
     getLatLngInfo(baseurl, latitude, longitude)
       .then((value) => {
@@ -561,7 +563,7 @@ function NearestPoi(latitude, longitude = false) {
 g.NearestPoi = NearestPoi;
 
 function NearestBank(latitude, longitude = false) {
-  const baseurl = '../../api/nearest_bank';
+  const baseurl = '${api_url}nearest_bank';
   return new Promise(((resolve, reject) => {
     getLatLngInfo(baseurl, latitude, longitude)
       .then((value) => {
@@ -575,7 +577,7 @@ function NearestBank(latitude, longitude = false) {
 g.NearestBank = NearestBank;
 
 function NearestBankDist(latitude, longitude = false) {
-  const baseurl = '../../api/nearest_bank_distance';
+  const baseurl = '${api_url}nearest_bank_distance';
   return new Promise(((resolve, reject) => {
     getLatLngInfo(baseurl, latitude, longitude)
       .then((value) => {

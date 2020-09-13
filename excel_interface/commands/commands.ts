@@ -1,3 +1,5 @@
+const siteUrl = 'https://satf.azurewebsites.net/excel_interface/';
+
 Office.onReady(() => {
   // If needed, Office.js is ready to be called
 });
@@ -142,64 +144,37 @@ function dialogCallback(asyncResult) {
   }
 }
 
-function openDialogOPM() {
-  Office.context.ui.displayDialogAsync('https://www.opml.co.uk',
-    { height: 50, width: 50 }, dialogCallback);
-}
-
-function openDialogNIRAS() {
-  // IMPORTANT: IFrame mode only works in Online (Web) clients. Desktop clients (Windows, IOS, Mac) always display as a pop-up inside of Office apps.
-  Office.context.ui.displayDialogAsync('https://www.niras.com',
-    { height: 50, width: 50, displayInIframe: true }, dialogCallback);
-}
-
 function openDialogWindow(link, event, iframe = false, height = 40, width = 30, prompt = false) {
   Office.context.ui.displayDialogAsync(link, {
     height,
     width,
     promptBeforeOpen: prompt,
     displayInIframe: iframe,
-  }, (asyncResult) => {
-    if (asyncResult.status === Office.AsyncResultStatus.Failed) {
-      console.log(`${asyncResult.error.code}: ${asyncResult.error.message}`);
-      event.completed();
-    } else {
-      g.dialog = asyncResult.value;
-      g.dialog.addEventHandler(Office.EventType.DialogMessageReceived, processMessage);
-    }
-  });
+  }, dialogCallback);
 }
 
-// async function openDialogNIRAS(event) {
-//   Office.context.ui.displayDialogAsync('https://www.niras.com', {
-//     height: 40,
-//     width: 30,
-//     promptBeforeOpen: false,
-//   }, () => {
-//     event.completed();
-//   });
-//   // openDialogWindow('https://www.niras.com', event);
-// }
-// async function openDialogOPM(event) {
-//   openDialogWindow('https://www.opml.co.uk', event);
-//   event.completed();
-// }
+function openDialogNIRAS() {
+  openDialogWindow('https://www.niras.com', event);
+}
+function openDialogOPM() {
+  openDialogWindow('https://www.opml.co.uk', event);
+}
 async function openDialogSATF(event) {
   openDialogWindow('https://www.opml.co.uk/projects/savings-frontier', event);
 }
 async function openDialogSUPPORT(event) {
   // openDialogWindow('../support/support.html', event);
-  openDialogWindow('https://127.0.0.1/excel_interface/support/support.html', event, true);
+  openDialogWindow(`${siteUrl}support/support.html`, event);
 }
 async function openDialogDOCUMENTATION(event) {
-  openDialogWindow('../documentation/documentation.html', event, true);
+  openDialogWindow(`${siteUrl}documentation/documentation.html`, event);
 }
 
 async function openDialogMAP(event) {
   const markers = await getSelectedCells();
   localStorage.setItem('markers', markers);
 
-  openDialogWindow('../map/map.html', event);
+  openDialogWindow(`${siteUrl}/map/map.html`, event);
 }
 
 // the add-in command functions need to be available in global scope
