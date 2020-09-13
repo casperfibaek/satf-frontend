@@ -21,5 +21,9 @@ Steps for installing:
         ii. add the shared location to 'Trusted Add-in catalogs'.
         iii. add the folder path to 'Trusted Locations'.
 
+    Clear cache:
+        %userprofile%\AppData\Local\Packages\Microsoft.Win32WebViewHost_cw5n1h2txyewy\AC\#!123\INetCache\
+        %LOCALAPPDATA%\Microsoft\Office\16.0\Wef\
+
 Copyright: NIRAS A/S
 License: Undisclosed

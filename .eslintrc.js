@@ -17,6 +17,7 @@ module.exports = {
     'no-restricted-globals': 0,
     'no-underscore-dangle': 0,
     'max-len': ['error', { code: 120 }],
+    'import/extensions': 0,
   },
   globals: {
     Office: 'readonly',

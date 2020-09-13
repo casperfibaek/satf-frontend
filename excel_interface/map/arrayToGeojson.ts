@@ -1,5 +1,5 @@
-import WhatFreeWords from './whatfreewords'; // eslint-disable-line
-import OpenLocationCodeClass from './pluscodes'; // eslint-disable-line
+import WhatFreeWords from './whatfreewords.js';
+import OpenLocationCodeClass from './pluscodes.js';
 
 const valid = {
   isValidPluscode(code) {

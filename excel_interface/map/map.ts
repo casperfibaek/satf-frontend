@@ -1,4 +1,5 @@
-import arrayToGeojson from './arrayToGeojson';
+import arrayToGeojson from './arrayToGeojson.js';
+import idbKeyval from './keyval.js';
 
 function htmlTable(obj) {
   let table = '<table class=""><tbody>';
