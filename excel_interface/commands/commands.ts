@@ -116,7 +116,7 @@ function eventHandler(arg) {
   }
 }
 
-function dialogCallback(asyncResult) {
+function dialogCallback(asyncResult, event) {
   if (asyncResult.status === 'failed') {
     // In addition to general system errors, there are 3 specific errors for
     // displayDialogAsync that you can handle individually.
@@ -142,6 +142,8 @@ function dialogCallback(asyncResult) {
     /* Events are sent by the platform in response to user actions or errors. For example, the dialog is closed via the 'x' button */
     dialog.addEventHandler(Office.EventType.DialogEventReceived, eventHandler);
   }
+
+  event.completed();
 }
 
 function openDialogWindow(link, event, iframe = false, height = 40, width = 30, prompt = false) {
@@ -150,7 +152,9 @@ function openDialogWindow(link, event, iframe = false, height = 40, width = 30, 
     width,
     promptBeforeOpen: prompt,
     displayInIframe: iframe,
-  }, dialogCallback);
+  }, (asyncResult) => {
+    dialogCallback(asyncResult, event);
+  });
 }
 
 function openDialogNIRAS() {
