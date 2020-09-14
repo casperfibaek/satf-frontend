@@ -18,6 +18,7 @@ module.exports = {
     'no-underscore-dangle': 0,
     'max-len': ['error', { code: 120 }],
     'import/extensions': 0,
+    camelcase: 0,
   },
   globals: {
     Office: 'readonly',

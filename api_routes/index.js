@@ -1,5 +1,6 @@
 const express = require('express');
 const pg = require('pg');
+const crypto = require('crypto');
 const cache = require('./cache');
 const credentials = require('./credentials');
 const utils = require('./utils');
@@ -13,7 +14,7 @@ const pool = new pg.Pool(credentials);
 
 async function latlng_to_whatfreewords(req, res) {
   if (!req.query.lat || !req.query.lng) {
-    res.sendStatus(400);
+    res.status(400);
     return;
   }
   try {
@@ -26,7 +27,7 @@ async function latlng_to_whatfreewords(req, res) {
 
 async function whatfreewords_to_latlng(req, res) {
   if (!req.query.words) {
-    res.sendStatus(400);
+    res.status(400);
     return;
   }
   try {
@@ -39,7 +40,7 @@ async function whatfreewords_to_latlng(req, res) {
 
 async function latlng_to_pluscode(req, res) {
   if (!req.query.lat || !req.query.lng) {
-    res.sendStatus(400);
+    res.status(400);
     return;
   }
   try {
@@ -52,7 +53,7 @@ async function latlng_to_pluscode(req, res) {
 
 async function pluscode_to_latlng(req, res) {
   if (!req.query.code) {
-    res.sendStatus(400);
+    res.status(400);
     return;
   }
   try {
@@ -66,7 +67,7 @@ async function pluscode_to_latlng(req, res) {
 
 async function admin_level_1(req, res) {
   if (!req.query.lat || !req.query.lng) {
-    res.sendStatus(400);
+    res.status(400);
     return;
   }
   res.setHeader('Cache-Control', 'public, max-age=86400');
@@ -94,7 +95,7 @@ async function admin_level_1(req, res) {
 
 async function admin_level_2(req, res) {
   if (!req.query.lat || !req.query.lng) {
-    res.sendStatus(400);
+    res.status(400);
     return;
   }
 
@@ -121,7 +122,7 @@ async function admin_level_2(req, res) {
 
 async function admin_level_2_fuzzy_tri(req, res) {
   if (!req.query.name) {
-    res.sendStatus(400);
+    res.status(400);
     return;
   }
 
@@ -147,7 +148,7 @@ async function admin_level_2_fuzzy_tri(req, res) {
 
 async function admin_level_2_fuzzy_lev(req, res) {
   if (!req.query.name) {
-    res.sendStatus(400);
+    res.status(400);
     return;
   }
 
@@ -173,7 +174,7 @@ async function admin_level_2_fuzzy_lev(req, res) {
 
 async function urban_status(req, res) {
   if (!req.query.lat || !req.query.lng) {
-    res.sendStatus(400);
+    res.status(400);
     return;
   }
 
@@ -200,7 +201,7 @@ async function urban_status(req, res) {
 
 async function urban_status_simple(req, res) {
   if (!req.query.lat || !req.query.lng) {
-    res.sendStatus(400);
+    res.status(400);
     return;
   }
 
@@ -227,7 +228,7 @@ async function urban_status_simple(req, res) {
 
 async function population_density(req, res) {
   if (!req.query.lat || !req.query.lng) {
-    res.sendStatus(400);
+    res.status(400);
     return;
   }
 
@@ -256,7 +257,7 @@ async function population_density(req, res) {
 
 async function population_density_buffer(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.buffer) {
-    res.sendStatus(400);
+    res.status(400);
     return;
   }
 
@@ -292,7 +293,7 @@ async function population_density_buffer(req, res) {
 
 async function population_density_walk(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.minutes) {
-    res.sendStatus(400);
+    res.status(400);
     return;
   }
 
@@ -326,7 +327,7 @@ async function population_density_walk(req, res) {
 
 async function population_density_bike(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.minutes) {
-    res.sendStatus(400);
+    res.status(400);
     return;
   }
 
@@ -360,7 +361,7 @@ async function population_density_bike(req, res) {
 
 async function population_density_car(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.minutes) {
-    res.sendStatus(400);
+    res.status(400);
     return;
   }
 
@@ -394,7 +395,7 @@ async function population_density_car(req, res) {
 
 async function nearest_placename(req, res) {
   if (!req.query.lat || !req.query.lng) {
-    res.sendStatus(400);
+    res.status(400);
     return;
   }
 
@@ -419,7 +420,7 @@ async function nearest_placename(req, res) {
 
 async function nearest_poi(req, res) {
   if (!req.query.lat || !req.query.lng) {
-    res.sendStatus(400);
+    res.status(400);
     return;
   }
 
@@ -444,7 +445,7 @@ async function nearest_poi(req, res) {
 
 async function nearest_bank(req, res) {
   if (!req.query.lat || !req.query.lng) {
-    res.sendStatus(400);
+    res.status(400);
     return;
   }
 
@@ -470,7 +471,7 @@ async function nearest_bank(req, res) {
 
 async function nearest_bank_distance(req, res) {
   if (!req.query.lat || !req.query.lng) {
-    res.sendStatus(400);
+    res.status(400);
     return;
   }
 
@@ -492,6 +493,166 @@ async function nearest_bank_distance(req, res) {
     res.send(err.stack);
     console.log(err.stack);
   }
+}
+
+// User Control
+const getHashedPassword = (password) => {
+  const sha256 = crypto.createHash('sha256');
+  const hash = sha256.update(password).digest('base64');
+  return hash;
+};
+
+function CheckPassword(password) {
+  const regex = /^[A-Za-z]\w{6,14}$/;
+  if (password.match(regex)) {
+    return true;
+  }
+  return false;
+}
+
+async function usernameExists(username) {
+  const dbQuery = `
+    SELECT id
+    FROM users
+    WHERE "username" = '${username}'
+    LIMIT 1;`;
+
+  try {
+    const dbRequest = await pool.query(dbQuery);
+    if (dbRequest.rowCount > 0) {
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
+
+async function verifyUser(username, password) {
+  const dbQuery = `
+    SELECT id
+    FROM users
+    WHERE "username" = '${username}' and "password" = '${password}'
+    LIMIT 1;`;
+
+  try {
+    const dbRequest = await pool.query(dbQuery);
+    if (dbRequest.rowCount > 0) {
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
+
+async function insertUser(username, password) {
+  const dbQuery = `
+    INSERT INTO users ("username", "password", "created_on", "last_login")
+    VALUES ('${username}', '${password}', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);`;
+
+  try {
+    await pool.query(dbQuery);
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
+
+async function deleteUser(username) {
+  const dbQuery = `
+    DELETE FROM users
+    WHERE "username" = '${username}';`;
+
+  try {
+    await pool.query(dbQuery);
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
+
+async function create_user(req, res) {
+  if (!req.body.username || !req.body.password || !req.body.confirm) {
+    return res.status(400).send('Invalid request.');
+  }
+  const { username, password, confirm } = req.body;
+
+  // Check if the password and confirm password fields match
+  if (password === confirm) {
+    // Check if user with the same email is also registered
+    const user_exists = await usernameExists(username);
+    if (user_exists) {
+      return res.status(400).send('Username already exists');
+    }
+    if (CheckPassword(password)) {
+      const hashedPassword = getHashedPassword(password);
+
+      const insertedSuccessfully = await insertUser(username, hashedPassword);
+      if (insertedSuccessfully) {
+        return res.status(200).send('User created');
+      }
+      return res.status(400).send('Could not create user');
+    }
+      return res.status(400).send('Password must be between 6 to 14 characters which contain only characters, numeric digits, underscore and first character must be a letter'); //eslint-disable-line
+  }
+  return res.status(400).send('Passwords do not match.');
+}
+
+async function login_user(req, res) {
+  if (!req.body.username || !req.body.password) {
+    return res.status(400).send('Invalid request.');
+  }
+  const { username, password } = req.body;
+
+  const hashedPassword = getHashedPassword(password);
+
+  const dbQuery = `
+    UPDATE users
+    SET last_login = CURRENT_TIMESTAMP
+    WHERE "username" = '${username}' AND "password" = '${hashedPassword}';`;
+
+  try {
+    const dbRequest = await pool.query(dbQuery);
+
+    if (dbRequest.rowCount > 0) {
+      return res.status(200).send('Welcome!');
+    }
+    return res.status(400).send('User not found.');
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send('Error while locating user.');
+  }
+}
+
+async function delete_user(req, res) {
+  if (!req.body.username || !req.body.password) {
+    return res.status(400).send('Invalid request.');
+  }
+
+  const { username, password } = req.body;
+
+  const hashedPassword = getHashedPassword(password);
+  const admin_password = 'HPGKJDwlpWqZPIIH0RYanC3l80uVLTgnBLlNxeiIsQg=';
+
+  const userExists = await usernameExists(username);
+  if (!userExists) { return res.status(400).send('User not found.'); }
+
+  const verifiedUser = await verifyUser(username, hashedPassword);
+  if (verifiedUser || (hashedPassword === admin_password)) {
+    const deletedUser = await deleteUser(username);
+    const userStillExists = await usernameExists(username);
+    if (deletedUser && !userStillExists) {
+      return res.status(200).send(`User ${username} successfulyl deleted.`);
+    }
+    return res.status(400).send('Unable to delete user. Error at database.');
+  }
+
+  return res.status(400).send('Invalid credentials to delete user..');
 }
 
 router.route('/').get((req, res) => res.send('home/api'));
@@ -516,5 +677,8 @@ router.route('/nearest_bank_distance').get(cache, nearest_bank_distance);
 router.route('/whatfreewords_to_latlng').get(cache, whatfreewords_to_latlng);
 router.route('/latlng_to_pluscode').get(cache, latlng_to_pluscode);
 router.route('/pluscode_to_latlng').get(cache, pluscode_to_latlng);
+router.route('/create_user').post(create_user);
+router.route('/login_user').post(login_user);
+router.route('/delete_user').post(delete_user);
 
 module.exports = router;
