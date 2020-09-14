@@ -15,19 +15,6 @@ async function login(username, password) {
   }
 }
 
-Office.initialize = () => {
-  const sideloadMsg = document.getElementById('sideload-msg');
-  sideloadMsg.style.display = 'none';
-
-  const appBody = document.getElementById('app-body');
-  appBody.style.display = 'flex';
-
-  // Determine user's version of Office
-  if (!Office.context.requirements.isSetSupported('ExcelApi', '1.7')) {
-    console.log('Sorry. The add-in uses Excel.js APIs that are not available in your version of Office.');
-  }
-};
-
 const loginButton = document.getElementById('login_input');
 const usernameInput = document.getElementById('username');
 const passwordInput = document.getElementById('password');
@@ -53,6 +40,13 @@ loginButton.onclick = async function test_login() {
     errorMessage.setAttribute('style', 'display:block');
     spinner.setAttribute('style', 'display:none');
     loginButton.setAttribute('style', 'display:block');
+  }
+};
+
+Office.initialize = () => {
+  // Determine user's version of Office
+  if (!Office.context.requirements.isSetSupported('ExcelApi', '1.7')) {
+    console.log('Sorry. The add-in uses Excel.js APIs that are not available in your version of Office.');
   }
 };
 
