@@ -46,6 +46,10 @@ function login(username, password) {
                     console.log(postObject);
                     return [4 /*yield*/, fetch('https://satf.azurewebsites.net/api/login_user', {
                             method: 'post',
+                            headers: {
+                                Accept: 'application/json',
+                                'Content-Type': 'application/json',
+                            },
                             body: postObject,
                         })];
                 case 1:

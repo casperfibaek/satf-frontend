@@ -24,7 +24,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(cors({ allowedHeaders: ['Authorization'] }));
+app.use(cors({ allowedHeaders: ['Authorization', 'Accept', 'Content-Type'] }));
 app.use(nocache());
 app.use(compression());
 
