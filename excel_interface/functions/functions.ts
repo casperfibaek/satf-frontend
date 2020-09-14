@@ -3,9 +3,10 @@
 const apiUrl = 'https://satf.azurewebsites.net/api/';
 
 // ----------------------- Utils -----------------------
-function makeRequest(method, url, timeout = 12000) {
+function satfApiRequest(method, url, timeout = 12000) {
   return new Promise(((resolve, reject) => {
     const xhr = new XMLHttpRequest();
+    xhr.setRequestHeader('Authorization', 'casper:golden_ticket');
     xhr.open(method, url);
     xhr.timeout = timeout;
     xhr.onload = function changeHappened() {
@@ -112,7 +113,7 @@ function isValidWhatFreeWords(str) {
 
 function What3WordsToLatLng(words) {
   return new Promise((resolve, reject) => {
-    makeRequest('get', `${apiUrl}whatfreewords_to_latlng?words=${words}`)
+    satfApiRequest('get', `${apiUrl}whatfreewords_to_latlng?words=${words}`)
       .then((value) => {
         resolve(value);
       })
@@ -124,7 +125,7 @@ function What3WordsToLatLng(words) {
 
 function PlusCodeToLatLng(code) {
   return new Promise((resolve, reject) => {
-    makeRequest('get', `${apiUrl}pluscode_to_latlng?code=${code}`)
+    satfApiRequest('get', `${apiUrl}pluscode_to_latlng?code=${code}`)
       .then((value) => {
         resolve(value);
       })
@@ -141,7 +142,7 @@ function getLatLngInfo(baseurl, latitude, longitude = false) {
         const coords = JSON.parse(latlng);
 
         return new Promise(((resolve, reject) => {
-          makeRequest('get', `${baseurl}?lat=${coords[0]}&lng=${coords[1]}`)
+          satfApiRequest('get', `${baseurl}?lat=${coords[0]}&lng=${coords[1]}`)
             .then((value) => {
               resolve(value);
             })
@@ -155,7 +156,7 @@ function getLatLngInfo(baseurl, latitude, longitude = false) {
         const coords = JSON.parse(latlng);
 
         return new Promise(((resolve, reject) => {
-          makeRequest('get', `${baseurl}?lat=${coords[0]}&lng=${coords[1]}`)
+          satfApiRequest('get', `${baseurl}?lat=${coords[0]}&lng=${coords[1]}`)
             .then((value) => {
               resolve(value);
             })
@@ -165,7 +166,7 @@ function getLatLngInfo(baseurl, latitude, longitude = false) {
     }
 
     return new Promise(((resolve, reject) => {
-      makeRequest('get', `${baseurl}?lat=${latitude}&lng=${longitude}`)
+      satfApiRequest('get', `${baseurl}?lat=${latitude}&lng=${longitude}`)
         .then((value) => {
           resolve(value);
         })
@@ -196,7 +197,7 @@ const g = getGlobal() as any;
 
 function LatLngToWhatFreeWords(latitude, longitude) {
   return new Promise((resolve, reject) => {
-    makeRequest('get', `${apiUrl}latlng_to_whatfreewords?lat=${latitude}&lng=${longitude}`)
+    satfApiRequest('get', `${apiUrl}latlng_to_whatfreewords?lat=${latitude}&lng=${longitude}`)
       .then((value) => {
         resolve(value);
       })
@@ -209,7 +210,7 @@ g.LatLngToWhatFreeWords = LatLngToWhatFreeWords;
 
 function LatLngToPluscode(latitude, longitude) {
   return new Promise((resolve, reject) => {
-    makeRequest('get', `${apiUrl}latlng_to_pluscode?lat=${latitude}&lng=${longitude}`)
+    satfApiRequest('get', `${apiUrl}latlng_to_pluscode?lat=${latitude}&lng=${longitude}`)
       .then((value) => {
         resolve(value);
       })
@@ -250,7 +251,7 @@ function PopulationDensityBuffer(bufferMeters, latitude, longitude = false) {
         const lng = coords[1];
 
         return new Promise((resolve, reject) => {
-          makeRequest('get', url(bufferMeters, lat, lng))
+          satfApiRequest('get', url(bufferMeters, lat, lng))
             .then((value) => {
               resolve(Number(value));
             })
@@ -268,7 +269,7 @@ function PopulationDensityBuffer(bufferMeters, latitude, longitude = false) {
         const lng = coords[1];
 
         return new Promise((resolve, reject) => {
-          makeRequest('get', url(bufferMeters, lat, lng))
+          satfApiRequest('get', url(bufferMeters, lat, lng))
             .then((value) => {
               resolve(Number(value));
             })
@@ -283,7 +284,7 @@ function PopulationDensityBuffer(bufferMeters, latitude, longitude = false) {
     const lng = longitude;
 
     return new Promise((resolve, reject) => {
-      makeRequest('get', url(bufferMeters, lat, lng))
+      satfApiRequest('get', url(bufferMeters, lat, lng))
         .then((value) => { resolve(Number(value)); })
         .catch((err) => {
           reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
@@ -306,7 +307,7 @@ function PopulationDensityWalk(minutes, latitude, longitude = false) {
         const lng = coords[1];
 
         return new Promise((resolve, reject) => {
-          makeRequest('get', url(minutes, lat, lng))
+          satfApiRequest('get', url(minutes, lat, lng))
             .then((value) => { resolve(Number(value)); })
             .catch((err) => {
               reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
@@ -322,7 +323,7 @@ function PopulationDensityWalk(minutes, latitude, longitude = false) {
         const lng = coords[1];
 
         return new Promise((resolve, reject) => {
-          makeRequest('get', url(minutes, lat, lng))
+          satfApiRequest('get', url(minutes, lat, lng))
             .then((value) => { resolve(Number(value)); })
             .catch((err) => {
               reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
@@ -335,7 +336,7 @@ function PopulationDensityWalk(minutes, latitude, longitude = false) {
     const lng = longitude;
 
     return new Promise((resolve, reject) => {
-      makeRequest('get', url(minutes, lat, lng))
+      satfApiRequest('get', url(minutes, lat, lng))
         .then((value) => { resolve(Number(value)); })
         .catch((err) => {
           reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
@@ -358,7 +359,7 @@ function PopulationDensityBike(minutes, latitude, longitude = false) {
         const lng = coords[1];
 
         return new Promise((resolve, reject) => {
-          makeRequest('get', url(minutes, lat, lng))
+          satfApiRequest('get', url(minutes, lat, lng))
             .then((value) => { resolve(Number(value)); })
             .catch((err) => {
               reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
@@ -374,7 +375,7 @@ function PopulationDensityBike(minutes, latitude, longitude = false) {
         const lng = coords[1];
 
         return new Promise((resolve, reject) => {
-          makeRequest('get', url(minutes, lat, lng))
+          satfApiRequest('get', url(minutes, lat, lng))
             .then((value) => { resolve(Number(value)); })
             .catch((err) => {
               reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
@@ -387,7 +388,7 @@ function PopulationDensityBike(minutes, latitude, longitude = false) {
     const lng = longitude;
 
     return new Promise((resolve, reject) => {
-      makeRequest('get', url(minutes, lat, lng))
+      satfApiRequest('get', url(minutes, lat, lng))
         .then((value) => { resolve(Number(value)); })
         .catch((err) => {
           reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
@@ -410,7 +411,7 @@ function PopulationDensityCar(minutes, latitude, longitude = false) {
         const lng = coords[1];
 
         return new Promise((resolve, reject) => {
-          makeRequest('get', url(minutes, lat, lng))
+          satfApiRequest('get', url(minutes, lat, lng))
             .then((value) => { resolve(Number(value)); })
             .catch((err) => {
               reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
@@ -426,7 +427,7 @@ function PopulationDensityCar(minutes, latitude, longitude = false) {
         const lng = coords[1];
 
         return new Promise((resolve, reject) => {
-          makeRequest('get', url(minutes, lat, lng))
+          satfApiRequest('get', url(minutes, lat, lng))
             .then((value) => { resolve(Number(value)); })
             .catch((err) => {
               reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
@@ -439,7 +440,7 @@ function PopulationDensityCar(minutes, latitude, longitude = false) {
     const lng = longitude;
 
     return new Promise((resolve, reject) => {
-      makeRequest('get', url(minutes, lat, lng))
+      satfApiRequest('get', url(minutes, lat, lng))
         .then((value) => { resolve(Number(value)); })
         .catch((err) => {
           reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
@@ -482,7 +483,7 @@ g.AdminLevel2 = AdminLevel2;
 
 function AdminLevel2FuzzyLev(name) {
   return new Promise(((resolve, reject) => {
-    makeRequest('get', `${apiUrl}admin_level_2_fuzzy_lev?name=${name}`)
+    satfApiRequest('get', `${apiUrl}admin_level_2_fuzzy_lev?name=${name}`)
       .then((value) => {
         resolve(value);
       })
@@ -495,7 +496,7 @@ g.AdminLevel2FuzzyLev = AdminLevel2FuzzyLev;
 
 function AdminLevel2FuzzyTri(name) {
   return new Promise(((resolve, reject) => {
-    makeRequest('get', `${apiUrl}admin_level_2_fuzzy_tri?name=${name}`)
+    satfApiRequest('get', `${apiUrl}admin_level_2_fuzzy_tri?name=${name}`)
       .then((value) => {
         resolve(value);
       })

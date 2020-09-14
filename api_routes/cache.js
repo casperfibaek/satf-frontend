@@ -7,22 +7,22 @@ const requestStore = {};
 const keepFor = 7200000; // 2 hours
 
 module.exports = function requestCache(req, res, next) {
-    const key = req.url;
+  const key = req.url;
 
-    // If key exists, send old reply. Does not refresh cache.
-    if (requestStore[key]) {
-        res.send(requestStore[key]);
+  // If key exists, send old reply. Does not refresh cache.
+  if (requestStore[key]) {
+    res.send(requestStore[key]);
 
     // Save the response in the keystore and go to the next function in the chain.
-    } else {
-        res.sendResponse = res.send;
-        res.send = (body) => {
-            requestStore[key] = body;
-            setTimeout(() => {
-                delete requestStore[key];
-            }, keepFor);
-            res.sendResponse(body);
-        };
-        next();
-    }
+  } else {
+    res.sendResponse = res.send;
+    res.send = (body) => {
+      requestStore[key] = body;
+      setTimeout(() => {
+        delete requestStore[key];
+      }, keepFor);
+      res.sendResponse(body);
+    };
+    next();
+  }
 };

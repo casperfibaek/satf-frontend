@@ -1,7 +1,9 @@
 const express = require('express');
 const pg = require('pg');
 const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 const cache = require('./cache');
+const auth = require('./auth');
 const credentials = require('./credentials');
 const utils = require('./utils');
 const Wfw = require('./assets/whatfreewords');
@@ -620,7 +622,11 @@ async function login_user(req, res) {
     const dbRequest = await pool.query(dbQuery);
 
     if (dbRequest.rowCount > 0) {
-      return res.status(200).send('Welcome!');
+      const token = jwt.sign({ userId: username }, credentials.admin_key, { expiresIn: '24h' });
+      return res.status(200).json({
+        userId: username,
+        token,
+      });
     }
     return res.status(400).send('User not found.');
   } catch (err) {
@@ -637,13 +643,12 @@ async function delete_user(req, res) {
   const { username, password } = req.body;
 
   const hashedPassword = getHashedPassword(password);
-  const admin_password = 'HPGKJDwlpWqZPIIH0RYanC3l80uVLTgnBLlNxeiIsQg=';
 
   const userExists = await usernameExists(username);
   if (!userExists) { return res.status(400).send('User not found.'); }
 
   const verifiedUser = await verifyUser(username, hashedPassword);
-  if (verifiedUser || (hashedPassword === admin_password)) {
+  if (verifiedUser || (hashedPassword === credentials.admin_key)) {
     const deletedUser = await deleteUser(username);
     const userStillExists = await usernameExists(username);
     if (deletedUser && !userStillExists) {
@@ -658,25 +663,25 @@ async function delete_user(req, res) {
 router.route('/').get((req, res) => res.send('home/api'));
 
 // // GET
-router.route('/latlng_to_whatfreewords').get(cache, latlng_to_whatfreewords);
-router.route('/population_density').get(cache, population_density);
-router.route('/population_density_walk').get(cache, population_density_walk);
-router.route('/population_density_bike').get(cache, population_density_bike);
-router.route('/population_density_car').get(cache, population_density_car);
-router.route('/population_density_buffer').get(cache, population_density_buffer);
-router.route('/urban_status').get(cache, urban_status);
-router.route('/urban_status_simple').get(cache, urban_status_simple);
-router.route('/admin_level_1').get(cache, admin_level_1);
-router.route('/admin_level_2').get(cache, admin_level_2);
-router.route('/admin_level_2_fuzzy_tri').get(cache, admin_level_2_fuzzy_tri);
-router.route('/admin_level_2_fuzzy_lev').get(cache, admin_level_2_fuzzy_lev);
-router.route('/nearest_placename').get(cache, nearest_placename);
-router.route('/nearest_poi').get(cache, nearest_poi);
-router.route('/nearest_bank').get(cache, nearest_bank);
-router.route('/nearest_bank_distance').get(cache, nearest_bank_distance);
-router.route('/whatfreewords_to_latlng').get(cache, whatfreewords_to_latlng);
-router.route('/latlng_to_pluscode').get(cache, latlng_to_pluscode);
-router.route('/pluscode_to_latlng').get(cache, pluscode_to_latlng);
+router.route('/latlng_to_whatfreewords').get(auth, cache, latlng_to_whatfreewords);
+router.route('/population_density').get(auth, cache, population_density);
+router.route('/population_density_walk').get(auth, cache, population_density_walk);
+router.route('/population_density_bike').get(auth, cache, population_density_bike);
+router.route('/population_density_car').get(auth, cache, population_density_car);
+router.route('/population_density_buffer').get(auth, cache, population_density_buffer);
+router.route('/urban_status').get(auth, cache, urban_status);
+router.route('/urban_status_simple').get(auth, cache, urban_status_simple);
+router.route('/admin_level_1').get(auth, cache, admin_level_1);
+router.route('/admin_level_2').get(auth, cache, admin_level_2);
+router.route('/admin_level_2_fuzzy_tri').get(auth, cache, admin_level_2_fuzzy_tri);
+router.route('/admin_level_2_fuzzy_lev').get(auth, cache, admin_level_2_fuzzy_lev);
+router.route('/nearest_placename').get(auth, cache, nearest_placename);
+router.route('/nearest_poi').get(auth, cache, nearest_poi);
+router.route('/nearest_bank').get(auth, cache, nearest_bank);
+router.route('/nearest_bank_distance').get(auth, cache, nearest_bank_distance);
+router.route('/whatfreewords_to_latlng').get(auth, cache, whatfreewords_to_latlng);
+router.route('/latlng_to_pluscode').get(auth, cache, latlng_to_pluscode);
+router.route('/pluscode_to_latlng').get(auth, cache, pluscode_to_latlng);
 router.route('/create_user').post(create_user);
 router.route('/login_user').post(login_user);
 router.route('/delete_user').post(delete_user);

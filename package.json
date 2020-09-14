@@ -3,7 +3,7 @@
   "version": "0.2.3",
   "private": true,
   "scripts": {
-    "start": "node ./app.js --trace-warnings",
+    "start": "node ./app.js",
     "test": "tape ./tests/timing.js",
     "debug": "office-addin-debugging start ./excel_interface/manifest.xml",
     "validate": "office-addin-manifest validate ./excel_interface/manifest_local.xml"
@@ -15,6 +15,7 @@
     "cors": "^2.8.5",
     "crypto-js": "^4.0.0",
     "express": "~4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "morgan": "~1.10.0",
     "nocache": "^2.1.0",
     "pg": "^8.3.3"
