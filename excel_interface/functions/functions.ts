@@ -6,8 +6,8 @@ const apiUrl = 'https://satf.azurewebsites.net/api/';
 function satfApiRequest(method, url, timeout = 12000) {
   return new Promise(((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.setRequestHeader('Authorization', 'casper:golden_ticket');
     xhr.open(method, url);
+    xhr.setRequestHeader('Authorization', 'casper:golden_ticket');
     xhr.timeout = timeout;
     xhr.onload = function changeHappened() {
       if (this.readyState === 4 && this.status >= 200 && this.status < 300) {

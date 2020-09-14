@@ -2,11 +2,12 @@
 /* CustomFunctions, executed in Excel cells. Metadata defined in ./functions_meta.json */
 var apiUrl = 'https://satf.azurewebsites.net/api/';
 // ----------------------- Utils -----------------------
-function makeRequest(method, url, timeout) {
+function satfApiRequest(method, url, timeout) {
     if (timeout === void 0) { timeout = 12000; }
     return new Promise((function (resolve, reject) {
         var xhr = new XMLHttpRequest();
         xhr.open(method, url);
+        xhr.setRequestHeader('Authorization', 'casper:golden_ticket');
         xhr.timeout = timeout;
         xhr.onload = function changeHappened() {
             if (this.readyState === 4 && this.status >= 200 && this.status < 300) {
@@ -108,7 +109,7 @@ function isValidWhatFreeWords(str) {
 }
 function What3WordsToLatLng(words) {
     return new Promise(function (resolve, reject) {
-        makeRequest('get', apiUrl + "whatfreewords_to_latlng?words=" + words)
+        satfApiRequest('get', apiUrl + "whatfreewords_to_latlng?words=" + words)
             .then(function (value) {
             resolve(value);
         })
@@ -119,7 +120,7 @@ function What3WordsToLatLng(words) {
 }
 function PlusCodeToLatLng(code) {
     return new Promise(function (resolve, reject) {
-        makeRequest('get', apiUrl + "pluscode_to_latlng?code=" + code)
+        satfApiRequest('get', apiUrl + "pluscode_to_latlng?code=" + code)
             .then(function (value) {
             resolve(value);
         })
@@ -135,7 +136,7 @@ function getLatLngInfo(baseurl, latitude, longitude) {
             return What3WordsToLatLng(latitude).then(function (latlng) {
                 var coords = JSON.parse(latlng);
                 return new Promise((function (resolve, reject) {
-                    makeRequest('get', baseurl + "?lat=" + coords[0] + "&lng=" + coords[1])
+                    satfApiRequest('get', baseurl + "?lat=" + coords[0] + "&lng=" + coords[1])
                         .then(function (value) {
                         resolve(value);
                     })
@@ -147,7 +148,7 @@ function getLatLngInfo(baseurl, latitude, longitude) {
             return PlusCodeToLatLng(latitude).then(function (latlng) {
                 var coords = JSON.parse(latlng);
                 return new Promise((function (resolve, reject) {
-                    makeRequest('get', baseurl + "?lat=" + coords[0] + "&lng=" + coords[1])
+                    satfApiRequest('get', baseurl + "?lat=" + coords[0] + "&lng=" + coords[1])
                         .then(function (value) {
                         resolve(value);
                     })
@@ -156,7 +157,7 @@ function getLatLngInfo(baseurl, latitude, longitude) {
             });
         }
         return new Promise((function (resolve, reject) {
-            makeRequest('get', baseurl + "?lat=" + latitude + "&lng=" + longitude)
+            satfApiRequest('get', baseurl + "?lat=" + latitude + "&lng=" + longitude)
                 .then(function (value) {
                 resolve(value);
             })
@@ -185,7 +186,7 @@ var g = getGlobal();
 // ----------------------- CustomFunctions -----------------------
 function LatLngToWhatFreeWords(latitude, longitude) {
     return new Promise(function (resolve, reject) {
-        makeRequest('get', apiUrl + "latlng_to_whatfreewords?lat=" + latitude + "&lng=" + longitude)
+        satfApiRequest('get', apiUrl + "latlng_to_whatfreewords?lat=" + latitude + "&lng=" + longitude)
             .then(function (value) {
             resolve(value);
         })
@@ -197,7 +198,7 @@ function LatLngToWhatFreeWords(latitude, longitude) {
 g.LatLngToWhatFreeWords = LatLngToWhatFreeWords;
 function LatLngToPluscode(latitude, longitude) {
     return new Promise(function (resolve, reject) {
-        makeRequest('get', apiUrl + "latlng_to_pluscode?lat=" + latitude + "&lng=" + longitude)
+        satfApiRequest('get', apiUrl + "latlng_to_pluscode?lat=" + latitude + "&lng=" + longitude)
             .then(function (value) {
             resolve(value);
         })
@@ -236,7 +237,7 @@ function PopulationDensityBuffer(bufferMeters, latitude, longitude) {
                 var lat = coords[0];
                 var lng = coords[1];
                 return new Promise(function (resolve, reject) {
-                    makeRequest('get', url(bufferMeters, lat, lng))
+                    satfApiRequest('get', url(bufferMeters, lat, lng))
                         .then(function (value) {
                         resolve(Number(value));
                     })
@@ -252,7 +253,7 @@ function PopulationDensityBuffer(bufferMeters, latitude, longitude) {
                 var lat = coords[0];
                 var lng = coords[1];
                 return new Promise(function (resolve, reject) {
-                    makeRequest('get', url(bufferMeters, lat, lng))
+                    satfApiRequest('get', url(bufferMeters, lat, lng))
                         .then(function (value) {
                         resolve(Number(value));
                     })
@@ -265,7 +266,7 @@ function PopulationDensityBuffer(bufferMeters, latitude, longitude) {
         var lat_1 = latitude;
         var lng_1 = longitude;
         return new Promise(function (resolve, reject) {
-            makeRequest('get', url(bufferMeters, lat_1, lng_1))
+            satfApiRequest('get', url(bufferMeters, lat_1, lng_1))
                 .then(function (value) { resolve(Number(value)); })
                 .catch(function (err) {
                 reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
@@ -288,7 +289,7 @@ function PopulationDensityWalk(minutes, latitude, longitude) {
                 var lat = coords[0];
                 var lng = coords[1];
                 return new Promise(function (resolve, reject) {
-                    makeRequest('get', url(minutes, lat, lng))
+                    satfApiRequest('get', url(minutes, lat, lng))
                         .then(function (value) { resolve(Number(value)); })
                         .catch(function (err) {
                         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
@@ -302,7 +303,7 @@ function PopulationDensityWalk(minutes, latitude, longitude) {
                 var lat = coords[0];
                 var lng = coords[1];
                 return new Promise(function (resolve, reject) {
-                    makeRequest('get', url(minutes, lat, lng))
+                    satfApiRequest('get', url(minutes, lat, lng))
                         .then(function (value) { resolve(Number(value)); })
                         .catch(function (err) {
                         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
@@ -313,7 +314,7 @@ function PopulationDensityWalk(minutes, latitude, longitude) {
         var lat_2 = latitude;
         var lng_2 = longitude;
         return new Promise(function (resolve, reject) {
-            makeRequest('get', url(minutes, lat_2, lng_2))
+            satfApiRequest('get', url(minutes, lat_2, lng_2))
                 .then(function (value) { resolve(Number(value)); })
                 .catch(function (err) {
                 reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
@@ -336,7 +337,7 @@ function PopulationDensityBike(minutes, latitude, longitude) {
                 var lat = coords[0];
                 var lng = coords[1];
                 return new Promise(function (resolve, reject) {
-                    makeRequest('get', url(minutes, lat, lng))
+                    satfApiRequest('get', url(minutes, lat, lng))
                         .then(function (value) { resolve(Number(value)); })
                         .catch(function (err) {
                         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
@@ -350,7 +351,7 @@ function PopulationDensityBike(minutes, latitude, longitude) {
                 var lat = coords[0];
                 var lng = coords[1];
                 return new Promise(function (resolve, reject) {
-                    makeRequest('get', url(minutes, lat, lng))
+                    satfApiRequest('get', url(minutes, lat, lng))
                         .then(function (value) { resolve(Number(value)); })
                         .catch(function (err) {
                         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
@@ -361,7 +362,7 @@ function PopulationDensityBike(minutes, latitude, longitude) {
         var lat_3 = latitude;
         var lng_3 = longitude;
         return new Promise(function (resolve, reject) {
-            makeRequest('get', url(minutes, lat_3, lng_3))
+            satfApiRequest('get', url(minutes, lat_3, lng_3))
                 .then(function (value) { resolve(Number(value)); })
                 .catch(function (err) {
                 reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
@@ -384,7 +385,7 @@ function PopulationDensityCar(minutes, latitude, longitude) {
                 var lat = coords[0];
                 var lng = coords[1];
                 return new Promise(function (resolve, reject) {
-                    makeRequest('get', url(minutes, lat, lng))
+                    satfApiRequest('get', url(minutes, lat, lng))
                         .then(function (value) { resolve(Number(value)); })
                         .catch(function (err) {
                         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
@@ -398,7 +399,7 @@ function PopulationDensityCar(minutes, latitude, longitude) {
                 var lat = coords[0];
                 var lng = coords[1];
                 return new Promise(function (resolve, reject) {
-                    makeRequest('get', url(minutes, lat, lng))
+                    satfApiRequest('get', url(minutes, lat, lng))
                         .then(function (value) { resolve(Number(value)); })
                         .catch(function (err) {
                         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
@@ -409,7 +410,7 @@ function PopulationDensityCar(minutes, latitude, longitude) {
         var lat_4 = latitude;
         var lng_4 = longitude;
         return new Promise(function (resolve, reject) {
-            makeRequest('get', url(minutes, lat_4, lng_4))
+            satfApiRequest('get', url(minutes, lat_4, lng_4))
                 .then(function (value) { resolve(Number(value)); })
                 .catch(function (err) {
                 reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
@@ -452,7 +453,7 @@ function AdminLevel2(latitude, longitude) {
 g.AdminLevel2 = AdminLevel2;
 function AdminLevel2FuzzyLev(name) {
     return new Promise((function (resolve, reject) {
-        makeRequest('get', apiUrl + "admin_level_2_fuzzy_lev?name=" + name)
+        satfApiRequest('get', apiUrl + "admin_level_2_fuzzy_lev?name=" + name)
             .then(function (value) {
             resolve(value);
         })
@@ -464,7 +465,7 @@ function AdminLevel2FuzzyLev(name) {
 g.AdminLevel2FuzzyLev = AdminLevel2FuzzyLev;
 function AdminLevel2FuzzyTri(name) {
     return new Promise((function (resolve, reject) {
-        makeRequest('get', apiUrl + "admin_level_2_fuzzy_tri?name=" + name)
+        satfApiRequest('get', apiUrl + "admin_level_2_fuzzy_tri?name=" + name)
             .then(function (value) {
             resolve(value);
         })
