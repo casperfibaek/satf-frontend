@@ -37,20 +37,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 function login(username, password) {
     return __awaiter(this, void 0, void 0, function () {
-        var postObject, response, reponseJSON, err_1;
+        var response, reponseJSON, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    postObject = JSON.stringify({ username: username, password: password });
-                    console.log(postObject);
                     return [4 /*yield*/, fetch('https://satf.azurewebsites.net/api/login_user', {
                             method: 'post',
-                            headers: {
-                                Accept: 'application/json',
-                                'Content-Type': 'application/json',
-                            },
-                            body: postObject,
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ username: username, password: password }),
                         })];
                 case 1:
                     response = _a.sent();
@@ -58,7 +53,6 @@ function login(username, password) {
                     return [4 /*yield*/, response.json()];
                 case 2:
                     reponseJSON = _a.sent();
-                    console.log(reponseJSON);
                     localStorage.setItem('token', reponseJSON.username + ":" + reponseJSON.token);
                     return [3 /*break*/, 4];
                 case 3:
@@ -78,28 +72,47 @@ Office.initialize = function () {
     if (!Office.context.requirements.isSetSupported('ExcelApi', '1.7')) {
         console.log('Sorry. The add-in uses Excel.js APIs that are not available in your version of Office.');
     }
-    var funEl = document.getElementById('run');
-    funEl.onclick = function run() {
-        return __awaiter(this, void 0, void 0, function () {
-            var err_2;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, login('Elaine', 'bobhund2')];
-                    case 1:
-                        _a.sent();
-                        console.log('Successfully logged in!');
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_2 = _a.sent();
-                        console.log(err_2);
-                        return [3 /*break*/, 3];
-                    case 3: return [2 /*return*/];
-                }
-            });
+};
+var loginButton = document.getElementById('login_input');
+var usernameInput = document.getElementById('username');
+var passwordInput = document.getElementById('password');
+var loginForm = document.querySelector('.login');
+var welcomeForm = document.querySelector('.welcome');
+var welcomeText = document.querySelector('.welcome_text');
+var spinner = document.querySelector('.loader');
+var errorMessage = document.querySelector('.error_message');
+loginButton.onclick = function test_login() {
+    return __awaiter(this, void 0, void 0, function () {
+        var usernameValue, passwordValue, err_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    usernameValue = usernameInput.value;
+                    passwordValue = passwordInput.value;
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    spinner.setAttribute('style', 'display:block');
+                    loginButton.setAttribute('style', 'display:none');
+                    return [4 /*yield*/, login(usernameValue, passwordValue)];
+                case 2:
+                    _a.sent();
+                    loginForm.setAttribute('style', 'display:none');
+                    welcomeForm.setAttribute('style', 'display:block');
+                    welcomeText.innerHTML = usernameValue;
+                    console.log('Success');
+                    return [3 /*break*/, 4];
+                case 3:
+                    err_2 = _a.sent();
+                    errorMessage.innerHTML = 'Invalid credentials. Try again.';
+                    errorMessage.setAttribute('style', 'display:block');
+                    spinner.setAttribute('style', 'display:none');
+                    loginButton.setAttribute('style', 'display:block');
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
         });
-    };
+    });
 };
 console.log('Loaded: taskpane.js');
 //# sourceMappingURL=taskpane.js.map
