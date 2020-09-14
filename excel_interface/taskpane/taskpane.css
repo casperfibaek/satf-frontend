@@ -17,12 +17,12 @@ header{
  
 .login,
 .welcome{
-    width: 320px;
-    height: 320px;
+    width: auto;
+    height: auto;
     overflow: hidden;  
     margin: auto;  
     margin: 20 0 0 450px;  
-    padding: 80px;  
+    padding: 20px;  
     background: white;      
 }
 .error_message{
