@@ -209,8 +209,9 @@ function LatLngToPluscode(latitude, longitude) {
 }
 g.LatLngToPluscode = LatLngToPluscode;
 function helloWorld() {
+    var id = localStorage.getItem('token');
     console.log('hello hello - from new - see me?');
-    return 'hello rev2';
+    return "hello " + id;
 }
 g.helloWorld = helloWorld;
 function PopulationDensity(latitude, longitude) {

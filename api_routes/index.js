@@ -623,10 +623,7 @@ async function login_user(req, res) {
 
     if (dbRequest.rowCount > 0) {
       const token = jwt.sign({ userId: username }, credentials.admin_key, { expiresIn: '24h' });
-      return res.status(200).json({
-        userId: username,
-        token,
-      });
+      return res.status(200).json({ username, token });
     }
     return res.status(400).send('User not found.');
   } catch (err) {
