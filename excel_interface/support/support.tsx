@@ -1,6 +1,8 @@
-// import React from '../assets/react.development.js';
-// import ReactDOM from '../assets/react-dom.development.js';
-// import FluentUIReact from '../assets/fluentui-react.min.js';
+import React from '../assets/react.development.js';
+import ReactDOM from '../assets/react-dom.development.js';
+import FluentUIReact from '../assets/fluentui-react.min.js';
+
+const { ReactDOM, React, FluentUIReact } = window; // eslint-disable-line
 
 const divStyle = {
   fill: '#ba1223',
@@ -38,13 +40,12 @@ const Contact = () => {
         </FluentUIReact.Text>
       </div>
       <div>
-        <img src="images/helpdesk.png" alt="help desk"></img>
+        {/* <img src="images/helpdesk.png" alt="help desk"></img> */}
       </div>
     </FluentUIReact.Fabric>
   );
 };
 
-// export default Contact;
 ReactDOM.render(
   <React.StrictMode>
     <Contact />
@@ -52,5 +53,7 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root'),
 );
+
+// export default Contact;
 
 // <defs><style>.cls-1{fill:#ba1223;}</style></defs>

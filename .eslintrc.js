@@ -25,6 +25,9 @@ module.exports = {
     Excel: 'readonly',
     CustomFunctions: 'readonly',
     OfficeExtension: 'readonly',
-    L: 'readonly', // Leaflet
+    L: 'readonly', // Leaflet,
+    FluentUIReact: 'readonly',
+    ReactDOM: 'readonly',
+    React: 'readonly',
   },
 };
