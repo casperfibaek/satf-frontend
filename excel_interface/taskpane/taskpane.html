@@ -36,12 +36,29 @@
                 <input type="Password" name="password" id="password" placeholder="Password">
                 
                 <input type="button" name="login" id="login_input" value="Login">
+                <input type="button" name="register" id="register_input" value="Register User">
                 <div class="loader">Loading...</div>
                 <div class="error_message"></div>
             </form>
         </div>
         <div class="welcome">
-            <p>Welcome <p class=welcome_text></p>!</p>
+            <p>Welcome <span class=welcome_text></span>!</p>
+            <input type="button" name="logout" id="logout_input" value="Logout">
+            <input type="button" name="delete" id="delete_input" value="Delete User">
+        </div>
+        <div class="register_user">
+            <p style="text-align: center;"><span class=register_text>Register user here.</span></p>
+            <label><b>User Name</b></label>
+            <input type="text" name="username" id="username_register" placeholder="Username">    
+            
+            <label><b>Password</b></label>    
+            <input type="Password" name="password" id="password_register" placeholder="Password">
+
+            <label><b>Confirm Password</b></label>    
+            <input type="Password" name="confirm" id="confirm_register" placeholder="Password">
+
+            <input type="button" name="register" id="register_input_submit" value="Register">
+            <input type="button" name="back" id="back_input" value="Back">
         </div>
     </main>
     <script>console.log('Loaded: taskpane.html')</script>

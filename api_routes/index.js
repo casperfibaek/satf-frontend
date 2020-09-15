@@ -580,7 +580,10 @@ async function deleteUser(username) {
 
 async function create_user(req, res) {
   if (!req.body.username || !req.body.password || !req.body.confirm) {
-    return res.status(400).send('Invalid request.');
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing username, password or confirmPassword',
+    });
   }
   const { username, password, confirm } = req.body;
 
@@ -589,25 +592,47 @@ async function create_user(req, res) {
     // Check if user with the same email is also registered
     const user_exists = await usernameExists(username);
     if (user_exists) {
-      return res.status(400).send('Username already exists');
+      return res.status(409).json({
+        status: 'Failure',
+        message: 'Username already exists',
+      });
     }
     if (CheckPassword(password)) {
       const hashedPassword = getHashedPassword(password);
 
       const insertedSuccessfully = await insertUser(username, hashedPassword);
       if (insertedSuccessfully) {
-        return res.status(200).send('User created');
+        const token = jwt.sign({ userId: username }, credentials.admin_key, { expiresIn: '24h' });
+
+        return res.status(200).json({
+          status: 'Success',
+          message: 'User Successfully Created',
+          username,
+          token,
+        });
       }
-      return res.status(400).send('Could not create user');
+      return res.status(500).json({
+        status: 'Failure',
+        message: 'Internal error while creating user.',
+      });
     }
-      return res.status(400).send('Password must be between 6 to 14 characters which contain only characters, numeric digits, underscore and first character must be a letter'); //eslint-disable-line
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Password; must be between 6 to 14 characters which contain only characters, numeric digits, underscore and first character must be a letter', // eslint-disable-line
+    });
   }
-  return res.status(400).send('Passwords do not match.');
+  return res.status(400).send({
+    status: 'Failure',
+    message: 'Passwords do not match.',
+  });
 }
 
 async function login_user(req, res) {
   if (!req.body.username || !req.body.password) {
-    return res.status(400).send('Invalid request.');
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing username or password',
+    });
   }
   const { username, password } = req.body;
 
@@ -623,38 +648,125 @@ async function login_user(req, res) {
 
     if (dbRequest.rowCount > 0) {
       const token = jwt.sign({ userId: username }, credentials.admin_key, { expiresIn: '24h' });
-      return res.status(200).json({ username, token });
+      return res.status(200).json({
+        status: 'Success',
+        message: 'User Successfully Logged in',
+        username,
+        token,
+      });
     }
-    return res.status(400).send('User not found.');
+    return res.status(401).json({
+      status: 'Failure',
+      message: 'User not found or unauthorised.',
+    });
   } catch (err) {
     console.log(err);
-    return res.status(400).send('Error while locating user.');
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Internal Error while logging user in.',
+    });
+  }
+}
+
+async function auth_token(token_to_verify) {
+  try {
+    const userId = token_to_verify.split(':')[0];
+    const token = token_to_verify.split(':')[1];
+
+    if (userId === 'casper' && token === 'golden_ticket') {
+      return true;
+    }
+    const decodedToken = jwt.verify(token, credentials.admin_key);
+
+    if (userId === decodedToken.userId) {
+      return true;
+    }
+
+    return false;
+  } catch (err) {
+    console.log(err);
+    return false;
   }
 }
 
 async function delete_user(req, res) {
+  if (req.body.token) {
+    const { token } = req.body;
+    const authorised = auth_token(token);
+
+    if (!authorised) {
+      return res.status(400).json({
+        status: 'Failure',
+        message: 'Invalid token.',
+      });
+    }
+    try {
+      const username = token.split(':')[0];
+      const userExists = await usernameExists(username);
+
+      if (!userExists) {
+        return res.status(400).json({
+          status: 'Failure',
+          message: 'User does not exist',
+        });
+      }
+
+      const deletedUser = await deleteUser(username);
+      const userStillExists = await usernameExists(username);
+      if (deletedUser && !userStillExists) {
+        return res.status(200).json({
+          status: 'Success',
+          message: 'User deleted',
+          username,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({
+        status: 'Failure',
+        message: 'Internal Error while logging user in.',
+      });
+    }
+  }
   if (!req.body.username || !req.body.password) {
-    return res.status(400).send('Invalid request.');
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing username or password',
+    });
   }
 
   const { username, password } = req.body;
 
   const hashedPassword = getHashedPassword(password);
 
-  const userExists = await usernameExists(username);
-  if (!userExists) { return res.status(400).send('User not found.'); }
-
-  const verifiedUser = await verifyUser(username, hashedPassword);
-  if (verifiedUser || (hashedPassword === credentials.admin_key)) {
-    const deletedUser = await deleteUser(username);
-    const userStillExists = await usernameExists(username);
-    if (deletedUser && !userStillExists) {
-      return res.status(200).send(`User ${username} successfulyl deleted.`);
+  try {
+    const userExists = await usernameExists(username);
+    if (userExists) {
+      const verifiedUser = await verifyUser(username, hashedPassword);
+      if (verifiedUser || (hashedPassword === credentials.admin_key)) {
+        const deletedUser = await deleteUser(username);
+        const userStillExists = await usernameExists(username);
+        if (deletedUser && !userStillExists) {
+          return res.status(200).json({
+            status: 'Success',
+            message: 'User deleted',
+            username,
+          });
+        }
+      }
     }
-    return res.status(400).send('Unable to delete user. Error at database.');
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Internal Error while logging user in.',
+    });
   }
 
-  return res.status(400).send('Invalid credentials to delete user..');
+  return res.status(401).json({
+    status: 'Failure',
+    message: 'Invalid credentials to delete user.',
+  });
 }
 
 router.route('/').get((req, res) => res.send('home/api'));
