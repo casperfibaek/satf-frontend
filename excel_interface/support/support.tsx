@@ -1,15 +1,13 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Fabric, Text, initializeIcons, getTheme } from '@fluentui/react';
+// import { Fabric, Text, initializeIcons } from '../assets/fluentui-react.min.js';
 
 const divStyle = {
   fill: '#ba1223',
 };
 
 const Contact = () => {
-  initializeIcons();
+  FluentUIReact.initializeIcons();
   return (
-    <Fabric className="Contact">
+    <FluentUIReact.Fabric className="Contact">
       <div style={divStyle}>
         <svg
           id="Layer_1"
@@ -26,7 +24,7 @@ const Contact = () => {
         </svg>
       </div>
       <div>
-        <Text block variant="large">
+        <FluentUIReact.Text block variant="large">
           <h1>Contact Form</h1>
           <p>NIRAS A/S</p>
           <p>Sortemosevej 19</p>
@@ -35,12 +33,12 @@ const Contact = () => {
           <p>F: +45 4810 4300</p>
           <p>E: Send e-mail</p>
           <p>CVR-nr. 3729 5728</p>
-        </Text>
+        </FluentUIReact.Text>
       </div>
       <div>
         <img src="images/helpdesk.png" alt="help desk"></img>
       </div>
-    </Fabric>
+    </FluentUIReact.Fabric>
   );
 };
 
