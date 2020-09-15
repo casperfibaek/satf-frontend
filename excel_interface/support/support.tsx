@@ -1,4 +1,6 @@
-// import { Fabric, Text, initializeIcons } from '../assets/fluentui-react.min.js';
+// import React from '../assets/react.development.js';
+// import ReactDOM from '../assets/react-dom.development.js';
+// import FluentUIReact from '../assets/fluentui-react.min.js';
 
 const divStyle = {
   fill: '#ba1223',
