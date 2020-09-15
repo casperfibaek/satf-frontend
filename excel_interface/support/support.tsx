@@ -1,8 +1,8 @@
-import React from '../assets/react.development.js';
+import React from '../assets/react.development.js'; // eslint-disable-line
 import ReactDOM from '../assets/react-dom.development.js';
 import FluentUIReact from '../assets/fluentui-react.min.js';
 
-const { ReactDOM, React, FluentUIReact } = window; // eslint-disable-line
+const { ReactDOM, React, FluentUIReact } = window as any; // eslint-disable-line
 
 const divStyle = {
   fill: '#ba1223',

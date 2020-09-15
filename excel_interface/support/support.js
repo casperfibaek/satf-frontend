@@ -1,6 +1,6 @@
 System.register(["../assets/react.development.js"], function (exports_1, context_1) {
     "use strict";
-    var react_development_js_1, ReactDOM, React, FluentUIReact, divStyle, Contact;
+    var react_development_js_1, _a, ReactDOM, React, FluentUIReact, divStyle, Contact;
     var __moduleName = context_1 && context_1.id;
     return {
         setters: [
@@ -9,7 +9,7 @@ System.register(["../assets/react.development.js"], function (exports_1, context
             }
         ],
         execute: function () {
-            ReactDOM = window.ReactDOM, React = window.React, FluentUIReact = window.FluentUIReact; // eslint-disable-line
+            _a = window, ReactDOM = _a.ReactDOM, React = _a.React, FluentUIReact = _a.FluentUIReact; // eslint-disable-line
             divStyle = {
                 fill: '#ba1223',
             };
