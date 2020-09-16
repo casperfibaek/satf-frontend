@@ -9,7 +9,7 @@ module.exports = {
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    ecmaVersion: 12,
+    ecmaVersion: 11,
   },
   rules: {
     'linebreak-style': 0,
@@ -26,6 +26,7 @@ module.exports = {
     CustomFunctions: 'readonly',
     OfficeExtension: 'readonly',
     L: 'readonly', // Leaflet,
+    mapboxgl: 'readonly', // mapbox
     FluentUIReact: 'readonly',
     ReactDOM: 'readonly',
     React: 'readonly',
