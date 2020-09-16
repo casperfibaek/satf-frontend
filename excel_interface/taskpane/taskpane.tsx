@@ -1,8 +1,4 @@
-import React from "../assets/react.development.js";
-import ReactDOM from "../assets/react-dom.development.js";
-import FluentUIReact from "../assets/fluentui-react.min.js";
-
-const { ReactDOM, React, FluentUIReact } = window as any; // eslint-disable-line
+const { ReactDOM, React, FluentUIReact } = window; // eslint-disable-line
 
 class Login extends React.Component {
   constructor(props) {
@@ -11,8 +7,8 @@ class Login extends React.Component {
     this.state = {
       // page: { loggedIn: false, registerPage: false },
       // inputs: { user: "", password: "" },
-      user: "",
-      password: "",
+      user: '',
+      password: '',
       loggedIn: false,
       register: false,
     };
@@ -35,19 +31,19 @@ class Login extends React.Component {
   async attemptLogIn(username, password) {
     try {
       const response = await fetch(
-        "https://satf.azurewebsites.net/api/login_user",
+        'https://satf.azurewebsites.net/api/login_user',
         {
-          method: "post",
-          headers: { "Content-Type": "application/json" },
+          method: 'post',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, password }),
-        }
+        },
       );
 
       const responseJSON = await response.json();
 
       localStorage.setItem(
-        "token",
-        `${responseJSON.username}:${responseJSON.token}`
+        'token',
+        `${responseJSON.username}:${responseJSON.token}`,
       );
 
       if (response.ok) {
@@ -56,7 +52,7 @@ class Login extends React.Component {
         });
       }
     } catch (err) {
-      console.log("there was an error");
+      console.log('there was an error');
       // throw Error(err);
     }
   }
@@ -68,8 +64,8 @@ class Login extends React.Component {
   }
 
   handleChange(e) {
-    const name = e.target.name;
-    const value = e.target.value;
+    const { name } = e.target;
+    const { value } = e.target;
     this.setState({
       [name]: value,
     });
@@ -78,12 +74,12 @@ class Login extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
     switch (e.target.id) {
-      case "logIn":
+      case 'logIn':
         const username = this.state.user;
-        const password = this.state.password;
+        const { password } = this.state;
         this.attemptLogIn(username, password);
         break;
-      case "logOut":
+      case 'logOut':
         this.logOut();
         break;
       default:
@@ -147,5 +143,5 @@ ReactDOM.render(
   <React.StrictMode>
     <Login />
   </React.StrictMode>,
-  document.getElementById("root")
+  document.getElementById('root'),
 );
