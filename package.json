@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./app.js",
+    "start:dev": "nodemon ./app.js",
     "test": "tape ./tests/timing.js",
     "debug": "office-addin-debugging start ./excel_interface/manifest.xml",
     "validate": "office-addin-manifest validate ./excel_interface/manifest_local.xml"
@@ -22,6 +23,7 @@
     "jsonwebtoken": "^8.5.1",
     "morgan": "~1.10.0",
     "nocache": "^2.1.0",
+    "nodemon": "^2.0.4",
     "pg": "^8.3.3"
   },
   "devDependencies": {
