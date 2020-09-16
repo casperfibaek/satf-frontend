@@ -228,71 +228,7 @@ async function urban_status_simple(req, res) {
   }
 }
 
-async function population_density(req, res) {
-  if (!req.query.lat || !req.query.lng) {
-    res.status(400);
-    return;
-  }
-
-  const q = `
-        WITH const (pp_geom) AS (
-            values (ST_SetSRID(ST_Point(${req.query.lng}, ${req.query.lat}), 4326))
-        )
-        
-        SELECT ST_Value(rast, 1, pp_geom) As val
-        FROM ppl_per_hectare, const
-        WHERE ST_Intersects(rast, pp_geom);
-    `;
-
-  try {
-    const r = await pool.query(q);
-    if (r.rowCount > 0) {
-      res.send(String(Math.round(Number(r.rows[0].val) * 1)));
-    } else {
-      res.send('null');
-    }
-  } catch (err) {
-    res.send(err.stack);
-    console.log(err.stack);
-  }
-}
-
-async function population_density_buffer(req, res) {
-  if (!req.query.lat || !req.query.lng || !req.query.buffer) {
-    res.status(400);
-    return;
-  }
-
-  const q = `
-        WITH const (pp_geom) AS (
-            values (ST_Buffer(ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography, '${Number(
-  req.query.buffer,
-) + 10}')::geometry)
-        )
-        
-        SELECT
-            SUM((ST_SummaryStats(ST_Clip(
-                ppl_per_hectare.rast, 
-                const.pp_geom
-            ))).sum::int) as val
-        FROM
-            ppl_per_hectare, const
-        WHERE ST_Intersects(const.pp_geom, ppl_per_hectare.rast);
-    `;
-
-  try {
-    const r = await pool.query(q);
-    if (r.rowCount > 0) {
-      res.send(r.rows[0].val);
-    } else {
-      res.send('null');
-    }
-  } catch (err) {
-    res.send(err.stack);
-    console.log(err.stack);
-  }
-}
-
+//to be substituted by popDensWalk
 async function population_density_walk(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.minutes) {
     res.status(400);
@@ -327,6 +263,7 @@ async function population_density_walk(req, res) {
   }
 }
 
+//to be substituted  by popDensBike 
 async function population_density_bike(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.minutes) {
     res.status(400);
@@ -497,6 +434,58 @@ async function nearest_bank_distance(req, res) {
     }
   } catch (err) {
     res.send(err.stack);
+    console.log(err.stack);
+  }
+}
+
+async function isochrone_walk(req, res) {
+  if (!req.query.lat || !req.query.lng || !req.query.minutes) {
+    res.status(400);
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing lat or lng',
+    });
+  }
+  //function collecting all values from raster ghana_pop_dens inside the isochrone of walking distance
+  const q = `
+        SELECT pgr_isochroneWalk('${req.query.lng}', '${req.query.lat}', '${Number(req.query.minutes)}')      
+    `;
+
+  try {
+    const r = await pool.query(q);
+    if (r.rowCount > 0) {
+      res.status(200).send(r.rows[0].name);
+    } else {
+      res.status(400).send('null');
+    }
+  } catch (err) {
+    res.status(500).send(err);
+    console.log(err.stack);
+  }
+}
+
+async function isochrone_bike(req, res) {
+  if (!req.query.lat || !req.query.lng || !req.query.minutes) {
+    res.status(400);
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing lat or lng',
+    });
+  }
+  //function collecting all values from raster ghana_pop_dens inside the isochrone of walking distance
+  const q = `
+        SELECT pgr_isochroneBike('${req.query.lng}', '${req.query.lat}', '${Number(req.query.minutes)}')      
+    `;
+
+  try {
+    const r = await pool.query(q);
+    if (r.rowCount > 0) {
+      res.status(200).send(r.rows[0].name);
+    } else {
+      res.status(400).send('null');
+    }
+  } catch (err) {
+    res.status(500).send(err);
     console.log(err.stack);
   }
 }
@@ -790,8 +779,10 @@ router.route('/admin_level_2_fuzzy_tri').get(auth, cache, admin_level_2_fuzzy_tr
 router.route('/admin_level_2_fuzzy_lev').get(auth, cache, admin_level_2_fuzzy_lev);
 router.route('/nearest_placename').get(auth, cache, nearest_placename);
 router.route('/nearest_poi').get(auth, cache, nearest_poi);
-router.route('/nearest_bank').get(cache, nearest_bank);
+router.route('/nearest_bank').get(auth, cache, nearest_bank);
 router.route('/nearest_bank_distance').get(auth, cache, nearest_bank_distance);
+router.route('/isochrone_walk').get(auth, cache, isochrone_walk);
+router.route('/isochrone_bike').get(auth, chache, isochrone_bike);
 router.route('/whatfreewords_to_latlng').get(auth, cache, whatfreewords_to_latlng);
 router.route('/latlng_to_pluscode').get(auth, cache, latlng_to_pluscode);
 router.route('/pluscode_to_latlng').get(auth, cache, pluscode_to_latlng);
