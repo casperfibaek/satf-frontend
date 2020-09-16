@@ -7,14 +7,16 @@ class Login extends React.Component {
     this.state = {
       // page: { loggedIn: false, registerPage: false },
       // inputs: { user: "", password: "" },
-      user: '',
+      username: '',
       password: '',
       loggedIn: false,
       register: false,
     };
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleLogin = this.handleLogin.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
     this.attemptLogIn = this.attemptLogIn.bind(this);
+    this.logOut = this.logOut.bind(this)
   }
 
   // componentDidMount() {
@@ -27,6 +29,8 @@ class Login extends React.Component {
   //     }
   //   };
   // }
+
+
 
   async attemptLogIn(username, password) {
     try {
@@ -57,50 +61,62 @@ class Login extends React.Component {
     }
   }
 
+  // async register(username, password, confirm) {
+  //   try {
+  //     const response = await fetch('https://satf.azurewebsites.net/api/create_user', {
+  //       method: 'post',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ username, password, confirm }),
+  //     });
+
+  //     const responseJSON = await response.json();
+
+  //     return responseJSON;
+  //   } catch (err) {
+  //     throw Error(err);
+  //   }
+  // }
+
+  handleLogout() {
+    this.logOut()
+  }
+
   logOut() {
     this.setState({
+      username: '',
+      password: '',
       loggedIn: false,
     });
   }
 
+  handleLogin(e) {
+    e.preventDefault();
+    const { username, password } = this.state;
+    this.attemptLogIn(username, password);
+  }
+
   handleChange(e) {
-    const { name } = e.target;
-    const { value } = e.target;
+    const { name, value } = e.target;
+
     this.setState({
       [name]: value,
     });
-  }
-
-  handleSubmit(e) {
-    e.preventDefault();
-    switch (e.target.id) {
-      case 'logIn':
-        const username = this.state.user;
-        const { password } = this.state;
-        this.attemptLogIn(username, password);
-        break;
-      case 'logOut':
-        this.logOut();
-        break;
-      default:
-      // do nothing
-    }
   }
 
   render() {
     const loginPage = (
       <div>
         <form>
-          <label htmlFor="user">
+          <label htmlFor="username">
             <b>Username</b>
           </label>
 
           <input
             type="text"
             placeholder="Enter Username"
-            name="user"
+            name="username"
             onChange={this.handleChange}
-            value={this.state.user}
+            value={this.state.username}
             required
           ></input>
           <label htmlFor="password">
@@ -115,17 +131,20 @@ class Login extends React.Component {
             value={this.state.password}
             required
           ></input>
-          <button id="logIn" type="submit" onClick={this.handleSubmit}>
+          <button type="submit" onClick={this.handleLogin}>
             Login
           </button>
         </form>
+        <h1>{this.state.username}</h1>
+        <h1>{this.state.password}</h1>
+        {/* <h1><a onClick={this.registerUser}></a></h1> */}
       </div>
     );
     const welcomePage = (
       <div>
-        <h1>Welcome {this.state.user}</h1>
+        <h1>Welcome {this.state.username}</h1>
         <h2>you are now successfully logged in</h2>
-        <button id="logOut" type="submit" onClick={this.handleSubmit}>
+        <button type="submit" onClick={this.handleLogout}>
           Logout
         </button>
       </div>

@@ -56,14 +56,16 @@ var Login = /** @class */ (function (_super) {
         _this.state = {
             // page: { loggedIn: false, registerPage: false },
             // inputs: { user: "", password: "" },
-            user: '',
+            username: '',
             password: '',
             loggedIn: false,
             register: false,
         };
         _this.handleChange = _this.handleChange.bind(_this);
-        _this.handleSubmit = _this.handleSubmit.bind(_this);
+        _this.handleLogin = _this.handleLogin.bind(_this);
+        _this.handleLogout = _this.handleLogout.bind(_this);
         _this.attemptLogIn = _this.attemptLogIn.bind(_this);
+        _this.logOut = _this.logOut.bind(_this);
         return _this;
     }
     // componentDidMount() {
@@ -109,50 +111,59 @@ var Login = /** @class */ (function (_super) {
             });
         });
     };
+    // async register(username, password, confirm) {
+    //   try {
+    //     const response = await fetch('https://satf.azurewebsites.net/api/create_user', {
+    //       method: 'post',
+    //       headers: { 'Content-Type': 'application/json' },
+    //       body: JSON.stringify({ username, password, confirm }),
+    //     });
+    //     const responseJSON = await response.json();
+    //     return responseJSON;
+    //   } catch (err) {
+    //     throw Error(err);
+    //   }
+    // }
+    Login.prototype.handleLogout = function () {
+        this.logOut();
+    };
     Login.prototype.logOut = function () {
         this.setState({
+            username: '',
+            password: '',
             loggedIn: false,
         });
     };
+    Login.prototype.handleLogin = function (e) {
+        e.preventDefault();
+        var _a = this.state, username = _a.username, password = _a.password;
+        this.attemptLogIn(username, password);
+    };
     Login.prototype.handleChange = function (e) {
         var _a;
-        var name = e.target.name;
-        var value = e.target.value;
+        var _b = e.target, name = _b.name, value = _b.value;
         this.setState((_a = {},
             _a[name] = value,
             _a));
     };
-    Login.prototype.handleSubmit = function (e) {
-        e.preventDefault();
-        switch (e.target.id) {
-            case 'logIn':
-                var username = this.state.user;
-                var password = this.state.password;
-                this.attemptLogIn(username, password);
-                break;
-            case 'logOut':
-                this.logOut();
-                break;
-            default:
-            // do nothing
-        }
-    };
     Login.prototype.render = function () {
         var loginPage = (React.createElement("div", null,
             React.createElement("form", null,
-                React.createElement("label", { htmlFor: "user" },
+                React.createElement("label", { htmlFor: "username" },
                     React.createElement("b", null, "Username")),
-                React.createElement("input", { type: "text", placeholder: "Enter Username", name: "user", onChange: this.handleChange, value: this.state.user, required: true }),
+                React.createElement("input", { type: "text", placeholder: "Enter Username", name: "username", onChange: this.handleChange, value: this.state.username, required: true }),
                 React.createElement("label", { htmlFor: "password" },
                     React.createElement("b", null, "Password")),
                 React.createElement("input", { type: "password", placeholder: "Enter Password", name: "password", onChange: this.handleChange, value: this.state.password, required: true }),
-                React.createElement("button", { id: "logIn", type: "submit", onClick: this.handleSubmit }, "Login"))));
+                React.createElement("button", { type: "submit", onClick: this.handleLogin }, "Login")),
+            React.createElement("h1", null, this.state.username),
+            React.createElement("h1", null, this.state.password)));
         var welcomePage = (React.createElement("div", null,
             React.createElement("h1", null,
                 "Welcome ",
-                this.state.user),
+                this.state.username),
             React.createElement("h2", null, "you are now successfully logged in"),
-            React.createElement("button", { id: "logOut", type: "submit", onClick: this.handleSubmit }, "Logout")));
+            React.createElement("button", { type: "submit", onClick: this.handleLogout }, "Logout")));
         // const registerPage = (
         // )
         return this.state.loggedIn ? welcomePage : loginPage;
