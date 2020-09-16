@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+
 const express = require('express');
 const pg = require('pg');
 const crypto = require('crypto');
@@ -16,66 +18,113 @@ const pool = new pg.Pool(credentials);
 
 async function latlng_to_whatfreewords(req, res) {
   if (!req.query.lat || !req.query.lng) {
-    res.status(400);
-    return;
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing lat or lng',
+      function: 'latlng_to_whatfreewords',
+    });
   }
   try {
-    res.send(Wfw.latlon2words(Number(req.query.lat), Number(req.query.lng)));
+    return res.status(200).json({
+      status: 'success',
+      message: Wfw.latlon2words(Number(req.query.lat), Number(req.query.lng)),
+      function: 'latlng_to_whatfreewords',
+    });
   } catch (err) {
-    res.send(err);
-    console.log(err.stack);
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'latlng_to_whatfreewords',
+    });
   }
 }
 
 async function whatfreewords_to_latlng(req, res) {
   if (!req.query.words) {
-    res.status(400);
-    return;
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing words',
+      function: 'whatfreewords_to_latlng',
+    });
   }
   try {
-    res.send(Wfw.words2latlon(req.query.words));
+    return res.status(200).json({
+      status: 'success',
+      message: Wfw.words2latlon(req.query.words),
+      function: 'whatfreewords_to_latlng',
+    });
   } catch (err) {
-    res.send(err);
-    console.log(err.stack);
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'whatfreewords_to_latlng',
+    });
   }
 }
 
 async function latlng_to_pluscode(req, res) {
   if (!req.query.lat || !req.query.lng) {
-    res.status(400);
-    return;
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing lat or lng',
+      function: 'latlng_to_pluscode',
+    });
   }
   try {
-    res.send(openLocationCode.encode(Number(req.query.lat), Number(req.query.lng), 10));
+    const pluscode = openLocationCode.encode(Number(req.query.lat), Number(req.query.lng), 10);
+    return res.status(200).json({
+      status: 'success',
+      message: pluscode,
+      function: 'latlng_to_pluscode',
+    });
   } catch (err) {
-    res.send(err);
-    console.log(err.stack);
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'latlng_to_pluscode',
+    });
   }
 }
 
 async function pluscode_to_latlng(req, res) {
   if (!req.query.code) {
-    res.status(400);
-    return;
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing code',
+      function: 'pluscode_to_latlng',
+    });
   }
   try {
     const code = openLocationCode.decode(String(req.query.code).replace(' ', '+'));
-    res.send([code.latitudeCenter, code.longitudeCenter]);
+    return res.status(200).json({
+      status: 'success',
+      message: [code.latitudeCenter, code.longitudeCenter],
+      function: 'pluscode_to_latlng',
+    });
   } catch (err) {
-    res.send(err);
-    console.log(err.stack);
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'pluscode_to_latlng',
+    });
   }
 }
 
 async function admin_level_1(req, res) {
   if (!req.query.lat || !req.query.lng) {
-    res.status(400);
-    return;
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing lat or lng',
+      function: 'admin_level_1',
+    });
   }
-  res.setHeader('Cache-Control', 'public, max-age=86400');
 
-  const q = `
-        SELECT "adm1_name"
+  const dbQuery = `
+        SELECT "adm1_name" AS adm1
         FROM public.ghana_admin
         WHERE
             ST_Contains(public.ghana_admin.geom, ST_SetSRID(ST_Point(${req.query.lng}, ${req.query.lat}), 4326))
@@ -83,367 +132,540 @@ async function admin_level_1(req, res) {
     `;
 
   try {
-    const r = await pool.query(q);
-    if (r.rowCount > 0) {
-      res.send(r.rows[0].adm1_name);
-    } else {
-      res.send('null');
+    const dbResponse = await pool.query(dbQuery);
+    if (dbResponse.rowCount > 0) {
+      return res.status(200).json({
+        status: 'success',
+        message: dbResponse.rows[0].adm1,
+        function: 'admin_level_1',
+      });
     }
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'admin_level_1',
+    });
   } catch (err) {
-    res.send(err);
-    console.log(err.stack);
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'admin_level_1',
+    });
   }
 }
 
 async function admin_level_2(req, res) {
   if (!req.query.lat || !req.query.lng) {
-    res.status(400);
-    return;
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing lat or lng',
+      function: 'admin_level_2',
+    });
   }
 
-  const q = `
-        SELECT "adm2_name"
-        FROM public.ghana_admin
-        WHERE
-            ST_Contains(public.ghana_admin.geom, ST_SetSRID(ST_Point(${req.query.lng}, ${req.query.lat}), 4326))
-        LIMIT 1;
-    `;
+  const dbQuery = `
+    SELECT "adm2_name" AS adm2
+    FROM public.ghana_admin
+    WHERE
+        ST_Contains(public.ghana_admin.geom, ST_SetSRID(ST_Point(${req.query.lng}, ${req.query.lat}), 4326))
+    LIMIT 1;
+  `;
 
   try {
-    const r = await pool.query(q);
-    if (r.rowCount > 0) {
-      res.send(r.rows[0].adm2_name);
-    } else {
-      res.send('null');
+    const dbResponse = await pool.query(dbQuery);
+    if (dbResponse.rowCount > 0) {
+      return res.status(200).json({
+        status: 'success',
+        message: dbResponse.rows[0].adm2,
+        function: 'admin_level_2',
+      });
     }
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'admin_level_2',
+    });
   } catch (err) {
-    res.send(err.stack);
-    console.log(err.stack);
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'admin_level_2',
+    });
   }
 }
 
 async function admin_level_2_fuzzy_tri(req, res) {
   if (!req.query.name) {
-    res.status(400);
-    return;
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing name',
+      function: 'admin_level_2_fuzzy_tri',
+    });
   }
 
-  const q = `
+  const dbQuery = `
     SELECT adm2_name as name
     FROM ghana_admin
     ORDER BY SIMILARITY(adm2_name, '${req.query.name}') DESC
     LIMIT 1;
-    `;
+  `;
 
   try {
-    const r = await pool.query(q);
-    if (r.rowCount > 0) {
-      res.send(r.rows[0].name);
-    } else {
-      res.send('null');
+    const dbResponse = await pool.query(dbQuery);
+    if (dbResponse.rowCount > 0) {
+      return res.status(200).json({
+        status: 'success',
+        message: dbResponse.rows[0].name,
+        function: 'admin_level_2_fuzzy_tri',
+      });
     }
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'admin_level_2_fuzzy_tri',
+    });
   } catch (err) {
-    res.send(err.stack);
-    console.log(err.stack);
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'admin_level_2_fuzzy_tri',
+    });
   }
 }
 
 async function admin_level_2_fuzzy_lev(req, res) {
   if (!req.query.name) {
-    res.status(400);
-    return;
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing name',
+      function: 'admin_level_2_fuzzy_lev',
+    });
   }
 
-  const q = `
+  const dbQuery = `
     SELECT adm2_name as name
     FROM ghana_admin
     ORDER BY LEVENSHTEIN(adm2_name, '${req.query.name}') ASC
     LIMIT 1;
-    `;
+  `;
 
   try {
-    const r = await pool.query(q);
-    if (r.rowCount > 0) {
-      res.send(r.rows[0].name);
-    } else {
-      res.send('null');
+    const dbResponse = await pool.query(dbQuery);
+    if (dbResponse.rowCount > 0) {
+      return res.status(200).json({
+        status: 'success',
+        message: dbResponse.rows[0].name,
+        function: 'admin_level_2_fuzzy_lev',
+      });
     }
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'admin_level_2_fuzzy_lev',
+    });
   } catch (err) {
-    res.send(err.stack);
-    console.log(err.stack);
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'admin_level_2_fuzzy_lev',
+    });
   }
 }
 
 async function urban_status(req, res) {
   if (!req.query.lat || !req.query.lng) {
-    res.status(400);
-    return;
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing lat or lng',
+      function: 'urban_status',
+    });
   }
 
-  const q = `
-        SELECT ensemble
-        FROM public.urban_rural_classification_vect
-        WHERE
-        ST_Contains(public.urban_rural_classification_vect.geom, ST_SetSRID(ST_Point(${req.query.lng}, ${req.query.lat}), 4326))
-        LIMIT 1;
-    `;
+  const dbQuery = `
+    SELECT ensemble
+    FROM public.urban_rural_classification_vect
+    WHERE ST_Contains(public.urban_rural_classification_vect.geom, ST_SetSRID(ST_Point(${req.query.lng}, ${req.query.lat}), 4326))
+    LIMIT 1;
+  `;
 
   try {
-    const r = await pool.query(q);
-    if (r.rowCount > 0) {
-      res.send(utils.translateUrbanClasses(r.rows[0].ensemble));
-    } else {
-      res.send('Hinterland');
+    const dbResponse = await pool.query(dbQuery);
+    if (dbResponse.rowCount > 0) {
+      return res.status(200).json({
+        status: 'success',
+        message: utils.translateUrbanClasses(dbResponse.rows[0].ensemble),
+        function: 'urban_status',
+      });
     }
+    return res.status(200).json({
+      status: 'success',
+      message: 'Hinterlands',
+      function: 'urban_status',
+    });
   } catch (err) {
-    res.send(err.stack);
-    console.log(err.stack);
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'urban_status',
+    });
   }
 }
 
 async function urban_status_simple(req, res) {
   if (!req.query.lat || !req.query.lng) {
-    res.status(400);
-    return;
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing lat or lng',
+      function: 'urban_status_simple',
+    });
   }
 
-  const q = `
-        SELECT ensemble
-        FROM public.urban_rural_classification_vect
-        WHERE
-        ST_Contains(public.urban_rural_classification_vect.geom, ST_SetSRID(ST_Point(${req.query.lng}, ${req.query.lat}), 4326))
-        LIMIT 1;
-    `;
+  const dbQuery = `
+    SELECT ensemble
+    FROM public.urban_rural_classification_vect
+    WHERE ST_Contains(public.urban_rural_classification_vect.geom, ST_SetSRID(ST_Point(${req.query.lng}, ${req.query.lat}), 4326))
+    LIMIT 1;
+  `;
 
   try {
-    const r = await pool.query(q);
-    if (r.rowCount > 0) {
-      res.send(utils.translateUrbanClasses(r.rows[0].ensemble, true));
-    } else {
-      res.send('Hinterland');
+    const dbResponse = await pool.query(dbQuery);
+    if (dbResponse.rowCount > 0) {
+      return res.status(200).json({
+        status: 'success',
+        message: utils.translateUrbanClasses(dbResponse.rows[0].ensemble, true),
+        function: 'urban_status_simple',
+      });
     }
+    return res.status(200).json({
+      status: 'success',
+      message: 'Hinterlands',
+      function: 'urban_status_simple',
+    });
   } catch (err) {
-    res.send(err.stack);
-    console.log(err.stack);
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'urban_status_simple',
+    });
   }
 }
 
 async function population_density(req, res) {
   if (!req.query.lat || !req.query.lng) {
-    res.status(400);
-    return;
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing lat or lng',
+      function: 'population_density',
+    });
   }
 
-  const q = `
-        WITH const (pp_geom) AS (
-            values (ST_SetSRID(ST_Point(${req.query.lng}, ${req.query.lat}), 4326))
-        )
-        
-        SELECT ST_Value(rast, 1, pp_geom) As val
-        FROM ppl_per_hectare, const
-        WHERE ST_Intersects(rast, pp_geom);
-    `;
+  const dbQuery = `
+    WITH const (pp_geom) AS (
+        values (ST_SetSRID(ST_Point(${req.query.lng}, ${req.query.lat}), 4326))
+    )
+    
+    SELECT ST_Value(rast, 1, pp_geom) AS pop_dense
+    FROM ppl_per_hectare, const
+    WHERE ST_Intersects(rast, pp_geom);
+  `;
 
   try {
-    const r = await pool.query(q);
-    if (r.rowCount > 0) {
-      res.send(String(Math.round(Number(r.rows[0].val) * 1)));
-    } else {
-      res.send('null');
+    const dbResponse = await pool.query(dbQuery);
+    if (dbResponse.rowCount > 0) {
+      return res.status(200).json({
+        status: 'success',
+        message: Math.round(Number(dbResponse.rows[0].pop_dense)),
+        function: 'population_density',
+      });
     }
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'population_density',
+    });
   } catch (err) {
-    res.send(err.stack);
-    console.log(err.stack);
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'population_density',
+    });
   }
 }
 
-//to be substituted by popDensWalk
 async function population_density_walk(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.minutes) {
-    res.status(400);
-    return;
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing lat, lng or minutes',
+      function: 'population_density_walk',
+    });
   }
 
-  const q = `
-        WITH const (pp_geom) AS (
-            values (ST_Buffer(ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography, '${(Number(req.query.minutes) * 55) + 10}')::geometry)
-        )
-        
-        SELECT
-            SUM((ST_SummaryStats(ST_Clip(
-                ppl_per_hectare.rast, 
-                const.pp_geom
-            ))).sum::int) as val
-        FROM
-            ppl_per_hectare, const
-        WHERE ST_Intersects(const.pp_geom, ppl_per_hectare.rast);
-    `;
+  const dbQuery = `
+    WITH const (pp_geom) AS (
+        values (ST_Buffer(ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography, '${(Number(req.query.minutes) * 55) + 10}')::geometry)
+    )
+    
+    SELECT
+        SUM((ST_SummaryStats(ST_Clip(
+            ppl_per_hectare.rast, 
+            const.pp_geom
+        ))).sum::int) as pop_dense_walk
+    FROM
+        ppl_per_hectare, const
+    WHERE ST_Intersects(const.pp_geom, ppl_per_hectare.rast);
+  `;
 
   try {
-    const r = await pool.query(q);
-    if (r.rowCount > 0) {
-      res.send(r.rows[0].val);
-    } else {
-      res.send('null');
+    const dbResponse = await pool.query(dbQuery);
+    if (dbResponse.rowCount > 0) {
+      return res.status(200).json({
+        status: 'success',
+        message: Math.round(Number(dbResponse.rows[0].pop_dense_walk)),
+        function: 'population_density_walk',
+      });
     }
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'population_density_walk',
+    });
   } catch (err) {
-    res.send(err.stack);
-    console.log(err.stack);
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'population_density_walk',
+    });
   }
 }
 
-//to be substituted  by popDensBike 
 async function population_density_bike(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.minutes) {
-    res.status(400);
-    return;
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing lat, lng or minutes',
+      function: 'population_density_bike',
+    });
   }
 
-  const q = `
-        WITH const (pp_geom) AS (
-            values (ST_Buffer(ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography, '${(Number(req.query.minutes) * 155) + 10}')::geometry)
-        )
-        
-        SELECT
-            SUM((ST_SummaryStats(ST_Clip(
-                ppl_per_hectare.rast, 
-                const.pp_geom
-            ))).sum::int) as val
-        FROM
-            ppl_per_hectare, const
-        WHERE ST_Intersects(const.pp_geom, ppl_per_hectare.rast);
-    `;
+  const dbQuery = `
+    WITH const (pp_geom) AS (
+        values (ST_Buffer(ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography, '${(Number(req.query.minutes) * 155) + 10}')::geometry)
+    )
+    
+    SELECT
+        SUM((ST_SummaryStats(ST_Clip(
+            ppl_per_hectare.rast, 
+            const.pp_geom
+        ))).sum::int) as pop_dense_bike
+    FROM
+        ppl_per_hectare, const
+    WHERE ST_Intersects(const.pp_geom, ppl_per_hectare.rast);
+  `;
 
   try {
-    const r = await pool.query(q);
-    if (r.rowCount > 0) {
-      res.send(r.rows[0].val);
-    } else {
-      res.send('null');
+    const dbResponse = await pool.query(dbQuery);
+    if (dbResponse.rowCount > 0) {
+      return res.status(200).json({
+        status: 'success',
+        message: Math.round(Number(dbResponse.rows[0].pop_dense_bike)),
+        function: 'population_density_bike',
+      });
     }
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'population_density_bike',
+    });
   } catch (err) {
-    res.send(err.stack);
-    console.log(err.stack);
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'population_density_bike',
+    });
   }
 }
 
 async function population_density_car(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.minutes) {
-    res.status(400);
-    return;
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing lat, lng or minutes',
+      function: 'population_density_car',
+    });
   }
 
-  const q = `
-        WITH const (pp_geom) AS (
-            values (ST_Buffer(ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography, '${(Number(req.query.minutes) * 444) + 10}')::geometry)
-        )
-        
-        SELECT
-            SUM((ST_SummaryStats(ST_Clip(
-                ppl_per_hectare.rast, 
-                const.pp_geom
-            ))).sum::int) as val
-        FROM
-            ppl_per_hectare, const
-        WHERE ST_Intersects(const.pp_geom, ppl_per_hectare.rast);
-    `;
+  const dbQuery = `
+    WITH const (pp_geom) AS (
+        values (ST_Buffer(ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography, '${(Number(req.query.minutes) * 444) + 10}')::geometry)
+    )
+    
+    SELECT
+        SUM((ST_SummaryStats(ST_Clip(
+            ppl_per_hectare.rast, 
+            const.pp_geom
+        ))).sum::int) as pop_dense_car
+    FROM
+        ppl_per_hectare, const
+    WHERE ST_Intersects(const.pp_geom, ppl_per_hectare.rast);
+  `;
 
   try {
-    const r = await pool.query(q);
-    if (r.rowCount > 0) {
-      res.send(r.rows[0].val);
-    } else {
-      res.send('null');
+    const dbResponse = await pool.query(dbQuery);
+    if (dbResponse.rowCount > 0) {
+      return res.status(200).json({
+        status: 'success',
+        message: Math.round(Number(dbResponse.rows[0].pop_dense_car)),
+        function: 'population_density_car',
+      });
     }
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'population_density_car',
+    });
   } catch (err) {
-    res.send(err.stack);
-    console.log(err.stack);
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'population_density_car',
+    });
   }
 }
 
 async function population_density_buffer(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.buffer) {
-    res.status(400);
-    return;
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing lat, lng or buffer',
+      function: 'population_density_buffer',
+    });
   }
 
-  const q = `
-        WITH const (pp_geom) AS (
-            values (ST_Buffer(ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography, '${Number(
-  req.query.buffer,
-) + 10}')::geometry)
-        )
-        
-        SELECT
-            SUM((ST_SummaryStats(ST_Clip(
-                ppl_per_hectare.rast, 
-                const.pp_geom
-            ))).sum::int) as val
-        FROM
-            ppl_per_hectare, const
-        WHERE ST_Intersects(const.pp_geom, ppl_per_hectare.rast);
-    `;
+  const dbQuery = `
+    WITH const (pp_geom) AS (
+        values (ST_Buffer(ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography, '${Number(req.query.buffer) + 10}')::geometry)
+    )
+    
+    SELECT
+        SUM((ST_SummaryStats(ST_Clip(
+            ppl_per_hectare.rast, 
+            const.pp_geom
+        ))).sum::int) as pop_dense_buf
+    FROM
+        ppl_per_hectare, const
+    WHERE ST_Intersects(const.pp_geom, ppl_per_hectare.rast);
+  `;
 
   try {
-    const r = await pool.query(q);
-    if (r.rowCount > 0) {
-      res.send(r.rows[0].val);
-    } else {
-      res.send('null');
+    const dbResponse = await pool.query(dbQuery);
+    if (dbResponse.rowCount > 0) {
+      return res.status(200).json({
+        status: 'success',
+        message: Math.round(Number(dbResponse.rows[0].pop_dense_buf)),
+        function: 'population_density_buffer',
+      });
     }
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'population_density_buffer',
+    });
   } catch (err) {
-    res.send(err.stack);
-    console.log(err.stack);
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'population_density_buffer',
+    });
   }
 }
 
 async function nearest_placename(req, res) {
   if (!req.query.lat || !req.query.lng) {
-    res.status(400);
-    return;
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing lat or lng',
+      function: 'nearest_placename',
+    });
   }
 
-  const q = `
-        SELECT fclass, name FROM places
-        ORDER BY geom <-> ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)
-        LIMIT 1;
-    `;
+  const dbQuery = `
+    SELECT fclass, name FROM places
+    ORDER BY geom <-> ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)
+    LIMIT 1;
+  `;
 
   try {
-    const r = await pool.query(q);
-    if (r.rowCount > 0) {
-      res.send(`${r.rows[0].name}, ${r.rows[0].fclass}`);
-    } else {
-      res.send('null');
+    const dbResponse = await pool.query(dbQuery);
+    if (dbResponse.rowCount > 0) {
+      return res.status(200).json({
+        status: 'success',
+        message: `${dbResponse.rows[0].name}, ${dbResponse.rows[0].fclass}`,
+        function: 'nearest_placename',
+      });
     }
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'nearest_placename',
+    });
   } catch (err) {
-    res.send(err.stack);
-    console.log(err.stack);
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'nearest_placename',
+    });
   }
 }
 
 async function nearest_poi(req, res) {
   if (!req.query.lat || !req.query.lng) {
-    res.status(400);
-    return;
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing lat or lng',
+      function: 'nearest_poi',
+    });
   }
 
-  const q = `
-        SELECT fclass, name FROM poi
-        ORDER BY geom <-> ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)
-        LIMIT 1;
-    `;
+  const dbQuery = `
+    SELECT fclass, name FROM poi
+    ORDER BY geom <-> ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)
+    LIMIT 1;
+  `;
 
   try {
-    const r = await pool.query(q);
-    if (r.rowCount > 0) {
-      res.send(`${r.rows[0].name}, ${r.rows[0].fclass}`);
-    } else {
-      res.send('null');
+    const dbResponse = await pool.query(dbQuery);
+    if (dbResponse.rowCount > 0) {
+      return res.status(200).json({
+        status: 'success',
+        message: `${dbResponse.rows[0].name}, ${dbResponse.rows[0].fclass}`,
+        function: 'nearest_poi',
+      });
     }
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'nearest_poi',
+    });
   } catch (err) {
-    res.send(err.stack);
-    console.log(err.stack);
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'nearest_poi',
+    });
   }
 }
 
@@ -452,10 +674,11 @@ async function nearest_bank(req, res) {
     return res.status(400).json({
       status: 'Failure',
       message: 'Request missing lat or lng',
+      function: 'nearest_bank',
     });
   }
 
-  const q = `
+  const dbQuery = `
     SELECT "name"
     FROM public.banks
     ORDER BY geom <-> ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)
@@ -463,15 +686,26 @@ async function nearest_bank(req, res) {
   `;
 
   try {
-    const r = await pool.query(q);
-    if (r.rowCount > 0) {
-      res.status(200).send(r.rows[0].name);
-    } else {
-      res.status(400).send('null');
+    const dbResponse = await pool.query(dbQuery);
+    if (dbResponse.rowCount > 0) {
+      return res.status(200).json({
+        status: 'success',
+        message: dbResponse.rows[0].name,
+        function: 'nearest_bank',
+      });
     }
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'nearest_bank',
+    });
   } catch (err) {
-    res.status(500).send(err);
-    console.log(err.stack);
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'nearest_bank',
+    });
   }
 }
 
@@ -480,10 +714,11 @@ async function nearest_bank_distance(req, res) {
     return res.status(400).json({
       status: 'Failure',
       message: 'Request missing lat or lng',
+      function: 'nearest_bank_distance',
     });
   }
 
-  const q = `
+  const dbQuery = `
     SELECT ST_Distance(banks."geom"::geography, ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography)::int AS "distance"
     FROM public.banks
     ORDER BY geom <-> ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)
@@ -491,69 +726,101 @@ async function nearest_bank_distance(req, res) {
   `;
 
   try {
-    const r = await pool.query(q);
-    if (r.rowCount > 0) {
-      res.status(200).send(r.rows[0]);
-    } else {
-      res.status(400).send('null');
+    const dbResponse = await pool.query(dbQuery);
+    if (dbResponse.rowCount > 0) {
+      return res.status(200).json({
+        status: 'success',
+        message: Math.round(Number(dbResponse.rows[0].distance)),
+        function: 'nearest_bank_distance',
+      });
     }
+
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'nearest_bank_distance',
+    });
   } catch (err) {
-    res.send(err.stack);
-    console.log(err.stack);
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'nearest_bank_distance',
+    });
   }
 }
 
-
-
 async function isochrone_walk(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.minutes) {
-    res.status(400);
     return res.status(400).json({
       status: 'Failure',
-      message: 'Request missing lat or lng',
+      message: 'Request missing lat, lng or minutes',
+      function: 'isochrone_walk',
     });
   }
-  //function collecting all values from raster ghana_pop_dens inside the isochrone of walking distance
-  const q = `
-        SELECT pgr_isochroneWalk('${req.query.lng}', '${req.query.lat}', '${Number(req.query.minutes)}')      
-    `;
+  // function collecting all values from raster ghana_pop_dens inside the isochrone of walking distance
+  const dbQuery = `
+    SELECT ST_AsGeoJSON(pgr_isochroneWalk('${req.query.lng}', '${req.query.lat}', '${Number(req.query.minutes)}'), 6) as geom;
+  `;
 
   try {
-    const r = await pool.query(q);
-    if (r.rowCount > 0) {
-      res.status(200).send(r.rows[0].name);
-    } else {
-      res.status(400).send('null');
+    const dbResponse = await pool.query(dbQuery);
+    if (dbResponse.rowCount > 0) {
+      return res.status(200).json({
+        status: 'Success',
+        message: JSON.parse(dbResponse.rows[0].geom),
+        function: 'isochrone_walk',
+      });
     }
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error while calculating isocrone',
+      function: 'isochrone_walk',
+    });
   } catch (err) {
-    res.status(500).send(err);
-    console.log(err.stack);
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error while calculating isocrone',
+      function: 'isochrone_walk',
+    });
   }
 }
 
 async function isochrone_bike(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.minutes) {
-    res.status(400);
     return res.status(400).json({
       status: 'Failure',
-      message: 'Request missing lat or lng',
+      message: 'Request missing lat, lng or minutes',
+      function: 'isochrone_bike',
     });
   }
-  //function collecting all values from raster ghana_pop_dens inside the isochrone of walking distance
-  const q = `
-        SELECT pgr_isochroneBike('${req.query.lng}', '${req.query.lat}', '${Number(req.query.minutes)}')      
-    `;
+  // function collecting all values from raster ghana_pop_dens inside the isochrone of walking distance
+  const dbQuery = `
+    SELECT ST_AsGeoJSON(pgr_isochroneBike('${req.query.lng}', '${req.query.lat}', '${Number(req.query.minutes)}'), 6) as geom;
+  `;
 
   try {
-    const r = await pool.query(q);
-    if (r.rowCount > 0) {
-      res.status(200).send(r.rows[0].name);
-    } else {
-      res.status(400).send('null');
+    const dbResponse = await pool.query(dbQuery);
+    if (dbResponse.rowCount > 0) {
+      return res.status(200).json({
+        status: 'Success',
+        message: JSON.parse(dbResponse.rows[0].geom),
+        function: 'isochrone_bike',
+      });
     }
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error while calculating isocrone',
+      function: 'isochrone_bike',
+    });
   } catch (err) {
-    res.status(500).send(err);
-    console.log(err.stack);
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error while calculating isocrone',
+      function: 'isochrone_bike',
+    });
   }
 }
 
@@ -577,11 +844,12 @@ async function usernameExists(username) {
     SELECT id
     FROM users
     WHERE "username" = '${username}'
-    LIMIT 1;`;
+    LIMIT 1;
+  `;
 
   try {
-    const dbRequest = await pool.query(dbQuery);
-    if (dbRequest.rowCount > 0) {
+    const dbResponse = await pool.query(dbQuery);
+    if (dbResponse.rowCount > 0) {
       return true;
     }
     return false;
@@ -596,11 +864,12 @@ async function verifyUser(username, password) {
     SELECT id
     FROM users
     WHERE "username" = '${username}' and "password" = '${password}'
-    LIMIT 1;`;
+    LIMIT 1;
+  `;
 
   try {
-    const dbRequest = await pool.query(dbQuery);
-    if (dbRequest.rowCount > 0) {
+    const dbResponse = await pool.query(dbQuery);
+    if (dbResponse.rowCount > 0) {
       return true;
     }
     return false;
@@ -613,7 +882,8 @@ async function verifyUser(username, password) {
 async function insertUser(username, password) {
   const dbQuery = `
     INSERT INTO users ("username", "password", "created_on", "last_login")
-    VALUES ('${username}', '${password}', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);`;
+    VALUES ('${username}', '${password}', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+  `;
 
   try {
     await pool.query(dbQuery);
@@ -627,7 +897,8 @@ async function insertUser(username, password) {
 async function deleteUser(username) {
   const dbQuery = `
     DELETE FROM users
-    WHERE "username" = '${username}';`;
+    WHERE "username" = '${username}';
+  `;
 
   try {
     await pool.query(dbQuery);
@@ -655,6 +926,7 @@ async function create_user(req, res) {
       return res.status(409).json({
         status: 'Failure',
         message: 'Username already exists',
+        function: 'create_user',
       });
     }
     if (CheckPassword(password)) {
@@ -667,6 +939,7 @@ async function create_user(req, res) {
         return res.status(200).json({
           status: 'Success',
           message: 'User Successfully Created',
+          function: 'create_user',
           username,
           token,
         });
@@ -674,16 +947,19 @@ async function create_user(req, res) {
       return res.status(500).json({
         status: 'Failure',
         message: 'Internal error while creating user.',
+        function: 'create_user',
       });
     }
     return res.status(400).json({
       status: 'Failure',
       message: 'Password; must be between 6 to 14 characters which contain only characters, numeric digits, underscore and first character must be a letter', // eslint-disable-line
+      function: 'create_user',
     });
   }
   return res.status(400).send({
     status: 'Failure',
     message: 'Passwords do not match.',
+    function: 'create_user',
   });
 }
 
@@ -692,6 +968,7 @@ async function login_user(req, res) {
     return res.status(400).json({
       status: 'Failure',
       message: 'Request missing username or password',
+      function: 'login_user',
     });
   }
   const { username, password } = req.body;
@@ -701,16 +978,18 @@ async function login_user(req, res) {
   const dbQuery = `
     UPDATE users
     SET last_login = CURRENT_TIMESTAMP
-    WHERE "username" = '${username}' AND "password" = '${hashedPassword}';`;
+    WHERE "username" = '${username}' AND "password" = '${hashedPassword}';
+  `;
 
   try {
-    const dbRequest = await pool.query(dbQuery);
+    const dbResponse = await pool.query(dbQuery);
 
-    if (dbRequest.rowCount > 0) {
+    if (dbResponse.rowCount > 0) {
       const token = jwt.sign({ userId: username }, credentials.admin_key, { expiresIn: '24h' });
       return res.status(200).json({
         status: 'Success',
         message: 'User Successfully Logged in',
+        function: 'login_user',
         username,
         token,
       });
@@ -718,12 +997,14 @@ async function login_user(req, res) {
     return res.status(401).json({
       status: 'Failure',
       message: 'User not found or unauthorised.',
+      function: 'login_user',
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
       status: 'Failure',
       message: 'Internal Error while logging user in.',
+      function: 'login_user',
     });
   }
 }
@@ -758,6 +1039,7 @@ async function delete_user(req, res) {
       return res.status(400).json({
         status: 'Failure',
         message: 'Invalid token.',
+        function: 'delete_user',
       });
     }
     try {
@@ -768,6 +1050,7 @@ async function delete_user(req, res) {
         return res.status(400).json({
           status: 'Failure',
           message: 'User does not exist',
+          function: 'delete_user',
         });
       }
 
@@ -777,6 +1060,7 @@ async function delete_user(req, res) {
         return res.status(200).json({
           status: 'Success',
           message: 'User deleted',
+          function: 'delete_user',
           username,
         });
       }
@@ -785,6 +1069,7 @@ async function delete_user(req, res) {
       return res.status(500).json({
         status: 'Failure',
         message: 'Internal Error while logging user in.',
+        function: 'delete_user',
       });
     }
   }
@@ -792,6 +1077,7 @@ async function delete_user(req, res) {
     return res.status(400).json({
       status: 'Failure',
       message: 'Request missing username or password',
+      function: 'delete_user',
     });
   }
 
@@ -810,6 +1096,7 @@ async function delete_user(req, res) {
           return res.status(200).json({
             status: 'Success',
             message: 'User deleted',
+            function: 'delete_user',
             username,
           });
         }
@@ -820,12 +1107,14 @@ async function delete_user(req, res) {
     return res.status(500).json({
       status: 'Failure',
       message: 'Internal Error while logging user in.',
+      function: 'delete_user',
     });
   }
 
   return res.status(401).json({
     status: 'Failure',
     message: 'Invalid credentials to delete user.',
+    function: 'delete_user',
   });
 }
 
@@ -848,8 +1137,8 @@ router.route('/nearest_placename').get(auth, cache, nearest_placename);
 router.route('/nearest_poi').get(auth, cache, nearest_poi);
 router.route('/nearest_bank').get(auth, cache, nearest_bank);
 router.route('/nearest_bank_distance').get(auth, cache, nearest_bank_distance);
-router.route('/isochrone_walk').get(auth, cache, isochrone_walk);
-router.route('/isochrone_bike').get(auth, cache, isochrone_bike);
+router.route('/isochrone_walk').get(isochrone_walk);
+router.route('/isochrone_bike').get(isochrone_bike);
 router.route('/whatfreewords_to_latlng').get(auth, cache, whatfreewords_to_latlng);
 router.route('/latlng_to_pluscode').get(auth, cache, latlng_to_pluscode);
 router.route('/pluscode_to_latlng').get(auth, cache, pluscode_to_latlng);
