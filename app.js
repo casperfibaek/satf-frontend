@@ -14,7 +14,6 @@ const routesApi = require('./api_routes');
 const defaults = {
   cache: 72000000, // 2 hours,
   http_port: process.env.PORT || 3000,
-  https_port: process.env.PORT || 443,
 };
 
 // Define app
@@ -28,18 +27,9 @@ app.use(cors({ allowedHeaders: ['Authorization', 'Accept', 'Content-Type'] }));
 app.use(nocache());
 app.use(compression());
 
-// app.use((req, res, next) => {
-//   res.setHeader('Cache-Control', `public, max-age=${String(defaults.cache)}`);
-//   next();
-// });
-
 // Serve
 app.get('/', (req, res) => { res.send('home'); });
-app.use('/excel_interface',
-  express.static(path.join(__dirname, 'excel_interface'), {
-    cacheControl: true,
-    maxAge: String(defaults.cache),
-  }));
+app.use('/excel_interface', express.static(path.join(__dirname, 'excel_interface')));
 app.use('/api', routesApi);
 
 app.listen(defaults.http_port, () => {
