@@ -1,6 +1,9 @@
+// import React from '../assets/react.development.js';
+// import ReactDOM from '../assets/react-dom.development.js';
+// import FluentUIReact from '../assets/fluentui-react.min.js';
 System.register(["../assets/react.development.js"], function (exports_1, context_1) {
     "use strict";
-    var react_development_js_1, _a, ReactDOM, React, FluentUIReact, divStyle, Contact;
+    var react_development_js_1, _a, ReactDOM, React, FluentUIReact, divStyle, Contact, Ezra;
     var __moduleName = context_1 && context_1.id;
     return {
         setters: [
@@ -11,7 +14,7 @@ System.register(["../assets/react.development.js"], function (exports_1, context
         execute: function () {
             _a = window, ReactDOM = _a.ReactDOM, React = _a.React, FluentUIReact = _a.FluentUIReact; // eslint-disable-line
             divStyle = {
-                fill: '#ba1223',
+                fill: "#ba1223",
             };
             Contact = function () {
                 FluentUIReact.initializeIcons();
@@ -31,10 +34,18 @@ System.register(["../assets/react.development.js"], function (exports_1, context
                             React.createElement("p", null, "F: +45 4810 4300"),
                             React.createElement("p", null, "E: Send e-mail"),
                             React.createElement("p", null, "CVR-nr. 3729 5728"))),
-                    React.createElement("div", null)));
+                    React.createElement("div", null,
+                        React.createElement("img", { src: "images/helpdesk.png", alt: "help desk" }))));
             };
+            Ezra = function () {
+                return (React.createElement("div", null,
+                    React.createElement("h1", null, "aklsdfjklasdf"),
+                    React.createElement("h2", null, "this is a new thinsa ocmponceonpt")));
+            };
+            // export default Contact;
             ReactDOM.render(React.createElement(React.StrictMode, null,
-                React.createElement(Contact, null)), document.getElementById('root'));
+                React.createElement(Contact, null),
+                React.createElement(Ezra, null)), document.getElementById("root"));
         }
     };
 });
