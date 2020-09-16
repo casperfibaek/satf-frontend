@@ -447,8 +447,10 @@ async function nearest_poi(req, res) {
 
 async function nearest_bank(req, res) {
   if (!req.query.lat || !req.query.lng) {
-    res.status(400);
-    return;
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing lat or lng',
+    });
   }
 
   const q = `
@@ -461,20 +463,22 @@ async function nearest_bank(req, res) {
   try {
     const r = await pool.query(q);
     if (r.rowCount > 0) {
-      res.send(r.rows[0].name);
+      res.status(200).send(r.rows[0].name);
     } else {
-      res.send('null');
+      res.status(400).send('null');
     }
   } catch (err) {
-    res.send(err);
+    res.status(500).send(err);
     console.log(err.stack);
   }
 }
 
 async function nearest_bank_distance(req, res) {
   if (!req.query.lat || !req.query.lng) {
-    res.status(400);
-    return;
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing lat or lng',
+    });
   }
 
   const q = `
@@ -487,9 +491,9 @@ async function nearest_bank_distance(req, res) {
   try {
     const r = await pool.query(q);
     if (r.rowCount > 0) {
-      res.send(r.rows[0]);
+      res.status(200).send(r.rows[0]);
     } else {
-      res.send('null');
+      res.status(400).send('null');
     }
   } catch (err) {
     res.send(err.stack);
@@ -786,7 +790,7 @@ router.route('/admin_level_2_fuzzy_tri').get(auth, cache, admin_level_2_fuzzy_tr
 router.route('/admin_level_2_fuzzy_lev').get(auth, cache, admin_level_2_fuzzy_lev);
 router.route('/nearest_placename').get(auth, cache, nearest_placename);
 router.route('/nearest_poi').get(auth, cache, nearest_poi);
-router.route('/nearest_bank').get(auth, cache, nearest_bank);
+router.route('/nearest_bank').get(cache, nearest_bank);
 router.route('/nearest_bank_distance').get(auth, cache, nearest_bank_distance);
 router.route('/whatfreewords_to_latlng').get(auth, cache, whatfreewords_to_latlng);
 router.route('/latlng_to_pluscode').get(auth, cache, latlng_to_pluscode);
