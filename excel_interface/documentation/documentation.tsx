@@ -1,6 +1,10 @@
 // import React from "react";
 // import { getTheme } from "@fluentui/react";
 
+import React from "../assets/react.development.js";
+import ReactDOM from "../assets/react-dom.development.js";
+import FluentUIReact from "../assets/fluentui-react.min.js";
+
 const { ReactDOM, React, FluentUIReact } = window as any; // eslint-disable-line
 
 const theme = FluentUIReact.getTheme();

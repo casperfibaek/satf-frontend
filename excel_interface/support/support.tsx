@@ -2,6 +2,10 @@
 // import ReactDOM from '../assets/react-dom.development.js';
 // import FluentUIReact from '../assets/fluentui-react.min.js';
 
+import React from "../assets/react.development.js";
+import ReactDOM from "../assets/react-dom.development.js";
+import FluentUIReact from "../assets/fluentui-react.min.js";
+
 const { ReactDOM, React, FluentUIReact } = window as any; // eslint-disable-line
 
 const divStyle = {
@@ -46,11 +50,20 @@ const Contact = () => {
   );
 };
 
+const Ezra = () => {
+  return (
+    <div>
+      <h1>aklsdfjklasdf</h1>
+      <h2>this is a new thinsa ocmponceonpt</h2>
+    </div>
+  );
+};
+
 // export default Contact;
 ReactDOM.render(
   <React.StrictMode>
     <Contact />
-    {/* <Documentation /> */}
+    <Ezra />
   </React.StrictMode>,
   document.getElementById("root")
 );
