@@ -113,7 +113,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                                     _a.label = 1;
                                 case 1:
                                     _a.trys.push([1, 4, , 5]);
-                                    return [4 /*yield*/, fetch('https://satf.azurewebsites.net/api/login_user', {
+                                    return [4 /*yield*/, fetch('../../api/login_user', {
                                             method: 'post',
                                             headers: { 'Content-Type': 'application/json' },
                                             body: JSON.stringify({ username: username, password: password }),
@@ -165,7 +165,8 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                         registerConfirm: '',
                     });
                 };
-                Login.prototype.handleRegister = function () {
+                Login.prototype.handleRegister = function (e) {
+                    e.preventDefault();
                     var _a = this.state, registerUsername = _a.registerUsername, registerPassword = _a.registerPassword, registerConfirm = _a.registerConfirm;
                     this.register(registerUsername, registerPassword, registerConfirm);
                 };
@@ -175,23 +176,26 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
-                                    _a.trys.push([0, 3, , 4]);
-                                    return [4 /*yield*/, fetch('https://satf.azurewebsites.net/api/create_user', {
+                                    console.log(username, password, confirm);
+                                    _a.label = 1;
+                                case 1:
+                                    _a.trys.push([1, 4, , 5]);
+                                    return [4 /*yield*/, fetch('../../api/create_user', {
                                             method: 'post',
                                             headers: { 'Content-Type': 'application/json' },
                                             body: JSON.stringify({ username: username, password: password, confirm: confirm }),
                                         })];
-                                case 1:
+                                case 2:
                                     response = _a.sent();
                                     return [4 /*yield*/, response.json()];
-                                case 2:
+                                case 3:
                                     responseJSON = _a.sent();
                                     this.toWelcomePage();
                                     return [2 /*return*/, responseJSON];
-                                case 3:
+                                case 4:
                                     err_2 = _a.sent();
                                     throw Error(err_2);
-                                case 4: return [2 /*return*/];
+                                case 5: return [2 /*return*/];
                             }
                         });
                     });
@@ -203,7 +207,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                             switch (_a.label) {
                                 case 0:
                                     _a.trys.push([0, 3, , 4]);
-                                    return [4 /*yield*/, fetch('https://satf.azurewebsites.net/api/delete_user', {
+                                    return [4 /*yield*/, fetch('../../api/delete_user', {
                                             method: 'post',
                                             headers: { 'Content-Type': 'application/json' },
                                             body: JSON.stringify({ token: token }),

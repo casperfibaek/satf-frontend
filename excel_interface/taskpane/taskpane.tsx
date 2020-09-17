@@ -51,7 +51,7 @@ class Login extends React.Component {
     console.log(username, password)
     try {
       const response = await fetch(
-        'https://satf.azurewebsites.net/api/login_user',
+        '../../api/login_user',
         {
           method: 'post',
           headers: { 'Content-Type': 'application/json' },
@@ -95,7 +95,6 @@ class Login extends React.Component {
 
   toWelcomePage() {
     this.setState({
-
       // username: this,
       // username used for login welcome message
       password: '',
@@ -107,15 +106,17 @@ class Login extends React.Component {
     })
   }
 
-  handleRegister() {
+  handleRegister(e) {
+    e.preventDefault();
     const { registerUsername, registerPassword, registerConfirm } = this.state
 
     this.register(registerUsername, registerPassword, registerConfirm)
   }
 
   async register(username, password, confirm) {
+    console.log(username, password, confirm)
     try {
-      const response = await fetch('https://satf.azurewebsites.net/api/create_user', {
+      const response = await fetch('../../api/create_user', {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password, confirm }),
@@ -132,7 +133,7 @@ class Login extends React.Component {
 
   async delete_user(token) {
     try {
-      const response = await fetch('https://satf.azurewebsites.net/api/delete_user', {
+      const response = await fetch('../../api/delete_user', {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token }),
