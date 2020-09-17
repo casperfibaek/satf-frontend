@@ -238,16 +238,16 @@ function openDialogWindow(link, event, iframe, height, width, prompt) {
         dialogCallback(asyncResult, event);
     });
 }
-function openDialogNIRAS() {
-    openDialogWindow('https://www.niras.com', event);
+function openDialogNIRAS(event) {
+    openDialogWindow(siteUrl + "redirects/niras.html", event);
 }
-function openDialogOPM() {
-    openDialogWindow('https://www.opml.co.uk', event);
+function openDialogOPM(event) {
+    openDialogWindow(siteUrl + "redirects/opm.html", event);
 }
 function openDialogSATF(event) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            openDialogWindow('https://www.opml.co.uk/projects/savings-frontier', event);
+            openDialogWindow(siteUrl + "redirects/satf.html", event);
             return [2 /*return*/];
         });
     });

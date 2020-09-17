@@ -157,14 +157,14 @@ function openDialogWindow(link, event, iframe = false, height = 40, width = 30, 
   });
 }
 
-function openDialogNIRAS() {
-  openDialogWindow('https://www.niras.com', event);
+function openDialogNIRAS(event) {
+  openDialogWindow(`${siteUrl}redirects/niras.html`, event);
 }
-function openDialogOPM() {
-  openDialogWindow('https://www.opml.co.uk', event);
+function openDialogOPM(event) {
+  openDialogWindow(`${siteUrl}redirects/opm.html`, event);
 }
 async function openDialogSATF(event) {
-  openDialogWindow('https://www.opml.co.uk/projects/savings-frontier', event);
+  openDialogWindow(`${siteUrl}redirects/satf.html`, event);
 }
 async function openDialogSUPPORT(event) {
   // openDialogWindow('../support/support.html', event);
