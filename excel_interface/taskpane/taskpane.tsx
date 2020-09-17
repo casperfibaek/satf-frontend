@@ -1,4 +1,61 @@
+import { prependOnceListener } from "process";
+
 const { ReactDOM, React, FluentUIReact } = window; // eslint-disable-line
+
+const LoginPage = (props) => {
+  const username = props.username
+  const password = props.password
+  return (
+    <div>
+      <form>
+        <label htmlFor="username">
+          <b>Username</b>
+        </label>
+
+        <input
+          type="text"
+          placeholder="Enter Username"
+          name="username"
+          onChange={(e) => { props.onInput(e) }}
+          value={props.username}
+          required
+        ></input>
+        <label htmlFor="password">
+          <b>Password</b>
+        </label>
+
+        <input
+          type="password"
+          placeholder="Enter Password"
+          name="password"
+          onChange={(e) => { props.onInput(e) }}
+          value={props.password}
+          required
+        ></input>
+        <button type="submit" onClick={(e) => { props.onLogin(e) }}>
+          Login
+          </button>
+      </form>
+      <h1>{username}</h1>
+      <h1>{password}</h1>
+      {/* <h1><a onClick={this.registerUser}></a></h1> */}
+    </div>
+  )
+
+}
+
+const WelcomePage = (props) => {
+
+  return (
+    <div>
+      <h1>Welcome {props.username}</h1>
+      <h2>you are now successfully logged in</h2>
+      <button type="submit" onClick={() => { props.onLogout() }}>
+        Logout
+      </button>
+    </div>
+  )
+};
 
 class Login extends React.Component {
   constructor(props) {
@@ -104,57 +161,22 @@ class Login extends React.Component {
   }
 
   render() {
-    const loginPage = (
-      <div>
-        <form>
-          <label htmlFor="username">
-            <b>Username</b>
-          </label>
-
-          <input
-            type="text"
-            placeholder="Enter Username"
-            name="username"
-            onChange={this.handleChange}
-            value={this.state.username}
-            required
-          ></input>
-          <label htmlFor="password">
-            <b>Password</b>
-          </label>
-
-          <input
-            type="password"
-            placeholder="Enter Password"
-            name="password"
-            onChange={this.handleChange}
-            value={this.state.password}
-            required
-          ></input>
-          <button type="submit" onClick={this.handleLogin}>
-            Login
-          </button>
-        </form>
-        <h1>{this.state.username}</h1>
-        <h1>{this.state.password}</h1>
-        {/* <h1><a onClick={this.registerUser}></a></h1> */}
-      </div>
-    );
-    const welcomePage = (
-      <div>
-        <h1>Welcome {this.state.username}</h1>
-        <h2>you are now successfully logged in</h2>
-        <button type="submit" onClick={this.handleLogout}>
-          Logout
-        </button>
-      </div>
-    );
-
     // const registerPage = (
 
     // )
 
-    return this.state.loggedIn ? welcomePage : loginPage;
+    return this.state.loggedIn ?
+      <WelcomePage
+        username={this.state.username}
+        onLogout={this.handleLogout}
+      />
+      :
+      <LoginPage
+        username={this.state.username}
+        password={this.state.password}
+        onInput={this.handleChange}
+        onLogin={this.handleLogin}
+      />;
   }
 }
 
