@@ -543,6 +543,81 @@ async function population_density_car(req, res) {
   }
 }
 
+async function pop_density_isochrone_walk(req, res) {
+  if (!req.query.lat || !req.query.lng || !req.query.minutes) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing lat, lng or minutes',
+      function: 'pop_density_isochrone_walk',
+    });
+  }
+
+  const dbQuery = `
+    SELECT popDensWalk('${req.query.lng}', '${req.query.lat}', '${Number(req.query.minutes)}') as pop_dense_iso_walk;
+  `;
+
+  try {
+    const dbResponse = await pool.query(dbQuery);
+    if (dbResponse.rowCount > 0) {
+      return res.status(200).json({
+        status: 'success',
+        message: Math.round(Number(dbResponse.rows[0].pop_dense_iso_walk)),
+        function: 'pop_density_isochrone_walk',
+      });
+    }
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'pop_density_isochrone_walk',
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'pop_density_isochrone_walk',
+    });
+  }
+}
+
+async function pop_density_isochrone_bike(req, res) {
+  if (!req.query.lat || !req.query.lng || !req.query.minutes) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing lat, lng or minutes',
+      function: 'pop_density_isochrone_bike',
+    });
+  }
+
+  const dbQuery = `
+    SELECT popDensBike('${req.query.lng}', '${req.query.lat}', '${Number(req.query.minutes)}') as pop_dense_iso_bike;
+  `;
+
+  try {
+    const dbResponse = await pool.query(dbQuery);
+    if (dbResponse.rowCount > 0) {
+      return res.status(200).json({
+        status: 'success',
+        message: Math.round(Number(dbResponse.rows[0].pop_dense_iso_bike)),
+        function: 'pop_density_isochrone_bike',
+      });
+    }
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'pop_density_isochrone_bike',
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'pop_density_isochrone_bike',
+    });
+  }
+}
+
+
 async function population_density_buffer(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.buffer) {
     return res.status(400).json({
@@ -1126,6 +1201,8 @@ router.route('/population_density').get(auth, cache, population_density);
 router.route('/population_density_walk').get(auth, cache, population_density_walk);
 router.route('/population_density_bike').get(auth, cache, population_density_bike);
 router.route('/population_density_car').get(auth, cache, population_density_car);
+router.route('/pop_density_isochrone_walk').get(pop_density_isochrone_walk);
+router.route('/pop_density_isochrone_bike').get(pop_density_isochrone_bike);
 router.route('/population_density_buffer').get(auth, cache, population_density_buffer);
 router.route('/urban_status').get(auth, cache, urban_status);
 router.route('/urban_status_simple').get(auth, cache, urban_status_simple);
