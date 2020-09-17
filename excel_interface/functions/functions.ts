@@ -578,6 +578,13 @@ function NearestBank(latitude, longitude = false) {
 }
 g.NearestBank = NearestBank;
 
+/**
+  * Gets the star count for a given Github repository.
+  * @customfunction
+  * @param {string} userName string name of Github user or organization.
+  * @param {string} repoName string name of the Github repository.
+  * @return {number} number of stars given to a Github repository.
+  */
 function NearestBankDist(latitude, longitude = false) {
   const baseurl = `${apiUrl}nearest_bank_distance`;
   return new Promise(((resolve, reject) => {

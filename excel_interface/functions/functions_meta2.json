@@ -1,0 +1,23 @@
+{
+    "functions": [
+        {
+            "description": "Gets the star count for a given Github repository.",
+            "id": "NEARESTBANKDIST",
+            "name": "NEARESTBANKDIST",
+            "parameters": [
+                {
+                    "name": "latitude",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "type": "number"
+            }
+        }
+    ]
+}
