@@ -8,7 +8,8 @@ System.register([], function (exports_1, context_1) {
                 "Welcome ",
                 props.username),
             React.createElement("h2", null, "you are now successfully logged in"),
-            React.createElement("button", { type: "submit", onClick: function () { props.onLogout(); } }, "Logout")));
+            React.createElement("button", { type: "submit", onClick: function () { props.onLogout(); } }, "Logout"),
+            React.createElement("button", { type: "submit", onClick: function () { props.onDelete(); } }, "Delete User")));
     }
     exports_1("default", WelcomePage);
     return {

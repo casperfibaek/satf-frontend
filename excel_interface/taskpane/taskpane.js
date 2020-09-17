@@ -84,13 +84,14 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                     _this.handleLogin = _this.handleLogin.bind(_this);
                     _this.handleLogout = _this.handleLogout.bind(_this);
                     _this.handleRegister = _this.handleRegister.bind(_this);
-                    _this.delete_user = _this.delete_user.bind(_this);
+                    _this.handleDelete = _this.handleDelete.bind((_this));
                     _this.attemptLogIn = _this.attemptLogIn.bind(_this);
                     _this.logOut = _this.logOut.bind(_this);
                     _this.toRegisterPage = _this.toRegisterPage.bind(_this);
                     _this.toWelcomePage = _this.toWelcomePage.bind(_this);
                     _this.register = _this.register.bind(_this);
                     _this.renderLogic = _this.renderLogic.bind(_this);
+                    _this.deleteUser = _this.deleteUser.bind(_this);
                     return _this;
                 }
                 // componentDidMount() {
@@ -123,7 +124,6 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                                     return [4 /*yield*/, response.json()];
                                 case 3:
                                     responseJSON = _a.sent();
-                                    console.log(responseJSON);
                                     localStorage.setItem('token', responseJSON.username + ":" + responseJSON.token);
                                     if (response.ok) {
                                         this.setState({
@@ -134,7 +134,8 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                                 case 4:
                                     err_1 = _a.sent();
                                     console.log('there was an error');
-                                    return [3 /*break*/, 5];
+                                    console.log(err_1);
+                                    throw Error(err_1);
                                 case 5: return [2 /*return*/];
                             }
                         });
@@ -190,7 +191,8 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                                     return [4 /*yield*/, response.json()];
                                 case 3:
                                     responseJSON = _a.sent();
-                                    this.toWelcomePage();
+                                    localStorage.setItem('token', responseJSON.username + ":" + responseJSON.token);
+                                    this.toWelcomePagePage();
                                     return [2 /*return*/, responseJSON];
                                 case 4:
                                     err_2 = _a.sent();
@@ -200,7 +202,12 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                         });
                     });
                 };
-                Login.prototype.delete_user = function (token) {
+                Login.prototype.handleDelete = function () {
+                    var token = localStorage.getItem('token');
+                    this.deleteUser(token);
+                    this.logOut();
+                };
+                Login.prototype.deleteUser = function (token) {
                     return __awaiter(this, void 0, void 0, function () {
                         var response, responseJSON, err_3;
                         return __generator(this, function (_a) {
@@ -259,7 +266,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                         return (React.createElement(registerpage_js_1.default, { registerUsername: registerUsername, registerPassword: registerPassword, registerConfirm: registerConfirm, onInput: this.handleChange, onCreate: this.handleRegister, onBack: this.logOut }));
                     }
                     else if (loggedIn) {
-                        return (React.createElement(welcomepage_js_1.default, { username: username, onLogout: this.handleLogout }));
+                        return (React.createElement(welcomepage_js_1.default, { username: username, onLogout: this.handleLogout, onDelete: this.handleDelete }));
                     }
                     else if (!loggedIn) {
                         return (React.createElement(loginpage_js_1.default, { username: username, password: password, onInput: this.handleChange, onLogin: this.handleLogin, onRegister: this.toRegisterPage }));

@@ -9,6 +9,9 @@ export default function WelcomePage(props) {
          <button type="submit" onClick={() => { props.onLogout() }}>
             Logout
       </button>
+         <button type="submit" onClick={() => { props.onDelete() }}>
+            Delete User
+      </button>
       </div>
    )
 };

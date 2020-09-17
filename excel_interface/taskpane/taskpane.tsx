@@ -25,13 +25,14 @@ class Login extends React.Component {
     this.handleLogin = this.handleLogin.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
     this.handleRegister = this.handleRegister.bind(this);
-    this.delete_user = this.delete_user.bind(this)
+    this.handleDelete = this.handleDelete.bind((this);
     this.attemptLogIn = this.attemptLogIn.bind(this);
     this.logOut = this.logOut.bind(this);
     this.toRegisterPage = this.toRegisterPage.bind(this);
     this.toWelcomePage = this.toWelcomePage.bind(this);
-    this.register = this.register.bind(this)
-    this.renderLogic = this.renderLogic.bind(this)
+    this.register = this.register.bind(this);
+    this.renderLogic = this.renderLogic.bind(this);
+    this.deleteUser = this.deleteUser.bind(this);
   }
 
   // componentDidMount() {
@@ -61,8 +62,6 @@ class Login extends React.Component {
 
       const responseJSON = await response.json();
 
-      console.log(responseJSON)
-
       localStorage.setItem(
         'token',
         `${responseJSON.username}:${responseJSON.token}`,
@@ -75,9 +74,13 @@ class Login extends React.Component {
       }
     } catch (err) {
       console.log('there was an error');
-      // throw Error(err);
+      console.log(err)
+      throw Error(err);
     }
   }
+
+
+
 
   toRegisterPage() {
     this.setState({
@@ -114,24 +117,36 @@ class Login extends React.Component {
   }
 
   async register(username, password, confirm) {
-    console.log(username, password, confirm)
+    console.log(username, password, confirm);
     try {
-      const response = await fetch('../../api/create_user', {
-        method: 'post',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password, confirm }),
-      });
-
+      const response = await fetch('../../api/create_user',
+        {
+          method: 'post',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password, confirm }),
+        });
       const responseJSON = await response.json();
-      this.toWelcomePage()
+
+      localStorage.setItem(
+        'token',
+        `${responseJSON.username}:${responseJSON.token}`,
+      );
+
+      this.toWelcomePagePage()
+
       return responseJSON;
 
-    } catch (err) {
-      throw Error(err);
-    }
+    } catch (err) { throw Error(err); }
   }
 
-  async delete_user(token) {
+
+  handleDelete() {
+    const token = localStorage.getItem('token')
+    this.deleteUser(token)
+    this.logOut()
+  }
+
+  async deleteUser(token) {
     try {
       const response = await fetch('../../api/delete_user', {
         method: 'post',
@@ -199,6 +214,7 @@ class Login extends React.Component {
         <WelcomePage
           username={username}
           onLogout={this.handleLogout}
+          onDelete={this.handleDelete}
         />
       )
     } else if (!loggedIn) {
