@@ -1,119 +1,9 @@
 import { prependOnceListener } from "process";
+import LoginPage from './loginpage.js'
+import WelcomePage from './welcomepage.js'
+import RegisterPage from './registerpage.js'
 
 const { ReactDOM, React, FluentUIReact } = window; // eslint-disable-line
-
-const LoginPage = (props) => {
-  const { username, password } = props
-  return (
-    <div>
-      <form>
-        <label htmlFor="username">
-          <b>Username</b>
-        </label>
-
-        <input
-          type="text"
-          placeholder="Enter Username"
-          name="username"
-          onChange={(e) => { props.onInput(e) }}
-          value={username}
-          required
-        ></input>
-        <label htmlFor="password">
-          <b>Password</b>
-        </label>
-
-        <input
-          type="password"
-          placeholder="Enter Password"
-          name="password"
-          onChange={(e) => { props.onInput(e) }}
-          value={password}
-          required
-        ></input>
-        <button type="submit" onClick={(e) => { props.onLogin(e) }}>
-          Login
-          </button>
-      </form>
-      <div>
-        <button onClick={() => { props.onRegister() }}>Register User</button>
-      </div>
-      <h1>{username}</h1>
-      <h1>{password}</h1>
-      {/* <h1><a onClick={this.registerUser}></a></h1> */}
-    </div>
-  )
-
-}
-
-const WelcomePage = (props) => {
-
-  return (
-    <div>
-      <h1>Welcome {props.username}</h1>
-      <h2>you are now successfully logged in</h2>
-      <button type="submit" onClick={() => { props.onLogout() }}>
-        Logout
-      </button>
-    </div>
-  )
-};
-
-const RegisterPage = (props) => {
-  const { registerUsername, registerPassword, registerConfirm } = props
-  return (
-    <div>
-      <div>
-        <form>
-          <label htmlFor="username">
-            <b>Username</b>
-          </label>
-
-          <input
-            type="text"
-            placeholder="Enter Username"
-            name="username"
-            onChange={(e) => { props.onInput(e) }}
-            value={registerUsername}
-            required
-          ></input>
-
-          <label htmlFor="password">
-            <b>Password</b>
-          </label>
-
-          <input
-            type="password"
-            placeholder="Enter Password"
-            name="password"
-            onChange={(e) => { props.onInput(e) }}
-            value={registerPassword}
-            required
-          ></input>
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            name="confirm"
-            onChange={(e) => { props.onInput(e) }}
-            value={registerConfirm}
-            required
-          ></input>
-          <button type="submit" onClick={(e) => { props.onCreate(e) }}>
-            Register User
-          </button>
-          <button type="submit" onClick={() => { props.onBack() }}>
-            Back to Login
-          </button>
-        </form>
-        <h1>{registerUsername}</h1>
-        <h1>{registerPassword}</h1>
-        <h1>{registerConfirm}</h1>
-        {/* <h1><a onClick={this.registerUser}></a></h1> */}
-      </div>
-
-    </div>
-  )
-}
 
 class Login extends React.Component {
   constructor(props) {
@@ -134,11 +24,14 @@ class Login extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
+    this.handleRegister = this.handleRegister.bind(this);
+    this.delete_user = this.delete_user.bind(this)
     this.attemptLogIn = this.attemptLogIn.bind(this);
     this.logOut = this.logOut.bind(this);
     this.toRegisterPage = this.toRegisterPage.bind(this);
     this.toWelcomePage = this.toWelcomePage.bind(this);
     this.register = this.register.bind(this)
+    this.renderLogic = this.renderLogic.bind(this)
   }
 
   // componentDidMount() {
@@ -155,6 +48,7 @@ class Login extends React.Component {
 
 
   async attemptLogIn(username, password) {
+    console.log(username, password)
     try {
       const response = await fetch(
         'https://satf.azurewebsites.net/api/login_user',
@@ -166,6 +60,8 @@ class Login extends React.Component {
       );
 
       const responseJSON = await response.json();
+
+      console.log(responseJSON)
 
       localStorage.setItem(
         'token',
@@ -273,6 +169,7 @@ class Login extends React.Component {
   }
 
   handleChange(e) {
+    console.log("click")
     const { name, value } = e.target;
 
     this.setState({
