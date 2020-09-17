@@ -10,8 +10,6 @@ class Login extends React.Component {
     super(props);
 
     this.state = {
-      // page: { loggedIn: false, registerPage: false },
-      // inputs: { user: "", password: "" },
       username: '',
       password: '',
       loggedIn: false,
@@ -25,7 +23,7 @@ class Login extends React.Component {
     this.handleLogin = this.handleLogin.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
     this.handleRegister = this.handleRegister.bind(this);
-    this.handleDelete = this.handleDelete.bind((this);
+    this.handleDelete = this.handleDelete.bind(this);
     this.attemptLogIn = this.attemptLogIn.bind(this);
     this.logOut = this.logOut.bind(this);
     this.toRegisterPage = this.toRegisterPage.bind(this);
@@ -132,7 +130,7 @@ class Login extends React.Component {
         `${responseJSON.username}:${responseJSON.token}`,
       );
 
-      this.toWelcomePagePage()
+      this.toWelcomePage()
 
       return responseJSON;
 

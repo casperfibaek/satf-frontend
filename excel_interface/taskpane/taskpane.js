@@ -70,8 +70,6 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                 function Login(props) {
                     var _this = _super.call(this, props) || this;
                     _this.state = {
-                        // page: { loggedIn: false, registerPage: false },
-                        // inputs: { user: "", password: "" },
                         username: '',
                         password: '',
                         loggedIn: false,
@@ -84,7 +82,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                     _this.handleLogin = _this.handleLogin.bind(_this);
                     _this.handleLogout = _this.handleLogout.bind(_this);
                     _this.handleRegister = _this.handleRegister.bind(_this);
-                    _this.handleDelete = _this.handleDelete.bind((_this));
+                    _this.handleDelete = _this.handleDelete.bind(_this);
                     _this.attemptLogIn = _this.attemptLogIn.bind(_this);
                     _this.logOut = _this.logOut.bind(_this);
                     _this.toRegisterPage = _this.toRegisterPage.bind(_this);
@@ -192,7 +190,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                                 case 3:
                                     responseJSON = _a.sent();
                                     localStorage.setItem('token', responseJSON.username + ":" + responseJSON.token);
-                                    this.toWelcomePagePage();
+                                    this.toWelcomePage();
                                     return [2 /*return*/, responseJSON];
                                 case 4:
                                     err_2 = _a.sent();
