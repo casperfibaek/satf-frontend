@@ -49,7 +49,7 @@ System.register([], function (exports_1, context_1) {
             if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
         }
     };
-    var ReactDOM, React, FluentUIReact, LoginPage, WelcomePage, Login;
+    var ReactDOM, React, FluentUIReact, LoginPage, WelcomePage, RegisterPage, Login;
     var __moduleName = context_1 && context_1.id;
     return {
         setters: [],
@@ -67,6 +67,8 @@ System.register([], function (exports_1, context_1) {
                             React.createElement("b", null, "Password")),
                         React.createElement("input", { type: "password", placeholder: "Enter Password", name: "password", onChange: function (e) { props.onInput(e); }, value: props.password, required: true }),
                         React.createElement("button", { type: "submit", onClick: function (e) { props.onLogin(e); } }, "Login")),
+                    React.createElement("div", null,
+                        React.createElement("button", { onClick: function (e) { props.onRegister(e); } }, "Register User")),
                     React.createElement("h1", null, username),
                     React.createElement("h1", null, password)));
             };
@@ -78,6 +80,21 @@ System.register([], function (exports_1, context_1) {
                     React.createElement("h2", null, "you are now successfully logged in"),
                     React.createElement("button", { type: "submit", onClick: function () { props.onLogout(); } }, "Logout")));
             };
+            RegisterPage = function (props) {
+                return (React.createElement("div", null,
+                    React.createElement("div", null,
+                        React.createElement("form", null,
+                            React.createElement("label", { htmlFor: "username" },
+                                React.createElement("b", null, "Username")),
+                            React.createElement("input", { type: "text", placeholder: "Enter Username", name: "username", onChange: function (e) { props.onInput(e); }, value: props.username, required: true }),
+                            React.createElement("label", { htmlFor: "password" },
+                                React.createElement("b", null, "Password")),
+                            React.createElement("input", { type: "password", placeholder: "Enter Password", name: "password", onChange: function (e) { props.onInput(e); }, value: props.password, required: true }),
+                            React.createElement("input", { type: "password", placeholder: "Confirm Password", name: "confirm", onChange: function (e) { props.onInput(e); }, value: props.password, required: true }),
+                            React.createElement("button", { type: "submit", onClick: function (e) { props.onLogin(e); } }, "Login")),
+                        React.createElement("h1", null, username),
+                        React.createElement("h1", null, password))));
+            };
             Login = /** @class */ (function (_super) {
                 __extends(Login, _super);
                 function Login(props) {
@@ -88,13 +105,17 @@ System.register([], function (exports_1, context_1) {
                         username: '',
                         password: '',
                         loggedIn: false,
-                        register: false,
+                        registerPage: false,
+                        registerUsername: '',
+                        registerPassword: '',
+                        registerConfirm: '',
                     };
                     _this.handleChange = _this.handleChange.bind(_this);
                     _this.handleLogin = _this.handleLogin.bind(_this);
                     _this.handleLogout = _this.handleLogout.bind(_this);
                     _this.attemptLogIn = _this.attemptLogIn.bind(_this);
                     _this.logOut = _this.logOut.bind(_this);
+                    _this.toRegisterPage = _this.toRegisterPage.bind(_this);
                     return _this;
                 }
                 // componentDidMount() {
@@ -140,19 +161,73 @@ System.register([], function (exports_1, context_1) {
                         });
                     });
                 };
-                // async register(username, password, confirm) {
-                //   try {
-                //     const response = await fetch('https://satf.azurewebsites.net/api/create_user', {
-                //       method: 'post',
-                //       headers: { 'Content-Type': 'application/json' },
-                //       body: JSON.stringify({ username, password, confirm }),
-                //     });
-                //     const responseJSON = await response.json();
-                //     return responseJSON;
-                //   } catch (err) {
-                //     throw Error(err);
-                //   }
-                // }
+                Login.prototype.toRegisterPage = function () {
+                    this.setState({
+                        // page: { loggedIn: false, registerPage: false },
+                        // inputs: { user: "", password: "" },
+                        username: '',
+                        password: '',
+                        loggedIn: false,
+                        register: {
+                            page: true,
+                            username: '',
+                            password: '',
+                            confirm: '',
+                        }
+                    });
+                };
+                Login.prototype.register = function (username, password, confirm) {
+                    return __awaiter(this, void 0, void 0, function () {
+                        var response, responseJSON, err_2;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    _a.trys.push([0, 3, , 4]);
+                                    return [4 /*yield*/, fetch('https://satf.azurewebsites.net/api/create_user', {
+                                            method: 'post',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ username: username, password: password, confirm: confirm }),
+                                        })];
+                                case 1:
+                                    response = _a.sent();
+                                    return [4 /*yield*/, response.json()];
+                                case 2:
+                                    responseJSON = _a.sent();
+                                    return [2 /*return*/, responseJSON];
+                                case 3:
+                                    err_2 = _a.sent();
+                                    throw Error(err_2);
+                                case 4: return [2 /*return*/];
+                            }
+                        });
+                    });
+                };
+                Login.prototype.delete_user = function (token) {
+                    return __awaiter(this, void 0, void 0, function () {
+                        var response, responseJSON, err_3;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    _a.trys.push([0, 3, , 4]);
+                                    return [4 /*yield*/, fetch('https://satf.azurewebsites.net/api/delete_user', {
+                                            method: 'post',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ token: token }),
+                                        })];
+                                case 1:
+                                    response = _a.sent();
+                                    return [4 /*yield*/, response.json()];
+                                case 2:
+                                    responseJSON = _a.sent();
+                                    return [2 /*return*/, responseJSON];
+                                case 3:
+                                    err_3 = _a.sent();
+                                    throw Error(err_3);
+                                case 4: return [2 /*return*/];
+                            }
+                        });
+                    });
+                };
                 Login.prototype.handleLogout = function () {
                     this.logOut();
                 };
@@ -175,13 +250,20 @@ System.register([], function (exports_1, context_1) {
                         _a[name] = value,
                         _a));
                 };
+                Login.prototype.renderLogic = function () {
+                    if (this.state.registerPage) {
+                        var _a = this.state, registerUser = _a.registerUser, registerPassword = _a.registerPassword, registerConfirm = _a.registerConfirm;
+                        return (React.createElement(RegisterPage, { newUser: registerUser, newPassword: registerPassword, newConfirm: registerConfirm, onCreate: this.register, onBack: this.toLogin }));
+                    }
+                    else if (this.state.loggedIn) {
+                        return (React.createElement(WelcomePage, { username: this.state.username, onLogout: this.handleLogout }));
+                    }
+                    else if (!this.state.loggedIn) {
+                        return (React.createElement(LoginPage, { username: this.state.username, password: this.state.password, onInput: this.handleChange, onLogin: this.handleLogin }));
+                    }
+                };
                 Login.prototype.render = function () {
-                    // const registerPage = (
-                    // )
-                    return this.state.loggedIn ?
-                        React.createElement(WelcomePage, { username: this.state.username, onLogout: this.handleLogout })
-                        :
-                            React.createElement(LoginPage, { username: this.state.username, password: this.state.password, onInput: this.handleChange, onLogin: this.handleLogin });
+                    React.createElement("div", null, this.renderLogic());
                 };
                 return Login;
             }(React.Component));

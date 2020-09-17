@@ -36,6 +36,9 @@ const LoginPage = (props) => {
           Login
           </button>
       </form>
+      <div>
+        <button onClick={(e) => { props.onRegister(e) }}>Register User</button>
+      </div>
       <h1>{username}</h1>
       <h1>{password}</h1>
       {/* <h1><a onClick={this.registerUser}></a></h1> */}
@@ -57,6 +60,56 @@ const WelcomePage = (props) => {
   )
 };
 
+const RegisterPage = (props) => {
+  return (
+    <div>
+      <div>
+        <form>
+          <label htmlFor="username">
+            <b>Username</b>
+          </label>
+
+          <input
+            type="text"
+            placeholder="Enter Username"
+            name="username"
+            onChange={(e) => { props.onInput(e) }}
+            value={props.username}
+            required
+          ></input>
+          <label htmlFor="password">
+            <b>Password</b>
+          </label>
+
+          <input
+            type="password"
+            placeholder="Enter Password"
+            name="password"
+            onChange={(e) => { props.onInput(e) }}
+            value={props.password}
+            required
+          ></input>
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            name="confirm"
+            onChange={(e) => { props.onInput(e) }}
+            value={props.password}
+            required
+          ></input>
+          <button type="submit" onClick={(e) => { props.onLogin(e) }}>
+            Login
+          </button>
+        </form>
+        <h1>{username}</h1>
+        <h1>{password}</h1>
+        {/* <h1><a onClick={this.registerUser}></a></h1> */}
+      </div>
+
+    </div>
+  )
+}
+
 class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -67,13 +120,18 @@ class Login extends React.Component {
       username: '',
       password: '',
       loggedIn: false,
-      register: false,
+      registerPage: false,
+      registerUsername: '',
+      registerPassword: '',
+      registerConfirm: '',
+
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
     this.attemptLogIn = this.attemptLogIn.bind(this);
-    this.logOut = this.logOut.bind(this)
+    this.logOut = this.logOut.bind(this);
+    this.toRegisterPage = this.toRegisterPage.bind(this);
   }
 
   // componentDidMount() {
@@ -118,21 +176,53 @@ class Login extends React.Component {
     }
   }
 
-  // async register(username, password, confirm) {
-  //   try {
-  //     const response = await fetch('https://satf.azurewebsites.net/api/create_user', {
-  //       method: 'post',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({ username, password, confirm }),
-  //     });
+  toRegisterPage() {
+    this.setState({
+      // page: { loggedIn: false, registerPage: false },
+      // inputs: { user: "", password: "" },
+      username: '',
+      password: '',
+      loggedIn: false,
+      register: {
+        page: true,
+        username: '',
+        password: '',
+        confirm: '',
+      }
+    })
+  }
 
-  //     const responseJSON = await response.json();
+  async register(username, password, confirm) {
+    try {
+      const response = await fetch('https://satf.azurewebsites.net/api/create_user', {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password, confirm }),
+      });
 
-  //     return responseJSON;
-  //   } catch (err) {
-  //     throw Error(err);
-  //   }
-  // }
+      const responseJSON = await response.json();
+
+      return responseJSON;
+    } catch (err) {
+      throw Error(err);
+    }
+  }
+
+  async delete_user(token) {
+    try {
+      const response = await fetch('https://satf.azurewebsites.net/api/delete_user', {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+      });
+
+      const responseJSON = await response.json();
+
+      return responseJSON;
+    } catch (err) {
+      throw Error(err);
+    }
+  }
 
   handleLogout() {
     this.logOut()
@@ -160,23 +250,48 @@ class Login extends React.Component {
     });
   }
 
+
+
+  renderLogic() {
+    if (this.state.registerPage) {
+      const { registerUser, registerPassword, registerConfirm } = this.state
+      return (
+        <RegisterPage
+          newUser={registerUser}
+          newPassword={registerPassword}
+          newConfirm={registerConfirm}
+          onCreate={this.register}
+          onBack={this.toLogin}
+        >
+        </RegisterPage>
+      )
+    } else if (this.state.loggedIn) {
+      return (
+        <WelcomePage
+          username={this.state.username}
+          onLogout={this.handleLogout}
+        />
+      )
+    } else if (!this.state.loggedIn) {
+      return (
+        <LoginPage
+          username={this.state.username}
+          password={this.state.password}
+          onInput={this.handleChange}
+          onLogin={this.handleLogin}
+        />;
+      )
+    }
+
+
+  }
+
   render() {
-    // const registerPage = (
+    <div>
+      {this.renderLogic()}
+    </div>
 
-    // )
 
-    return this.state.loggedIn ?
-      <WelcomePage
-        username={this.state.username}
-        onLogout={this.handleLogout}
-      />
-      :
-      <LoginPage
-        username={this.state.username}
-        password={this.state.password}
-        onInput={this.handleChange}
-        onLogin={this.handleLogin}
-      />;
   }
 }
 
