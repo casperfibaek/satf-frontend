@@ -1,4 +1,5 @@
 /* CustomFunctions, executed in Excel cells. Metadata defined in ./functions_meta.json */
+Office.onReady(() => {});
 
 const apiUrl = 'https://satf.azurewebsites.net/api/';
 

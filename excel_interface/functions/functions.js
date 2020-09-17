@@ -1,5 +1,6 @@
 "use strict";
 /* CustomFunctions, executed in Excel cells. Metadata defined in ./functions_meta.json */
+Office.onReady(function () { });
 var apiUrl = 'https://satf.azurewebsites.net/api/';
 // ----------------------- Utils -----------------------
 function satfApiRequest(method, url, timeout) {
