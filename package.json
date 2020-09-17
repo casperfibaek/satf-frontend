@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node ./app.js",
     "dev": "nodemon ./app.js",
-    "lint": "tsc",
+    "compile": "custom-functions-metadata generate ./excel_interface/functions/functions.ts ./excel_interface/functions/functions_meta2.json && tsc",
+    "compile_watch": "custom-functions-metadata generate ./excel_interface/functions/functions.ts ./excel_interface/functions/functions_meta2.json && tsc --watch",
     "test": "tape ./tests/timing.js",
     "debug": "office-addin-debugging start ./excel_interface/manifest.xml",
     "validate": "office-addin-manifest validate ./excel_interface/manifest_local.xml"
@@ -32,6 +33,7 @@
     "@types/leaflet": "^1.5.17",
     "@types/office-js": "^1.0.131",
     "@typescript-eslint/parser": "^4.1.0",
+    "custom-functions-metadata": "^1.0.32",
     "eslint": "^7.8.1",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.0",

@@ -35,10 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var siteUrl = 'https://satf.azurewebsites.net/excel_interface/';
-Office.onReady(function () {
-    // If needed, Office.js is ready to be called
-});
+Office.onReady(function () { });
 function getGlobal() {
     if (typeof self !== 'undefined') {
         return self;
@@ -238,16 +235,16 @@ function openDialogWindow(link, event, iframe, height, width, prompt) {
         dialogCallback(asyncResult, event);
     });
 }
-function openDialogNIRAS() {
-    openDialogWindow('https://www.niras.com', event);
+function openDialogNIRAS(event) {
+    openDialogWindow('./niras.html', event);
 }
-function openDialogOPM() {
-    openDialogWindow('https://www.opml.co.uk', event);
+function openDialogOPM(event) {
+    openDialogWindow('./opm.html', event);
 }
 function openDialogSATF(event) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            openDialogWindow('https://www.opml.co.uk/projects/savings-frontier', event);
+            openDialogWindow('./satf.html', event);
             return [2 /*return*/];
         });
     });
@@ -256,7 +253,7 @@ function openDialogSUPPORT(event) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             // openDialogWindow('../support/support.html', event);
-            openDialogWindow(siteUrl + "support/support.html", event);
+            openDialogWindow('../support/support.html', event);
             return [2 /*return*/];
         });
     });
@@ -264,7 +261,7 @@ function openDialogSUPPORT(event) {
 function openDialogDOCUMENTATION(event) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            openDialogWindow(siteUrl + "documentation/documentation.html", event);
+            openDialogWindow('../documentation/documentation.html', event);
             return [2 /*return*/];
         });
     });
@@ -278,7 +275,7 @@ function openDialogMAP(event) {
                 case 1:
                     markers = _a.sent();
                     localStorage.setItem('markers', markers);
-                    openDialogWindow(siteUrl + "/map/map.html", event);
+                    openDialogWindow('../map/map.html', event);
                     return [2 /*return*/];
             }
         });

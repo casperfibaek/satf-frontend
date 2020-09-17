@@ -1,8 +1,4 @@
-const siteUrl = 'https://satf.azurewebsites.net/excel_interface/';
-
-Office.onReady(() => {
-  // If needed, Office.js is ready to be called
-});
+Office.onReady(() => {});
 
 function getGlobal() {
   if (typeof self !== 'undefined') {
@@ -157,28 +153,28 @@ function openDialogWindow(link, event, iframe = false, height = 40, width = 30, 
   });
 }
 
-function openDialogNIRAS() {
-  openDialogWindow('https://www.niras.com', event);
+function openDialogNIRAS(event) {
+  openDialogWindow('./niras.html', event);
 }
-function openDialogOPM() {
-  openDialogWindow('https://www.opml.co.uk', event);
+function openDialogOPM(event) {
+  openDialogWindow('./opm.html', event);
 }
 async function openDialogSATF(event) {
-  openDialogWindow('https://www.opml.co.uk/projects/savings-frontier', event);
+  openDialogWindow('./satf.html', event);
 }
 async function openDialogSUPPORT(event) {
   // openDialogWindow('../support/support.html', event);
-  openDialogWindow(`${siteUrl}support/support.html`, event);
+  openDialogWindow('../support/support.html', event);
 }
 async function openDialogDOCUMENTATION(event) {
-  openDialogWindow(`${siteUrl}documentation/documentation.html`, event);
+  openDialogWindow('../documentation/documentation.html', event);
 }
 
 async function openDialogMAP(event) {
   const markers = await getSelectedCells();
   localStorage.setItem('markers', markers);
 
-  openDialogWindow(`${siteUrl}/map/map.html`, event);
+  openDialogWindow('../map/map.html', event);
 }
 
 // the add-in command functions need to be available in global scope
