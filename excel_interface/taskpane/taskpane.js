@@ -56,19 +56,18 @@ System.register([], function (exports_1, context_1) {
         execute: function () {
             ReactDOM = window.ReactDOM, React = window.React, FluentUIReact = window.FluentUIReact; // eslint-disable-line
             LoginPage = function (props) {
-                var username = props.username;
-                var password = props.password;
+                var username = props.username, password = props.password;
                 return (React.createElement("div", null,
                     React.createElement("form", null,
                         React.createElement("label", { htmlFor: "username" },
                             React.createElement("b", null, "Username")),
-                        React.createElement("input", { type: "text", placeholder: "Enter Username", name: "username", onChange: function (e) { props.onInput(e); }, value: props.username, required: true }),
+                        React.createElement("input", { type: "text", placeholder: "Enter Username", name: "username", onChange: function (e) { props.onInput(e); }, value: username, required: true }),
                         React.createElement("label", { htmlFor: "password" },
                             React.createElement("b", null, "Password")),
-                        React.createElement("input", { type: "password", placeholder: "Enter Password", name: "password", onChange: function (e) { props.onInput(e); }, value: props.password, required: true }),
+                        React.createElement("input", { type: "password", placeholder: "Enter Password", name: "password", onChange: function (e) { props.onInput(e); }, value: password, required: true }),
                         React.createElement("button", { type: "submit", onClick: function (e) { props.onLogin(e); } }, "Login")),
                     React.createElement("div", null,
-                        React.createElement("button", { onClick: function (e) { props.onRegister(e); } }, "Register User")),
+                        React.createElement("button", { onClick: function () { props.onRegister(); } }, "Register User")),
                     React.createElement("h1", null, username),
                     React.createElement("h1", null, password)));
             };
@@ -81,19 +80,22 @@ System.register([], function (exports_1, context_1) {
                     React.createElement("button", { type: "submit", onClick: function () { props.onLogout(); } }, "Logout")));
             };
             RegisterPage = function (props) {
+                var registerUsername = props.registerUsername, registerPassword = props.registerPassword, registerConfirm = props.registerConfirm;
                 return (React.createElement("div", null,
                     React.createElement("div", null,
                         React.createElement("form", null,
                             React.createElement("label", { htmlFor: "username" },
                                 React.createElement("b", null, "Username")),
-                            React.createElement("input", { type: "text", placeholder: "Enter Username", name: "username", onChange: function (e) { props.onInput(e); }, value: props.username, required: true }),
+                            React.createElement("input", { type: "text", placeholder: "Enter Username", name: "username", onChange: function (e) { props.onInput(e); }, value: registerUsername, required: true }),
                             React.createElement("label", { htmlFor: "password" },
                                 React.createElement("b", null, "Password")),
-                            React.createElement("input", { type: "password", placeholder: "Enter Password", name: "password", onChange: function (e) { props.onInput(e); }, value: props.password, required: true }),
-                            React.createElement("input", { type: "password", placeholder: "Confirm Password", name: "confirm", onChange: function (e) { props.onInput(e); }, value: props.password, required: true }),
-                            React.createElement("button", { type: "submit", onClick: function (e) { props.onLogin(e); } }, "Login")),
-                        React.createElement("h1", null, username),
-                        React.createElement("h1", null, password))));
+                            React.createElement("input", { type: "password", placeholder: "Enter Password", name: "password", onChange: function (e) { props.onInput(e); }, value: registerPassword, required: true }),
+                            React.createElement("input", { type: "password", placeholder: "Confirm Password", name: "confirm", onChange: function (e) { props.onInput(e); }, value: registerConfirm, required: true }),
+                            React.createElement("button", { type: "submit", onClick: function (e) { props.onCreate(e); } }, "Register User"),
+                            React.createElement("button", { type: "submit", onClick: function () { props.onBack(); } }, "Back to Login")),
+                        React.createElement("h1", null, registerUsername),
+                        React.createElement("h1", null, registerPassword),
+                        React.createElement("h1", null, registerConfirm))));
             };
             Login = /** @class */ (function (_super) {
                 __extends(Login, _super);
@@ -116,6 +118,8 @@ System.register([], function (exports_1, context_1) {
                     _this.attemptLogIn = _this.attemptLogIn.bind(_this);
                     _this.logOut = _this.logOut.bind(_this);
                     _this.toRegisterPage = _this.toRegisterPage.bind(_this);
+                    _this.toWelcomePage = _this.toWelcomePage.bind(_this);
+                    _this.register = _this.register.bind(_this);
                     return _this;
                 }
                 // componentDidMount() {
@@ -168,13 +172,27 @@ System.register([], function (exports_1, context_1) {
                         username: '',
                         password: '',
                         loggedIn: false,
-                        register: {
-                            page: true,
-                            username: '',
-                            password: '',
-                            confirm: '',
-                        }
+                        registerPage: true,
+                        registerUsername: '',
+                        registerPassword: '',
+                        registerConfirm: '',
                     });
+                };
+                Login.prototype.toWelcomePage = function () {
+                    this.setState({
+                        // username: this,
+                        // username used for login welcome message
+                        password: '',
+                        loggedIn: true,
+                        registerPage: false,
+                        registerUsername: '',
+                        registerPassword: '',
+                        registerConfirm: '',
+                    });
+                };
+                Login.prototype.handleRegister = function () {
+                    var _a = this.state, registerUsername = _a.registerUsername, registerPassword = _a.registerPassword, registerConfirm = _a.registerConfirm;
+                    this.register(registerUsername, registerPassword, registerConfirm);
                 };
                 Login.prototype.register = function (username, password, confirm) {
                     return __awaiter(this, void 0, void 0, function () {
@@ -193,6 +211,7 @@ System.register([], function (exports_1, context_1) {
                                     return [4 /*yield*/, response.json()];
                                 case 2:
                                     responseJSON = _a.sent();
+                                    this.toWelcomePage();
                                     return [2 /*return*/, responseJSON];
                                 case 3:
                                     err_2 = _a.sent();
@@ -236,6 +255,10 @@ System.register([], function (exports_1, context_1) {
                         username: '',
                         password: '',
                         loggedIn: false,
+                        registerPage: false,
+                        registerUsername: '',
+                        registerPassword: '',
+                        registerConfirm: '',
                     });
                 };
                 Login.prototype.handleLogin = function (e) {
@@ -251,19 +274,19 @@ System.register([], function (exports_1, context_1) {
                         _a));
                 };
                 Login.prototype.renderLogic = function () {
-                    if (this.state.registerPage) {
-                        var _a = this.state, registerUser = _a.registerUser, registerPassword = _a.registerPassword, registerConfirm = _a.registerConfirm;
-                        return (React.createElement(RegisterPage, { newUser: registerUser, newPassword: registerPassword, newConfirm: registerConfirm, onCreate: this.register, onBack: this.toLogin }));
+                    var _a = this.state, registerUsername = _a.registerUsername, registerPassword = _a.registerPassword, registerConfirm = _a.registerConfirm, username = _a.username, password = _a.password, registerPage = _a.registerPage, loggedIn = _a.loggedIn;
+                    if (registerPage) {
+                        return (React.createElement(RegisterPage, { registerUsername: registerUsername, registerPassword: registerPassword, registerConfirm: registerConfirm, onInput: this.handleChange, onCreate: this.handleRegister, onBack: this.logOut }));
                     }
-                    else if (this.state.loggedIn) {
-                        return (React.createElement(WelcomePage, { username: this.state.username, onLogout: this.handleLogout }));
+                    else if (loggedIn) {
+                        return (React.createElement(WelcomePage, { username: username, onLogout: this.handleLogout }));
                     }
-                    else if (!this.state.loggedIn) {
-                        return (React.createElement(LoginPage, { username: this.state.username, password: this.state.password, onInput: this.handleChange, onLogin: this.handleLogin }));
+                    else if (!loggedIn) {
+                        return (React.createElement(LoginPage, { username: username, password: password, onInput: this.handleChange, onLogin: this.handleLogin, onRegister: this.toRegisterPage }));
                     }
                 };
                 Login.prototype.render = function () {
-                    React.createElement("div", null, this.renderLogic());
+                    return (React.createElement("div", null, this.renderLogic()));
                 };
                 return Login;
             }(React.Component));

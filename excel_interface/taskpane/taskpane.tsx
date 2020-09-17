@@ -3,8 +3,7 @@ import { prependOnceListener } from "process";
 const { ReactDOM, React, FluentUIReact } = window; // eslint-disable-line
 
 const LoginPage = (props) => {
-  const username = props.username
-  const password = props.password
+  const { username, password } = props
   return (
     <div>
       <form>
@@ -17,7 +16,7 @@ const LoginPage = (props) => {
           placeholder="Enter Username"
           name="username"
           onChange={(e) => { props.onInput(e) }}
-          value={props.username}
+          value={username}
           required
         ></input>
         <label htmlFor="password">
@@ -29,7 +28,7 @@ const LoginPage = (props) => {
           placeholder="Enter Password"
           name="password"
           onChange={(e) => { props.onInput(e) }}
-          value={props.password}
+          value={password}
           required
         ></input>
         <button type="submit" onClick={(e) => { props.onLogin(e) }}>
@@ -37,7 +36,7 @@ const LoginPage = (props) => {
           </button>
       </form>
       <div>
-        <button onClick={(e) => { props.onRegister(e) }}>Register User</button>
+        <button onClick={() => { props.onRegister() }}>Register User</button>
       </div>
       <h1>{username}</h1>
       <h1>{password}</h1>
@@ -61,6 +60,7 @@ const WelcomePage = (props) => {
 };
 
 const RegisterPage = (props) => {
+  const { registerUsername, registerPassword, registerConfirm } = props
   return (
     <div>
       <div>
@@ -74,9 +74,10 @@ const RegisterPage = (props) => {
             placeholder="Enter Username"
             name="username"
             onChange={(e) => { props.onInput(e) }}
-            value={props.username}
+            value={registerUsername}
             required
           ></input>
+
           <label htmlFor="password">
             <b>Password</b>
           </label>
@@ -86,7 +87,7 @@ const RegisterPage = (props) => {
             placeholder="Enter Password"
             name="password"
             onChange={(e) => { props.onInput(e) }}
-            value={props.password}
+            value={registerPassword}
             required
           ></input>
           <input
@@ -94,15 +95,19 @@ const RegisterPage = (props) => {
             placeholder="Confirm Password"
             name="confirm"
             onChange={(e) => { props.onInput(e) }}
-            value={props.password}
+            value={registerConfirm}
             required
           ></input>
-          <button type="submit" onClick={(e) => { props.onLogin(e) }}>
-            Login
+          <button type="submit" onClick={(e) => { props.onCreate(e) }}>
+            Register User
+          </button>
+          <button type="submit" onClick={() => { props.onBack() }}>
+            Back to Login
           </button>
         </form>
-        <h1>{username}</h1>
-        <h1>{password}</h1>
+        <h1>{registerUsername}</h1>
+        <h1>{registerPassword}</h1>
+        <h1>{registerConfirm}</h1>
         {/* <h1><a onClick={this.registerUser}></a></h1> */}
       </div>
 
@@ -132,6 +137,8 @@ class Login extends React.Component {
     this.attemptLogIn = this.attemptLogIn.bind(this);
     this.logOut = this.logOut.bind(this);
     this.toRegisterPage = this.toRegisterPage.bind(this);
+    this.toWelcomePage = this.toWelcomePage.bind(this);
+    this.register = this.register.bind(this)
   }
 
   // componentDidMount() {
@@ -183,13 +190,31 @@ class Login extends React.Component {
       username: '',
       password: '',
       loggedIn: false,
-      register: {
-        page: true,
-        username: '',
-        password: '',
-        confirm: '',
-      }
+      registerPage: true,
+      registerUsername: '',
+      registerPassword: '',
+      registerConfirm: '',
     })
+  }
+
+  toWelcomePage() {
+    this.setState({
+
+      // username: this,
+      // username used for login welcome message
+      password: '',
+      loggedIn: true,
+      registerPage: false,
+      registerUsername: '',
+      registerPassword: '',
+      registerConfirm: '',
+    })
+  }
+
+  handleRegister() {
+    const { registerUsername, registerPassword, registerConfirm } = this.state
+
+    this.register(registerUsername, registerPassword, registerConfirm)
   }
 
   async register(username, password, confirm) {
@@ -201,8 +226,9 @@ class Login extends React.Component {
       });
 
       const responseJSON = await response.json();
-
+      this.toWelcomePage()
       return responseJSON;
+
     } catch (err) {
       throw Error(err);
     }
@@ -233,6 +259,10 @@ class Login extends React.Component {
       username: '',
       password: '',
       loggedIn: false,
+      registerPage: false,
+      registerUsername: '',
+      registerPassword: '',
+      registerConfirm: '',
     });
   }
 
@@ -253,33 +283,35 @@ class Login extends React.Component {
 
 
   renderLogic() {
-    if (this.state.registerPage) {
-      const { registerUser, registerPassword, registerConfirm } = this.state
+    const { registerUsername, registerPassword, registerConfirm, username, password, registerPage, loggedIn } = this.state
+    if (registerPage) {
       return (
         <RegisterPage
-          newUser={registerUser}
-          newPassword={registerPassword}
-          newConfirm={registerConfirm}
-          onCreate={this.register}
-          onBack={this.toLogin}
+          registerUsername={registerUsername}
+          registerPassword={registerPassword}
+          registerConfirm={registerConfirm}
+          onInput={this.handleChange}
+          onCreate={this.handleRegister}
+          onBack={this.logOut}
         >
         </RegisterPage>
       )
-    } else if (this.state.loggedIn) {
+    } else if (loggedIn) {
       return (
         <WelcomePage
-          username={this.state.username}
+          username={username}
           onLogout={this.handleLogout}
         />
       )
-    } else if (!this.state.loggedIn) {
+    } else if (!loggedIn) {
       return (
         <LoginPage
-          username={this.state.username}
-          password={this.state.password}
+          username={username}
+          password={password}
           onInput={this.handleChange}
           onLogin={this.handleLogin}
-        />;
+          onRegister={this.toRegisterPage}
+        />
       )
     }
 
@@ -287,11 +319,12 @@ class Login extends React.Component {
   }
 
   render() {
-    <div>
-      {this.renderLogic()}
-    </div>
 
-
+    return (
+      <div>
+        {this.renderLogic()}
+      </div>
+    )
   }
 }
 
