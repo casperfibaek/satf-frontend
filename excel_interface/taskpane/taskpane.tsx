@@ -35,10 +35,12 @@ class Login extends React.Component {
     this.logOut = this.logOut.bind(this);
     this.toRegisterPage = this.toRegisterPage.bind(this);
     this.toWelcomePage = this.toWelcomePage.bind(this);
+    this.toLoginPage = this.toLoginPage.bind(this);
     this.register = this.register.bind(this);
     this.renderLogic = this.renderLogic.bind(this);
     this.deleteUser = this.deleteUser.bind(this);
     this.clearToken = this.clearToken.bind(this);
+
 
     // this.sleep = this.sleep.bind(this)
   }
@@ -96,15 +98,18 @@ class Login extends React.Component {
         },
       );
       // wait 2 sec.
+
+      const responseJSON = await response.json();
       this.setState({
         loading: false,
       })
-      const responseJSON = await response.json();
       if (response.ok) {
         localStorage.setItem(
           'token',
           `${responseJSON.username}:${responseJSON.token}`,
         );
+
+        /// change to this.toWelcomePage()
         this.setState({
           loggedIn: true,
         });
@@ -147,6 +152,20 @@ class Login extends React.Component {
     });
   }
 
+  toLoginPage() {
+    this.setState({
+      username: '',
+      password: '',
+      loggedIn: true,
+      registerPage: false,
+      loading: false,
+      registerUsername: '',
+      registerPassword: '',
+      registerConfirm: '',
+      errorMsg: '',
+    });
+  }
+
   handleRegister(e) {
     e.preventDefault();
 
@@ -158,13 +177,18 @@ class Login extends React.Component {
 
   async register(username, password, confirm) {
     try {
+      this.setState({
+        loading: true,
+      })
       const response = await fetch('../../api/create_user',
         {
           method: 'post',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, password, confirm }),
         });
-
+      this.setState({
+        loading: false
+      })
       if (response.ok) {
         const responseJSON = await response.json();
 
@@ -195,12 +219,17 @@ class Login extends React.Component {
 
   async deleteUser(token) {
     try {
+      this.setState({
+        loading: true,
+      })
       const response = await fetch('../../api/delete_user', {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token }),
       });
-
+      this.setState({
+        loading: false,
+      })
       const responseJSON = await response.json();
 
       return responseJSON;
@@ -219,6 +248,8 @@ class Login extends React.Component {
 
   logOut() {
     this.clearToken();
+    // change function to "tologinscreen" to help with loading spinner logic
+
     this.setState({
       username: '',
       password: '',
@@ -287,9 +318,9 @@ class Login extends React.Component {
   render() {
     return (
       <div>
-        {this.renderLogic()}
+        {this.state.loading ? <Spinner /> : this.renderLogic()}
         <ErrorBox errorMsg={this.state.errorMsg} />
-        <Spinner loading={this.state.loading} />
+
       </div>
     );
   }

@@ -97,6 +97,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
                     _this.logOut = _this.logOut.bind(_this);
                     _this.toRegisterPage = _this.toRegisterPage.bind(_this);
                     _this.toWelcomePage = _this.toWelcomePage.bind(_this);
+                    _this.toLoginPage = _this.toLoginPage.bind(_this);
                     _this.register = _this.register.bind(_this);
                     _this.renderLogic = _this.renderLogic.bind(_this);
                     _this.deleteUser = _this.deleteUser.bind(_this);
@@ -153,15 +154,15 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
                                         })];
                                 case 1:
                                     response = _a.sent();
-                                    // wait 2 sec.
-                                    this.setState({
-                                        loading: false,
-                                    });
                                     return [4 /*yield*/, response.json()];
                                 case 2:
                                     responseJSON = _a.sent();
+                                    this.setState({
+                                        loading: false,
+                                    });
                                     if (response.ok) {
                                         localStorage.setItem('token', responseJSON.username + ":" + responseJSON.token);
+                                        /// change to this.toWelcomePage()
                                         this.setState({
                                             loggedIn: true,
                                         });
@@ -207,6 +208,19 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
                         errorMsg: '',
                     });
                 };
+                Login.prototype.toLoginPage = function () {
+                    this.setState({
+                        username: '',
+                        password: '',
+                        loggedIn: true,
+                        registerPage: false,
+                        loading: false,
+                        registerUsername: '',
+                        registerPassword: '',
+                        registerConfirm: '',
+                        errorMsg: '',
+                    });
+                };
                 Login.prototype.handleRegister = function (e) {
                     e.preventDefault();
                     var _a = this.state, registerUsername = _a.registerUsername, registerPassword = _a.registerPassword, registerConfirm = _a.registerConfirm;
@@ -219,6 +233,9 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
                             switch (_a.label) {
                                 case 0:
                                     _a.trys.push([0, 5, , 6]);
+                                    this.setState({
+                                        loading: true,
+                                    });
                                     return [4 /*yield*/, fetch('../../api/create_user', {
                                             method: 'post',
                                             headers: { 'Content-Type': 'application/json' },
@@ -226,6 +243,9 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
                                         })];
                                 case 1:
                                     response = _a.sent();
+                                    this.setState({
+                                        loading: false
+                                    });
                                     if (!response.ok) return [3 /*break*/, 3];
                                     return [4 /*yield*/, response.json()];
                                 case 2:
@@ -259,6 +279,9 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
                             switch (_a.label) {
                                 case 0:
                                     _a.trys.push([0, 3, , 4]);
+                                    this.setState({
+                                        loading: true,
+                                    });
                                     return [4 /*yield*/, fetch('../../api/delete_user', {
                                             method: 'post',
                                             headers: { 'Content-Type': 'application/json' },
@@ -266,6 +289,9 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
                                         })];
                                 case 1:
                                     response = _a.sent();
+                                    this.setState({
+                                        loading: false,
+                                    });
                                     return [4 /*yield*/, response.json()];
                                 case 2:
                                     responseJSON = _a.sent();
@@ -288,6 +314,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
                 };
                 Login.prototype.logOut = function () {
                     this.clearToken();
+                    // change function to "tologinscreen" to help with loading spinner logic
                     this.setState({
                         username: '',
                         password: '',
@@ -326,9 +353,8 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
                 };
                 Login.prototype.render = function () {
                     return (React.createElement("div", null,
-                        this.renderLogic(),
-                        React.createElement(errorBox_js_1.default, { errorMsg: this.state.errorMsg }),
-                        React.createElement(spinner_js_1.default, { loading: this.state.loading })));
+                        this.state.loading ? React.createElement(spinner_js_1.default, null) : this.renderLogic(),
+                        React.createElement(errorBox_js_1.default, { errorMsg: this.state.errorMsg })));
                 };
                 return Login;
             }(React.Component));
