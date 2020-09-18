@@ -2,6 +2,9 @@ import { prependOnceListener } from "process";
 import LoginPage from './loginpage.js'
 import WelcomePage from './welcomepage.js'
 import RegisterPage from './registerpage.js'
+import ErrorBox from './errorBox.js'
+import Spinner from './spinner.js'
+// import ClipLoader from "react-spinners/ClipLoader";
 
 const { ReactDOM, React, FluentUIReact } = window; // eslint-disable-line
 
@@ -25,6 +28,7 @@ class Login extends React.Component {
     this.handleLogout = this.handleLogout.bind(this);
     this.handleRegister = this.handleRegister.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.handleError = this.handleError.bind(this)
     this.attemptLogIn = this.attemptLogIn.bind(this);
     this.logOut = this.logOut.bind(this);
     this.toRegisterPage = this.toRegisterPage.bind(this);
@@ -33,34 +37,34 @@ class Login extends React.Component {
     this.renderLogic = this.renderLogic.bind(this);
     this.deleteUser = this.deleteUser.bind(this);
     this.clearToken = this.clearToken.bind(this);
+
   }
 
-  // componentDidMount() {
-  //   Office.initialize = () => {
-  //     // Determine user's version of Office
-  //     if (!Office.context.requirements.isSetSupported("ExcelApi", "1.7")) {
-  //       console.log(
-  //         "Sorry. The add-in uses Excel.js APIs that are not available in your version of Office."
-  //       );
-  //     }
-  //   };
-  // }
+  componentDidMount() {
+    Office.initialize = () => {
+      // Determine user's version of Office
+      if (!Office.context.requirements.isSetSupported("ExcelApi", "1.7")) {
+        console.log(
+          "Sorry. The add-in uses Excel.js APIs that are not available in your version of Office."
+        );
+      }
+    };
+  }
 
-  // createErrorMsg(error) {
-  //   switch(error){
 
-  //   }
-  //   this.setState({
-
-  //   })
-  // }
+  handleError(err) {
+    const errorMsg = err.message
+    this.setState({
+      errorMsg
+    })
+  }
 
   clearToken() {
     return localStorage.removeItem('token')
   }
 
   async attemptLogIn(username, password) {
-    console.log(username, password)
+
     try {
       const response = await fetch(
         '../../api/login_user',
@@ -70,28 +74,23 @@ class Login extends React.Component {
           body: JSON.stringify({ username, password }),
         },
       );
-
+      //wait 2 sec.
       const responseJSON = await response.json();
-
-      localStorage.setItem(
-        'token',
-        `${responseJSON.username}:${responseJSON.token}`,
-      );
-
       if (response.ok) {
+        localStorage.setItem(
+          'token',
+          `${responseJSON.username}:${responseJSON.token}`,
+        );
         this.setState({
           loggedIn: true,
         });
+      } else {
+        this.handleError(responseJSON)
       }
     } catch (err) {
-      console.log('there was an error');
-      console.log(err)
-      throw Error(err);
+      throw new Error(error)
     }
   }
-
-
-
 
   toRegisterPage() {
     this.setState({
@@ -130,7 +129,6 @@ class Login extends React.Component {
   }
 
   async register(username, password, confirm) {
-    console.log(username, password, confirm);
     try {
       const response = await fetch('../../api/create_user',
         {
@@ -138,18 +136,26 @@ class Login extends React.Component {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, password, confirm }),
         });
-      const responseJSON = await response.json();
 
-      localStorage.setItem(
-        'token',
-        `${responseJSON.username}:${responseJSON.token}`,
-      );
+      if (response.ok) {
+        const responseJSON = await response.json();
 
-      this.toWelcomePage()
+        localStorage.setItem(
+          'token',
+          `${responseJSON.username}:${responseJSON.token}`,
+        );
 
-      return responseJSON;
+        this.toWelcomePage()
 
-    } catch (err) { throw Error(err); }
+        return responseJSON;
+      } else {
+        const responseJSON = await response.json();
+        this.handleError(responseJSON)
+      }
+
+    } catch (err) {
+      throw new Error(err)
+    }
   }
 
 
@@ -172,7 +178,11 @@ class Login extends React.Component {
 
       return responseJSON;
     } catch (err) {
-      throw Error(err);
+      // throw Error(err);
+      console.log('there was an error');
+      console.log(err)
+      // throw Error(err);
+      this.handleError(err)
     }
   }
 
@@ -253,7 +263,7 @@ class Login extends React.Component {
     return (
       <div>
         {this.renderLogic()}
-        <ErrorBox msg={this.props.errorMsg} />
+        <ErrorBox errorMsg={this.state.errorMsg} />
       </div>
     )
   }
@@ -261,7 +271,8 @@ class Login extends React.Component {
 
 ReactDOM.render(
   <React.StrictMode>
-    <Login />
+    {/* <Login /> */}
+    <Spinner />
   </React.StrictMode>,
   document.getElementById('root'),
 );

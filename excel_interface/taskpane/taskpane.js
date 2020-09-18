@@ -1,4 +1,4 @@
-System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], function (exports_1, context_1) {
+System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./errorBox.js", "./spinner.js"], function (exports_1, context_1) {
     "use strict";
     var __extends = (this && this.__extends) || (function () {
         var extendStatics = function (d, b) {
@@ -49,7 +49,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
             if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
         }
     };
-    var loginpage_js_1, welcomepage_js_1, registerpage_js_1, ReactDOM, React, FluentUIReact, Login;
+    var loginpage_js_1, welcomepage_js_1, registerpage_js_1, errorBox_js_1, spinner_js_1, ReactDOM, React, FluentUIReact, Login;
     var __moduleName = context_1 && context_1.id;
     return {
         setters: [
@@ -61,9 +61,16 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
             },
             function (registerpage_js_1_1) {
                 registerpage_js_1 = registerpage_js_1_1;
+            },
+            function (errorBox_js_1_1) {
+                errorBox_js_1 = errorBox_js_1_1;
+            },
+            function (spinner_js_1_1) {
+                spinner_js_1 = spinner_js_1_1;
             }
         ],
         execute: function () {
+            // import ClipLoader from "react-spinners/ClipLoader";
             ReactDOM = window.ReactDOM, React = window.React, FluentUIReact = window.FluentUIReact; // eslint-disable-line
             Login = /** @class */ (function (_super) {
                 __extends(Login, _super);
@@ -77,12 +84,14 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                         registerUsername: '',
                         registerPassword: '',
                         registerConfirm: '',
+                        errorMsg: ''
                     };
                     _this.handleChange = _this.handleChange.bind(_this);
                     _this.handleLogin = _this.handleLogin.bind(_this);
                     _this.handleLogout = _this.handleLogout.bind(_this);
                     _this.handleRegister = _this.handleRegister.bind(_this);
                     _this.handleDelete = _this.handleDelete.bind(_this);
+                    _this.handleError = _this.handleError.bind(_this);
                     _this.attemptLogIn = _this.attemptLogIn.bind(_this);
                     _this.logOut = _this.logOut.bind(_this);
                     _this.toRegisterPage = _this.toRegisterPage.bind(_this);
@@ -93,16 +102,20 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                     _this.clearToken = _this.clearToken.bind(_this);
                     return _this;
                 }
-                // componentDidMount() {
-                //   Office.initialize = () => {
-                //     // Determine user's version of Office
-                //     if (!Office.context.requirements.isSetSupported("ExcelApi", "1.7")) {
-                //       console.log(
-                //         "Sorry. The add-in uses Excel.js APIs that are not available in your version of Office."
-                //       );
-                //     }
-                //   };
-                // }
+                Login.prototype.componentDidMount = function () {
+                    Office.initialize = function () {
+                        // Determine user's version of Office
+                        if (!Office.context.requirements.isSetSupported("ExcelApi", "1.7")) {
+                            console.log("Sorry. The add-in uses Excel.js APIs that are not available in your version of Office.");
+                        }
+                    };
+                };
+                Login.prototype.handleError = function (err) {
+                    var errorMsg = err.message;
+                    this.setState({
+                        errorMsg: errorMsg
+                    });
+                };
                 Login.prototype.clearToken = function () {
                     return localStorage.removeItem('token');
                 };
@@ -112,33 +125,31 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
-                                    console.log(username, password);
-                                    _a.label = 1;
-                                case 1:
-                                    _a.trys.push([1, 4, , 5]);
+                                    _a.trys.push([0, 3, , 4]);
                                     return [4 /*yield*/, fetch('../../api/login_user', {
                                             method: 'post',
                                             headers: { 'Content-Type': 'application/json' },
                                             body: JSON.stringify({ username: username, password: password }),
                                         })];
-                                case 2:
+                                case 1:
                                     response = _a.sent();
                                     return [4 /*yield*/, response.json()];
-                                case 3:
+                                case 2:
                                     responseJSON = _a.sent();
-                                    localStorage.setItem('token', responseJSON.username + ":" + responseJSON.token);
                                     if (response.ok) {
+                                        localStorage.setItem('token', responseJSON.username + ":" + responseJSON.token);
                                         this.setState({
                                             loggedIn: true,
                                         });
                                     }
-                                    return [3 /*break*/, 5];
-                                case 4:
+                                    else {
+                                        this.handleError(responseJSON);
+                                    }
+                                    return [3 /*break*/, 4];
+                                case 3:
                                     err_1 = _a.sent();
-                                    console.log('there was an error');
-                                    console.log(err_1);
-                                    throw Error(err_1);
-                                case 5: return [2 /*return*/];
+                                    throw new Error(error);
+                                case 4: return [2 /*return*/];
                             }
                         });
                     });
@@ -154,6 +165,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                         registerUsername: '',
                         registerPassword: '',
                         registerConfirm: '',
+                        errorMsg: '',
                     });
                 };
                 Login.prototype.toWelcomePage = function () {
@@ -166,6 +178,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                         registerUsername: '',
                         registerPassword: '',
                         registerConfirm: '',
+                        errorMsg: '',
                     });
                 };
                 Login.prototype.handleRegister = function (e) {
@@ -175,31 +188,35 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                 };
                 Login.prototype.register = function (username, password, confirm) {
                     return __awaiter(this, void 0, void 0, function () {
-                        var response, responseJSON, err_2;
+                        var response, responseJSON, responseJSON, err_2;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
-                                    console.log(username, password, confirm);
-                                    _a.label = 1;
-                                case 1:
-                                    _a.trys.push([1, 4, , 5]);
+                                    _a.trys.push([0, 6, , 7]);
                                     return [4 /*yield*/, fetch('../../api/create_user', {
                                             method: 'post',
                                             headers: { 'Content-Type': 'application/json' },
                                             body: JSON.stringify({ username: username, password: password, confirm: confirm }),
                                         })];
-                                case 2:
+                                case 1:
                                     response = _a.sent();
+                                    if (!response.ok) return [3 /*break*/, 3];
                                     return [4 /*yield*/, response.json()];
-                                case 3:
+                                case 2:
                                     responseJSON = _a.sent();
                                     localStorage.setItem('token', responseJSON.username + ":" + responseJSON.token);
                                     this.toWelcomePage();
                                     return [2 /*return*/, responseJSON];
+                                case 3: return [4 /*yield*/, response.json()];
                                 case 4:
+                                    responseJSON = _a.sent();
+                                    this.handleError(responseJSON);
+                                    _a.label = 5;
+                                case 5: return [3 /*break*/, 7];
+                                case 6:
                                     err_2 = _a.sent();
-                                    throw Error(err_2);
-                                case 5: return [2 /*return*/];
+                                    throw new Error(err_2);
+                                case 7: return [2 /*return*/];
                             }
                         });
                     });
@@ -230,7 +247,12 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                                     return [2 /*return*/, responseJSON];
                                 case 3:
                                     err_3 = _a.sent();
-                                    throw Error(err_3);
+                                    // throw Error(err);
+                                    console.log('there was an error');
+                                    console.log(err_3);
+                                    // throw Error(err);
+                                    this.handleError(err_3);
+                                    return [3 /*break*/, 4];
                                 case 4: return [2 /*return*/];
                             }
                         });
@@ -249,6 +271,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                         registerUsername: '',
                         registerPassword: '',
                         registerConfirm: '',
+                        errorMsg: '',
                     });
                 };
                 Login.prototype.handleLogin = function (e) {
@@ -277,12 +300,14 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                     }
                 };
                 Login.prototype.render = function () {
-                    return (React.createElement("div", null, this.renderLogic()));
+                    return (React.createElement("div", null,
+                        this.renderLogic(),
+                        React.createElement(errorBox_js_1.default, { errorMsg: this.state.errorMsg })));
                 };
                 return Login;
             }(React.Component));
             ReactDOM.render(React.createElement(React.StrictMode, null,
-                React.createElement(Login, null)), document.getElementById('root'));
+                React.createElement(spinner_js_1.default, null)), document.getElementById('root'));
         }
     };
 });
