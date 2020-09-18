@@ -8,6 +8,7 @@ const cache = require('./cache');
 const auth = require('./auth');
 const credentials = require('./credentials');
 const utils = require('./utils');
+const gpgps = require('./gpgps');
 const Wfw = require('./assets/whatfreewords');
 const Pluscodes = require('./assets/pluscodes');
 
@@ -36,6 +37,31 @@ async function latlng_to_whatfreewords(req, res) {
       status: 'Failure',
       message: 'Error encountered on server',
       function: 'latlng_to_whatfreewords',
+    });
+  }
+}
+
+async function gpgps_to_latlng(req, res) {
+  if (!req.query.gpgps) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing gpgps',
+      function: 'gpgps_to_latlng',
+    });
+  }
+  try {
+    const latlng = await gpgps.gpgps_to_latlng(req.query.gpgps);
+    return res.status(200).json({
+      status: 'success',
+      message: latlng,
+      function: 'gpgps_to_latlng',
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'gpgps_to_latlng',
     });
   }
 }
@@ -1280,6 +1306,7 @@ router.route('/pop_density_isochrone_walk').get(auth, cache, pop_density_isochro
 router.route('/pop_density_isochrone_bike').get(auth, cache, pop_density_isochrone_bike);
 router.route('/population_density_buffer').get(auth, cache, population_density_buffer);
 router.route('/urban_status').get(auth, cache, urban_status);
+router.route('/gpgps_to_latlng').get(gpgps_to_latlng);
 router.route('/urban_status_simple').get(auth, cache, urban_status_simple);
 router.route('/admin_level_1').get(auth, cache, admin_level_1);
 router.route('/admin_level_2').get(auth, cache, admin_level_2);
