@@ -66,6 +66,31 @@ async function gpgps_to_latlng(req, res) {
   }
 }
 
+async function latlng_to_gpgps(req, res) {
+  if (!req.query.lat || !req.query.lng) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing lat or lng',
+      function: 'latlng_to_gpgps',
+    });
+  }
+  try {
+    const GhanaPostalGPS = await gpgps.latlng_to_gpgps(req.query.lat, req.query.lng);
+    return res.status(200).json({
+      status: 'success',
+      message: GhanaPostalGPS,
+      function: 'latlng_to_gpgps',
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'latlng_to_gpgps',
+    });
+  }
+}
+
 async function whatfreewords_to_latlng(req, res) {
   if (!req.query.words) {
     return res.status(400).json({
@@ -1307,6 +1332,7 @@ router.route('/pop_density_isochrone_bike').get(auth, cache, pop_density_isochro
 router.route('/population_density_buffer').get(auth, cache, population_density_buffer);
 router.route('/urban_status').get(auth, cache, urban_status);
 router.route('/gpgps_to_latlng').get(gpgps_to_latlng);
+router.route('/latlng_to_gpgps').get(latlng_to_gpgps);
 router.route('/urban_status_simple').get(auth, cache, urban_status_simple);
 router.route('/admin_level_1').get(auth, cache, admin_level_1);
 router.route('/admin_level_2').get(auth, cache, admin_level_2);
