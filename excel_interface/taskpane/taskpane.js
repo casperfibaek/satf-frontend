@@ -1,4 +1,4 @@
-System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./errorBox.js"], function (exports_1, context_1) {
+System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./errorBox.js", "./spinner.js"], function (exports_1, context_1) {
     "use strict";
     var __extends = (this && this.__extends) || (function () {
         var extendStatics = function (d, b) {
@@ -49,7 +49,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
             if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
         }
     };
-    var loginpage_js_1, welcomepage_js_1, registerpage_js_1, errorBox_js_1, ReactDOM, React, FluentUIReact, Login;
+    var loginpage_js_1, welcomepage_js_1, registerpage_js_1, errorBox_js_1, spinner_js_1, ReactDOM, React, FluentUIReact, Login;
     var __moduleName = context_1 && context_1.id;
     return {
         setters: [
@@ -64,9 +64,13 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
             },
             function (errorBox_js_1_1) {
                 errorBox_js_1 = errorBox_js_1_1;
+            },
+            function (spinner_js_1_1) {
+                spinner_js_1 = spinner_js_1_1;
             }
         ],
         execute: function () {
+            // import ClipLoader from "react-spinners/ClipLoader";
             ReactDOM = window.ReactDOM, React = window.React, FluentUIReact = window.FluentUIReact; // eslint-disable-line
             Login = /** @class */ (function (_super) {
                 __extends(Login, _super);
@@ -303,7 +307,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
                 return Login;
             }(React.Component));
             ReactDOM.render(React.createElement(React.StrictMode, null,
-                React.createElement(Login, null)), document.getElementById('root'));
+                React.createElement(spinner_js_1.default, null)), document.getElementById('root'));
         }
     };
 });

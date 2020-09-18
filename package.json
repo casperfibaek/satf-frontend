@@ -26,7 +26,7 @@
     "morgan": "~1.10.0",
     "nocache": "^2.1.0",
     "nodemon": "^2.0.4",
-    "pg": "^8.3.3"
+    "pg": "^8.3.3",
   },
   "devDependencies": {
     "@types/custom-functions-runtime": "^1.5.3",

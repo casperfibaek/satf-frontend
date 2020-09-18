@@ -3,6 +3,8 @@ import LoginPage from './loginpage.js'
 import WelcomePage from './welcomepage.js'
 import RegisterPage from './registerpage.js'
 import ErrorBox from './errorBox.js'
+import Spinner from './spinner.js'
+// import ClipLoader from "react-spinners/ClipLoader";
 
 const { ReactDOM, React, FluentUIReact } = window; // eslint-disable-line
 
@@ -269,7 +271,8 @@ class Login extends React.Component {
 
 ReactDOM.render(
   <React.StrictMode>
-    <Login />
+    {/* <Login /> */}
+    <Spinner />
   </React.StrictMode>,
   document.getElementById('root'),
 );
