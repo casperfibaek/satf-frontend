@@ -1,9 +1,9 @@
-import { prependOnceListener } from "process";
-import LoginPage from './loginpage.js'
-import WelcomePage from './welcomepage.js'
-import RegisterPage from './registerpage.js'
-import ErrorBox from './errorBox.js'
-import Spinner from './spinner.js'
+import { prependOnceListener } from 'process';
+import LoginPage from './loginpage.js';
+import WelcomePage from './welcomepage.js';
+import RegisterPage from './registerpage.js';
+import ErrorBox from './errorBox.js';
+import Spinner from './spinner.js';
 // import ClipLoader from "react-spinners/ClipLoader";
 
 const { ReactDOM, React, FluentUIReact } = window; // eslint-disable-line
@@ -20,7 +20,7 @@ class Login extends React.Component {
       registerUsername: '',
       registerPassword: '',
       registerConfirm: '',
-      errorMsg: ''
+      errorMsg: '',
 
     };
     this.handleChange = this.handleChange.bind(this);
@@ -28,7 +28,7 @@ class Login extends React.Component {
     this.handleLogout = this.handleLogout.bind(this);
     this.handleRegister = this.handleRegister.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
-    this.handleError = this.handleError.bind(this)
+    this.handleError = this.handleError.bind(this);
     this.attemptLogIn = this.attemptLogIn.bind(this);
     this.logOut = this.logOut.bind(this);
     this.toRegisterPage = this.toRegisterPage.bind(this);
@@ -37,34 +37,31 @@ class Login extends React.Component {
     this.renderLogic = this.renderLogic.bind(this);
     this.deleteUser = this.deleteUser.bind(this);
     this.clearToken = this.clearToken.bind(this);
-
   }
 
   componentDidMount() {
     Office.initialize = () => {
       // Determine user's version of Office
-      if (!Office.context.requirements.isSetSupported("ExcelApi", "1.7")) {
+      if (!Office.context.requirements.isSetSupported('ExcelApi', '1.7')) {
         console.log(
-          "Sorry. The add-in uses Excel.js APIs that are not available in your version of Office."
+          'Sorry. The add-in uses Excel.js APIs that are not available in your version of Office.',
         );
       }
     };
   }
 
-
   handleError(err) {
-    const errorMsg = err.message
+    const errorMsg = err.message;
     this.setState({
-      errorMsg
-    })
+      errorMsg,
+    });
   }
 
   clearToken() {
-    return localStorage.removeItem('token')
+    return localStorage.removeItem('token');
   }
 
   async attemptLogIn(username, password) {
-
     try {
       const response = await fetch(
         '../../api/login_user',
@@ -74,7 +71,7 @@ class Login extends React.Component {
           body: JSON.stringify({ username, password }),
         },
       );
-      //wait 2 sec.
+      // wait 2 sec.
       const responseJSON = await response.json();
       if (response.ok) {
         localStorage.setItem(
@@ -85,10 +82,10 @@ class Login extends React.Component {
           loggedIn: true,
         });
       } else {
-        this.handleError(responseJSON)
+        this.handleError(responseJSON);
       }
     } catch (err) {
-      throw new Error(error)
+      throw new Error(error);
     }
   }
 
@@ -104,7 +101,7 @@ class Login extends React.Component {
       registerPassword: '',
       registerConfirm: '',
       errorMsg: '',
-    })
+    });
   }
 
   toWelcomePage() {
@@ -118,14 +115,14 @@ class Login extends React.Component {
       registerPassword: '',
       registerConfirm: '',
       errorMsg: '',
-    })
+    });
   }
 
   handleRegister(e) {
     e.preventDefault();
-    const { registerUsername, registerPassword, registerConfirm } = this.state
+    const { registerUsername, registerPassword, registerConfirm } = this.state;
 
-    this.register(registerUsername, registerPassword, registerConfirm)
+    this.register(registerUsername, registerPassword, registerConfirm);
   }
 
   async register(username, password, confirm) {
@@ -145,25 +142,22 @@ class Login extends React.Component {
           `${responseJSON.username}:${responseJSON.token}`,
         );
 
-        this.toWelcomePage()
+        this.toWelcomePage();
 
         return responseJSON;
-      } else {
-        const responseJSON = await response.json();
-        this.handleError(responseJSON)
       }
-
+      const responseJSON = await response.json();
+      this.handleError(responseJSON);
     } catch (err) {
-      throw new Error(err)
+      throw new Error(err);
     }
   }
 
-
   handleDelete() {
-    const token = localStorage.getItem('token')
-    this.deleteUser(token)
-    this.clearToken()
-    this.logOut()
+    const token = localStorage.getItem('token');
+    this.deleteUser(token);
+    this.clearToken();
+    this.logOut();
   }
 
   async deleteUser(token) {
@@ -180,18 +174,18 @@ class Login extends React.Component {
     } catch (err) {
       // throw Error(err);
       console.log('there was an error');
-      console.log(err)
+      console.log(err);
       // throw Error(err);
-      this.handleError(err)
+      this.handleError(err);
     }
   }
 
   handleLogout() {
-    this.logOut()
+    this.logOut();
   }
 
   logOut() {
-    this.clearToken()
+    this.clearToken();
     this.setState({
       username: '',
       password: '',
@@ -211,7 +205,7 @@ class Login extends React.Component {
   }
 
   handleChange(e) {
-    console.log("click")
+    console.log('click');
     const { name, value } = e.target;
 
     this.setState({
@@ -219,10 +213,10 @@ class Login extends React.Component {
     });
   }
 
-
-
   renderLogic() {
-    const { registerUsername, registerPassword, registerConfirm, username, password, registerPage, loggedIn } = this.state
+    const {
+      registerUsername, registerPassword, registerConfirm, username, password, registerPage, loggedIn,
+    } = this.state;
     if (registerPage) {
       return (
         <RegisterPage
@@ -234,16 +228,16 @@ class Login extends React.Component {
           onBack={this.logOut}
         >
         </RegisterPage>
-      )
-    } else if (loggedIn) {
+      );
+    } if (loggedIn) {
       return (
         <WelcomePage
           username={username}
           onLogout={this.handleLogout}
           onDelete={this.handleDelete}
         />
-      )
-    } else if (!loggedIn) {
+      );
+    } if (!loggedIn) {
       return (
         <LoginPage
           username={username}
@@ -252,27 +246,24 @@ class Login extends React.Component {
           onLogin={this.handleLogin}
           onRegister={this.toRegisterPage}
         />
-      )
+      );
     }
-
-
   }
 
   render() {
-
     return (
       <div>
         {this.renderLogic()}
         <ErrorBox errorMsg={this.state.errorMsg} />
       </div>
-    )
+    );
   }
 }
 
 ReactDOM.render(
   <React.StrictMode>
     {/* <Login /> */}
-    <Spinner />
+    <Login />
   </React.StrictMode>,
   document.getElementById('root'),
 );

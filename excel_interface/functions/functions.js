@@ -1,4 +1,4 @@
-System.register(["./functions_utils"], function (exports_1, context_1) {
+System.register(["./functions_utils.js"], function (exports_1, context_1) {
     "use strict";
     var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
         function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -36,7 +36,7 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
             if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
         }
     };
-    var functions_utils_1, g;
+    var functions_utils_js_1, g;
     var __moduleName = context_1 && context_1.id;
     /**
      * Converts What3Words to two cells with latitude and longitude
@@ -50,7 +50,7 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!functions_utils_1.isValidWhatFreeWords(what3words)) return [3 /*break*/, 5];
+                        if (!functions_utils_js_1.isValidWhatFreeWords(what3words)) return [3 /*break*/, 5];
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 4, , 5]);
@@ -82,7 +82,7 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!functions_utils_1.isValidPluscode(pluscode)) return [3 /*break*/, 5];
+                        if (!functions_utils_js_1.isValidPluscode(pluscode)) return [3 /*break*/, 5];
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 4, , 5]);
@@ -105,7 +105,7 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
     function getLatLngInfo(baseurl, latitude, longitude) {
         if (longitude === void 0) { longitude = false; }
         try {
-            if (functions_utils_1.isValidWhatFreeWords(latitude)) {
+            if (functions_utils_js_1.isValidWhatFreeWords(latitude)) {
                 return what3WordsToLatLng(latitude).then(function (latlng) {
                     var coords = JSON.parse(latlng);
                     return new Promise((function (resolve, reject) {
@@ -117,7 +117,7 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
                     }));
                 });
             }
-            if (functions_utils_1.isValidPluscode(latitude)) {
+            if (functions_utils_js_1.isValidPluscode(latitude)) {
                 return plusCodeToLatLng(latitude).then(function (latlng) {
                     var coords = JSON.parse(latlng);
                     return new Promise((function (resolve, reject) {
@@ -187,7 +187,7 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
         if (longitude === void 0) { longitude = false; }
         var url = function (buffer, lat, lng) { return apiUrl + "population_density_buffer?lat=" + lat + "&lng=" + lng + "&buffer=" + buffer; }; // eslint-disable-line
         try {
-            if (functions_utils_1.isValidWhatFreeWords(latitude)) {
+            if (functions_utils_js_1.isValidWhatFreeWords(latitude)) {
                 return what3WordsToLatLng(latitude).then(function (latlng) {
                     var coords = JSON.parse(latlng);
                     var lat = coords[0];
@@ -203,7 +203,7 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
                     });
                 });
             }
-            if (functions_utils_1.isValidPluscode(latitude)) {
+            if (functions_utils_js_1.isValidPluscode(latitude)) {
                 return plusCodeToLatLng(latitude).then(function (latlng) {
                     var coords = JSON.parse(latlng);
                     var lat = coords[0];
@@ -238,7 +238,7 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
         if (longitude === void 0) { longitude = false; }
         var url = function (buffer, lat, lng) { return apiUrl + "population_density_walk?lat=" + lat + "&lng=" + lng + "&minutes=" + buffer; }; // eslint-disable-line
         try {
-            if (functions_utils_1.isValidWhatFreeWords(latitude)) {
+            if (functions_utils_js_1.isValidWhatFreeWords(latitude)) {
                 return what3WordsToLatLng(latitude).then(function (latlng) {
                     var coords = JSON.parse(latlng);
                     var lat = coords[0];
@@ -252,7 +252,7 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
                     });
                 });
             }
-            if (functions_utils_1.isValidPluscode(latitude)) {
+            if (functions_utils_js_1.isValidPluscode(latitude)) {
                 return plusCodeToLatLng(latitude).then(function (latlng) {
                     var coords = JSON.parse(latlng);
                     var lat = coords[0];
@@ -285,7 +285,7 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
         if (longitude === void 0) { longitude = false; }
         var url = function (buffer, lat, lng) { return apiUrl + "population_density_bike?lat=" + lat + "&lng=" + lng + "&minutes=" + buffer; }; // eslint-disable-line
         try {
-            if (functions_utils_1.isValidWhatFreeWords(latitude)) {
+            if (functions_utils_js_1.isValidWhatFreeWords(latitude)) {
                 return what3WordsToLatLng(latitude).then(function (latlng) {
                     var coords = JSON.parse(latlng);
                     var lat = coords[0];
@@ -299,7 +299,7 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
                     });
                 });
             }
-            if (functions_utils_1.isValidPluscode(latitude)) {
+            if (functions_utils_js_1.isValidPluscode(latitude)) {
                 return plusCodeToLatLng(latitude).then(function (latlng) {
                     var coords = JSON.parse(latlng);
                     var lat = coords[0];
@@ -332,7 +332,7 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
         if (longitude === void 0) { longitude = false; }
         var url = function (buffer, lat, lng) { return apiUrl + "population_density_car?lat=" + lat + "&lng=" + lng + "&minutes=" + buffer; }; // eslint-disable-line
         try {
-            if (functions_utils_1.isValidWhatFreeWords(latitude)) {
+            if (functions_utils_js_1.isValidWhatFreeWords(latitude)) {
                 return what3WordsToLatLng(latitude).then(function (latlng) {
                     var coords = JSON.parse(latlng);
                     var lat = coords[0];
@@ -346,7 +346,7 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
                     });
                 });
             }
-            if (functions_utils_1.isValidPluscode(latitude)) {
+            if (functions_utils_js_1.isValidPluscode(latitude)) {
                 return plusCodeToLatLng(latitude).then(function (latlng) {
                     var coords = JSON.parse(latlng);
                     var lat = coords[0];
@@ -510,13 +510,13 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
     }
     return {
         setters: [
-            function (functions_utils_1_1) {
-                functions_utils_1 = functions_utils_1_1;
+            function (functions_utils_js_1_1) {
+                functions_utils_js_1 = functions_utils_js_1_1;
             }
         ],
         execute: function () {
             Office.onReady(function () { });
-            g = functions_utils_1.getGlobal();
+            g = functions_utils_js_1.getGlobal();
             g.LatLngToWhatFreeWords = LatLngToWhatFreeWords;
             g.LatLngToPluscode = LatLngToPluscode;
             g.helloWorld = helloWorld;

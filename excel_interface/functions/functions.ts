@@ -1,5 +1,5 @@
 /* CustomFunctions, executed in Excel cells. Metadata defined in ./functions_meta.json */
-import { isValidPluscode, isValidWhatFreeWords, getGlobal } from './functions_utils'; // eslint-disable-line
+import { isValidPluscode, isValidWhatFreeWords, getGlobal } from './functions_utils.js'; // eslint-disable-line
 
 Office.onReady(() => {});
 
