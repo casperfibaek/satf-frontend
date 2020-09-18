@@ -1,1 +1,1 @@
-{"version":3,"file":"errorBox.js","sourceRoot":"","sources":["errorBox.tsx"],"names":[],"mappings":";;;;IAEA,SAAwB,QAAQ,CAAC,KAAK;QACnC,OAAO,CACJ,iCACI,KAAK,CAAC,GAAG,CACP,CACR,CAAA;IACJ,CAAC;;;;;YARO,KAAK,GAAoB,MAAM,QAAxB,aAAa,GAAK,MAAM,eAAC"}
+{"version":3,"file":"errorBox.js","sourceRoot":"","sources":["errorBox.tsx"],"names":[],"mappings":";;;;IAEA,SAAwB,QAAQ,CAAC,KAAK;QACnC,OAAO,CACJ;YACG,+BAAI,KAAK,CAAC,QAAQ,CAAK,CACpB,CACR,CAAA;IACJ,CAAC;;;;;YARO,KAAK,GAAoB,MAAM,QAAxB,aAAa,GAAK,MAAM,eAAC"}

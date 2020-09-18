@@ -1,4 +1,4 @@
-System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], function (exports_1, context_1) {
+System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./errorBox.js"], function (exports_1, context_1) {
     "use strict";
     var __extends = (this && this.__extends) || (function () {
         var extendStatics = function (d, b) {
@@ -49,7 +49,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
             if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
         }
     };
-    var loginpage_js_1, welcomepage_js_1, registerpage_js_1, ReactDOM, React, FluentUIReact, Login;
+    var loginpage_js_1, welcomepage_js_1, registerpage_js_1, errorBox_js_1, ReactDOM, React, FluentUIReact, Login;
     var __moduleName = context_1 && context_1.id;
     return {
         setters: [
@@ -61,6 +61,9 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
             },
             function (registerpage_js_1_1) {
                 registerpage_js_1 = registerpage_js_1_1;
+            },
+            function (errorBox_js_1_1) {
+                errorBox_js_1 = errorBox_js_1_1;
             }
         ],
         execute: function () {
@@ -77,12 +80,14 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                         registerUsername: '',
                         registerPassword: '',
                         registerConfirm: '',
+                        errorMsg: ''
                     };
                     _this.handleChange = _this.handleChange.bind(_this);
                     _this.handleLogin = _this.handleLogin.bind(_this);
                     _this.handleLogout = _this.handleLogout.bind(_this);
                     _this.handleRegister = _this.handleRegister.bind(_this);
                     _this.handleDelete = _this.handleDelete.bind(_this);
+                    _this.handleError = _this.handleError.bind(_this);
                     _this.attemptLogIn = _this.attemptLogIn.bind(_this);
                     _this.logOut = _this.logOut.bind(_this);
                     _this.toRegisterPage = _this.toRegisterPage.bind(_this);
@@ -103,42 +108,71 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                 //     }
                 //   };
                 // }
+                Login.prototype.handleError = function (err) {
+                    var errorMsg = '';
+                    console.log(err);
+                    console.log(err.message);
+                    switch (err.message) {
+                        case "Request missing username or password":
+                            errorMsg = 'Username and/or Password missing';
+                            break;
+                        case "User not found or unauthorised.":
+                            errorMsg = 'User not found or unauthorised.';
+                            break;
+                        case "Request missing username, password or confirmPassword":
+                            errorMsg = 'Username, Password and/or Password Confirmation missing';
+                            break;
+                        case "Passwords do not match.":
+                            errorMsg = "Passwords do not match.";
+                            break;
+                        case "Password; must be between 6 to 14 characters which…, underscore and first character must be a letter":
+                            errorMsg = "Password; must be between 6 to 14 characters which…, underscore and first character must be a letter";
+                            break;
+                        default:
+                            errorMsg = "Unknown Error";
+                    }
+                    this.setState({
+                        errorMsg: errorMsg
+                    });
+                    // this.setState({
+                    // })
+                };
                 Login.prototype.clearToken = function () {
                     return localStorage.removeItem('token');
                 };
                 Login.prototype.attemptLogIn = function (username, password) {
                     return __awaiter(this, void 0, void 0, function () {
-                        var response, responseJSON, err_1;
+                        var response, responseJSON, responseJSON, err_1;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
-                                    console.log(username, password);
-                                    _a.label = 1;
-                                case 1:
-                                    _a.trys.push([1, 4, , 5]);
+                                    _a.trys.push([0, 6, , 7]);
                                     return [4 /*yield*/, fetch('../../api/login_user', {
                                             method: 'post',
                                             headers: { 'Content-Type': 'application/json' },
                                             body: JSON.stringify({ username: username, password: password }),
                                         })];
-                                case 2:
+                                case 1:
                                     response = _a.sent();
+                                    if (!response.ok) return [3 /*break*/, 3];
                                     return [4 /*yield*/, response.json()];
-                                case 3:
+                                case 2:
                                     responseJSON = _a.sent();
                                     localStorage.setItem('token', responseJSON.username + ":" + responseJSON.token);
-                                    if (response.ok) {
-                                        this.setState({
-                                            loggedIn: true,
-                                        });
-                                    }
+                                    this.setState({
+                                        loggedIn: true,
+                                    });
                                     return [3 /*break*/, 5];
+                                case 3: return [4 /*yield*/, response.json()];
                                 case 4:
+                                    responseJSON = _a.sent();
+                                    this.handleError(responseJSON);
+                                    _a.label = 5;
+                                case 5: return [3 /*break*/, 7];
+                                case 6:
                                     err_1 = _a.sent();
-                                    console.log('there was an error');
-                                    console.log(err_1);
-                                    throw Error(err_1);
-                                case 5: return [2 /*return*/];
+                                    throw new Error(error);
+                                case 7: return [2 /*return*/];
                             }
                         });
                     });
@@ -154,6 +188,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                         registerUsername: '',
                         registerPassword: '',
                         registerConfirm: '',
+                        errorMsg: '',
                     });
                 };
                 Login.prototype.toWelcomePage = function () {
@@ -166,6 +201,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                         registerUsername: '',
                         registerPassword: '',
                         registerConfirm: '',
+                        errorMsg: '',
                     });
                 };
                 Login.prototype.handleRegister = function (e) {
@@ -175,31 +211,35 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                 };
                 Login.prototype.register = function (username, password, confirm) {
                     return __awaiter(this, void 0, void 0, function () {
-                        var response, responseJSON, err_2;
+                        var response, responseJSON, responseJSON, err_2;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
-                                    console.log(username, password, confirm);
-                                    _a.label = 1;
-                                case 1:
-                                    _a.trys.push([1, 4, , 5]);
+                                    _a.trys.push([0, 6, , 7]);
                                     return [4 /*yield*/, fetch('../../api/create_user', {
                                             method: 'post',
                                             headers: { 'Content-Type': 'application/json' },
                                             body: JSON.stringify({ username: username, password: password, confirm: confirm }),
                                         })];
-                                case 2:
+                                case 1:
                                     response = _a.sent();
+                                    if (!response.ok) return [3 /*break*/, 3];
                                     return [4 /*yield*/, response.json()];
-                                case 3:
+                                case 2:
                                     responseJSON = _a.sent();
                                     localStorage.setItem('token', responseJSON.username + ":" + responseJSON.token);
                                     this.toWelcomePage();
                                     return [2 /*return*/, responseJSON];
+                                case 3: return [4 /*yield*/, response.json()];
                                 case 4:
+                                    responseJSON = _a.sent();
+                                    this.handleError(responseJSON);
+                                    _a.label = 5;
+                                case 5: return [3 /*break*/, 7];
+                                case 6:
                                     err_2 = _a.sent();
-                                    throw Error(err_2);
-                                case 5: return [2 /*return*/];
+                                    throw new Error(err_2);
+                                case 7: return [2 /*return*/];
                             }
                         });
                     });
@@ -230,7 +270,12 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                                     return [2 /*return*/, responseJSON];
                                 case 3:
                                     err_3 = _a.sent();
-                                    throw Error(err_3);
+                                    // throw Error(err);
+                                    console.log('there was an error');
+                                    console.log(err_3);
+                                    // throw Error(err);
+                                    this.handleError(err_3);
+                                    return [3 /*break*/, 4];
                                 case 4: return [2 /*return*/];
                             }
                         });
@@ -249,6 +294,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                         registerUsername: '',
                         registerPassword: '',
                         registerConfirm: '',
+                        errorMsg: '',
                     });
                 };
                 Login.prototype.handleLogin = function (e) {
@@ -277,7 +323,9 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                     }
                 };
                 Login.prototype.render = function () {
-                    return (React.createElement("div", null, this.renderLogic()));
+                    return (React.createElement("div", null,
+                        this.renderLogic(),
+                        React.createElement(errorBox_js_1.default, { errorMsg: this.state.errorMsg })));
                 };
                 return Login;
             }(React.Component));

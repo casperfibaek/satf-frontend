@@ -2,6 +2,7 @@ import { prependOnceListener } from "process";
 import LoginPage from './loginpage.js'
 import WelcomePage from './welcomepage.js'
 import RegisterPage from './registerpage.js'
+import ErrorBox from './errorBox.js'
 
 const { ReactDOM, React, FluentUIReact } = window; // eslint-disable-line
 
@@ -25,6 +26,7 @@ class Login extends React.Component {
     this.handleLogout = this.handleLogout.bind(this);
     this.handleRegister = this.handleRegister.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.handleError = this.handleError.bind(this)
     this.attemptLogIn = this.attemptLogIn.bind(this);
     this.logOut = this.logOut.bind(this);
     this.toRegisterPage = this.toRegisterPage.bind(this);
@@ -33,6 +35,7 @@ class Login extends React.Component {
     this.renderLogic = this.renderLogic.bind(this);
     this.deleteUser = this.deleteUser.bind(this);
     this.clearToken = this.clearToken.bind(this);
+
   }
 
   // componentDidMount() {
@@ -46,21 +49,45 @@ class Login extends React.Component {
   //   };
   // }
 
-  // createErrorMsg(error) {
-  //   switch(error){
 
-  //   }
-  //   this.setState({
+  handleError(err) {
+    let errorMsg = ''
+    console.log(err)
+    console.log(err.message)
+    switch (err.message) {
+      case "Request missing username or password":
+        errorMsg = 'Username and/or Password missing'
+        break
+      case "User not found or unauthorised.":
+        errorMsg = 'User not found or unauthorised.'
+        break
+      case "Request missing username, password or confirmPassword":
+        errorMsg = 'Username, Password and/or Password Confirmation missing'
+        break
+      case "Passwords do not match.":
+        errorMsg = "Passwords do not match."
+        break
+      case "Password; must be between 6 to 14 characters which…, underscore and first character must be a letter":
+        errorMsg = "Password; must be between 6 to 14 characters which…, underscore and first character must be a letter"
+        break
+      default:
+        errorMsg = "Unknown Error"
+    }
+    this.setState({
+      errorMsg
+    })
 
-  //   })
-  // }
+    // this.setState({
+
+    // })
+  }
 
   clearToken() {
     return localStorage.removeItem('token')
   }
 
   async attemptLogIn(username, password) {
-    console.log(username, password)
+
     try {
       const response = await fetch(
         '../../api/login_user',
@@ -70,28 +97,23 @@ class Login extends React.Component {
           body: JSON.stringify({ username, password }),
         },
       );
-
-      const responseJSON = await response.json();
-
-      localStorage.setItem(
-        'token',
-        `${responseJSON.username}:${responseJSON.token}`,
-      );
-
       if (response.ok) {
+        const responseJSON = await response.json();
+        localStorage.setItem(
+          'token',
+          `${responseJSON.username}:${responseJSON.token}`,
+        );
         this.setState({
           loggedIn: true,
         });
+      } else {
+        const responseJSON = await response.json();
+        this.handleError(responseJSON)
       }
     } catch (err) {
-      console.log('there was an error');
-      console.log(err)
-      throw Error(err);
+      throw new Error(error)
     }
   }
-
-
-
 
   toRegisterPage() {
     this.setState({
@@ -130,7 +152,6 @@ class Login extends React.Component {
   }
 
   async register(username, password, confirm) {
-    console.log(username, password, confirm);
     try {
       const response = await fetch('../../api/create_user',
         {
@@ -138,18 +159,26 @@ class Login extends React.Component {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, password, confirm }),
         });
-      const responseJSON = await response.json();
 
-      localStorage.setItem(
-        'token',
-        `${responseJSON.username}:${responseJSON.token}`,
-      );
+      if (response.ok) {
+        const responseJSON = await response.json();
 
-      this.toWelcomePage()
+        localStorage.setItem(
+          'token',
+          `${responseJSON.username}:${responseJSON.token}`,
+        );
 
-      return responseJSON;
+        this.toWelcomePage()
 
-    } catch (err) { throw Error(err); }
+        return responseJSON;
+      } else {
+        const responseJSON = await response.json();
+        this.handleError(responseJSON)
+      }
+
+    } catch (err) {
+      throw new Error(err)
+    }
   }
 
 
@@ -172,7 +201,11 @@ class Login extends React.Component {
 
       return responseJSON;
     } catch (err) {
-      throw Error(err);
+      // throw Error(err);
+      console.log('there was an error');
+      console.log(err)
+      // throw Error(err);
+      this.handleError(err)
     }
   }
 
@@ -253,7 +286,7 @@ class Login extends React.Component {
     return (
       <div>
         {this.renderLogic()}
-        <ErrorBox msg={this.props.errorMsg} />
+        <ErrorBox errorMsg={this.state.errorMsg} />
       </div>
     )
   }

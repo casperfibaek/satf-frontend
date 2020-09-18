@@ -1,9 +1,9 @@
 const { React, FluentUIReact } = window;
 
-export default function errorBox(props) {
+export default function ErrorBox(props) {
    return (
       <div>
-         <p>{props.msg}</p>
+         <p>{props.errorMsg}</p>
       </div>
    )
 }
