@@ -355,7 +355,7 @@ async function urban_status_simple(req, res) {
     });
   }
 }
-
+// adapted to the new databse
 async function population_density(req, res) {
   if (!req.query.lat || !req.query.lng) {
     return res.status(400).json({
@@ -371,7 +371,7 @@ async function population_density(req, res) {
     )
     
     SELECT ST_Value(rast, 1, pp_geom) AS pop_dense
-    FROM ppl_per_hectare, const
+    FROM ghana_pop_dens, const
     WHERE ST_Intersects(rast, pp_geom);
   `;
 
@@ -542,7 +542,7 @@ async function population_density_car(req, res) {
     });
   }
 }
-
+// New Function - population density in walking distance
 async function pop_density_isochrone_walk(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.minutes) {
     return res.status(400).json({
@@ -551,7 +551,7 @@ async function pop_density_isochrone_walk(req, res) {
       function: 'pop_density_isochrone_walk',
     });
   }
-
+// function collecting all values from raster ghana_pop_dens inside the isochrone of walking distance
   const dbQuery = `
     SELECT popDensWalk('${req.query.lng}', '${req.query.lat}', '${Number(req.query.minutes)}') as pop_dense_iso_walk;
   `;
@@ -579,7 +579,7 @@ async function pop_density_isochrone_walk(req, res) {
     });
   }
 }
-
+// New Function - population density in biking distance
 async function pop_density_isochrone_bike(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.minutes) {
     return res.status(400).json({
@@ -588,7 +588,7 @@ async function pop_density_isochrone_bike(req, res) {
       function: 'pop_density_isochrone_bike',
     });
   }
-
+// function collecting all values from raster ghana_pop_dens inside the isochrone of biking distance
   const dbQuery = `
     SELECT popDensBike('${req.query.lng}', '${req.query.lat}', '${Number(req.query.minutes)}') as pop_dense_iso_bike;
   `;
@@ -616,7 +616,43 @@ async function pop_density_isochrone_bike(req, res) {
     });
   }
 }
+// New Function - population density in driving distance
+async function pop_density_isochrone_car(req, res) {
+  if (!req.query.lat || !req.query.lng || !req.query.minutes) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing lat, lng or minutes',
+      function: 'pop_density_isochrone_car',
+    });
+  }
+// function collecting all values from raster ghana_pop_dens inside the isochrone of driving distance
+  const dbQuery = `
+    SELECT popDensCar('${req.query.lng}', '${req.query.lat}', '${Number(req.query.minutes)}') as pop_dense_iso_car;
+  `;
 
+  try {
+    const dbResponse = await pool.query(dbQuery);
+    if (dbResponse.rowCount > 0) {
+      return res.status(200).json({
+        status: 'success',
+        message: Math.round(Number(dbResponse.rows[0].pop_dense_iso_car)),
+        function: 'pop_density_isochrone_car',
+      });
+    }
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'pop_density_isochrone_car',
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error encountered on server',
+      function: 'pop_density_isochrone_car',
+    });
+  }
+}
 
 async function population_density_buffer(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.buffer) {
@@ -629,17 +665,17 @@ async function population_density_buffer(req, res) {
 
   const dbQuery = `
     WITH const (pp_geom) AS (
-        values (ST_Buffer(ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography, '${Number(req.query.buffer) + 10}')::geometry)
+        values (ST_Buffer(ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography, '${Number(req.query.buffer) + 250}')::geometry)
     )
     
     SELECT
         SUM((ST_SummaryStats(ST_Clip(
-            ppl_per_hectare.rast, 
+            ghana_pop_dens.rast, 
             const.pp_geom
         ))).sum::int) as pop_dense_buf
     FROM
-        ppl_per_hectare, const
-    WHERE ST_Intersects(const.pp_geom, ppl_per_hectare.rast);
+        ghana_pop_dens, const
+    WHERE ST_Intersects(const.pp_geom, ghana_pop_dens.rast);
   `;
 
   try {
@@ -676,7 +712,7 @@ async function nearest_placename(req, res) {
   }
 
   const dbQuery = `
-    SELECT fclass, name FROM places
+    SELECT fclass, name FROM ghana_places
     ORDER BY geom <-> ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)
     LIMIT 1;
   `;
@@ -715,7 +751,7 @@ async function nearest_poi(req, res) {
   }
 
   const dbQuery = `
-    SELECT fclass, name FROM poi
+    SELECT fclass, name FROM ghana_poi
     ORDER BY geom <-> ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)
     LIMIT 1;
   `;
@@ -755,7 +791,8 @@ async function nearest_bank(req, res) {
 
   const dbQuery = `
     SELECT "name"
-    FROM public.banks
+    FROM public.ghana_poi
+    WHERE fclass = 'bank'
     ORDER BY geom <-> ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)
     LIMIT 1;
   `;
@@ -794,9 +831,9 @@ async function nearest_bank_distance(req, res) {
   }
 
   const dbQuery = `
-    SELECT ST_Distance(banks."geom"::geography, ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography)::int AS "distance"
-    FROM public.banks
-    ORDER BY geom <-> ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)
+    SELECT ST_Distance(ghana_poi."geom"::geography, ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography)::int AS "distance"
+    FROM public.ghana_poi WHERE fclass='bank'
+    ORDER BY St_Transform(geom, 4326) <-> ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)
     LIMIT 1;
   `;
 
@@ -824,7 +861,7 @@ async function nearest_bank_distance(req, res) {
     });
   }
 }
-
+//New function - Isochrone walking distance
 async function isochrone_walk(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.minutes) {
     return res.status(400).json({
@@ -833,7 +870,7 @@ async function isochrone_walk(req, res) {
       function: 'isochrone_walk',
     });
   }
-  // function collecting all values from raster ghana_pop_dens inside the isochrone of walking distance
+  // function creating an isochrone of walking distance
   const dbQuery = `
     SELECT ST_AsGeoJSON(pgr_isochroneWalk('${req.query.lng}', '${req.query.lat}', '${Number(req.query.minutes)}'), 6) as geom;
   `;
@@ -861,7 +898,7 @@ async function isochrone_walk(req, res) {
     });
   }
 }
-
+//New Function - Isochrone biking distance
 async function isochrone_bike(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.minutes) {
     return res.status(400).json({
@@ -870,7 +907,7 @@ async function isochrone_bike(req, res) {
       function: 'isochrone_bike',
     });
   }
-  // function collecting all values from raster ghana_pop_dens inside the isochrone of walking distance
+  // function creating an isochrone of biking distance
   const dbQuery = `
     SELECT ST_AsGeoJSON(pgr_isochroneBike('${req.query.lng}', '${req.query.lat}', '${Number(req.query.minutes)}'), 6) as geom;
   `;
@@ -895,6 +932,43 @@ async function isochrone_bike(req, res) {
       status: 'Failure',
       message: 'Error while calculating isocrone',
       function: 'isochrone_bike',
+    });
+  }
+}
+//New Function - Isochrone car
+async function isochrone_car(req, res) {
+  if (!req.query.lat || !req.query.lng || !req.query.minutes) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Request missing lat, lng or minutes',
+      function: 'isochrone_car',
+    });
+  }
+  // function creating an isochrone of driving distance
+  const dbQuery = `
+    SELECT ST_AsGeoJSON(pgr_isochroneCar('${req.query.lng}', '${req.query.lat}', '${Number(req.query.minutes)}'), 6) as geom;
+  `;
+
+  try {
+    const dbResponse = await pool.query(dbQuery);
+    if (dbResponse.rowCount > 0) {
+      return res.status(200).json({
+        status: 'Success',
+        message: JSON.parse(dbResponse.rows[0].geom),
+        function: 'isochrone_car',
+      });
+    }
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error while calculating isocrone',
+      function: 'isochrone_car',
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      status: 'Failure',
+      message: 'Error while calculating isocrone',
+      function: 'isochrone_car',
     });
   }
 }
@@ -1201,8 +1275,9 @@ router.route('/population_density').get(auth, cache, population_density);
 router.route('/population_density_walk').get(auth, cache, population_density_walk);
 router.route('/population_density_bike').get(auth, cache, population_density_bike);
 router.route('/population_density_car').get(auth, cache, population_density_car);
-router.route('/pop_density_isochrone_walk').get(pop_density_isochrone_walk);
-router.route('/pop_density_isochrone_bike').get(pop_density_isochrone_bike);
+router.route('/pop_density_isochrone_car').get(auth, cache, pop_density_isochrone_car);
+router.route('/pop_density_isochrone_walk').get(auth, cache, pop_density_isochrone_walk);
+router.route('/pop_density_isochrone_bike').get(auth, cache, pop_density_isochrone_bike);
 router.route('/population_density_buffer').get(auth, cache, population_density_buffer);
 router.route('/urban_status').get(auth, cache, urban_status);
 router.route('/urban_status_simple').get(auth, cache, urban_status_simple);
@@ -1214,8 +1289,9 @@ router.route('/nearest_placename').get(auth, cache, nearest_placename);
 router.route('/nearest_poi').get(auth, cache, nearest_poi);
 router.route('/nearest_bank').get(auth, cache, nearest_bank);
 router.route('/nearest_bank_distance').get(auth, cache, nearest_bank_distance);
-router.route('/isochrone_walk').get(isochrone_walk);
-router.route('/isochrone_bike').get(isochrone_bike);
+router.route('/isochrone_walk').get(auth, cache, isochrone_walk);
+router.route('/isochrone_bike').get(auth, cache, isochrone_bike);
+router.route('/isochrone_car').get(auth, cache, isochrone_car);
 router.route('/whatfreewords_to_latlng').get(auth, cache, whatfreewords_to_latlng);
 router.route('/latlng_to_pluscode').get(auth, cache, latlng_to_pluscode);
 router.route('/pluscode_to_latlng').get(auth, cache, pluscode_to_latlng);
