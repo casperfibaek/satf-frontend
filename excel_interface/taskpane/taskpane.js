@@ -98,55 +98,30 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
                     _this.clearToken = _this.clearToken.bind(_this);
                     return _this;
                 }
-                // componentDidMount() {
-                //   Office.initialize = () => {
-                //     // Determine user's version of Office
-                //     if (!Office.context.requirements.isSetSupported("ExcelApi", "1.7")) {
-                //       console.log(
-                //         "Sorry. The add-in uses Excel.js APIs that are not available in your version of Office."
-                //       );
-                //     }
-                //   };
-                // }
+                Login.prototype.componentDidMount = function () {
+                    Office.initialize = function () {
+                        // Determine user's version of Office
+                        if (!Office.context.requirements.isSetSupported("ExcelApi", "1.7")) {
+                            console.log("Sorry. The add-in uses Excel.js APIs that are not available in your version of Office.");
+                        }
+                    };
+                };
                 Login.prototype.handleError = function (err) {
-                    var errorMsg = '';
-                    console.log(err);
-                    console.log(err.message);
-                    switch (err.message) {
-                        case "Request missing username or password":
-                            errorMsg = 'Username and/or Password missing';
-                            break;
-                        case "User not found or unauthorised.":
-                            errorMsg = 'User not found or unauthorised.';
-                            break;
-                        case "Request missing username, password or confirmPassword":
-                            errorMsg = 'Username, Password and/or Password Confirmation missing';
-                            break;
-                        case "Passwords do not match.":
-                            errorMsg = "Passwords do not match.";
-                            break;
-                        case "Password; must be between 6 to 14 characters which…, underscore and first character must be a letter":
-                            errorMsg = "Password; must be between 6 to 14 characters which…, underscore and first character must be a letter";
-                            break;
-                        default:
-                            errorMsg = "Unknown Error";
-                    }
+                    var errorMsg = err.message;
                     this.setState({
                         errorMsg: errorMsg
                     });
-                    // this.setState({
-                    // })
                 };
                 Login.prototype.clearToken = function () {
                     return localStorage.removeItem('token');
                 };
                 Login.prototype.attemptLogIn = function (username, password) {
                     return __awaiter(this, void 0, void 0, function () {
-                        var response, responseJSON, responseJSON, err_1;
+                        var response, responseJSON, err_1;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
-                                    _a.trys.push([0, 6, , 7]);
+                                    _a.trys.push([0, 3, , 4]);
                                     return [4 /*yield*/, fetch('../../api/login_user', {
                                             method: 'post',
                                             headers: { 'Content-Type': 'application/json' },
@@ -154,25 +129,23 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
                                         })];
                                 case 1:
                                     response = _a.sent();
-                                    if (!response.ok) return [3 /*break*/, 3];
                                     return [4 /*yield*/, response.json()];
                                 case 2:
                                     responseJSON = _a.sent();
-                                    localStorage.setItem('token', responseJSON.username + ":" + responseJSON.token);
-                                    this.setState({
-                                        loggedIn: true,
-                                    });
-                                    return [3 /*break*/, 5];
-                                case 3: return [4 /*yield*/, response.json()];
-                                case 4:
-                                    responseJSON = _a.sent();
-                                    this.handleError(responseJSON);
-                                    _a.label = 5;
-                                case 5: return [3 /*break*/, 7];
-                                case 6:
+                                    if (response.ok) {
+                                        localStorage.setItem('token', responseJSON.username + ":" + responseJSON.token);
+                                        this.setState({
+                                            loggedIn: true,
+                                        });
+                                    }
+                                    else {
+                                        this.handleError(responseJSON);
+                                    }
+                                    return [3 /*break*/, 4];
+                                case 3:
                                     err_1 = _a.sent();
                                     throw new Error(error);
-                                case 7: return [2 /*return*/];
+                                case 4: return [2 /*return*/];
                             }
                         });
                     });

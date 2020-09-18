@@ -38,48 +38,23 @@ class Login extends React.Component {
 
   }
 
-  // componentDidMount() {
-  //   Office.initialize = () => {
-  //     // Determine user's version of Office
-  //     if (!Office.context.requirements.isSetSupported("ExcelApi", "1.7")) {
-  //       console.log(
-  //         "Sorry. The add-in uses Excel.js APIs that are not available in your version of Office."
-  //       );
-  //     }
-  //   };
-  // }
+  componentDidMount() {
+    Office.initialize = () => {
+      // Determine user's version of Office
+      if (!Office.context.requirements.isSetSupported("ExcelApi", "1.7")) {
+        console.log(
+          "Sorry. The add-in uses Excel.js APIs that are not available in your version of Office."
+        );
+      }
+    };
+  }
 
 
   handleError(err) {
-    let errorMsg = ''
-    console.log(err)
-    console.log(err.message)
-    switch (err.message) {
-      case "Request missing username or password":
-        errorMsg = 'Username and/or Password missing'
-        break
-      case "User not found or unauthorised.":
-        errorMsg = 'User not found or unauthorised.'
-        break
-      case "Request missing username, password or confirmPassword":
-        errorMsg = 'Username, Password and/or Password Confirmation missing'
-        break
-      case "Passwords do not match.":
-        errorMsg = "Passwords do not match."
-        break
-      case "Password; must be between 6 to 14 characters which…, underscore and first character must be a letter":
-        errorMsg = "Password; must be between 6 to 14 characters which…, underscore and first character must be a letter"
-        break
-      default:
-        errorMsg = "Unknown Error"
-    }
+    const errorMsg = err.message
     this.setState({
       errorMsg
     })
-
-    // this.setState({
-
-    // })
   }
 
   clearToken() {
@@ -97,8 +72,9 @@ class Login extends React.Component {
           body: JSON.stringify({ username, password }),
         },
       );
+      //wait 2 sec.
+      const responseJSON = await response.json();
       if (response.ok) {
-        const responseJSON = await response.json();
         localStorage.setItem(
           'token',
           `${responseJSON.username}:${responseJSON.token}`,
@@ -107,7 +83,6 @@ class Login extends React.Component {
           loggedIn: true,
         });
       } else {
-        const responseJSON = await response.json();
         this.handleError(responseJSON)
       }
     } catch (err) {
