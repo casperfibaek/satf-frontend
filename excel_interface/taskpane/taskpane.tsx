@@ -4,6 +4,8 @@ import WelcomePage from './welcomepage.js';
 import RegisterPage from './registerpage.js';
 import ErrorBox from './errorBox.js';
 import Spinner from './spinner.js';
+import sleep from time;
+import { time } from 'console';
 // import ClipLoader from "react-spinners/ClipLoader";
 
 const { ReactDOM, React, FluentUIReact } = window; // eslint-disable-line
@@ -17,11 +19,11 @@ class Login extends React.Component {
       password: '',
       loggedIn: false,
       registerPage: false,
+      loading: false,
       registerUsername: '',
       registerPassword: '',
       registerConfirm: '',
       errorMsg: '',
-
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
@@ -37,6 +39,25 @@ class Login extends React.Component {
     this.renderLogic = this.renderLogic.bind(this);
     this.deleteUser = this.deleteUser.bind(this);
     this.clearToken = this.clearToken.bind(this);
+
+    // this.sleep = this.sleep.bind(this)
+  }
+
+  // sleep(milliseconds) {
+  //   console.log("SLEEPING")
+  //   const date = Date.now();
+  //   let currentDate = null;
+  //   do {
+  //     currentDate = Date.now();
+  //   } while (currentDate - date < milliseconds);
+  // }
+
+  componentdidUpdate() {
+    if (this.state.loading) {
+      this.setState({
+        loading: false,
+      })
+    }
   }
 
   componentDidMount() {
@@ -63,6 +84,9 @@ class Login extends React.Component {
 
   async attemptLogIn(username, password) {
     try {
+      this.setState({
+        loading: true,
+      })
       const response = await fetch(
         '../../api/login_user',
         {
@@ -72,6 +96,9 @@ class Login extends React.Component {
         },
       );
       // wait 2 sec.
+      this.setState({
+        loading: false,
+      })
       const responseJSON = await response.json();
       if (response.ok) {
         localStorage.setItem(
@@ -97,6 +124,7 @@ class Login extends React.Component {
       password: '',
       loggedIn: false,
       registerPage: true,
+      loading: false,
       registerUsername: '',
       registerPassword: '',
       registerConfirm: '',
@@ -111,6 +139,7 @@ class Login extends React.Component {
       password: '',
       loggedIn: true,
       registerPage: false,
+      loading: false,
       registerUsername: '',
       registerPassword: '',
       registerConfirm: '',
@@ -120,9 +149,11 @@ class Login extends React.Component {
 
   handleRegister(e) {
     e.preventDefault();
+
     const { registerUsername, registerPassword, registerConfirm } = this.state;
 
     this.register(registerUsername, registerPassword, registerConfirm);
+
   }
 
   async register(username, password, confirm) {
@@ -154,10 +185,12 @@ class Login extends React.Component {
   }
 
   handleDelete() {
+
     const token = localStorage.getItem('token');
     this.deleteUser(token);
     this.clearToken();
     this.logOut();
+
   }
 
   async deleteUser(token) {
@@ -202,6 +235,7 @@ class Login extends React.Component {
     e.preventDefault();
     const { username, password } = this.state;
     this.attemptLogIn(username, password);
+
   }
 
   handleChange(e) {
@@ -215,7 +249,7 @@ class Login extends React.Component {
 
   renderLogic() {
     const {
-      registerUsername, registerPassword, registerConfirm, username, password, registerPage, loggedIn,
+      registerUsername, registerPassword, registerConfirm, username, password, registerPage, loggedIn, loading
     } = this.state;
     if (registerPage) {
       return (
@@ -255,6 +289,7 @@ class Login extends React.Component {
       <div>
         {this.renderLogic()}
         <ErrorBox errorMsg={this.state.errorMsg} />
+        <Spinner loading={this.state.loading} />
       </div>
     );
   }
@@ -262,7 +297,6 @@ class Login extends React.Component {
 
 ReactDOM.render(
   <React.StrictMode>
-    {/* <Login /> */}
     <Login />
   </React.StrictMode>,
   document.getElementById('root'),

@@ -1,10 +1,10 @@
 const { React, FluentUIReact } = window;
 
 export default function Spinner(props) {
-  return (
+   const loading = props.loading
+   return (
       <div>
-         <div className="loader">Loading...</div>
+         {loading && <div className="loader">Loading...</div>}
       </div>
-
-  );
+   )
 }

@@ -81,10 +81,11 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
                         password: '',
                         loggedIn: false,
                         registerPage: false,
+                        loading: false,
                         registerUsername: '',
                         registerPassword: '',
                         registerConfirm: '',
-                        errorMsg: ''
+                        errorMsg: '',
                     };
                     _this.handleChange = _this.handleChange.bind(_this);
                     _this.handleLogin = _this.handleLogin.bind(_this);
@@ -101,19 +102,35 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
                     _this.deleteUser = _this.deleteUser.bind(_this);
                     _this.clearToken = _this.clearToken.bind(_this);
                     return _this;
+                    // this.sleep = this.sleep.bind(this)
                 }
+                // sleep(milliseconds) {
+                //   console.log("SLEEPING")
+                //   const date = Date.now();
+                //   let currentDate = null;
+                //   do {
+                //     currentDate = Date.now();
+                //   } while (currentDate - date < milliseconds);
+                // }
+                Login.prototype.componentdidUpdate = function () {
+                    if (this.state.loading) {
+                        this.setState({
+                            loading: false,
+                        });
+                    }
+                };
                 Login.prototype.componentDidMount = function () {
                     Office.initialize = function () {
                         // Determine user's version of Office
-                        if (!Office.context.requirements.isSetSupported("ExcelApi", "1.7")) {
-                            console.log("Sorry. The add-in uses Excel.js APIs that are not available in your version of Office.");
+                        if (!Office.context.requirements.isSetSupported('ExcelApi', '1.7')) {
+                            console.log('Sorry. The add-in uses Excel.js APIs that are not available in your version of Office.');
                         }
                     };
                 };
                 Login.prototype.handleError = function (err) {
                     var errorMsg = err.message;
                     this.setState({
-                        errorMsg: errorMsg
+                        errorMsg: errorMsg,
                     });
                 };
                 Login.prototype.clearToken = function () {
@@ -126,6 +143,9 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
                             switch (_a.label) {
                                 case 0:
                                     _a.trys.push([0, 3, , 4]);
+                                    this.setState({
+                                        loading: true,
+                                    });
                                     return [4 /*yield*/, fetch('../../api/login_user', {
                                             method: 'post',
                                             headers: { 'Content-Type': 'application/json' },
@@ -133,6 +153,10 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
                                         })];
                                 case 1:
                                     response = _a.sent();
+                                    // wait 2 sec.
+                                    this.setState({
+                                        loading: false,
+                                    });
                                     return [4 /*yield*/, response.json()];
                                 case 2:
                                     responseJSON = _a.sent();
@@ -162,6 +186,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
                         password: '',
                         loggedIn: false,
                         registerPage: true,
+                        loading: false,
                         registerUsername: '',
                         registerPassword: '',
                         registerConfirm: '',
@@ -175,6 +200,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
                         password: '',
                         loggedIn: true,
                         registerPage: false,
+                        loading: false,
                         registerUsername: '',
                         registerPassword: '',
                         registerConfirm: '',
@@ -188,11 +214,11 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
                 };
                 Login.prototype.register = function (username, password, confirm) {
                     return __awaiter(this, void 0, void 0, function () {
-                        var response, responseJSON, responseJSON, err_2;
+                        var response, responseJSON_1, responseJSON, err_2;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
-                                    _a.trys.push([0, 6, , 7]);
+                                    _a.trys.push([0, 5, , 6]);
                                     return [4 /*yield*/, fetch('../../api/create_user', {
                                             method: 'post',
                                             headers: { 'Content-Type': 'application/json' },
@@ -203,20 +229,19 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
                                     if (!response.ok) return [3 /*break*/, 3];
                                     return [4 /*yield*/, response.json()];
                                 case 2:
-                                    responseJSON = _a.sent();
-                                    localStorage.setItem('token', responseJSON.username + ":" + responseJSON.token);
+                                    responseJSON_1 = _a.sent();
+                                    localStorage.setItem('token', responseJSON_1.username + ":" + responseJSON_1.token);
                                     this.toWelcomePage();
-                                    return [2 /*return*/, responseJSON];
+                                    return [2 /*return*/, responseJSON_1];
                                 case 3: return [4 /*yield*/, response.json()];
                                 case 4:
                                     responseJSON = _a.sent();
                                     this.handleError(responseJSON);
-                                    _a.label = 5;
-                                case 5: return [3 /*break*/, 7];
-                                case 6:
+                                    return [3 /*break*/, 6];
+                                case 5:
                                     err_2 = _a.sent();
                                     throw new Error(err_2);
-                                case 7: return [2 /*return*/];
+                                case 6: return [2 /*return*/];
                             }
                         });
                     });
@@ -281,33 +306,34 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
                 };
                 Login.prototype.handleChange = function (e) {
                     var _a;
-                    console.log("click");
+                    console.log('click');
                     var _b = e.target, name = _b.name, value = _b.value;
                     this.setState((_a = {},
                         _a[name] = value,
                         _a));
                 };
                 Login.prototype.renderLogic = function () {
-                    var _a = this.state, registerUsername = _a.registerUsername, registerPassword = _a.registerPassword, registerConfirm = _a.registerConfirm, username = _a.username, password = _a.password, registerPage = _a.registerPage, loggedIn = _a.loggedIn;
+                    var _a = this.state, registerUsername = _a.registerUsername, registerPassword = _a.registerPassword, registerConfirm = _a.registerConfirm, username = _a.username, password = _a.password, registerPage = _a.registerPage, loggedIn = _a.loggedIn, loading = _a.loading;
                     if (registerPage) {
                         return (React.createElement(registerpage_js_1.default, { registerUsername: registerUsername, registerPassword: registerPassword, registerConfirm: registerConfirm, onInput: this.handleChange, onCreate: this.handleRegister, onBack: this.logOut }));
                     }
-                    else if (loggedIn) {
+                    if (loggedIn) {
                         return (React.createElement(welcomepage_js_1.default, { username: username, onLogout: this.handleLogout, onDelete: this.handleDelete }));
                     }
-                    else if (!loggedIn) {
+                    if (!loggedIn) {
                         return (React.createElement(loginpage_js_1.default, { username: username, password: password, onInput: this.handleChange, onLogin: this.handleLogin, onRegister: this.toRegisterPage }));
                     }
                 };
                 Login.prototype.render = function () {
                     return (React.createElement("div", null,
                         this.renderLogic(),
-                        React.createElement(errorBox_js_1.default, { errorMsg: this.state.errorMsg })));
+                        React.createElement(errorBox_js_1.default, { errorMsg: this.state.errorMsg }),
+                        React.createElement(spinner_js_1.default, { loading: this.state.loading })));
                 };
                 return Login;
             }(React.Component));
             ReactDOM.render(React.createElement(React.StrictMode, null,
-                React.createElement(spinner_js_1.default, null)), document.getElementById('root'));
+                React.createElement(Login, null)), document.getElementById('root'));
         }
     };
 });
