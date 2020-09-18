@@ -1,6 +1,20 @@
 {
     "functions": [
         {
+            "description": "Converts what 3 words to two cells with latitude and longitude",
+            "id": "WHAT3WORDS_TO_LATLNG",
+            "name": "WHAT3WORDS_TO_LATLNG",
+            "parameters": [
+                {
+                    "name": "what3words",
+                    "type": "string"
+                }
+            ],
+            "result": {
+                "type": "number"
+            }
+        },
+        {
             "description": "Gets the star count for a given Github repository.",
             "id": "NEARESTBANKDIST",
             "name": "NEARESTBANKDIST",
