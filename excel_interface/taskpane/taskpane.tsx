@@ -17,6 +17,7 @@ class Login extends React.Component {
       registerUsername: '',
       registerPassword: '',
       registerConfirm: '',
+      errorMsg: ''
 
     };
     this.handleChange = this.handleChange.bind(this);
@@ -31,6 +32,7 @@ class Login extends React.Component {
     this.register = this.register.bind(this);
     this.renderLogic = this.renderLogic.bind(this);
     this.deleteUser = this.deleteUser.bind(this);
+    this.clearToken = this.clearToken.bind(this);
   }
 
   // componentDidMount() {
@@ -44,7 +46,18 @@ class Login extends React.Component {
   //   };
   // }
 
+  // createErrorMsg(error) {
+  //   switch(error){
 
+  //   }
+  //   this.setState({
+
+  //   })
+  // }
+
+  clearToken() {
+    return localStorage.removeItem('token')
+  }
 
   async attemptLogIn(username, password) {
     console.log(username, password)
@@ -91,6 +104,7 @@ class Login extends React.Component {
       registerUsername: '',
       registerPassword: '',
       registerConfirm: '',
+      errorMsg: '',
     })
   }
 
@@ -104,6 +118,7 @@ class Login extends React.Component {
       registerUsername: '',
       registerPassword: '',
       registerConfirm: '',
+      errorMsg: '',
     })
   }
 
@@ -141,6 +156,7 @@ class Login extends React.Component {
   handleDelete() {
     const token = localStorage.getItem('token')
     this.deleteUser(token)
+    this.clearToken()
     this.logOut()
   }
 
@@ -165,6 +181,7 @@ class Login extends React.Component {
   }
 
   logOut() {
+    this.clearToken()
     this.setState({
       username: '',
       password: '',
@@ -173,6 +190,7 @@ class Login extends React.Component {
       registerUsername: '',
       registerPassword: '',
       registerConfirm: '',
+      errorMsg: '',
     });
   }
 
@@ -235,6 +253,7 @@ class Login extends React.Component {
     return (
       <div>
         {this.renderLogic()}
+        <ErrorBox msg={this.props.errorMsg} />
       </div>
     )
   }

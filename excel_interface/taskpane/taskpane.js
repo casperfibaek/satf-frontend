@@ -90,6 +90,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                     _this.register = _this.register.bind(_this);
                     _this.renderLogic = _this.renderLogic.bind(_this);
                     _this.deleteUser = _this.deleteUser.bind(_this);
+                    _this.clearToken = _this.clearToken.bind(_this);
                     return _this;
                 }
                 // componentDidMount() {
@@ -102,6 +103,9 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                 //     }
                 //   };
                 // }
+                Login.prototype.clearToken = function () {
+                    return localStorage.removeItem('token');
+                };
                 Login.prototype.attemptLogIn = function (username, password) {
                     return __awaiter(this, void 0, void 0, function () {
                         var response, responseJSON, err_1;
@@ -203,6 +207,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                 Login.prototype.handleDelete = function () {
                     var token = localStorage.getItem('token');
                     this.deleteUser(token);
+                    this.clearToken();
                     this.logOut();
                 };
                 Login.prototype.deleteUser = function (token) {
@@ -235,6 +240,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js"], fun
                     this.logOut();
                 };
                 Login.prototype.logOut = function () {
+                    this.clearToken();
                     this.setState({
                         username: '',
                         password: '',
