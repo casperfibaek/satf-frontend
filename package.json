@@ -27,10 +27,7 @@
     "nocache": "^2.1.0",
     "nodemon": "^2.0.4",
     "pg": "^8.3.3",
-<<<<<<< HEAD
     "puppeteer": "^5.3.0"
-=======
->>>>>>> a8e72c95001b58db77afbae4a537571cbb340745
   },
   "devDependencies": {
     "@types/custom-functions-runtime": "^1.5.3",

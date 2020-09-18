@@ -75,6 +75,19 @@ System.register([], function (exports_1, context_1) {
         return true;
     }
     exports_1("isValidWhatFreeWords", isValidWhatFreeWords);
+    function getGlobal() {
+        if (typeof self !== 'undefined') {
+            return self;
+        }
+        if (typeof window !== 'undefined') {
+            return window;
+        }
+        if (typeof global !== 'undefined') {
+            return global;
+        }
+        throw new Error('Unable to get global namespace.');
+    }
+    exports_1("getGlobal", getGlobal);
     return {
         setters: [],
         execute: function () {

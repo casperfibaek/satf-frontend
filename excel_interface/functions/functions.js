@@ -39,12 +39,12 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
     var functions_utils_1, g;
     var __moduleName = context_1 && context_1.id;
     /**
-     * Converts what 3 words to two cells with latitude and longitude
+     * Converts What3Words to two cells with latitude and longitude
      * @customfunction WHAT3WORDS_TO_LATLNG
      * @param {string} what3words
      * @return {number} Returns two cells with latitude and longitude
      */
-    function What3WordsToLatLng(what3words) {
+    function what3WordsToLatLng(what3words) {
         return __awaiter(this, void 0, void 0, function () {
             var url, apiResponse, responseJSON, err_1;
             return __generator(this, function (_a) {
@@ -70,14 +70,35 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
             });
         });
     }
-    function PlusCodeToLatLng(code) {
-        return new Promise(function (resolve, reject) {
-            satfApiRequest('get', apiUrl + "pluscode_to_latlng?code=" + code)
-                .then(function (value) {
-                resolve(value);
-            })
-                .catch(function (err) {
-                reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
+    /**
+     * Converts a pluscode to two cells with latitude and longitude
+     * @customfunction PLUSCODE_TO_LATLNG
+     * @param {string} pluscode
+     * @return {number} Returns two cells with latitude and longitude
+     */
+    function plusCodeToLatLng(pluscode) {
+        return __awaiter(this, void 0, void 0, function () {
+            var url, apiResponse, responseJSON, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!functions_utils_1.isValidPluscode(pluscode)) return [3 /*break*/, 5];
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 4, , 5]);
+                        url = "../../api/pluscode_to_latlng?code=" + pluscode;
+                        return [4 /*yield*/, fetch(url, { headers: { Authorization: localStorage.getItem('token') } })];
+                    case 2:
+                        apiResponse = _a.sent();
+                        return [4 /*yield*/, apiResponse.json()];
+                    case 3:
+                        responseJSON = _a.sent();
+                        return [2 /*return*/, responseJSON];
+                    case 4:
+                        err_2 = _a.sent();
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_2));
+                    case 5: throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('Invalid pluscode'));
+                }
             });
         });
     }
@@ -85,7 +106,7 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
         if (longitude === void 0) { longitude = false; }
         try {
             if (functions_utils_1.isValidWhatFreeWords(latitude)) {
-                return What3WordsToLatLng(latitude).then(function (latlng) {
+                return what3WordsToLatLng(latitude).then(function (latlng) {
                     var coords = JSON.parse(latlng);
                     return new Promise((function (resolve, reject) {
                         satfApiRequest('get', baseurl + "?lat=" + coords[0] + "&lng=" + coords[1])
@@ -97,7 +118,7 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
                 });
             }
             if (functions_utils_1.isValidPluscode(latitude)) {
-                return PlusCodeToLatLng(latitude).then(function (latlng) {
+                return plusCodeToLatLng(latitude).then(function (latlng) {
                     var coords = JSON.parse(latlng);
                     return new Promise((function (resolve, reject) {
                         satfApiRequest('get', baseurl + "?lat=" + coords[0] + "&lng=" + coords[1])
@@ -121,19 +142,6 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
             throw error;
         }
     }
-    function getGlobal() {
-        if (typeof self !== 'undefined') {
-            return self;
-        }
-        if (typeof window !== 'undefined') {
-            return window;
-        }
-        if (typeof global !== 'undefined') {
-            return global;
-        }
-        throw new Error('Unable to get global namespace.');
-    }
-    // the add-in command functions need to be available in global scope
     // ----------------------- CustomFunctions -----------------------
     function LatLngToWhatFreeWords(latitude, longitude) {
         return new Promise(function (resolve, reject) {
@@ -180,7 +188,7 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
         var url = function (buffer, lat, lng) { return apiUrl + "population_density_buffer?lat=" + lat + "&lng=" + lng + "&buffer=" + buffer; }; // eslint-disable-line
         try {
             if (functions_utils_1.isValidWhatFreeWords(latitude)) {
-                return What3WordsToLatLng(latitude).then(function (latlng) {
+                return what3WordsToLatLng(latitude).then(function (latlng) {
                     var coords = JSON.parse(latlng);
                     var lat = coords[0];
                     var lng = coords[1];
@@ -196,7 +204,7 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
                 });
             }
             if (functions_utils_1.isValidPluscode(latitude)) {
-                return PlusCodeToLatLng(latitude).then(function (latlng) {
+                return plusCodeToLatLng(latitude).then(function (latlng) {
                     var coords = JSON.parse(latlng);
                     var lat = coords[0];
                     var lng = coords[1];
@@ -231,7 +239,7 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
         var url = function (buffer, lat, lng) { return apiUrl + "population_density_walk?lat=" + lat + "&lng=" + lng + "&minutes=" + buffer; }; // eslint-disable-line
         try {
             if (functions_utils_1.isValidWhatFreeWords(latitude)) {
-                return What3WordsToLatLng(latitude).then(function (latlng) {
+                return what3WordsToLatLng(latitude).then(function (latlng) {
                     var coords = JSON.parse(latlng);
                     var lat = coords[0];
                     var lng = coords[1];
@@ -245,7 +253,7 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
                 });
             }
             if (functions_utils_1.isValidPluscode(latitude)) {
-                return PlusCodeToLatLng(latitude).then(function (latlng) {
+                return plusCodeToLatLng(latitude).then(function (latlng) {
                     var coords = JSON.parse(latlng);
                     var lat = coords[0];
                     var lng = coords[1];
@@ -278,7 +286,7 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
         var url = function (buffer, lat, lng) { return apiUrl + "population_density_bike?lat=" + lat + "&lng=" + lng + "&minutes=" + buffer; }; // eslint-disable-line
         try {
             if (functions_utils_1.isValidWhatFreeWords(latitude)) {
-                return What3WordsToLatLng(latitude).then(function (latlng) {
+                return what3WordsToLatLng(latitude).then(function (latlng) {
                     var coords = JSON.parse(latlng);
                     var lat = coords[0];
                     var lng = coords[1];
@@ -292,7 +300,7 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
                 });
             }
             if (functions_utils_1.isValidPluscode(latitude)) {
-                return PlusCodeToLatLng(latitude).then(function (latlng) {
+                return plusCodeToLatLng(latitude).then(function (latlng) {
                     var coords = JSON.parse(latlng);
                     var lat = coords[0];
                     var lng = coords[1];
@@ -325,7 +333,7 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
         var url = function (buffer, lat, lng) { return apiUrl + "population_density_car?lat=" + lat + "&lng=" + lng + "&minutes=" + buffer; }; // eslint-disable-line
         try {
             if (functions_utils_1.isValidWhatFreeWords(latitude)) {
-                return What3WordsToLatLng(latitude).then(function (latlng) {
+                return what3WordsToLatLng(latitude).then(function (latlng) {
                     var coords = JSON.parse(latlng);
                     var lat = coords[0];
                     var lng = coords[1];
@@ -339,7 +347,7 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
                 });
             }
             if (functions_utils_1.isValidPluscode(latitude)) {
-                return PlusCodeToLatLng(latitude).then(function (latlng) {
+                return plusCodeToLatLng(latitude).then(function (latlng) {
                     var coords = JSON.parse(latlng);
                     var lat = coords[0];
                     var lng = coords[1];
@@ -508,7 +516,7 @@ System.register(["./functions_utils"], function (exports_1, context_1) {
         ],
         execute: function () {
             Office.onReady(function () { });
-            g = getGlobal();
+            g = functions_utils_1.getGlobal();
             g.LatLngToWhatFreeWords = LatLngToWhatFreeWords;
             g.LatLngToPluscode = LatLngToPluscode;
             g.helloWorld = helloWorld;
