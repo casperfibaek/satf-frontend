@@ -236,15 +236,15 @@ function openDialogWindow(link, event, iframe, height, width, prompt) {
     });
 }
 function openDialogNIRAS(event) {
-    openDialogWindow('./niras.html', event);
+    openDialogWindow('https://satf.azurewebsites.net/excel_interface/commands/niras.html', event);
 }
 function openDialogOPM(event) {
-    openDialogWindow('./opm.html', event);
+    openDialogWindow('https://satf.azurewebsites.net/excel_interface/commands/opm.html', event);
 }
 function openDialogSATF(event) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            openDialogWindow('./satf.html', event);
+            openDialogWindow('https://satf.azurewebsites.net/excel_interface/commands/satf.html', event);
             return [2 /*return*/];
         });
     });
@@ -252,7 +252,7 @@ function openDialogSATF(event) {
 function openDialogSUPPORT(event) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            openDialogWindow('../support/support.html', event);
+            openDialogWindow('https://satf.azurewebsites.net/excel_interface/support/support.html', event);
             return [2 /*return*/];
         });
     });
@@ -260,7 +260,7 @@ function openDialogSUPPORT(event) {
 function openDialogDOCUMENTATION(event) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            openDialogWindow('../documentation/documentation.html', event);
+            openDialogWindow('https://satf.azurewebsites.net/excel_interface/documentation/documentation.html', event);
             return [2 /*return*/];
         });
     });
@@ -274,7 +274,7 @@ function openDialogMAP(event) {
                 case 1:
                     markers = _a.sent();
                     localStorage.setItem('markers', markers);
-                    openDialogWindow('../map/map.html', event);
+                    openDialogWindow('https://satf.azurewebsites.net/excel_interface/map/map.html', event);
                     return [2 /*return*/];
             }
         });
