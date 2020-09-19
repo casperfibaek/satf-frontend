@@ -54,7 +54,7 @@ class Login extends React.Component {
       const responseJSON = await response.json();
 
       if (response.ok) {
-        localStorage.setItem('token', `${responseJSON.username}:${responseJSON.token}`);
+        window.localStorage.setItem('token', `${responseJSON.username}:${responseJSON.token}`);
         this.toWelcomePage();
       } else if (responseJSON.message) {
         this.setMessageBar(responseJSON.message, 1);
@@ -82,7 +82,7 @@ class Login extends React.Component {
       const responseJSON = await response.json();
 
       if (response.ok) {
-        localStorage.setItem('token', `${responseJSON.username}:${responseJSON.token}`);
+        window.localStorage.setItem('token', `${responseJSON.username}:${responseJSON.token}`);
         this.setState({ username: this.state.registerUsername, password: this.state.registerPassword });
         this.toWelcomePage();
       } else if (responseJSON.message) {
@@ -159,7 +159,7 @@ class Login extends React.Component {
   }
 
   clearToken = () => {
-    localStorage.removeItem('token');
+    window.localStorage.removeItem('token');
   }
 
   resetState() {
@@ -213,7 +213,7 @@ class Login extends React.Component {
   }
 
   handleDelete() {
-    const token = localStorage.getItem('token');
+    const token = window.localStorage.getItem('token');
     this.deleteUser(token);
   }
 
@@ -286,19 +286,19 @@ class Login extends React.Component {
   render() {
     return (
       <div>
-        <FluentUIReact.Stack vertical id="stack_login">
-          <FluentUIReact.Image
-            src="../assets/images/savings-frontier-banner.png"
-            alt="Savings at the Frontier Banner"
-            height={300}
-         />
-          {this.renderLogic()}
-        </FluentUIReact.Stack>
-        <MessageBar
-          displayMessage={this.state.displayMessage}
-          displayMessageText={this.state.displayMessageText}
-          displayMessageType={this.state.displayMessageType}
+        <FluentUIReact.Image
+          src="../assets/images/savings-frontier-banner.png"
+          alt="Savings at the Frontier Banner"
+          height={300}
         />
+        <FluentUIReact.Stack vertical id="stack_login">
+          {this.renderLogic()}
+          <MessageBar
+            displayMessage={this.state.displayMessage}
+            displayMessageText={this.state.displayMessageText}
+            displayMessageType={this.state.displayMessageType}
+          />
+        </FluentUIReact.Stack>
       </div>
     );
   }

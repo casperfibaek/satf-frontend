@@ -86,7 +86,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
                         });
                     };
                     _this.clearToken = function () {
-                        localStorage.removeItem('token');
+                        window.localStorage.removeItem('token');
                     };
                     _this.state = {
                         username: '',
@@ -138,7 +138,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
                                 case 2:
                                     responseJSON = _a.sent();
                                     if (response.ok) {
-                                        localStorage.setItem('token', responseJSON.username + ":" + responseJSON.token);
+                                        window.localStorage.setItem('token', responseJSON.username + ":" + responseJSON.token);
                                         this.toWelcomePage();
                                     }
                                     else if (responseJSON.message) {
@@ -180,7 +180,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
                                 case 2:
                                     responseJSON = _a.sent();
                                     if (response.ok) {
-                                        localStorage.setItem('token', responseJSON.username + ":" + responseJSON.token);
+                                        window.localStorage.setItem('token', responseJSON.username + ":" + responseJSON.token);
                                         this.setState({ username: this.state.registerUsername, password: this.state.registerPassword });
                                         this.toWelcomePage();
                                     }
@@ -300,7 +300,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
                     this.register(this.state.registerUsername, this.state.registerPassword, this.state.registerConfirm);
                 };
                 Login.prototype.handleDelete = function () {
-                    var token = localStorage.getItem('token');
+                    var token = window.localStorage.getItem('token');
                     this.deleteUser(token);
                 };
                 Login.prototype.handleLogout = function () {
@@ -331,10 +331,10 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
                 };
                 Login.prototype.render = function () {
                     return (React.createElement("div", null,
+                        React.createElement(FluentUIReact.Image, { src: "../assets/images/savings-frontier-banner.png", alt: "Savings at the Frontier Banner", height: 300 }),
                         React.createElement(FluentUIReact.Stack, { vertical: true, id: "stack_login" },
-                            React.createElement(FluentUIReact.Image, { src: "../assets/images/savings-frontier-banner.png", alt: "Savings at the Frontier Banner", height: 300 }),
-                            this.renderLogic()),
-                        React.createElement(messageBar_js_1.default, { displayMessage: this.state.displayMessage, displayMessageText: this.state.displayMessageText, displayMessageType: this.state.displayMessageType })));
+                            this.renderLogic(),
+                            React.createElement(messageBar_js_1.default, { displayMessage: this.state.displayMessage, displayMessageText: this.state.displayMessageText, displayMessageType: this.state.displayMessageType }))));
                 };
                 return Login;
             }(React.Component));
