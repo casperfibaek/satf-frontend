@@ -1,22 +1,27 @@
-System.register([], function (exports_1, context_1) {
+System.register(["./spinner.js"], function (exports_1, context_1) {
     "use strict";
-    var React, FluentUIReact;
+    var spinner_js_1, React, FluentUIReact;
     var __moduleName = context_1 && context_1.id;
     function WelcomePage(props) {
         return (React.createElement("div", null,
-            React.createElement("h1", null,
+            React.createElement(FluentUIReact.Text, { variant: "xLarge", block: true, id: "welcome_header" },
                 "Welcome ",
                 props.username),
-            React.createElement("h2", null, "you are now successfully logged in"),
-            React.createElement("button", { type: "submit", onClick: function () { props.onLogout(); } }, "Logout"),
-            React.createElement("button", { type: "submit", onClick: function () { props.onDelete(); } }, "Delete User")));
+            React.createElement(FluentUIReact.Text, { variant: "medium", block: true, id: "welcome_text" }, "You are now successfully logged in and able to use the Savings at the Frontier custom functions and mapping functionality."),
+            React.createElement("div", { id: "welcome_buttons" },
+                React.createElement(spinner_js_1.default, { loading: props.loading, loadingMessage: props.loadingMessage }),
+                React.createElement(FluentUIReact.DefaultButton, { text: "Logout", onClick: function () { props.onLogout(); }, allowDisabledFocus: true }),
+                React.createElement(FluentUIReact.PrimaryButton, { text: "Delete User", onClick: function () { props.onDelete(); }, allowDisabledFocus: true }))));
     }
     exports_1("default", WelcomePage);
     return {
-        setters: [],
+        setters: [
+            function (spinner_js_1_1) {
+                spinner_js_1 = spinner_js_1_1;
+            }
+        ],
         execute: function () {
             React = window.React, FluentUIReact = window.FluentUIReact;
-            ;
         }
     };
 });

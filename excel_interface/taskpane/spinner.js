@@ -3,8 +3,11 @@ System.register([], function (exports_1, context_1) {
     var React, FluentUIReact;
     var __moduleName = context_1 && context_1.id;
     function Spinner(props) {
-        return (React.createElement("div", null,
-            React.createElement("div", { className: "loader" }, "Loading...")));
+        if (props.loading) {
+            return (React.createElement("div", { id: "login_spinner" },
+                React.createElement(FluentUIReact.Spinner, { label: props.loadingMessage, ariaLive: "assertive", labelPosition: "left" })));
+        }
+        return (null);
     }
     exports_1("default", Spinner);
     return {

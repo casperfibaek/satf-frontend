@@ -1,4 +1,5 @@
 {
+  "explorer.sortOrder": "type",
   "appService.zipIgnorePattern": [
     "node_modules{,/**}",
     ".vscode{,/**}"

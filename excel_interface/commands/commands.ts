@@ -163,7 +163,6 @@ async function openDialogSATF(event) {
   openDialogWindow('./satf.html', event);
 }
 async function openDialogSUPPORT(event) {
-  // openDialogWindow('../support/support.html', event);
   openDialogWindow('../support/support.html', event);
 }
 async function openDialogDOCUMENTATION(event) {

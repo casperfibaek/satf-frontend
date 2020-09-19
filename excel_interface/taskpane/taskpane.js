@@ -1,4 +1,4 @@
-System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./errorBox.js", "./spinner.js"], function (exports_1, context_1) {
+System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./messageBar.js"], function (exports_1, context_1) {
     "use strict";
     var __extends = (this && this.__extends) || (function () {
         var extendStatics = function (d, b) {
@@ -49,7 +49,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
             if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
         }
     };
-    var loginpage_js_1, welcomepage_js_1, registerpage_js_1, errorBox_js_1, spinner_js_1, ReactDOM, React, FluentUIReact, Login;
+    var loginpage_js_1, welcomepage_js_1, registerpage_js_1, messageBar_js_1, ReactDOM, React, FluentUIReact, Login;
     var __moduleName = context_1 && context_1.id;
     return {
         setters: [
@@ -62,37 +62,52 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
             function (registerpage_js_1_1) {
                 registerpage_js_1 = registerpage_js_1_1;
             },
-            function (errorBox_js_1_1) {
-                errorBox_js_1 = errorBox_js_1_1;
-            },
-            function (spinner_js_1_1) {
-                spinner_js_1 = spinner_js_1_1;
+            function (messageBar_js_1_1) {
+                messageBar_js_1 = messageBar_js_1_1;
             }
         ],
         execute: function () {
-            // import ClipLoader from "react-spinners/ClipLoader";
             ReactDOM = window.ReactDOM, React = window.React, FluentUIReact = window.FluentUIReact; // eslint-disable-line
             Login = /** @class */ (function (_super) {
                 __extends(Login, _super);
                 function Login(props) {
                     var _this = _super.call(this, props) || this;
+                    _this.clearMessageBar = function () {
+                        _this.setState({
+                            displayMessage: false,
+                            displayMessageText: '',
+                            displayMessageType: 0,
+                        });
+                    };
+                    _this.stopLoading = function () {
+                        _this.setState({
+                            loading: false,
+                            loadingMessage: '',
+                        });
+                    };
+                    _this.clearToken = function () {
+                        localStorage.removeItem('token');
+                    };
                     _this.state = {
                         username: '',
                         password: '',
                         loggedIn: false,
                         registerPage: false,
                         loading: false,
+                        loadingMessage: '',
                         registerUsername: '',
                         registerPassword: '',
                         registerConfirm: '',
-                        errorMsg: '',
+                        displayMessage: false,
+                        displayMessageText: '',
+                        displayMessageType: 0,
                     };
                     _this.handleChange = _this.handleChange.bind(_this);
                     _this.handleLogin = _this.handleLogin.bind(_this);
                     _this.handleLogout = _this.handleLogout.bind(_this);
                     _this.handleRegister = _this.handleRegister.bind(_this);
                     _this.handleDelete = _this.handleDelete.bind(_this);
-                    _this.handleError = _this.handleError.bind(_this);
+                    _this.setMessageBar = _this.setMessageBar.bind(_this);
                     _this.attemptLogIn = _this.attemptLogIn.bind(_this);
                     _this.logOut = _this.logOut.bind(_this);
                     _this.toRegisterPage = _this.toRegisterPage.bind(_this);
@@ -103,50 +118,15 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
                     _this.deleteUser = _this.deleteUser.bind(_this);
                     _this.clearToken = _this.clearToken.bind(_this);
                     return _this;
-                    // this.sleep = this.sleep.bind(this)
                 }
-                // sleep(milliseconds) {
-                //   console.log("SLEEPING")
-                //   const date = Date.now();
-                //   let currentDate = null;
-                //   do {
-                //     currentDate = Date.now();
-                //   } while (currentDate - date < milliseconds);
-                // }
-                Login.prototype.componentdidUpdate = function () {
-                    if (this.state.loading) {
-                        this.setState({
-                            loading: false,
-                        });
-                    }
-                };
-                Login.prototype.componentDidMount = function () {
-                    Office.initialize = function () {
-                        // Determine user's version of Office
-                        if (!Office.context.requirements.isSetSupported('ExcelApi', '1.7')) {
-                            console.log('Sorry. The add-in uses Excel.js APIs that are not available in your version of Office.');
-                        }
-                    };
-                };
-                Login.prototype.handleError = function (err) {
-                    var errorMsg = err.message;
-                    this.setState({
-                        errorMsg: errorMsg,
-                    });
-                };
-                Login.prototype.clearToken = function () {
-                    return localStorage.removeItem('token');
-                };
                 Login.prototype.attemptLogIn = function (username, password) {
                     return __awaiter(this, void 0, void 0, function () {
                         var response, responseJSON, err_1;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
-                                    _a.trys.push([0, 3, , 4]);
-                                    this.setState({
-                                        loading: true,
-                                    });
+                                    _a.trys.push([0, 3, 4, 5]);
+                                    this.startLoading('Logging in user..');
                                     return [4 /*yield*/, fetch('../../api/login_user', {
                                             method: 'post',
                                             headers: { 'Content-Type': 'application/json' },
@@ -157,85 +137,38 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
                                     return [4 /*yield*/, response.json()];
                                 case 2:
                                     responseJSON = _a.sent();
-                                    this.setState({
-                                        loading: false,
-                                    });
                                     if (response.ok) {
                                         localStorage.setItem('token', responseJSON.username + ":" + responseJSON.token);
-                                        /// change to this.toWelcomePage()
-                                        this.setState({
-                                            loggedIn: true,
-                                        });
+                                        this.toWelcomePage();
+                                    }
+                                    else if (responseJSON.message) {
+                                        this.setMessageBar(responseJSON.message, 1);
                                     }
                                     else {
-                                        this.handleError(responseJSON);
+                                        this.setMessageBar('Unable to login user', 1);
                                     }
-                                    return [3 /*break*/, 4];
+                                    return [3 /*break*/, 5];
                                 case 3:
                                     err_1 = _a.sent();
-                                    throw new Error(error);
-                                case 4: return [2 /*return*/];
+                                    console.log(err_1);
+                                    this.setMessageBar('Unable to login user', 1);
+                                    return [3 /*break*/, 5];
+                                case 4:
+                                    this.stopLoading();
+                                    return [7 /*endfinally*/];
+                                case 5: return [2 /*return*/];
                             }
                         });
                     });
                 };
-                Login.prototype.toRegisterPage = function () {
-                    this.setState({
-                        // page: { loggedIn: false, registerPage: false },
-                        // inputs: { user: "", password: "" },
-                        username: '',
-                        password: '',
-                        loggedIn: false,
-                        registerPage: true,
-                        loading: false,
-                        registerUsername: '',
-                        registerPassword: '',
-                        registerConfirm: '',
-                        errorMsg: '',
-                    });
-                };
-                Login.prototype.toWelcomePage = function () {
-                    this.setState({
-                        // username: this,
-                        // username used for login welcome message
-                        password: '',
-                        loggedIn: true,
-                        registerPage: false,
-                        loading: false,
-                        registerUsername: '',
-                        registerPassword: '',
-                        registerConfirm: '',
-                        errorMsg: '',
-                    });
-                };
-                Login.prototype.toLoginPage = function () {
-                    this.setState({
-                        username: '',
-                        password: '',
-                        loggedIn: true,
-                        registerPage: false,
-                        loading: false,
-                        registerUsername: '',
-                        registerPassword: '',
-                        registerConfirm: '',
-                        errorMsg: '',
-                    });
-                };
-                Login.prototype.handleRegister = function (e) {
-                    e.preventDefault();
-                    var _a = this.state, registerUsername = _a.registerUsername, registerPassword = _a.registerPassword, registerConfirm = _a.registerConfirm;
-                    this.register(registerUsername, registerPassword, registerConfirm);
-                };
                 Login.prototype.register = function (username, password, confirm) {
                     return __awaiter(this, void 0, void 0, function () {
-                        var response, responseJSON_1, responseJSON, err_2;
+                        var response, responseJSON, err_2;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
-                                    _a.trys.push([0, 5, , 6]);
-                                    this.setState({
-                                        loading: true,
-                                    });
+                                    _a.trys.push([0, 3, 4, 5]);
+                                    this.startLoading('Registering user..');
                                     return [4 /*yield*/, fetch('../../api/create_user', {
                                             method: 'post',
                                             headers: { 'Content-Type': 'application/json' },
@@ -243,34 +176,33 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
                                         })];
                                 case 1:
                                     response = _a.sent();
-                                    this.setState({
-                                        loading: false
-                                    });
-                                    if (!response.ok) return [3 /*break*/, 3];
                                     return [4 /*yield*/, response.json()];
                                 case 2:
-                                    responseJSON_1 = _a.sent();
-                                    localStorage.setItem('token', responseJSON_1.username + ":" + responseJSON_1.token);
-                                    this.toWelcomePage();
-                                    return [2 /*return*/, responseJSON_1];
-                                case 3: return [4 /*yield*/, response.json()];
-                                case 4:
                                     responseJSON = _a.sent();
-                                    this.handleError(responseJSON);
-                                    return [3 /*break*/, 6];
-                                case 5:
+                                    if (response.ok) {
+                                        localStorage.setItem('token', responseJSON.username + ":" + responseJSON.token);
+                                        this.setState({ username: this.state.registerUsername, password: this.state.registerPassword });
+                                        this.toWelcomePage();
+                                    }
+                                    else if (responseJSON.message) {
+                                        this.setMessageBar(responseJSON.message, 1);
+                                    }
+                                    else {
+                                        this.setMessageBar('Unable to register user', 1);
+                                    }
+                                    return [3 /*break*/, 5];
+                                case 3:
                                     err_2 = _a.sent();
-                                    throw new Error(err_2);
-                                case 6: return [2 /*return*/];
+                                    console.log(err_2);
+                                    this.setMessageBar('Unable to register user', 1);
+                                    return [3 /*break*/, 5];
+                                case 4:
+                                    this.stopLoading();
+                                    return [7 /*endfinally*/];
+                                case 5: return [2 /*return*/];
                             }
                         });
                     });
-                };
-                Login.prototype.handleDelete = function () {
-                    var token = localStorage.getItem('token');
-                    this.deleteUser(token);
-                    this.clearToken();
-                    this.logOut();
                 };
                 Login.prototype.deleteUser = function (token) {
                     return __awaiter(this, void 0, void 0, function () {
@@ -278,10 +210,8 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
-                                    _a.trys.push([0, 3, , 4]);
-                                    this.setState({
-                                        loading: true,
-                                    });
+                                    _a.trys.push([0, 3, 4, 5]);
+                                    this.startLoading('Deleting user..');
                                     return [4 /*yield*/, fetch('../../api/delete_user', {
                                             method: 'post',
                                             headers: { 'Content-Type': 'application/json' },
@@ -289,72 +219,122 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./e
                                         })];
                                 case 1:
                                     response = _a.sent();
-                                    this.setState({
-                                        loading: false,
-                                    });
                                     return [4 /*yield*/, response.json()];
                                 case 2:
                                     responseJSON = _a.sent();
-                                    return [2 /*return*/, responseJSON];
+                                    if (response.ok) {
+                                        this.resetState();
+                                        this.toLoginPage();
+                                        this.setMessageBar('Successfully deleted user', 4);
+                                    }
+                                    else if (responseJSON.message) {
+                                        this.setMessageBar(responseJSON.message, 1);
+                                    }
+                                    else {
+                                        this.setMessageBar('Unable to delete user', 1);
+                                    }
+                                    return [3 /*break*/, 5];
                                 case 3:
                                     err_3 = _a.sent();
-                                    // throw Error(err);
-                                    console.log('there was an error');
                                     console.log(err_3);
-                                    // throw Error(err);
-                                    this.handleError(err_3);
-                                    return [3 /*break*/, 4];
-                                case 4: return [2 /*return*/];
+                                    this.setMessageBar('Unable to delete user', 1);
+                                    return [3 /*break*/, 5];
+                                case 4:
+                                    this.stopLoading();
+                                    return [7 /*endfinally*/];
+                                case 5: return [2 /*return*/];
                             }
                         });
                     });
                 };
-                Login.prototype.handleLogout = function () {
-                    this.logOut();
+                Login.prototype.setMessageBar = function (message, type) {
+                    this.setState({
+                        displayMessage: true,
+                        displayMessageText: message,
+                        displayMessageType: type,
+                    });
                 };
-                Login.prototype.logOut = function () {
+                Login.prototype.startLoading = function (message) {
+                    this.clearMessageBar();
+                    this.setState({
+                        loading: true,
+                        loadingMessage: message,
+                    });
+                };
+                Login.prototype.resetState = function () {
                     this.clearToken();
-                    // change function to "tologinscreen" to help with loading spinner logic
                     this.setState({
                         username: '',
                         password: '',
                         loggedIn: false,
                         registerPage: false,
+                        loading: false,
+                        loadingMessage: '',
                         registerUsername: '',
                         registerPassword: '',
                         registerConfirm: '',
-                        errorMsg: '',
+                        displayMessage: false,
+                        displayMessageText: '',
+                        displayMessageType: 0,
                     });
+                };
+                Login.prototype.logOut = function () { this.resetState(); };
+                Login.prototype.toRegisterPage = function () {
+                    this.resetState();
+                    this.setState({ registerPage: true });
+                };
+                Login.prototype.toWelcomePage = function () {
+                    this.setState({
+                        loggedIn: true,
+                        registerPage: false,
+                        displayMessage: false,
+                        displayMessageText: '',
+                        displayMessageType: 0,
+                    });
+                };
+                Login.prototype.toLoginPage = function () {
+                    this.resetState();
+                };
+                Login.prototype.handleRegister = function (e) {
+                    e.preventDefault();
+                    this.register(this.state.registerUsername, this.state.registerPassword, this.state.registerConfirm);
+                };
+                Login.prototype.handleDelete = function () {
+                    var token = localStorage.getItem('token');
+                    this.deleteUser(token);
+                };
+                Login.prototype.handleLogout = function () {
+                    this.logOut();
                 };
                 Login.prototype.handleLogin = function (e) {
                     e.preventDefault();
-                    var _a = this.state, username = _a.username, password = _a.password;
-                    this.attemptLogIn(username, password);
+                    this.attemptLogIn(this.state.username, this.state.password);
                 };
                 Login.prototype.handleChange = function (e) {
                     var _a;
-                    console.log('click');
                     var _b = e.target, name = _b.name, value = _b.value;
                     this.setState((_a = {},
                         _a[name] = value,
                         _a));
                 };
                 Login.prototype.renderLogic = function () {
-                    var _a = this.state, registerUsername = _a.registerUsername, registerPassword = _a.registerPassword, registerConfirm = _a.registerConfirm, username = _a.username, password = _a.password, registerPage = _a.registerPage, loggedIn = _a.loggedIn, loading = _a.loading;
-                    if (registerPage) {
-                        return (React.createElement(registerpage_js_1.default, { registerUsername: registerUsername, registerPassword: registerPassword, registerConfirm: registerConfirm, onInput: this.handleChange, onCreate: this.handleRegister, onBack: this.logOut }));
+                    if (this.state.registerPage) {
+                        return (React.createElement(registerpage_js_1.default, { registerUsername: this.state.registerUsername, registerPassword: this.state.registerPassword, registerConfirm: this.state.registerConfirm, loading: this.state.loading, loadingMessage: this.state.loadingMessage, onInput: this.handleChange, onCreate: this.handleRegister, onBack: this.logOut }));
                     }
-                    if (loggedIn) {
-                        return (React.createElement(welcomepage_js_1.default, { username: username, onLogout: this.handleLogout, onDelete: this.handleDelete }));
+                    if (this.state.loggedIn) {
+                        return (React.createElement(welcomepage_js_1.default, { username: this.state.username, onLogout: this.handleLogout, onDelete: this.handleDelete }));
                     }
-                    if (!loggedIn) {
-                        return (React.createElement(loginpage_js_1.default, { username: username, password: password, onInput: this.handleChange, onLogin: this.handleLogin, onRegister: this.toRegisterPage }));
+                    if (!this.state.loggedIn) {
+                        return (React.createElement(loginpage_js_1.default, { username: this.state.username, password: this.state.password, loading: this.state.loading, loadingMessage: this.state.loadingMessage, onInput: this.handleChange, onLogin: this.handleLogin, onRegister: this.toRegisterPage }));
                     }
+                    return (React.createElement(loginpage_js_1.default, { username: this.state.username, password: this.state.password, loading: this.state.loading, loadingMessage: this.state.loadingMessage, onInput: this.handleChange, onLogin: this.handleLogin, onRegister: this.toRegisterPage }));
                 };
                 Login.prototype.render = function () {
                     return (React.createElement("div", null,
-                        this.state.loading ? React.createElement(spinner_js_1.default, null) : this.renderLogic(),
-                        React.createElement(errorBox_js_1.default, { errorMsg: this.state.errorMsg })));
+                        React.createElement(FluentUIReact.Stack, { vertical: true },
+                            React.createElement(FluentUIReact.Image, { src: "../assets/images/savings-frontier-banner.png", alt: "Savings at the Frontier Banner", height: 300 }),
+                            this.renderLogic()),
+                        React.createElement(messageBar_js_1.default, { displayMessage: this.state.displayMessage, displayMessageText: this.state.displayMessageText, displayMessageType: this.state.displayMessageType })));
                 };
                 return Login;
             }(React.Component));

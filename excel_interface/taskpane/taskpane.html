@@ -12,6 +12,7 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
 
+    <!-- Icons -->
     <link rel="shortcut icon" href="../assets/favicon.ico" type="image/x-icon">
     <link rel="icon" href="../assets/favicon.ico" type="image/x-icon">
     <link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png">
@@ -19,62 +20,31 @@
     <link rel="icon" type="image/png" href="../assets/favicon-16x16.png" sizes="16x16">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="../assets/fabric.min.css" />
-    <link rel="stylesheet" href="./spinner.css" />
-    <!-- <link href="./taskpane.css" rel="stylesheet" type="text/css" /> -->
+    <!-- <link rel="stylesheet" href="../assets/fabric.min.css" />
+    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.4.0/css/fabric.min.css" />
+    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.4.0/css/fabric.components.min.css" /> -->
+    <link href="./taskpane.css" rel="stylesheet" type="text/css" />
 
     <!-- Javascript -->
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js" type="text/javascript"></script>
     <script type="text/javascript" src="../assets/system.js"></script>
     <script type="text/javascript" src="../assets/react.development.js"></script>
     <script type="text/javascript" src="../assets/react-dom.development.js"></script>
     <script type="text/javascript" src="../assets/fluentui-react.min.js"></script>
-    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js" type="text/javascript"></script>
     <script type="text/javascript" src="../functions/functions.js"></script>
 </head>
 
 <body>
     <div id="root"></div>
-    <!-- <header id="app-header">
-        <h1>Savings at the Frontier</h1>
-        <h5>Investigate Financial Inclusion</h5>
-    </header>
-    <main id="app-body">
-        <div class="login">    
-            <form id="login" method="get">    
-                <label><b>User Name</b></label>
-                <input type="text" name="username" id="username" placeholder="Username">    
-                
-                <label><b>Password</b></label>    
-                <input type="Password" name="password" id="password" placeholder="Password">
-                
-                <input type="button" name="login" id="login_input" value="Login">
-                <input type="button" name="register" id="register_input" value="Register User">
-                <div class="loader">Loading...</div>
-                <div class="error_message"></div>
-            </form>
-        </div>
-        <div class="welcome">
-            <p>Welcome <span class=welcome_text></span>!</p>
-            <input type="button" name="logout" id="logout_input" value="Logout">
-            <input type="button" name="delete" id="delete_input" value="Delete User">
-        </div>
-        <div class="register_user">
-            <p style="text-align: center;"><span class=register_text>Register user here.</span></p>
-            <label><b>User Name</b></label>
-            <input type="text" name="username" id="username_register" placeholder="Username">    
-            
-            <label><b>Password</b></label>    
-            <input type="Password" name="password" id="password_register" placeholder="Password">
-
-            <label><b>Confirm Password</b></label>    
-            <input type="Password" name="confirm" id="confirm_register" placeholder="Password">
-
-            <input type="button" name="register" id="register_input_submit" value="Register">
-            <input type="button" name="back" id="back_input" value="Back">
-        </div>
-    </main>
-    <script>console.log('Loaded: taskpane.html')</script> -->
     <script type="text/javascript" src="./taskpane.js"></script>
+    <script>
+        Office.initialize = () => {
+            if (!Office.context.requirements.isSetSupported('ExcelApi', '1.7')) {
+                console.log('Sorry. The add-in uses Excel.js APIs that are not available in your version of Office.');
+            }
+        };
+        console.log("loaded taskpane.js");
+        </script>
 </body>
 
 </html>

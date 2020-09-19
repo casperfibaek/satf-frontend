@@ -602,7 +602,7 @@ async function pop_density_isochrone_walk(req, res) {
       function: 'pop_density_isochrone_walk',
     });
   }
-// function collecting all values from raster ghana_pop_dens inside the isochrone of walking distance
+  // function collecting all values from raster ghana_pop_dens inside the isochrone of walking distance
   const dbQuery = `
     SELECT popDensWalk('${req.query.lng}', '${req.query.lat}', '${Number(req.query.minutes)}') as pop_dense_iso_walk;
   `;
@@ -639,7 +639,7 @@ async function pop_density_isochrone_bike(req, res) {
       function: 'pop_density_isochrone_bike',
     });
   }
-// function collecting all values from raster ghana_pop_dens inside the isochrone of biking distance
+  // function collecting all values from raster ghana_pop_dens inside the isochrone of biking distance
   const dbQuery = `
     SELECT popDensBike('${req.query.lng}', '${req.query.lat}', '${Number(req.query.minutes)}') as pop_dense_iso_bike;
   `;
@@ -676,7 +676,7 @@ async function pop_density_isochrone_car(req, res) {
       function: 'pop_density_isochrone_car',
     });
   }
-// function collecting all values from raster ghana_pop_dens inside the isochrone of driving distance
+  // function collecting all values from raster ghana_pop_dens inside the isochrone of driving distance
   const dbQuery = `
     SELECT popDensCar('${req.query.lng}', '${req.query.lat}', '${Number(req.query.minutes)}') as pop_dense_iso_car;
   `;
@@ -912,7 +912,7 @@ async function nearest_bank_distance(req, res) {
     });
   }
 }
-//New function - Isochrone walking distance
+// New function - Isochrone walking distance
 async function isochrone_walk(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.minutes) {
     return res.status(400).json({
@@ -949,7 +949,7 @@ async function isochrone_walk(req, res) {
     });
   }
 }
-//New Function - Isochrone biking distance
+// New Function - Isochrone biking distance
 async function isochrone_bike(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.minutes) {
     return res.status(400).json({
@@ -986,7 +986,7 @@ async function isochrone_bike(req, res) {
     });
   }
 }
-//New Function - Isochrone car
+// New Function - Isochrone car
 async function isochrone_car(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.minutes) {
     return res.status(400).json({
@@ -1031,9 +1031,17 @@ const getHashedPassword = (password) => {
   return hash;
 };
 
-function CheckPassword(password) {
-  const regex = /^[A-Za-z]\w{6,14}$/;
+function checkPassword(password) {
+  const regex = /^[A-Za-z]\w{5,13}$/;
   if (password.match(regex)) {
+    return true;
+  }
+  return false;
+}
+
+function checkUsername(username) {
+  const regex = /^[A-Za-z]\w{5,13}$/;
+  if (username.match(regex)) {
     return true;
   }
   return false;
@@ -1121,6 +1129,22 @@ async function create_user(req, res) {
   // Check if the password and confirm password fields match
   if (password === confirm) {
     // Check if user with the same email is also registered
+    if (!checkPassword(password)) {
+      return res.status(400).json({
+        status: 'Failure',
+        message: 'Password must be between 6 to 14 characters which contain only characters, numeric digits, underscore and first character must be a letter', // eslint-disable-line
+        function: 'create_user',
+      });
+    }
+
+    if (!checkUsername(username)) {
+      return res.status(400).json({
+        status: 'Failure',
+        message: 'Username must be between 6 to 14 characters which contain only characters, numeric digits, underscore and first character must be a letter', // eslint-disable-line
+        function: 'create_user',
+      });
+    }
+
     const user_exists = await usernameExists(username);
     if (user_exists) {
       return res.status(409).json({
@@ -1129,30 +1153,24 @@ async function create_user(req, res) {
         function: 'create_user',
       });
     }
-    if (CheckPassword(password)) {
-      const hashedPassword = getHashedPassword(password);
 
-      const insertedSuccessfully = await insertUser(username, hashedPassword);
-      if (insertedSuccessfully) {
-        const token = jwt.sign({ userId: username }, credentials.admin_key, { expiresIn: '24h' });
+    const hashedPassword = getHashedPassword(password);
 
-        return res.status(200).json({
-          status: 'Success',
-          message: 'User Successfully Created',
-          function: 'create_user',
-          username,
-          token,
-        });
-      }
-      return res.status(500).json({
-        status: 'Failure',
-        message: 'Internal error while creating user.',
+    const insertedSuccessfully = await insertUser(username, hashedPassword);
+    if (insertedSuccessfully) {
+      const token = jwt.sign({ userId: username }, credentials.admin_key, { expiresIn: '24h' });
+
+      return res.status(200).json({
+        status: 'Success',
+        message: 'User Successfully Created',
         function: 'create_user',
+        username,
+        token,
       });
     }
-    return res.status(400).json({
+    return res.status(500).json({
       status: 'Failure',
-      message: 'Password; must be between 6 to 14 characters which contain only characters, numeric digits, underscore and first character must be a letter', // eslint-disable-line
+      message: 'Internal error while creating user.',
       function: 'create_user',
     });
   }
@@ -1172,6 +1190,22 @@ async function login_user(req, res) {
     });
   }
   const { username, password } = req.body;
+
+  if (!checkUsername(username)) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Username must be between 6-16 characters.',
+      function: 'login_user',
+    });
+  }
+
+  if (!checkPassword(password)) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Password must be between 6-16 characters.',
+      function: 'login_user',
+    });
+  }
 
   const hashedPassword = getHashedPassword(password);
 

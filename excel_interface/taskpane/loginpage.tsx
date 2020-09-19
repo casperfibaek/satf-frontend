@@ -1,45 +1,41 @@
-const { React, FluentUIReact } = window;
+import Spinner from './spinner.js';
+
+const { React, FluentUIReact } = window; // eslint-disable-line
 
 export default function LoginPage(props) {
-  // const { username, password } = this.props
-  // return (
   return (
-      < div >
+     <div>
+         <FluentUIReact.Text variant="large" block id="login_text">
+            Login User
+         </FluentUIReact.Text>
          <form>
-            <label htmlFor="username">
-               <b>Username</b>
-            </label>
-
-            <input
+            <FluentUIReact.TextField
+               label="Username"
+               htmlFor="username"
                type="text"
                placeholder="Enter Username"
                name="username"
                onChange={(e) => { props.onInput(e); }}
                value={props.username}
                required
-            ></input>
-            <label htmlFor="password">
-               <b>Password</b>
-            </label>
+            ></FluentUIReact.TextField>
 
-            <input
+            <FluentUIReact.TextField
+               label="Password"
+               htmlFor="password"
                type="password"
                placeholder="Enter Password"
                name="password"
                onChange={(e) => { props.onInput(e); }}
                value={props.password}
                required
-            ></input>
-            <button type="submit" onClick={(e) => { props.onLogin(e); }}>
-               Login
-          </button>
+            ></FluentUIReact.TextField>
          </form>
-         <div>
-            <button onClick={() => { props.onRegister(); }}>Register User</button>
+         <div id="login_buttons">
+            <Spinner loading={props.loading} loadingMessage={props.loadingMessage}/>
+            <FluentUIReact.DefaultButton text="Register" onClick={() => { props.onRegister(); }} allowDisabledFocus />
+            <FluentUIReact.PrimaryButton text="Login" onClick={(e) => { props.onLogin(e); }} allowDisabledFocus />
          </div>
-         <h1>{props.username}</h1>
-         <h1>{props.password}</h1>
-         {/* <h1><a onClick={this.registerUser}></a></h1> */}
       </div >
   );
 }

@@ -1,12 +1,7 @@
-import { prependOnceListener } from 'process';
 import LoginPage from './loginpage.js';
 import WelcomePage from './welcomepage.js';
 import RegisterPage from './registerpage.js';
-import ErrorBox from './errorBox.js';
-import Spinner from './spinner.js';
-import sleep from time;
-import { time } from 'console';
-// import ClipLoader from "react-spinners/ClipLoader";
+import MessageBar from './messageBar.js';
 
 const { ReactDOM, React, FluentUIReact } = window; // eslint-disable-line
 
@@ -20,17 +15,21 @@ class Login extends React.Component {
       loggedIn: false,
       registerPage: false,
       loading: false,
+      loadingMessage: '',
       registerUsername: '',
       registerPassword: '',
       registerConfirm: '',
-      errorMsg: '',
+      displayMessage: false,
+      displayMessageText: '',
+      displayMessageType: 0,
     };
+
     this.handleChange = this.handleChange.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
     this.handleRegister = this.handleRegister.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
-    this.handleError = this.handleError.bind(this);
+    this.setMessageBar = this.setMessageBar.bind(this);
     this.attemptLogIn = this.attemptLogIn.bind(this);
     this.logOut = this.logOut.bind(this);
     this.toRegisterPage = this.toRegisterPage.bind(this);
@@ -40,237 +39,194 @@ class Login extends React.Component {
     this.renderLogic = this.renderLogic.bind(this);
     this.deleteUser = this.deleteUser.bind(this);
     this.clearToken = this.clearToken.bind(this);
-
-
-    // this.sleep = this.sleep.bind(this)
-  }
-
-  // sleep(milliseconds) {
-  //   console.log("SLEEPING")
-  //   const date = Date.now();
-  //   let currentDate = null;
-  //   do {
-  //     currentDate = Date.now();
-  //   } while (currentDate - date < milliseconds);
-  // }
-
-  componentdidUpdate() {
-    if (this.state.loading) {
-      this.setState({
-        loading: false,
-      })
-    }
-  }
-
-  componentDidMount() {
-    Office.initialize = () => {
-      // Determine user's version of Office
-      if (!Office.context.requirements.isSetSupported('ExcelApi', '1.7')) {
-        console.log(
-          'Sorry. The add-in uses Excel.js APIs that are not available in your version of Office.',
-        );
-      }
-    };
-  }
-
-  handleError(err) {
-    const errorMsg = err.message;
-    this.setState({
-      errorMsg,
-    });
-  }
-
-  clearToken() {
-    return localStorage.removeItem('token');
   }
 
   async attemptLogIn(username, password) {
     try {
-      this.setState({
-        loading: true,
-      })
-      const response = await fetch(
-        '../../api/login_user',
-        {
-          method: 'post',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password }),
-        },
-      );
-      // wait 2 sec.
+      this.startLoading('Logging in user..');
+
+      const response = await fetch('../../api/login_user', {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
 
       const responseJSON = await response.json();
-      this.setState({
-        loading: false,
-      })
-      if (response.ok) {
-        localStorage.setItem(
-          'token',
-          `${responseJSON.username}:${responseJSON.token}`,
-        );
 
-        /// change to this.toWelcomePage()
-        this.setState({
-          loggedIn: true,
-        });
+      if (response.ok) {
+        localStorage.setItem('token', `${responseJSON.username}:${responseJSON.token}`);
+        this.toWelcomePage();
+      } else if (responseJSON.message) {
+        this.setMessageBar(responseJSON.message, 1);
       } else {
-        this.handleError(responseJSON);
+        this.setMessageBar('Unable to login user', 1);
       }
     } catch (err) {
-      throw new Error(error);
+      console.log(err);
+      this.setMessageBar('Unable to login user', 1);
+    } finally {
+      this.stopLoading();
     }
-  }
-
-  toRegisterPage() {
-    this.setState({
-      // page: { loggedIn: false, registerPage: false },
-      // inputs: { user: "", password: "" },
-      username: '',
-      password: '',
-      loggedIn: false,
-      registerPage: true,
-      loading: false,
-      registerUsername: '',
-      registerPassword: '',
-      registerConfirm: '',
-      errorMsg: '',
-    });
-  }
-
-  toWelcomePage() {
-    this.setState({
-      // username: this,
-      // username used for login welcome message
-      password: '',
-      loggedIn: true,
-      registerPage: false,
-      loading: false,
-      registerUsername: '',
-      registerPassword: '',
-      registerConfirm: '',
-      errorMsg: '',
-    });
-  }
-
-  toLoginPage() {
-    this.setState({
-      username: '',
-      password: '',
-      loggedIn: true,
-      registerPage: false,
-      loading: false,
-      registerUsername: '',
-      registerPassword: '',
-      registerConfirm: '',
-      errorMsg: '',
-    });
-  }
-
-  handleRegister(e) {
-    e.preventDefault();
-
-    const { registerUsername, registerPassword, registerConfirm } = this.state;
-
-    this.register(registerUsername, registerPassword, registerConfirm);
-
   }
 
   async register(username, password, confirm) {
     try {
-      this.setState({
-        loading: true,
-      })
-      const response = await fetch('../../api/create_user',
-        {
-          method: 'post',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password, confirm }),
-        });
-      this.setState({
-        loading: false
-      })
-      if (response.ok) {
-        const responseJSON = await response.json();
+      this.startLoading('Registering user..');
 
-        localStorage.setItem(
-          'token',
-          `${responseJSON.username}:${responseJSON.token}`,
-        );
+      const response = await fetch('../../api/create_user', {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password, confirm }),
+      });
 
-        this.toWelcomePage();
-
-        return responseJSON;
-      }
       const responseJSON = await response.json();
-      this.handleError(responseJSON);
+
+      if (response.ok) {
+        localStorage.setItem('token', `${responseJSON.username}:${responseJSON.token}`);
+        this.setState({ username: this.state.registerUsername, password: this.state.registerPassword });
+        this.toWelcomePage();
+      } else if (responseJSON.message) {
+        this.setMessageBar(responseJSON.message, 1);
+      } else {
+        this.setMessageBar('Unable to register user', 1);
+      }
     } catch (err) {
-      throw new Error(err);
+      console.log(err);
+      this.setMessageBar('Unable to register user', 1);
+    } finally {
+      this.stopLoading();
     }
-  }
-
-  handleDelete() {
-
-    const token = localStorage.getItem('token');
-    this.deleteUser(token);
-    this.clearToken();
-    this.logOut();
-
   }
 
   async deleteUser(token) {
     try {
-      this.setState({
-        loading: true,
-      })
+      this.startLoading('Deleting user..');
+
       const response = await fetch('../../api/delete_user', {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token }),
       });
-      this.setState({
-        loading: false,
-      })
+
       const responseJSON = await response.json();
 
-      return responseJSON;
+      if (response.ok) {
+        this.resetState();
+        this.toLoginPage();
+        this.setMessageBar('Successfully deleted user', 4);
+      } else if (responseJSON.message) {
+        this.setMessageBar(responseJSON.message, 1);
+      } else {
+        this.setMessageBar('Unable to delete user', 1);
+      }
     } catch (err) {
-      // throw Error(err);
-      console.log('there was an error');
       console.log(err);
-      // throw Error(err);
-      this.handleError(err);
+      this.setMessageBar('Unable to delete user', 1);
+    } finally {
+      this.stopLoading();
     }
+  }
+
+  setMessageBar(message, type) {
+    this.setState({
+      displayMessage: true,
+      displayMessageText: message,
+      displayMessageType: type,
+    });
+  }
+
+  clearMessageBar = () => {
+    this.setState({
+      displayMessage: false,
+      displayMessageText: '',
+      displayMessageType: 0,
+    });
+  }
+
+  startLoading(message) {
+    this.clearMessageBar();
+    this.setState({
+      loading: true,
+      loadingMessage: message,
+    });
+  }
+
+  stopLoading = () => {
+    this.setState({
+      loading: false,
+      loadingMessage: '',
+    });
+  }
+
+  clearToken = () => {
+    localStorage.removeItem('token');
+  }
+
+  resetState() {
+    this.clearToken();
+
+    this.setState({
+      username: '',
+      password: '',
+      loggedIn: false,
+      registerPage: false,
+      loading: false,
+      loadingMessage: '',
+      registerUsername: '',
+      registerPassword: '',
+      registerConfirm: '',
+      displayMessage: false,
+      displayMessageText: '',
+      displayMessageType: 0,
+    });
+  }
+
+  logOut() { this.resetState(); }
+
+  toRegisterPage() {
+    this.resetState();
+    this.setState({ registerPage: true });
+  }
+
+  toWelcomePage() {
+    this.setState({
+      loggedIn: true,
+      registerPage: false,
+      displayMessage: false,
+      displayMessageText: '',
+      displayMessageType: 0,
+    });
+  }
+
+  toLoginPage() {
+    this.resetState();
+  }
+
+  handleRegister(e) {
+    e.preventDefault();
+
+    this.register(
+      this.state.registerUsername,
+      this.state.registerPassword,
+      this.state.registerConfirm,
+    );
+  }
+
+  handleDelete() {
+    const token = localStorage.getItem('token');
+    this.deleteUser(token);
   }
 
   handleLogout() {
     this.logOut();
   }
 
-  logOut() {
-    this.clearToken();
-    // change function to "tologinscreen" to help with loading spinner logic
-
-    this.setState({
-      username: '',
-      password: '',
-      loggedIn: false,
-      registerPage: false,
-      registerUsername: '',
-      registerPassword: '',
-      registerConfirm: '',
-      errorMsg: '',
-    });
-  }
-
   handleLogin(e) {
     e.preventDefault();
-    const { username, password } = this.state;
-    this.attemptLogIn(username, password);
-
+    this.attemptLogIn(this.state.username, this.state.password);
   }
 
   handleChange(e) {
-    console.log('click');
     const { name, value } = e.target;
 
     this.setState({
@@ -279,56 +235,73 @@ class Login extends React.Component {
   }
 
   renderLogic() {
-    const {
-      registerUsername, registerPassword, registerConfirm, username, password, registerPage, loggedIn, loading
-    } = this.state;
-    if (registerPage) {
+    if (this.state.registerPage) {
       return (
         <RegisterPage
-          registerUsername={registerUsername}
-          registerPassword={registerPassword}
-          registerConfirm={registerConfirm}
+          registerUsername={this.state.registerUsername}
+          registerPassword={this.state.registerPassword}
+          registerConfirm={this.state.registerConfirm}
+          loading={this.state.loading}
+          loadingMessage={this.state.loadingMessage}
           onInput={this.handleChange}
           onCreate={this.handleRegister}
           onBack={this.logOut}
         >
         </RegisterPage>
       );
-    } if (loggedIn) {
+    } if (this.state.loggedIn) {
       return (
         <WelcomePage
-          username={username}
+          username={this.state.username}
           onLogout={this.handleLogout}
           onDelete={this.handleDelete}
         />
       );
-    } if (!loggedIn) {
+    } if (!this.state.loggedIn) {
       return (
         <LoginPage
-          username={username}
-          password={password}
+          username={this.state.username}
+          password={this.state.password}
+          loading={this.state.loading}
+          loadingMessage={this.state.loadingMessage}
           onInput={this.handleChange}
           onLogin={this.handleLogin}
           onRegister={this.toRegisterPage}
         />
       );
     }
+    return (
+      <LoginPage
+        username={this.state.username}
+        password={this.state.password}
+        loading={this.state.loading}
+        loadingMessage={this.state.loadingMessage}
+        onInput={this.handleChange}
+        onLogin={this.handleLogin}
+        onRegister={this.toRegisterPage}
+      />
+    );
   }
 
   render() {
     return (
       <div>
-        {this.state.loading ? <Spinner /> : this.renderLogic()}
-        <ErrorBox errorMsg={this.state.errorMsg} />
-
+        <FluentUIReact.Stack vertical>
+          <FluentUIReact.Image
+            src="../assets/images/savings-frontier-banner.png"
+            alt="Savings at the Frontier Banner"
+            height={300}
+         />
+          {this.renderLogic()}
+        </FluentUIReact.Stack>
+        <MessageBar
+          displayMessage={this.state.displayMessage}
+          displayMessageText={this.state.displayMessageText}
+          displayMessageType={this.state.displayMessageType}
+        />
       </div>
     );
   }
 }
 
-ReactDOM.render(
-  <React.StrictMode>
-    <Login />
-  </React.StrictMode>,
-  document.getElementById('root'),
-);
+ReactDOM.render(<React.StrictMode><Login /></React.StrictMode>, document.getElementById('root'));

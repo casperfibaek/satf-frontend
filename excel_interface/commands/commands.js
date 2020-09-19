@@ -252,7 +252,6 @@ function openDialogSATF(event) {
 function openDialogSUPPORT(event) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            // openDialogWindow('../support/support.html', event);
             openDialogWindow('../support/support.html', event);
             return [2 /*return*/];
         });
