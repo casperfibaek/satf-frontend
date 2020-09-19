@@ -1,7 +1,7 @@
 #login_buttons,
 #register_buttons,
 #welcome_buttons{
-  right: 9px;
+  right: 19px;
   margin-top: 52px;
   position: absolute;
 }
@@ -13,7 +13,7 @@
 #login_spinner{
   margin-top: 160px;
   position: absolute;
-  right: 2px;
+  right: 12px;
   bottom: 45px;
   display: block;
 }
@@ -27,6 +27,10 @@
 #welcome_header{
   text-align: center;
   margin-top: 20px;
+}
+#stack_login{
+  margin-left: 10px;
+  margin-right: 10px;
 }
 .ms-MessageBar{
   margin-top: 10px;

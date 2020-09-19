@@ -331,7 +331,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
                 };
                 Login.prototype.render = function () {
                     return (React.createElement("div", null,
-                        React.createElement(FluentUIReact.Stack, { vertical: true },
+                        React.createElement(FluentUIReact.Stack, { vertical: true, id: "stack_login" },
                             React.createElement(FluentUIReact.Image, { src: "../assets/images/savings-frontier-banner.png", alt: "Savings at the Frontier Banner", height: 300 }),
                             this.renderLogic()),
                         React.createElement(messageBar_js_1.default, { displayMessage: this.state.displayMessage, displayMessageText: this.state.displayMessageText, displayMessageType: this.state.displayMessageType })));

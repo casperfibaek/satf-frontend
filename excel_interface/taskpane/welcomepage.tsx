@@ -4,7 +4,7 @@ const { React, FluentUIReact } = window;
 
 export default function WelcomePage(props) {
   return (
-    <div>
+    <div id="page_welcome">
       <FluentUIReact.Text variant="xLarge" block id="welcome_header">
         Welcome {props.username}
       </FluentUIReact.Text>

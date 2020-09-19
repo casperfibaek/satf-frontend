@@ -3,7 +3,7 @@ System.register(["./spinner.js"], function (exports_1, context_1) {
     var spinner_js_1, React, FluentUIReact;
     var __moduleName = context_1 && context_1.id;
     function WelcomePage(props) {
-        return (React.createElement("div", null,
+        return (React.createElement("div", { id: "page_welcome" },
             React.createElement(FluentUIReact.Text, { variant: "xLarge", block: true, id: "welcome_header" },
                 "Welcome ",
                 props.username),

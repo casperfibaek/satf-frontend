@@ -4,7 +4,7 @@ const { React, FluentUIReact } = window; // eslint-disable-line
 
 export default function LoginPage(props) {
   return (
-     <div>
+     <div id="page_login">
          <FluentUIReact.Text variant="large" block id="login_text">
             Login User
          </FluentUIReact.Text>

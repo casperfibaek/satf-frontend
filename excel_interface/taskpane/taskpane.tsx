@@ -286,7 +286,7 @@ class Login extends React.Component {
   render() {
     return (
       <div>
-        <FluentUIReact.Stack vertical>
+        <FluentUIReact.Stack vertical id="stack_login">
           <FluentUIReact.Image
             src="../assets/images/savings-frontier-banner.png"
             alt="Savings at the Frontier Banner"

@@ -4,7 +4,7 @@ const { React, FluentUIReact } = window;
 
 export default function RegisterPage(props) {
   return (
-    <div>
+    <div id="page_register">
         <FluentUIReact.Text variant="large" block id="register_text">
           Register User
         </FluentUIReact.Text>

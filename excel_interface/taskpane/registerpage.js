@@ -3,7 +3,7 @@ System.register(["./spinner.js"], function (exports_1, context_1) {
     var spinner_js_1, React, FluentUIReact;
     var __moduleName = context_1 && context_1.id;
     function RegisterPage(props) {
-        return (React.createElement("div", null,
+        return (React.createElement("div", { id: "page_register" },
             React.createElement(FluentUIReact.Text, { variant: "large", block: true, id: "register_text" }, "Register User"),
             React.createElement("form", null,
                 React.createElement(FluentUIReact.TextField, { label: "Username", htmlFor: "username", type: "text", placeholder: "Enter Username", name: "registerUsername", onChange: function (e) { props.onInput(e); }, value: props.registerUsername, required: true }),
