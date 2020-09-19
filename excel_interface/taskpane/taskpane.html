@@ -13,16 +13,13 @@
     <meta http-equiv="Expires" content="0" />
 
     <!-- Icons -->
-    <link rel="shortcut icon" href="../assets/favicon.ico" type="image/x-icon">
-    <link rel="icon" href="../assets/favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png">
-    <link rel="icon" type="image/png" href="../assets/favicon-32x32.png" sizes="32x32">
-    <link rel="icon" type="image/png" href="../assets/favicon-16x16.png" sizes="16x16">
+    <link rel="shortcut icon" href="../assets/icons/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="../assets/icons/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="../assets/icons/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="../assets/icons/favicon-16x16.png" sizes="16x16">
 
     <!-- CSS -->
-    <!-- <link rel="stylesheet" href="../assets/fabric.min.css" />
-    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.4.0/css/fabric.min.css" />
-    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.4.0/css/fabric.components.min.css" /> -->
     <link href="./taskpane.css" rel="stylesheet" type="text/css" />
 
     <!-- Javascript -->
@@ -36,14 +33,13 @@
 
 <body>
     <div id="root"></div>
-    <script type="text/javascript" src="./taskpane.js"></script>
     <script>
         Office.initialize = () => {
             if (!Office.context.requirements.isSetSupported('ExcelApi', '1.7')) {
                 console.log('Sorry. The add-in uses Excel.js APIs that are not available in your version of Office.');
             }
         };
-
+        
         FluentUIReact.loadTheme({
             palette: {
                 themePrimary: '#217346',
@@ -68,9 +64,11 @@
                 neutralDark: '#201f1e',
                 black: '#000000',
                 white: '#ffffff',
-            }});
-        console.log("loaded taskpane.js");
-        </script>
+            }
+        });
+    </script>
+    <script type="text/javascript" src="./taskpane.js"></script>
+    <script>console.log("loaded taskpane.html");</script>
 </body>
 
 </html>
