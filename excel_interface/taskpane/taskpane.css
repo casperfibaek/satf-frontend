@@ -1,7 +1,17 @@
 #root_login{
+  font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-size: 18px;
+  font-weight: 400;
+  text-align: center;
   max-width: 500px;
   margin-left: auto;
   margin-right: auto;
+  margin-top: 20px;
+  box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,.132), 0 0.3px 0.9px 0 rgba(0,0,0,.108);
+  padding: 20px;
+  padding-bottom: 40px;
+  background: #faf9f8;
 }
 
 #login_buttons,

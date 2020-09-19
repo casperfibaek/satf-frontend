@@ -13,7 +13,7 @@ System.register(["../functions/functions_meta.json"], function (exports_1, conte
             d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
         };
     })();
-    var functions_meta_json_1, _a, ReactDOM, React, FluentUIReact, theme, functionsObj, Documentation;
+    var functions_meta_json_1, _a, ReactDOM, React, FluentUIReact, Fuse, functionsObj, Documentation;
     var __moduleName = context_1 && context_1.id;
     return {
         setters: [
@@ -22,8 +22,7 @@ System.register(["../functions/functions_meta.json"], function (exports_1, conte
             }
         ],
         execute: function () {
-            _a = window, ReactDOM = _a.ReactDOM, React = _a.React, FluentUIReact = _a.FluentUIReact; // eslint-disable-line
-            theme = FluentUIReact.getTheme();
+            _a = window, ReactDOM = _a.ReactDOM, React = _a.React, FluentUIReact = _a.FluentUIReact, Fuse = _a.Fuse; // eslint-disable-line
             functionsObj = functions_meta_json_1.default;
             Documentation = /** @class */ (function (_super) {
                 __extends(Documentation, _super);
@@ -31,27 +30,66 @@ System.register(["../functions/functions_meta.json"], function (exports_1, conte
                     var _this = _super.call(this, props) || this;
                     _this.state = {
                         functions: [],
+                        results: {},
                     };
+                    _this.fuzzySearch = _this.fuzzySearch.bind(_this);
                     return _this;
                 }
                 Documentation.prototype.componentDidMount = function () {
                     this.setState({
                         functions: functionsObj.functions,
                     });
+                    this.fuzzy = new globalThis.Fuse(this.state.functions, {
+                        keys: ['name'],
+                    });
+                };
+                Documentation.prototype.componentWillMount = function () {
+                    window._fuzzySearch = new window.Fuse(functionsObj.functions, {
+                        keys: ['name', 'description'],
+                    });
+                };
+                Documentation.prototype.fuzzySearch = function (input) {
+                    if (input === '') {
+                        this.setState({
+                            functions: functionsObj.functions
+                        });
+                    }
+                    else {
+                        var search = window._fuzzySearch.search(input);
+                        this.setState({
+                            functions: search.map(function (e) { return e.item; })
+                        });
+                    }
                 };
                 Documentation.prototype.render = function () {
-                    var iterParams = function (p, idx) { return (React.createElement("ul", { key: idx },
-                        React.createElement("li", null, p.description),
-                        React.createElement("li", null, p.name),
-                        React.createElement("li", null, p.type),
-                        React.createElement("li", null, p.optional && 'True'))); };
-                    var listItems = this.state.functions.map(function (f, idx) { return (React.createElement("div", { key: idx, style: { boxShadow: theme.effects.elevation8, background: 'red' } },
-                        React.createElement("p", null, f.description),
-                        React.createElement("p", null, f.id),
-                        React.createElement("p", null, f.name),
+                    var _this = this;
+                    var iterParams = function (p, idx) { return (React.createElement("ul", { key: idx, className: "function_parameters" },
+                        React.createElement("li", null,
+                            "Name: ",
+                            React.createElement("b", null, p.name)),
+                        React.createElement("li", null,
+                            "Description: ",
+                            React.createElement("i", null, p.description)),
+                        React.createElement("li", null,
+                            "Type: ",
+                            p.type))); };
+                    var listItems = this.state.functions.map(function (f, idx) { return (React.createElement("div", { key: idx, className: "function_card" },
+                        React.createElement(FluentUIReact.Text, { variant: "large", block: true },
+                            "satf.",
+                            f.name),
+                        React.createElement(FluentUIReact.Text, { variant: "medium" }, f.description),
+                        React.createElement(FluentUIReact.Text, { variant: "medium", block: true, className: "text_with_margin" }, "Parameters:"),
                         f.parameters.length > 0 && f.parameters.map(iterParams),
-                        React.createElement("p", null, f.result.type))); });
-                    return React.createElement("div", null, listItems);
+                        React.createElement(FluentUIReact.Text, { variant: "medium", block: true, className: "text_with_margin" }, "Returns:"),
+                        React.createElement("ul", { className: "function_parameters" },
+                            React.createElement("li", null,
+                                React.createElement("b", null, f.result.type))))); });
+                    return (React.createElement("div", { id: "root_functions" },
+                        React.createElement("div", { className: "documentation_intro_text" },
+                            React.createElement(FluentUIReact.Icon, { iconName: "TextDocument" }),
+                            React.createElement(FluentUIReact.Text, { variant: "xLarge", block: true }, "Search the documentation")),
+                        React.createElement(FluentUIReact.SearchBox, { className: "function_search", placeholder: "Search", onChanged: function (newValue) { return _this.fuzzySearch(newValue); } }),
+                        listItems));
                 };
                 return Documentation;
             }(React.Component));
