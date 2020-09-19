@@ -122,8 +122,19 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
                     _this.register = _this.register.bind(_this);
                     _this.renderLogic = _this.renderLogic.bind(_this);
                     _this.deleteUser = _this.deleteUser.bind(_this);
+                    _this.onKeyUp = _this.onKeyUp.bind(_this);
                     return _this;
                 }
+                Login.prototype.onKeyUp = function (event) {
+                    if (event.charCode === 13) { // enter
+                        if (this.state.registerPage) {
+                            this.handleRegister();
+                        }
+                        else if (!this.state.loggedIn) {
+                            this.handleLogin();
+                        }
+                    }
+                };
                 Login.prototype.attemptLogIn = function (username, password) {
                     return __awaiter(this, void 0, void 0, function () {
                         var response, responseJSON, err_1;
@@ -302,8 +313,8 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
                 Login.prototype.toLoginPage = function () {
                     this.resetState();
                 };
-                Login.prototype.handleRegister = function (e) {
-                    e.preventDefault();
+                Login.prototype.handleRegister = function () {
+                    // e.preventDefault();
                     this.register(this.state.registerUsername, this.state.registerPassword, this.state.registerConfirm);
                 };
                 Login.prototype.handleDelete = function () {
@@ -313,8 +324,8 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
                 Login.prototype.handleLogout = function () {
                     this.logOut();
                 };
-                Login.prototype.handleLogin = function (e) {
-                    e.preventDefault();
+                Login.prototype.handleLogin = function () {
+                    // e.preventDefault();
                     this.attemptLogIn(this.state.username, this.state.password);
                 };
                 Login.prototype.handleChange = function (e) {
@@ -339,7 +350,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
                 Login.prototype.render = function () {
                     return (React.createElement("div", { id: "root_login" },
                         React.createElement(FluentUIReact.Image, { src: "../assets/images/savings-frontier-banner.png", alt: "Savings at the Frontier Banner", height: 300 }),
-                        React.createElement(FluentUIReact.Stack, { vertical: true, id: "stack_login" },
+                        React.createElement(FluentUIReact.Stack, { vertical: true, id: "stack_login", onKeyPress: this.onKeyUp },
                             this.renderLogic(),
                             React.createElement(messageBar_js_1.default, { displayMessage: this.state.displayMessage, displayMessageText: this.state.displayMessageText, displayMessageType: this.state.displayMessageType }),
                             React.createElement(spinner_js_1.default, { loading: this.state.loading, loadingMessage: this.state.loadingMessage }))));

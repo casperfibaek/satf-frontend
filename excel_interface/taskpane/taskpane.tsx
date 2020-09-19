@@ -42,6 +42,17 @@ class Login extends React.Component {
     this.register = this.register.bind(this);
     this.renderLogic = this.renderLogic.bind(this);
     this.deleteUser = this.deleteUser.bind(this);
+    this.onKeyUp = this.onKeyUp.bind(this);
+  }
+
+  onKeyUp(event) {
+    if (event.charCode === 13) { // enter
+      if (this.state.registerPage) {
+        this.handleRegister();
+      } else if (!this.state.loggedIn) {
+        this.handleLogin();
+      }
+    }
   }
 
   async attemptLogIn(username, password) {
@@ -203,8 +214,8 @@ class Login extends React.Component {
     this.resetState();
   }
 
-  handleRegister(e) {
-    e.preventDefault();
+  handleRegister() {
+    // e.preventDefault();
 
     this.register(
       this.state.registerUsername,
@@ -222,8 +233,8 @@ class Login extends React.Component {
     this.logOut();
   }
 
-  handleLogin(e) {
-    e.preventDefault();
+  handleLogin() {
+    // e.preventDefault();
     this.attemptLogIn(this.state.username, this.state.password);
   }
 
@@ -292,7 +303,7 @@ class Login extends React.Component {
           alt="Savings at the Frontier Banner"
           height={300}
         />
-        <FluentUIReact.Stack vertical id="stack_login">
+        <FluentUIReact.Stack vertical id="stack_login" onKeyPress={this.onKeyUp}>
           {this.renderLogic()}
           <MessageBar
             displayMessage={this.state.displayMessage}

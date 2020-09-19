@@ -8,7 +8,7 @@ export default function RegisterPage(props) {
         <FluentUIReact.Text variant="large" block id="register_text">
           Register User
         </FluentUIReact.Text>
-      <form>
+      <form className="login_page_form">
         <FluentUIReact.TextField
           label="Username"
           htmlFor="username"
@@ -41,20 +41,19 @@ export default function RegisterPage(props) {
           value={props.registerConfirm}
           required
         ></FluentUIReact.TextField>
-
-        <div id="register_buttons">
-          <FluentUIReact.DefaultButton
-            text="Back"
-            onClick={() => { props.onBack(); }}
-            allowDisabledFocus
-          />
-          <FluentUIReact.PrimaryButton
-            text="Register User"
-            onClick={(e) => { props.onCreate(e); }}
-            allowDisabledFocus
-          />
-         </div>
       </form>
+      <div id="register_buttons">
+        <FluentUIReact.DefaultButton
+          text="Back"
+          onClick={() => { props.onBack(); }}
+          allowDisabledFocus
+        />
+        <FluentUIReact.PrimaryButton
+          text="Register User"
+          onClick={(e) => { props.onCreate(e); }}
+          allowDisabledFocus
+        />
+        </div>
     </div>
   );
 }

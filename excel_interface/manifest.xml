@@ -277,14 +277,14 @@
         <bt:Image id="Icon.Contact.48x48" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/contact_48x48.png"/>
         <bt:Image id="Icon.Contact.64x64" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/contact_64x64.png"/>
         <bt:Image id="Icon.Contact.80x80" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/contact_80x80.png"/>
-        <bt:Image id="Icon.Login.16x16" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/login_16x16.png"/>
-        <bt:Image id="Icon.Login.20x20" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/login_20x20.png"/>
-        <bt:Image id="Icon.Login.24x24" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/login_24x24.png"/>
-        <bt:Image id="Icon.Login.32x32" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/login_32x32.png"/>
-        <bt:Image id="Icon.Login.40x40" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/login_40x40.png"/>
-        <bt:Image id="Icon.Login.48x48" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/login_48x48.png"/>
-        <bt:Image id="Icon.Login.64x64" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/login_64x64.png"/>
-        <bt:Image id="Icon.Login.80x80" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/login_80x80.png"/>
+        <bt:Image id="Icon.Login.16x16" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/login_16x16_dark.png"/>
+        <bt:Image id="Icon.Login.20x20" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/login_20x20_dark.png"/>
+        <bt:Image id="Icon.Login.24x24" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/login_24x24_dark.png"/>
+        <bt:Image id="Icon.Login.32x32" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/login_32x32_dark.png"/>
+        <bt:Image id="Icon.Login.40x40" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/login_40x40_dark.png"/>
+        <bt:Image id="Icon.Login.48x48" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/login_48x48_dark.png"/>
+        <bt:Image id="Icon.Login.64x64" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/login_64x64_dark.png"/>
+        <bt:Image id="Icon.Login.80x80" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/login_80x80_dark.png"/>
         <bt:Image id="Icon.Map.16x16" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/map_16x16.png"/>
         <bt:Image id="Icon.Map.20x20" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/map_20x20.png"/>
         <bt:Image id="Icon.Map.24x24" DefaultValue="https://satf.azurewebsites.net/excel_interface/assets/icons/map_24x24.png"/>
