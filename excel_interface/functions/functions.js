@@ -139,7 +139,7 @@ function what3WordsToLatLng(what3words) {
                 case 1:
                     _a.trys.push([1, 4, , 5]);
                     url = "../../api/whatfreewords_to_latlng?words=" + what3words;
-                    return [4 /*yield*/, fetch(url, { headers: { Authorization: localStorage.getItem('token') } })];
+                    return [4 /*yield*/, fetch(url, { headers: { Authorization: globalThis.localStorage.getItem('satf_token') } })];
                 case 2:
                     apiResponse = _a.sent();
                     return [4 /*yield*/, apiResponse.json()];
@@ -171,7 +171,7 @@ function plusCodeToLatLng(pluscode) {
                 case 1:
                     _a.trys.push([1, 4, , 5]);
                     url = "../../api/pluscode_to_latlng?code=" + pluscode;
-                    return [4 /*yield*/, fetch(url, { headers: { Authorization: localStorage.getItem('token') } })];
+                    return [4 /*yield*/, fetch(url, { headers: { Authorization: globalThis.localStorage.getItem('satf_token') } })];
                 case 2:
                     apiResponse = _a.sent();
                     return [4 /*yield*/, apiResponse.json()];
@@ -252,7 +252,7 @@ function LatLngToPluscode(latitude, longitude) {
 }
 g.LatLngToPluscode = LatLngToPluscode;
 function helloWorld() {
-    var id = localStorage.getItem('token');
+    var id = globalThis.localStorage.getItem('satf_token');
     console.log('hello hello - from new - see me?');
     return "hello " + id;
 }

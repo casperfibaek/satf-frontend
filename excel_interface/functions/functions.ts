@@ -100,7 +100,7 @@ async function what3WordsToLatLng(what3words) {
   if (isValidWhatFreeWords(what3words)) {
     try {
       const url = `../../api/whatfreewords_to_latlng?words=${what3words}`;
-      const apiResponse = await fetch(url, { headers: { Authorization: localStorage.getItem('token') } });
+      const apiResponse = await fetch(url, { headers: { Authorization: globalThis.localStorage.getItem('satf_token') } });
       const responseJSON = await apiResponse.json();
 
       return responseJSON;
@@ -121,7 +121,7 @@ async function plusCodeToLatLng(pluscode) {
   if (isValidPluscode(pluscode)) {
     try {
       const url = `../../api/pluscode_to_latlng?code=${pluscode}`;
-      const apiResponse = await fetch(url, { headers: { Authorization: localStorage.getItem('token') } });
+      const apiResponse = await fetch(url, { headers: { Authorization: globalThis.localStorage.getItem('satf_token') } });
       const responseJSON = await apiResponse.json();
 
       return responseJSON;
@@ -204,7 +204,7 @@ function LatLngToPluscode(latitude, longitude) {
 g.LatLngToPluscode = LatLngToPluscode;
 
 function helloWorld() {
-  const id = localStorage.getItem('token');
+  const id = globalThis.localStorage.getItem('satf_token');
   console.log('hello hello - from new - see me?');
   return `hello ${id}`;
 }

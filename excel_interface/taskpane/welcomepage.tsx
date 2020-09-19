@@ -14,7 +14,6 @@ export default function WelcomePage(props) {
       </FluentUIReact.Text>
 
       <div id="welcome_buttons">
-        <Spinner loading={props.loading} loadingMessage={props.loadingMessage}/>
         <FluentUIReact.DefaultButton
           text="Logout"
           onClick={() => { props.onLogout(); }}

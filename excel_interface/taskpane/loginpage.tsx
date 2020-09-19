@@ -8,7 +8,7 @@ export default function LoginPage(props) {
          <FluentUIReact.Text variant="large" block id="login_text">
             Login User
          </FluentUIReact.Text>
-         <form>
+         <form className="login_page_form">
             <FluentUIReact.TextField
                label="Username"
                htmlFor="username"
@@ -32,7 +32,6 @@ export default function LoginPage(props) {
             ></FluentUIReact.TextField>
          </form>
          <div id="login_buttons">
-            <Spinner loading={props.loading} loadingMessage={props.loadingMessage}/>
             <FluentUIReact.DefaultButton text="Register" onClick={() => { props.onRegister(); }} allowDisabledFocus />
             <FluentUIReact.PrimaryButton text="Login" onClick={(e) => { props.onLogin(e); }} allowDisabledFocus />
          </div>

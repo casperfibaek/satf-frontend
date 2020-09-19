@@ -4,8 +4,9 @@ System.register([], function (exports_1, context_1) {
     var __moduleName = context_1 && context_1.id;
     function MessageBar(props) {
         if (props.displayMessage) {
-            return (React.createElement(FluentUIReact.MessageBar, { messageBarType: props.displayMessageType, isMultiline: false, dismissButtonAriaLabel: "Close", id: "login_messagebar" },
-                React.createElement("span", null, props.displayMessageText)));
+            return (React.createElement("div", { id: "login_messagebar" },
+                React.createElement(FluentUIReact.MessageBar, { messageBarType: props.displayMessageType, isMultiline: false, dismissButtonAriaLabel: "Close" },
+                    React.createElement("span", null, props.displayMessageText))));
         }
         return (null);
     }

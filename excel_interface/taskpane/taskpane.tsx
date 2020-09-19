@@ -2,6 +2,9 @@ import LoginPage from './loginpage.js';
 import WelcomePage from './welcomepage.js';
 import RegisterPage from './registerpage.js';
 import MessageBar from './messageBar.js';
+import Spinner from './spinner.js';
+
+async function sleep(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
 
 const { ReactDOM, React, FluentUIReact } = window; // eslint-disable-line
 
@@ -22,6 +25,7 @@ class Login extends React.Component {
       displayMessage: false,
       displayMessageText: '',
       displayMessageType: 0,
+      satfToken: '',
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -38,7 +42,6 @@ class Login extends React.Component {
     this.register = this.register.bind(this);
     this.renderLogic = this.renderLogic.bind(this);
     this.deleteUser = this.deleteUser.bind(this);
-    this.clearToken = this.clearToken.bind(this);
   }
 
   async attemptLogIn(username, password) {
@@ -54,7 +57,8 @@ class Login extends React.Component {
       const responseJSON = await response.json();
 
       if (response.ok) {
-        window.localStorage.setItem('token', `${responseJSON.username}:${responseJSON.token}`);
+        this.setState({ satfToken: `${responseJSON.username}:${responseJSON.token}` });
+        globalThis.localStorage.setItem('satf_token', this.state.satfToken);
         this.toWelcomePage();
       } else if (responseJSON.message) {
         this.setMessageBar(responseJSON.message, 1);
@@ -82,7 +86,8 @@ class Login extends React.Component {
       const responseJSON = await response.json();
 
       if (response.ok) {
-        window.localStorage.setItem('token', `${responseJSON.username}:${responseJSON.token}`);
+        this.setState({ satfToken: `${responseJSON.username}:${responseJSON.token}` });
+        globalThis.localStorage.setItem('satf_token', this.state.satfToken);
         this.setState({ username: this.state.registerUsername, password: this.state.registerPassword });
         this.toWelcomePage();
       } else if (responseJSON.message) {
@@ -158,12 +163,8 @@ class Login extends React.Component {
     });
   }
 
-  clearToken = () => {
-    window.localStorage.removeItem('token');
-  }
-
   resetState() {
-    this.clearToken();
+    globalThis.localStorage.removeItem('satf_token');
 
     this.setState({
       username: '',
@@ -285,7 +286,7 @@ class Login extends React.Component {
 
   render() {
     return (
-      <div>
+      <div id="root_login">
         <FluentUIReact.Image
           src="../assets/images/savings-frontier-banner.png"
           alt="Savings at the Frontier Banner"
@@ -298,6 +299,7 @@ class Login extends React.Component {
             displayMessageText={this.state.displayMessageText}
             displayMessageType={this.state.displayMessageType}
           />
+          <Spinner loading={this.state.loading} loadingMessage={this.state.loadingMessage}/>
         </FluentUIReact.Stack>
       </div>
     );

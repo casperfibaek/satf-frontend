@@ -1,4 +1,4 @@
-System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./messageBar.js"], function (exports_1, context_1) {
+System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./messageBar.js", "./spinner.js"], function (exports_1, context_1) {
     "use strict";
     var __extends = (this && this.__extends) || (function () {
         var extendStatics = function (d, b) {
@@ -49,8 +49,13 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
             if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
         }
     };
-    var loginpage_js_1, welcomepage_js_1, registerpage_js_1, messageBar_js_1, ReactDOM, React, FluentUIReact, Login;
+    var loginpage_js_1, welcomepage_js_1, registerpage_js_1, messageBar_js_1, spinner_js_1, ReactDOM, React, FluentUIReact, Login;
     var __moduleName = context_1 && context_1.id;
+    function sleep(ms) {
+        return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/, new Promise(function (resolve) { return setTimeout(resolve, ms); })];
+        }); });
+    }
     return {
         setters: [
             function (loginpage_js_1_1) {
@@ -64,6 +69,9 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
             },
             function (messageBar_js_1_1) {
                 messageBar_js_1 = messageBar_js_1_1;
+            },
+            function (spinner_js_1_1) {
+                spinner_js_1 = spinner_js_1_1;
             }
         ],
         execute: function () {
@@ -85,9 +93,6 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
                             loadingMessage: '',
                         });
                     };
-                    _this.clearToken = function () {
-                        window.localStorage.removeItem('token');
-                    };
                     _this.state = {
                         username: '',
                         password: '',
@@ -101,6 +106,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
                         displayMessage: false,
                         displayMessageText: '',
                         displayMessageType: 0,
+                        satfToken: '',
                     };
                     _this.handleChange = _this.handleChange.bind(_this);
                     _this.handleLogin = _this.handleLogin.bind(_this);
@@ -116,7 +122,6 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
                     _this.register = _this.register.bind(_this);
                     _this.renderLogic = _this.renderLogic.bind(_this);
                     _this.deleteUser = _this.deleteUser.bind(_this);
-                    _this.clearToken = _this.clearToken.bind(_this);
                     return _this;
                 }
                 Login.prototype.attemptLogIn = function (username, password) {
@@ -138,7 +143,8 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
                                 case 2:
                                     responseJSON = _a.sent();
                                     if (response.ok) {
-                                        window.localStorage.setItem('token', responseJSON.username + ":" + responseJSON.token);
+                                        this.setState({ satfToken: responseJSON.username + ":" + responseJSON.token });
+                                        globalThis.localStorage.setItem('satf_token', this.state.satfToken);
                                         this.toWelcomePage();
                                     }
                                     else if (responseJSON.message) {
@@ -180,7 +186,8 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
                                 case 2:
                                     responseJSON = _a.sent();
                                     if (response.ok) {
-                                        window.localStorage.setItem('token', responseJSON.username + ":" + responseJSON.token);
+                                        this.setState({ satfToken: responseJSON.username + ":" + responseJSON.token });
+                                        globalThis.localStorage.setItem('satf_token', this.state.satfToken);
                                         this.setState({ username: this.state.registerUsername, password: this.state.registerPassword });
                                         this.toWelcomePage();
                                     }
@@ -262,7 +269,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
                     });
                 };
                 Login.prototype.resetState = function () {
-                    this.clearToken();
+                    globalThis.localStorage.removeItem('satf_token');
                     this.setState({
                         username: '',
                         password: '',
@@ -330,11 +337,12 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
                     return (React.createElement(loginpage_js_1.default, { username: this.state.username, password: this.state.password, loading: this.state.loading, loadingMessage: this.state.loadingMessage, onInput: this.handleChange, onLogin: this.handleLogin, onRegister: this.toRegisterPage }));
                 };
                 Login.prototype.render = function () {
-                    return (React.createElement("div", null,
+                    return (React.createElement("div", { id: "root_login" },
                         React.createElement(FluentUIReact.Image, { src: "../assets/images/savings-frontier-banner.png", alt: "Savings at the Frontier Banner", height: 300 }),
                         React.createElement(FluentUIReact.Stack, { vertical: true, id: "stack_login" },
                             this.renderLogic(),
-                            React.createElement(messageBar_js_1.default, { displayMessage: this.state.displayMessage, displayMessageText: this.state.displayMessageText, displayMessageType: this.state.displayMessageType }))));
+                            React.createElement(messageBar_js_1.default, { displayMessage: this.state.displayMessage, displayMessageText: this.state.displayMessageText, displayMessageType: this.state.displayMessageType }),
+                            React.createElement(spinner_js_1.default, { loading: this.state.loading, loadingMessage: this.state.loadingMessage }))));
                 };
                 return Login;
             }(React.Component));

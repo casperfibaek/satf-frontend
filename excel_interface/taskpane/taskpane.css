@@ -1,21 +1,26 @@
+#root_login{
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 #login_buttons,
 #register_buttons,
 #welcome_buttons{
-  right: 10px;
-  margin-top: 52px;
-  position: absolute;
+  float: right;
 }
+.login_page_form{
+  margin-bottom: 50px;
+}
+
 #login_buttons > button,
 #register_buttons > button,
 #welcome_buttons > button{
   margin-left: 10px;
 }
 #login_spinner{
-  margin-top: 160px;
-  position: absolute;
-  right: 12px;
-  bottom: 45px;
-  display: block;
+  margin-top: -65px;
+  float: right;
 }
 #login_text,
 #register_text,
@@ -32,8 +37,8 @@
   margin-left: 10px;
   margin-right: 10px;
 }
-.ms-MessageBar{
-  margin-top: 10px;
+#login_messagebar{
+  margin-top: -84px;
 }
 
 .ms-TextField-wrapper{

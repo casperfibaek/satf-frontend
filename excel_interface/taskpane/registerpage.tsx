@@ -43,7 +43,6 @@ export default function RegisterPage(props) {
         ></FluentUIReact.TextField>
 
         <div id="register_buttons">
-          <Spinner loading={props.loading} loadingMessage={props.loadingMessage}/>
           <FluentUIReact.DefaultButton
             text="Back"
             onClick={() => { props.onBack(); }}
