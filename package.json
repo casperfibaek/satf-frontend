@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./app.js",
     "dev": "nodemon ./app.js",
-    "compile": "custom-functions-metadata generate ./excel_interface/functions/functions.ts ./excel_interface/functions/functions_meta2.json && tsc",
+    "compile": "custom-functions-metadata generate ./excel_interface/functions/functions.ts ./excel_interface/functions/functions_meta.json",
     "compile_watch": "custom-functions-metadata generate ./excel_interface/functions/functions.ts ./excel_interface/functions/functions_meta2.json && tsc --watch",
     "test": "tape ./tests/timing.js",
     "debug": "office-addin-debugging start ./excel_interface/manifest.xml",

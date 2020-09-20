@@ -109,6 +109,106 @@ function isValidWhatFreeWords(str) {
     }
     return true;
 }
+function isValidGhanaPostalGPS(str) {
+    if (typeof str !== 'string') {
+        return false;
+    }
+    var arr = str.split('-');
+    if (arr.length !== 3) {
+        return false;
+    }
+    if (arr[0].length !== 2) {
+        return false;
+    }
+    if (arr[1].length < 3 || arr[1].length > 5) {
+        return false;
+    }
+    if (arr[2].length < 3 || arr[2].length > 5) {
+        return false;
+    }
+    if (/^\d+$/.test(arr[0]) === true) {
+        return false;
+    }
+    if (/^[a-zA-Z]+$/.test(arr[0]) === false) {
+        return false;
+    }
+    if (/^\d+$/.test(arr[1]) === false) {
+        return false;
+    }
+    if (/^\d+$/.test(arr[2]) === false) {
+        return false;
+    }
+    return true;
+}
+function isValidLatitude(lat) {
+    var number = Number(lat);
+    try {
+        if (isNaN(number)) {
+            return false;
+        }
+        if (number < -90 || number > 90) {
+            return false;
+        }
+        return true;
+    }
+    catch (_a) {
+        return false;
+    }
+}
+function isValidLongitude(lat) {
+    var number = Number(lat);
+    try {
+        if (isNaN(number)) {
+            return false;
+        }
+        if (number < -180 || number > 180) {
+            return false;
+        }
+        return true;
+    }
+    catch (_a) {
+        return false;
+    }
+}
+function coordinateArray(arr) {
+    if (!Array.isArray(arr)) {
+        return false;
+    }
+    if (arr.length === 0 || arr.length > 2) {
+        return false;
+    }
+    if (arr.length === 1) {
+        if (arr[0].length !== 2) {
+            return false;
+        }
+        if (!isValidLatitude(arr[0][0])) {
+            return false;
+        }
+        if (!isValidLongitude(arr[0][1])) {
+            return false;
+        }
+        return [Number(arr[0][0]), Number(arr[0][1])];
+    }
+    if (arr.length === 2) {
+        if (Array.isArray(arr[0]) && Array.isArray(arr[1])) {
+            if (!isValidLatitude(arr[0][0])) {
+                return false;
+            }
+            if (!isValidLongitude(arr[1][0])) {
+                return false;
+            }
+            return [Number(arr[0][0]), Number(arr[1][0])];
+        }
+        if (!isValidLatitude(arr[0])) {
+            return false;
+        }
+        if (!isValidLongitude(arr[1])) {
+            return false;
+        }
+        return [Number(arr[0]), Number(arr[1])];
+    }
+    return false;
+}
 function getGlobal() {
     if (typeof self !== 'undefined') {
         return self;
@@ -124,10 +224,10 @@ function getGlobal() {
 Office.onReady(function () { });
 var g = getGlobal();
 /**
- * Converts What3Words to two cells with latitude and longitude
- * @customfunction WHAT3WORDS_TO_LATLNG
+ * Converts What3Words to two cells containing Latitude and Longitude.
+ * @customfunction WHAT3WORDS_TO_LATLNG what3WordsToLatLng
  * @param {string} what3words
- * @return {number} Returns two cells with latitude and longitude
+ * @return {number[][]} Two cells with latitude and longitude
  */
 function what3WordsToLatLng(what3words) {
     return __awaiter(this, void 0, void 0, function () {
@@ -146,20 +246,24 @@ function what3WordsToLatLng(what3words) {
                     return [4 /*yield*/, apiResponse.json()];
                 case 3:
                     responseJSON = _a.sent();
-                    return [2 /*return*/, responseJSON];
+                    if (apiResponse.ok) {
+                        return [2 /*return*/, [responseJSON.message]];
+                    }
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
                 case 4:
                     err_1 = _a.sent();
                     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_1));
-                case 5: throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('Invalid What3Words'));
+                case 5: throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('500: Invalid What3Words'));
             }
         });
     });
 }
+g.what3WordsToLatLng = what3WordsToLatLng;
 /**
- * Converts a pluscode to two cells with latitude and longitude
- * @customfunction PLUSCODE_TO_LATLNG
+ * Converts a Pluscode to two cells containing Latitude and Longitude.
+ * @customfunction PLUSCODE_TO_LATLNG plusCodeToLatLng
  * @param {string} pluscode
- * @return {number} Returns two cells with latitude and longitude
+ * @return {number[][]} Two adjacent cells with latitude and longitude
  */
 function plusCodeToLatLng(pluscode) {
     return __awaiter(this, void 0, void 0, function () {
@@ -175,441 +279,500 @@ function plusCodeToLatLng(pluscode) {
                     return [4 /*yield*/, fetch(url, { headers: { Authorization: globalThis.localStorage.getItem('satf_token') } })];
                 case 2:
                     apiResponse = _a.sent();
-                    return [4 /*yield*/, apiResponse.json()];
+                    return [4 /*yield*/, [apiResponse.json()]];
                 case 3:
                     responseJSON = _a.sent();
-                    return [2 /*return*/, responseJSON];
+                    if (apiResponse.ok) {
+                        return [2 /*return*/, [responseJSON.message]];
+                    }
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
                 case 4:
                     err_2 = _a.sent();
                     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_2));
-                case 5: throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('Invalid pluscode'));
+                case 5: throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('500: Invalid pluscode'));
             }
         });
     });
 }
-function getLatLngInfo(baseurl, latitude, longitude) {
-    if (longitude === void 0) { longitude = false; }
-    try {
-        if (isValidWhatFreeWords(latitude)) {
-            return what3WordsToLatLng(latitude).then(function (latlng) {
-                var coords = JSON.parse(latlng);
-                return new Promise((function (resolve, reject) {
-                    satfApiRequest('get', baseurl + "?lat=" + coords[0] + "&lng=" + coords[1])
-                        .then(function (value) {
-                        resolve(value);
-                    })
-                        .catch(function (err) { reject(err); });
-                }));
-            });
-        }
-        if (isValidPluscode(latitude)) {
-            return plusCodeToLatLng(latitude).then(function (latlng) {
-                var coords = JSON.parse(latlng);
-                return new Promise((function (resolve, reject) {
-                    satfApiRequest('get', baseurl + "?lat=" + coords[0] + "&lng=" + coords[1])
-                        .then(function (value) {
-                        resolve(value);
-                    })
-                        .catch(function (err) { reject(err); });
-                }));
-            });
-        }
-        return new Promise((function (resolve, reject) {
-            satfApiRequest('get', baseurl + "?lat=" + latitude + "&lng=" + longitude)
-                .then(function (value) {
-                resolve(value);
-            })
-                .catch(function (err) { reject(err); });
-        }));
-    }
-    catch (err) {
-        var error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
-        throw error;
-    }
+g.plusCodeToLatLng = plusCodeToLatLng;
+/**
+ * Converts a Ghana Digital Address (Ghana Postal GPS) to two cells containing Latitude and Longitude.
+ * @customfunction GPGPS_TO_LATLNG gpgpsToLatLng
+ * @param {string} gpgps
+ * @return {number[][]} Two adjacent cells with latitude and longitude
+ */
+function gpgpsToLatLng(gpgps) {
+    return __awaiter(this, void 0, void 0, function () {
+        var url, apiResponse, responseJSON, err_3;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (!isValidGhanaPostalGPS(gpgps)) return [3 /*break*/, 5];
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 4, , 5]);
+                    url = "../../api/gpgps_to_latlng?gpgps=" + gpgps;
+                    return [4 /*yield*/, fetch(url, { headers: { Authorization: globalThis.localStorage.getItem('satf_token') } })];
+                case 2:
+                    apiResponse = _a.sent();
+                    return [4 /*yield*/, apiResponse.json()];
+                case 3:
+                    responseJSON = _a.sent();
+                    if (apiResponse.ok) {
+                        return [2 /*return*/, [responseJSON.message]];
+                    }
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+                case 4:
+                    err_3 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_3));
+                case 5: throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('500: Invalid Ghana Digital Address'));
+            }
+        });
+    });
 }
-// ----------------------- CustomFunctions -----------------------
+g.gpgpsToLatLng = gpgpsToLatLng;
+/**
+ * Parses an unknown input to Latitude and Longitude if possible.
+ * @customfunction PARSE_TO_LATLNG parseCoordinates
+ * @param {any} latitude_or_address
+ * @param {number} [longitude=false]
+ * @return {number[][]} Two adjacent cells with latitude and longitude
+ */
+function parseCoordinates(latitude_or_address, longitude) {
+    if (longitude === void 0) { longitude = false; }
+    return __awaiter(this, void 0, void 0, function () {
+        var coordArray, coords, coords, coords, err_4;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    coordArray = coordinateArray(latitude_or_address);
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 8, , 9]);
+                    if (coordArray) {
+                        return [2 /*return*/, [coordArray]];
+                    }
+                    if (isValidLatitude(latitude_or_address) && isValidLongitude(longitude)) {
+                        return [2 /*return*/, [[latitude_or_address, longitude]]];
+                    }
+                    if (!isValidWhatFreeWords(latitude_or_address)) return [3 /*break*/, 3];
+                    return [4 /*yield*/, what3WordsToLatLng(latitude_or_address)];
+                case 2:
+                    coords = _a.sent();
+                    return [2 /*return*/, coords];
+                case 3:
+                    if (!isValidPluscode(latitude_or_address)) return [3 /*break*/, 5];
+                    return [4 /*yield*/, plusCodeToLatLng(latitude_or_address)];
+                case 4:
+                    coords = _a.sent();
+                    return [2 /*return*/, coords];
+                case 5:
+                    if (!isValidGhanaPostalGPS(latitude_or_address)) return [3 /*break*/, 7];
+                    return [4 /*yield*/, gpgpsToLatLng(latitude_or_address)];
+                case 6:
+                    coords = _a.sent();
+                    return [2 /*return*/, coords];
+                case 7: throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('400: Unable to parse input'));
+                case 8:
+                    err_4 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_4));
+                case 9: return [2 /*return*/];
+            }
+        });
+    });
+}
+g.parseCoordinates = parseCoordinates;
+/**
+ * Converts Latitude and Longitude to What3Words. An address can be used instead of Latitude.
+ * @customfunction LATLNG_TO_WHAT3WORDS LatLngToWhatFreeWords
+ * @param {any} latitude_or_address
+ * @param {number} [longitude=false]
+ * @return {string} Cell with What3Words address.
+ */
 function LatLngToWhatFreeWords(latitude, longitude) {
-    return new Promise(function (resolve, reject) {
-        satfApiRequest('get', apiUrl + "latlng_to_whatfreewords?lat=" + latitude + "&lng=" + longitude)
-            .then(function (value) {
-            resolve(value);
-        })
-            .catch(function (err) {
-            reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
+    if (longitude === void 0) { longitude = false; }
+    return __awaiter(this, void 0, void 0, function () {
+        var coords, url, apiResponse, responseJSON, err_5;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 4, , 5]);
+                    return [4 /*yield*/, parseCoordinates(latitude, longitude)];
+                case 1:
+                    coords = _a.sent();
+                    url = "../../api/latlng_to_whatfreewords?lat=" + coords[0][0] + "&lng=" + coords[0][1];
+                    return [4 /*yield*/, fetch(url, { headers: { Authorization: globalThis.localStorage.getItem('satf_token') } })];
+                case 2:
+                    apiResponse = _a.sent();
+                    return [4 /*yield*/, apiResponse.json()];
+                case 3:
+                    responseJSON = _a.sent();
+                    if (apiResponse.ok) {
+                        return [2 /*return*/, [responseJSON.message]];
+                    }
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+                case 4:
+                    err_5 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_5));
+                case 5: return [2 /*return*/];
+            }
         });
     });
 }
 g.LatLngToWhatFreeWords = LatLngToWhatFreeWords;
-function LatLngToPluscode(latitude, longitude) {
-    return new Promise(function (resolve, reject) {
-        satfApiRequest('get', apiUrl + "latlng_to_pluscode?lat=" + latitude + "&lng=" + longitude)
-            .then(function (value) {
-            resolve(value);
-        })
-            .catch(function (err) {
-            reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-        });
-    });
-}
-g.LatLngToPluscode = LatLngToPluscode;
-function helloWorld() {
-    var id = globalThis.localStorage.getItem('satf_token');
-    console.log('hello hello - from new - see me?');
-    return "hello " + id;
-}
-g.helloWorld = helloWorld;
-function PopulationDensity(latitude, longitude) {
-    if (longitude === void 0) { longitude = false; }
-    var baseurl = apiUrl + "population_density";
-    return new Promise((function (resolve, reject) {
-        getLatLngInfo(baseurl, latitude, longitude)
-            .then(function (value) {
-            resolve(Number(value));
-        })
-            .catch(function (err) {
-            reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-        });
-    }));
-}
-g.PopulationDensity = PopulationDensity;
-function PopulationDensityBuffer(bufferMeters, latitude, longitude) {
-    if (longitude === void 0) { longitude = false; }
-    var url = function (buffer, lat, lng) { return apiUrl + "population_density_buffer?lat=" + lat + "&lng=" + lng + "&buffer=" + buffer; }; // eslint-disable-line
-    try {
-        if (isValidWhatFreeWords(latitude)) {
-            return what3WordsToLatLng(latitude).then(function (latlng) {
-                var coords = JSON.parse(latlng);
-                var lat = coords[0];
-                var lng = coords[1];
-                return new Promise(function (resolve, reject) {
-                    satfApiRequest('get', url(bufferMeters, lat, lng))
-                        .then(function (value) {
-                        resolve(Number(value));
-                    })
-                        .catch(function (err) {
-                        reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-                    });
-                });
-            });
-        }
-        if (isValidPluscode(latitude)) {
-            return plusCodeToLatLng(latitude).then(function (latlng) {
-                var coords = JSON.parse(latlng);
-                var lat = coords[0];
-                var lng = coords[1];
-                return new Promise(function (resolve, reject) {
-                    satfApiRequest('get', url(bufferMeters, lat, lng))
-                        .then(function (value) {
-                        resolve(Number(value));
-                    })
-                        .catch(function (err) {
-                        reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-                    });
-                });
-            });
-        }
-        var lat_1 = latitude;
-        var lng_1 = longitude;
-        return new Promise(function (resolve, reject) {
-            satfApiRequest('get', url(bufferMeters, lat_1, lng_1))
-                .then(function (value) { resolve(Number(value)); })
-                .catch(function (err) {
-                reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-            });
-        });
-    }
-    catch (err) {
-        var error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
-        throw error;
-    }
-}
-g.PopulationDensityBuffer = PopulationDensityBuffer;
-function PopulationDensityWalk(minutes, latitude, longitude) {
-    if (longitude === void 0) { longitude = false; }
-    var url = function (buffer, lat, lng) { return apiUrl + "population_density_walk?lat=" + lat + "&lng=" + lng + "&minutes=" + buffer; }; // eslint-disable-line
-    try {
-        if (isValidWhatFreeWords(latitude)) {
-            return what3WordsToLatLng(latitude).then(function (latlng) {
-                var coords = JSON.parse(latlng);
-                var lat = coords[0];
-                var lng = coords[1];
-                return new Promise(function (resolve, reject) {
-                    satfApiRequest('get', url(minutes, lat, lng))
-                        .then(function (value) { resolve(Number(value)); })
-                        .catch(function (err) {
-                        reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-                    });
-                });
-            });
-        }
-        if (isValidPluscode(latitude)) {
-            return plusCodeToLatLng(latitude).then(function (latlng) {
-                var coords = JSON.parse(latlng);
-                var lat = coords[0];
-                var lng = coords[1];
-                return new Promise(function (resolve, reject) {
-                    satfApiRequest('get', url(minutes, lat, lng))
-                        .then(function (value) { resolve(Number(value)); })
-                        .catch(function (err) {
-                        reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-                    });
-                });
-            });
-        }
-        var lat_2 = latitude;
-        var lng_2 = longitude;
-        return new Promise(function (resolve, reject) {
-            satfApiRequest('get', url(minutes, lat_2, lng_2))
-                .then(function (value) { resolve(Number(value)); })
-                .catch(function (err) {
-                reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-            });
-        });
-    }
-    catch (err) {
-        var error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
-        throw error;
-    }
-}
-g.PopulationDensityWalk = PopulationDensityWalk;
-function PopulationDensityBike(minutes, latitude, longitude) {
-    if (longitude === void 0) { longitude = false; }
-    var url = function (buffer, lat, lng) { return apiUrl + "population_density_bike?lat=" + lat + "&lng=" + lng + "&minutes=" + buffer; }; // eslint-disable-line
-    try {
-        if (isValidWhatFreeWords(latitude)) {
-            return what3WordsToLatLng(latitude).then(function (latlng) {
-                var coords = JSON.parse(latlng);
-                var lat = coords[0];
-                var lng = coords[1];
-                return new Promise(function (resolve, reject) {
-                    satfApiRequest('get', url(minutes, lat, lng))
-                        .then(function (value) { resolve(Number(value)); })
-                        .catch(function (err) {
-                        reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-                    });
-                });
-            });
-        }
-        if (isValidPluscode(latitude)) {
-            return plusCodeToLatLng(latitude).then(function (latlng) {
-                var coords = JSON.parse(latlng);
-                var lat = coords[0];
-                var lng = coords[1];
-                return new Promise(function (resolve, reject) {
-                    satfApiRequest('get', url(minutes, lat, lng))
-                        .then(function (value) { resolve(Number(value)); })
-                        .catch(function (err) {
-                        reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-                    });
-                });
-            });
-        }
-        var lat_3 = latitude;
-        var lng_3 = longitude;
-        return new Promise(function (resolve, reject) {
-            satfApiRequest('get', url(minutes, lat_3, lng_3))
-                .then(function (value) { resolve(Number(value)); })
-                .catch(function (err) {
-                reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-            });
-        });
-    }
-    catch (err) {
-        var error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
-        throw error;
-    }
-}
-g.PopulationDensityBike = PopulationDensityBike;
-function PopulationDensityCar(minutes, latitude, longitude) {
-    if (longitude === void 0) { longitude = false; }
-    var url = function (buffer, lat, lng) { return apiUrl + "population_density_car?lat=" + lat + "&lng=" + lng + "&minutes=" + buffer; }; // eslint-disable-line
-    try {
-        if (isValidWhatFreeWords(latitude)) {
-            return what3WordsToLatLng(latitude).then(function (latlng) {
-                var coords = JSON.parse(latlng);
-                var lat = coords[0];
-                var lng = coords[1];
-                return new Promise(function (resolve, reject) {
-                    satfApiRequest('get', url(minutes, lat, lng))
-                        .then(function (value) { resolve(Number(value)); })
-                        .catch(function (err) {
-                        reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-                    });
-                });
-            });
-        }
-        if (isValidPluscode(latitude)) {
-            return plusCodeToLatLng(latitude).then(function (latlng) {
-                var coords = JSON.parse(latlng);
-                var lat = coords[0];
-                var lng = coords[1];
-                return new Promise(function (resolve, reject) {
-                    satfApiRequest('get', url(minutes, lat, lng))
-                        .then(function (value) { resolve(Number(value)); })
-                        .catch(function (err) {
-                        reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-                    });
-                });
-            });
-        }
-        var lat_4 = latitude;
-        var lng_4 = longitude;
-        return new Promise(function (resolve, reject) {
-            satfApiRequest('get', url(minutes, lat_4, lng_4))
-                .then(function (value) { resolve(Number(value)); })
-                .catch(function (err) {
-                reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-            });
-        });
-    }
-    catch (err) {
-        var error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
-        throw error;
-    }
-}
-g.PopulationDensityCar = PopulationDensityCar;
-function AdminLevel1(latitude, longitude) {
-    if (longitude === void 0) { longitude = false; }
-    var baseurl = apiUrl + "admin_level_1";
-    return new Promise((function (resolve, reject) {
-        getLatLngInfo(baseurl, latitude, longitude)
-            .then(function (value) {
-            resolve(value);
-        })
-            .catch(function (err) {
-            reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-        });
-    }));
-}
-g.AdminLevel1 = AdminLevel1;
-function AdminLevel2(latitude, longitude) {
-    if (longitude === void 0) { longitude = false; }
-    var baseurl = apiUrl + "admin_level_2";
-    return new Promise((function (resolve, reject) {
-        getLatLngInfo(baseurl, latitude, longitude)
-            .then(function (value) {
-            resolve(value);
-        })
-            .catch(function (err) {
-            reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-        });
-    }));
-}
-g.AdminLevel2 = AdminLevel2;
-function AdminLevel2FuzzyLev(name) {
-    return new Promise((function (resolve, reject) {
-        satfApiRequest('get', apiUrl + "admin_level_2_fuzzy_lev?name=" + name)
-            .then(function (value) {
-            resolve(value);
-        })
-            .catch(function (err) {
-            reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-        });
-    }));
-}
-g.AdminLevel2FuzzyLev = AdminLevel2FuzzyLev;
-function AdminLevel2FuzzyTri(name) {
-    return new Promise((function (resolve, reject) {
-        satfApiRequest('get', apiUrl + "admin_level_2_fuzzy_tri?name=" + name)
-            .then(function (value) {
-            resolve(value);
-        })
-            .catch(function (err) {
-            reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-        });
-    }));
-}
-g.AdminLevel2FuzzyTri = AdminLevel2FuzzyTri;
-function UrbanStatus(latitude, longitude) {
-    if (longitude === void 0) { longitude = false; }
-    var baseurl = apiUrl + "urban_status";
-    return new Promise((function (resolve, reject) {
-        getLatLngInfo(baseurl, latitude, longitude)
-            .then(function (value) {
-            resolve(value);
-        })
-            .catch(function (err) {
-            reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-        });
-    }));
-}
-g.UrbanStatus = UrbanStatus;
-function UrbanStatusSimple(latitude, longitude) {
-    if (longitude === void 0) { longitude = false; }
-    var baseurl = apiUrl + "urban_status_simple";
-    return new Promise((function (resolve, reject) {
-        getLatLngInfo(baseurl, latitude, longitude)
-            .then(function (value) {
-            resolve(value);
-        })
-            .catch(function (err) {
-            reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-        });
-    }));
-}
-g.UrbanStatusSimple = UrbanStatusSimple;
-function NearestPlace(latitude, longitude) {
-    if (longitude === void 0) { longitude = false; }
-    var baseurl = apiUrl + "nearest_placename";
-    return new Promise((function (resolve, reject) {
-        getLatLngInfo(baseurl, latitude, longitude)
-            .then(function (value) {
-            resolve(value);
-        })
-            .catch(function (err) {
-            reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-        });
-    }));
-}
-g.NearestPlace = NearestPlace;
-function NearestPoi(latitude, longitude) {
-    if (longitude === void 0) { longitude = false; }
-    var baseurl = apiUrl + "nearest_poi";
-    return new Promise((function (resolve, reject) {
-        getLatLngInfo(baseurl, latitude, longitude)
-            .then(function (value) {
-            resolve(value);
-        })
-            .catch(function (err) {
-            reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-        });
-    }));
-}
-g.NearestPoi = NearestPoi;
-function NearestBank(latitude, longitude) {
-    if (longitude === void 0) { longitude = false; }
-    var baseurl = apiUrl + "nearest_bank";
-    return new Promise((function (resolve, reject) {
-        getLatLngInfo(baseurl, latitude, longitude)
-            .then(function (value) {
-            resolve(value);
-        })
-            .catch(function (err) {
-            reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-        });
-    }));
-}
-g.NearestBank = NearestBank;
-/**
-  * Gets the star count for a given Github repository.
-  * @customfunction
-  * @param {string} userName string name of Github user or organization.
-  * @param {string} repoName string name of the Github repository.
-  * @return {number} number of stars given to a Github repository.
-  */
-function NearestBankDist(latitude, longitude) {
-    if (longitude === void 0) { longitude = false; }
-    var baseurl = apiUrl + "nearest_bank_distance";
-    return new Promise((function (resolve, reject) {
-        getLatLngInfo(baseurl, latitude, longitude)
-            .then(function (value) {
-            resolve(value);
-        })
-            .catch(function (err) {
-            reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-        });
-    }));
-}
-g.NearestBankDist = NearestBankDist;
+// function LatLngToPluscode(latitude, longitude) {
+//   return new Promise((resolve, reject) => {
+//     satfApiRequest('get', `${apiUrl}latlng_to_pluscode?lat=${latitude}&lng=${longitude}`)
+//       .then((value) => {
+//         resolve(value);
+//       })
+//       .catch((err) => {
+//         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
+//       });
+//   });
+// }
+// g.LatLngToPluscode = LatLngToPluscode;
+// function helloWorld() {
+//   const id = globalThis.localStorage.getItem('satf_token');
+//   console.log('hello hello - from new - see me?');
+//   return `hello ${id}`;
+// }
+// g.helloWorld = helloWorld;
+// function PopulationDensity(latitude, longitude = false) {
+//   const baseurl = `${apiUrl}population_density`;
+//   return new Promise(((resolve, reject) => {
+//     getLatLngInfo(baseurl, latitude, longitude)
+//       .then((value) => {
+//         resolve(Number(value));
+//       })
+//       .catch((err) => {
+//         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
+//       });
+//   }));
+// }
+// g.PopulationDensity = PopulationDensity;
+// function PopulationDensityBuffer(bufferMeters, latitude, longitude = false) {
+//   const url = (buffer, lat, lng) => `${apiUrl}population_density_buffer?lat=${lat}&lng=${lng}&buffer=${buffer}`; // eslint-disable-line
+//   try {
+//     if (isValidWhatFreeWords(latitude)) {
+//       return what3WordsToLatLng(latitude).then((latlng) => {
+//         const coords = JSON.parse(latlng);
+//         const lat = coords[0];
+//         const lng = coords[1];
+//         return new Promise((resolve, reject) => {
+//           satfApiRequest('get', url(bufferMeters, lat, lng))
+//             .then((value) => {
+//               resolve(Number(value));
+//             })
+//             .catch((err) => {
+//               reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
+//             });
+//         });
+//       });
+//     }
+//     if (isValidPluscode(latitude)) {
+//       return plusCodeToLatLng(latitude).then((latlng) => {
+//         const coords = JSON.parse(latlng);
+//         const lat = coords[0];
+//         const lng = coords[1];
+//         return new Promise((resolve, reject) => {
+//           satfApiRequest('get', url(bufferMeters, lat, lng))
+//             .then((value) => {
+//               resolve(Number(value));
+//             })
+//             .catch((err) => {
+//               reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
+//             });
+//         });
+//       });
+//     }
+//     const lat = latitude;
+//     const lng = longitude;
+//     return new Promise((resolve, reject) => {
+//       satfApiRequest('get', url(bufferMeters, lat, lng))
+//         .then((value) => { resolve(Number(value)); })
+//         .catch((err) => {
+//           reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
+//         });
+//     });
+//   } catch (err) {
+//     const error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+//     throw error;
+//   }
+// }
+// g.PopulationDensityBuffer = PopulationDensityBuffer;
+// function PopulationDensityWalk(minutes, latitude, longitude = false) {
+//   const url = (buffer, lat, lng) => `${apiUrl}population_density_walk?lat=${lat}&lng=${lng}&minutes=${buffer}`; // eslint-disable-line
+//   try {
+//     if (isValidWhatFreeWords(latitude)) {
+//       return what3WordsToLatLng(latitude).then((latlng) => {
+//         const coords = JSON.parse(latlng);
+//         const lat = coords[0];
+//         const lng = coords[1];
+//         return new Promise((resolve, reject) => {
+//           satfApiRequest('get', url(minutes, lat, lng))
+//             .then((value) => { resolve(Number(value)); })
+//             .catch((err) => {
+//               reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
+//             });
+//         });
+//       });
+//     }
+//     if (isValidPluscode(latitude)) {
+//       return plusCodeToLatLng(latitude).then((latlng) => {
+//         const coords = JSON.parse(latlng);
+//         const lat = coords[0];
+//         const lng = coords[1];
+//         return new Promise((resolve, reject) => {
+//           satfApiRequest('get', url(minutes, lat, lng))
+//             .then((value) => { resolve(Number(value)); })
+//             .catch((err) => {
+//               reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
+//             });
+//         });
+//       });
+//     }
+//     const lat = latitude;
+//     const lng = longitude;
+//     return new Promise((resolve, reject) => {
+//       satfApiRequest('get', url(minutes, lat, lng))
+//         .then((value) => { resolve(Number(value)); })
+//         .catch((err) => {
+//           reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
+//         });
+//     });
+//   } catch (err) {
+//     const error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+//     throw error;
+//   }
+// }
+// g.PopulationDensityWalk = PopulationDensityWalk;
+// function PopulationDensityBike(minutes, latitude, longitude = false) {
+//   const url = (buffer, lat, lng) => `${apiUrl}population_density_bike?lat=${lat}&lng=${lng}&minutes=${buffer}`; // eslint-disable-line
+//   try {
+//     if (isValidWhatFreeWords(latitude)) {
+//       return what3WordsToLatLng(latitude).then((latlng) => {
+//         const coords = JSON.parse(latlng);
+//         const lat = coords[0];
+//         const lng = coords[1];
+//         return new Promise((resolve, reject) => {
+//           satfApiRequest('get', url(minutes, lat, lng))
+//             .then((value) => { resolve(Number(value)); })
+//             .catch((err) => {
+//               reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
+//             });
+//         });
+//       });
+//     }
+//     if (isValidPluscode(latitude)) {
+//       return plusCodeToLatLng(latitude).then((latlng) => {
+//         const coords = JSON.parse(latlng);
+//         const lat = coords[0];
+//         const lng = coords[1];
+//         return new Promise((resolve, reject) => {
+//           satfApiRequest('get', url(minutes, lat, lng))
+//             .then((value) => { resolve(Number(value)); })
+//             .catch((err) => {
+//               reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
+//             });
+//         });
+//       });
+//     }
+//     const lat = latitude;
+//     const lng = longitude;
+//     return new Promise((resolve, reject) => {
+//       satfApiRequest('get', url(minutes, lat, lng))
+//         .then((value) => { resolve(Number(value)); })
+//         .catch((err) => {
+//           reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
+//         });
+//     });
+//   } catch (err) {
+//     const error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+//     throw error;
+//   }
+// }
+// g.PopulationDensityBike = PopulationDensityBike;
+// function PopulationDensityCar(minutes, latitude, longitude = false) {
+//   const url = (buffer, lat, lng) => `${apiUrl}population_density_car?lat=${lat}&lng=${lng}&minutes=${buffer}`; // eslint-disable-line
+//   try {
+//     if (isValidWhatFreeWords(latitude)) {
+//       return what3WordsToLatLng(latitude).then((latlng) => {
+//         const coords = JSON.parse(latlng);
+//         const lat = coords[0];
+//         const lng = coords[1];
+//         return new Promise((resolve, reject) => {
+//           satfApiRequest('get', url(minutes, lat, lng))
+//             .then((value) => { resolve(Number(value)); })
+//             .catch((err) => {
+//               reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
+//             });
+//         });
+//       });
+//     }
+//     if (isValidPluscode(latitude)) {
+//       return plusCodeToLatLng(latitude).then((latlng) => {
+//         const coords = JSON.parse(latlng);
+//         const lat = coords[0];
+//         const lng = coords[1];
+//         return new Promise((resolve, reject) => {
+//           satfApiRequest('get', url(minutes, lat, lng))
+//             .then((value) => { resolve(Number(value)); })
+//             .catch((err) => {
+//               reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
+//             });
+//         });
+//       });
+//     }
+//     const lat = latitude;
+//     const lng = longitude;
+//     return new Promise((resolve, reject) => {
+//       satfApiRequest('get', url(minutes, lat, lng))
+//         .then((value) => { resolve(Number(value)); })
+//         .catch((err) => {
+//           reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
+//         });
+//     });
+//   } catch (err) {
+//     const error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+//     throw error;
+//   }
+// }
+// g.PopulationDensityCar = PopulationDensityCar;
+// function AdminLevel1(latitude, longitude = false) {
+//   const baseurl = `${apiUrl}admin_level_1`;
+//   return new Promise(((resolve, reject) => {
+//     getLatLngInfo(baseurl, latitude, longitude)
+//       .then((value) => {
+//         resolve(value);
+//       })
+//       .catch((err) => {
+//         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
+//       });
+//   }));
+// }
+// g.AdminLevel1 = AdminLevel1;
+// function AdminLevel2(latitude, longitude = false) {
+//   const baseurl = `${apiUrl}admin_level_2`;
+//   return new Promise(((resolve, reject) => {
+//     getLatLngInfo(baseurl, latitude, longitude)
+//       .then((value) => {
+//         resolve(value);
+//       })
+//       .catch((err) => {
+//         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
+//       });
+//   }));
+// }
+// g.AdminLevel2 = AdminLevel2;
+// function AdminLevel2FuzzyLev(name) {
+//   return new Promise(((resolve, reject) => {
+//     satfApiRequest('get', `${apiUrl}admin_level_2_fuzzy_lev?name=${name}`)
+//       .then((value) => {
+//         resolve(value);
+//       })
+//       .catch((err) => {
+//         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
+//       });
+//   }));
+// }
+// g.AdminLevel2FuzzyLev = AdminLevel2FuzzyLev;
+// function AdminLevel2FuzzyTri(name) {
+//   return new Promise(((resolve, reject) => {
+//     satfApiRequest('get', `${apiUrl}admin_level_2_fuzzy_tri?name=${name}`)
+//       .then((value) => {
+//         resolve(value);
+//       })
+//       .catch((err) => {
+//         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
+//       });
+//   }));
+// }
+// g.AdminLevel2FuzzyTri = AdminLevel2FuzzyTri;
+// function UrbanStatus(latitude, longitude = false) {
+//   const baseurl = `${apiUrl}urban_status`;
+//   return new Promise(((resolve, reject) => {
+//     getLatLngInfo(baseurl, latitude, longitude)
+//       .then((value) => {
+//         resolve(value);
+//       })
+//       .catch((err) => {
+//         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
+//       });
+//   }));
+// }
+// g.UrbanStatus = UrbanStatus;
+// function UrbanStatusSimple(latitude, longitude = false) {
+//   const baseurl = `${apiUrl}urban_status_simple`;
+//   return new Promise(((resolve, reject) => {
+//     getLatLngInfo(baseurl, latitude, longitude)
+//       .then((value) => {
+//         resolve(value);
+//       })
+//       .catch((err) => {
+//         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
+//       });
+//   }));
+// }
+// g.UrbanStatusSimple = UrbanStatusSimple;
+// function NearestPlace(latitude, longitude = false) {
+//   const baseurl = `${apiUrl}nearest_placename`;
+//   return new Promise(((resolve, reject) => {
+//     getLatLngInfo(baseurl, latitude, longitude)
+//       .then((value) => {
+//         resolve(value);
+//       })
+//       .catch((err) => {
+//         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
+//       });
+//   }));
+// }
+// g.NearestPlace = NearestPlace;
+// function NearestPoi(latitude, longitude = false) {
+//   const baseurl = `${apiUrl}nearest_poi`;
+//   return new Promise(((resolve, reject) => {
+//     getLatLngInfo(baseurl, latitude, longitude)
+//       .then((value) => {
+//         resolve(value);
+//       })
+//       .catch((err) => {
+//         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
+//       });
+//   }));
+// }
+// g.NearestPoi = NearestPoi;
+// function NearestBank(latitude, longitude = false) {
+//   const baseurl = `${apiUrl}nearest_bank`;
+//   return new Promise(((resolve, reject) => {
+//     getLatLngInfo(baseurl, latitude, longitude)
+//       .then((value) => {
+//         resolve(value);
+//       })
+//       .catch((err) => {
+//         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
+//       });
+//   }));
+// }
+// g.NearestBank = NearestBank;
+// /**
+//   * Gets the star count for a given Github repository.
+//   * @customfunction
+//   * @param {string} userName string name of Github user or organization.
+//   * @param {string} repoName string name of the Github repository.
+//   * @return {number} number of stars given to a Github repository.
+//   */
+// function NearestBankDist(latitude, longitude = false) {
+//   const baseurl = `${apiUrl}nearest_bank_distance`;
+//   return new Promise(((resolve, reject) => {
+//     getLatLngInfo(baseurl, latitude, longitude)
+//       .then((value) => {
+//         resolve(value);
+//       })
+//       .catch((err) => {
+//         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
+//       });
+//   }));
+// }
+// g.NearestBankDist = NearestBankDist;
 console.log('Loaded: functions.js');
 //# sourceMappingURL=functions.js.map

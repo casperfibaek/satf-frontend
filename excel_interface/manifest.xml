@@ -38,7 +38,7 @@
     <Hosts>
       <Host xsi:type="Workbook">
         <Runtimes>
-          <Runtime resid="ContosoAddin.Url" lifetime="long" />
+          <Runtime resid="Taskpane.Url" lifetime="long" />
         </Runtimes>
         <AllFormFactors>
           <ExtensionPoint xsi:type="CustomFunctions">
@@ -46,7 +46,7 @@
               <SourceLocation resid="Functions.Script.Url"/>
             </Script>
             <Page>
-              <SourceLocation resid="ContosoAddin.Url"/>
+              <SourceLocation resid="Taskpane.Url"/>
               <!-- <SourceLocation resid="Functions.Page.Url"/> -->
             </Page>
             <Metadata>
@@ -62,7 +62,7 @@
             <LearnMoreUrl resid="GetStarted.LearnMoreUrl"/>
           </GetStarted>
           <FunctionFile resid="Commands.Url"/>
-          <!-- <FunctionFile resid="ContosoAddin.Url"/> -->
+          <!-- <FunctionFile resid="Taskpane.Url"/> -->
           <ExtensionPoint xsi:type="PrimaryCommandSurface">
             <CustomTab id="SatfTab">
               <Group id="AuthGroup">
@@ -91,7 +91,7 @@
                   </Icon>
                   <Action xsi:type="ShowTaskpane">
                     <TaskpaneId>ButtonId1</TaskpaneId>
-                    <SourceLocation resid="ContosoAddin.Url"/>
+                    <SourceLocation resid="Taskpane.Url"/>
                     <!-- <SourceLocation resid="Taskpane.Url"/> -->
                   </Action>
                 </Control>
@@ -336,7 +336,7 @@
         <bt:Url id="Functions.Page.Url" DefaultValue="https://satf.azurewebsites.net/excel_interface/functions/functions.html"/>
         <bt:Url id="Commands.Url" DefaultValue="https://satf.azurewebsites.net/excel_interface/commands/commands.html"/>
         <!-- <bt:Url id="Taskpane.Url" DefaultValue="https://satf.azurewebsites.net/excel_interface/taskpane/taskpane.html"/> -->
-        <bt:Url id="ContosoAddin.Url" DefaultValue="https://satf.azurewebsites.net/excel_interface/taskpane/taskpane.html"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://satf.azurewebsites.net/excel_interface/taskpane/taskpane.html"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="Functions.Namespace" DefaultValue="SATF"/>
