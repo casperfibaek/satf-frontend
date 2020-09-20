@@ -272,9 +272,9 @@ g.PARSE_TO_LATLNG = PARSE_TO_LATLNG;
  * @param {number} [longitude]
  * @return {string} Cell with What3Words address.
  */
-async function LATLNG_TO_WHAT3WORDS(latitude, longitude = false) {
+async function LATLNG_TO_WHAT3WORDS(latitude_or_address, longitude = false) {
   try {
-    const coords = await PARSE_TO_LATLNG(latitude, longitude);
+    const coords = await PARSE_TO_LATLNG(latitude_or_address, longitude);
     const url = `../../api/latlng_to_whatfreewords?lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = g.localStorage.getItem('satf_token');
 
@@ -303,9 +303,9 @@ g.LATLNG_TO_WHAT3WORDS = LATLNG_TO_WHAT3WORDS;
  * @param {number} [longitude]
  * @return {string} Cell with PlusCode address.
  */
-async function LATLNG_TO_PLUSCODE(latitude, longitude = false) {
+async function LATLNG_TO_PLUSCODE(latitude_or_address, longitude = false) {
   try {
-    const coords = await PARSE_TO_LATLNG(latitude, longitude);
+    const coords = await PARSE_TO_LATLNG(latitude_or_address, longitude);
     const url = `../../api/latlng_to_pluscode?lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = g.localStorage.getItem('satf_token');
 
@@ -361,7 +361,7 @@ g.LATLNG_TO_GPGPS = LATLNG_TO_GPGPS;
 /**
  * Tests if there is access to the API and the user is logged in.
  * An address can be used instead of Latitude.
- * @customfunction LATLNG_TO_GPGPS
+ * @customfunction HELLO_WORLD
  * @return {string} Cell saying 'Hello world!' or 'Unauthorised'.
  */
 async function HELLO_WORLD() {
@@ -383,375 +383,383 @@ async function HELLO_WORLD() {
 }
 g.HELLO_WORLD = HELLO_WORLD;
 
-// function PopulationDensity(latitude, longitude = false) {
-//   const baseurl = `${apiUrl}population_density`;
-//   return new Promise(((resolve, reject) => {
-//     getLatLngInfo(baseurl, latitude, longitude)
-//       .then((value) => {
-//         resolve(Number(value));
-//       })
-//       .catch((err) => {
-//         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-//       });
-//   }));
-// }
-// g.PopulationDensity = PopulationDensity;
+/**
+ * Calculates the amount of people within a circular radius of a point.
+ * An address can be used instead of Latitude.
+ * @customfunction POPDENS_BUFFER
+ * @param {number} bufferMeters
+ * @param {any} latitude_or_address
+ * @param {number} [longitude]
+ * @return {number} Cell with amount of people.
+ */
+async function POPDENS_BUFFER(bufferMeters, latitude_or_address, longitude = false) {
+  try {
+    if (isNaN(bufferMeters)) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('Buffer not a number'));
+    }
+    const coords = await PARSE_TO_LATLNG(latitude_or_address, longitude);
+    const url = `../../api/population_density_buffer?buffer=${bufferMeters}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const token = g.localStorage.getItem('satf_token');
 
-// function PopulationDensityBuffer(bufferMeters, latitude, longitude = false) {
-//   const url = (buffer, lat, lng) => `${apiUrl}population_density_buffer?lat=${lat}&lng=${lng}&buffer=${buffer}`; // eslint-disable-line
-//   try {
-//     if (isValidWhatFreeWords(latitude)) {
-//       return what3WordsToLatLng(latitude).then((latlng) => {
-//         const coords = JSON.parse(latlng);
-//         const lat = coords[0];
-//         const lng = coords[1];
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
 
-//         return new Promise((resolve, reject) => {
-//           satfApiRequest('get', url(bufferMeters, lat, lng))
-//             .then((value) => {
-//               resolve(Number(value));
-//             })
-//             .catch((err) => {
-//               reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-//             });
-//         });
-//       });
-//     }
+    if (apiResponse.status === 401) { return 'Unauthorised'; }
 
-//     if (isValidPluscode(latitude)) {
-//       return plusCodeToLatLng(latitude).then((latlng) => {
-//         const coords = JSON.parse(latlng);
-//         const lat = coords[0];
-//         const lng = coords[1];
+    const responseJSON = await apiResponse.json();
+    if (apiResponse.ok) { return responseJSON.message; }
 
-//         return new Promise((resolve, reject) => {
-//           satfApiRequest('get', url(bufferMeters, lat, lng))
-//             .then((value) => {
-//               resolve(Number(value));
-//             })
-//             .catch((err) => {
-//               reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-//             });
-//         });
-//       });
-//     }
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+  } catch (err) {
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+  }
+}
+g.POPDENS_BUFFER = POPDENS_BUFFER;
 
-//     const lat = latitude;
-//     const lng = longitude;
+/**
+ * Calculates the amount of people within a walkable radius of the point. Circular approximation.
+ * @customfunction POPDENS_BUFFER_WALK
+ * @param {number} minutes
+ * @param {any} latitude_or_address
+ * @param {number} [longitude]
+ * @return {string} Cell with the amount of people.
+ */
+async function POPDENS_BUFFER_WALK(minutes, latitude_or_address, longitude = false) {
+  try {
+    if (isNaN(minutes)) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('Minutes not a number'));
+    }
+    const coords = await PARSE_TO_LATLNG(latitude_or_address, longitude);
+    const url = `../../api/population_density_walk?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const token = g.localStorage.getItem('satf_token');
 
-//     return new Promise((resolve, reject) => {
-//       satfApiRequest('get', url(bufferMeters, lat, lng))
-//         .then((value) => { resolve(Number(value)); })
-//         .catch((err) => {
-//           reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-//         });
-//     });
-//   } catch (err) {
-//     const error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
-//     throw error;
-//   }
-// }
-// g.PopulationDensityBuffer = PopulationDensityBuffer;
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
 
-// function PopulationDensityWalk(minutes, latitude, longitude = false) {
-//   const url = (buffer, lat, lng) => `${apiUrl}population_density_walk?lat=${lat}&lng=${lng}&minutes=${buffer}`; // eslint-disable-line
-//   try {
-//     if (isValidWhatFreeWords(latitude)) {
-//       return what3WordsToLatLng(latitude).then((latlng) => {
-//         const coords = JSON.parse(latlng);
-//         const lat = coords[0];
-//         const lng = coords[1];
+    if (apiResponse.status === 401) { return 'Unauthorised'; }
 
-//         return new Promise((resolve, reject) => {
-//           satfApiRequest('get', url(minutes, lat, lng))
-//             .then((value) => { resolve(Number(value)); })
-//             .catch((err) => {
-//               reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-//             });
-//         });
-//       });
-//     }
+    const responseJSON = await apiResponse.json();
+    if (apiResponse.ok) { return responseJSON.message; }
 
-//     if (isValidPluscode(latitude)) {
-//       return plusCodeToLatLng(latitude).then((latlng) => {
-//         const coords = JSON.parse(latlng);
-//         const lat = coords[0];
-//         const lng = coords[1];
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+  } catch (err) {
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+  }
+}
+g.POPDENS_BUFFER_WALK = POPDENS_BUFFER_WALK;
 
-//         return new Promise((resolve, reject) => {
-//           satfApiRequest('get', url(minutes, lat, lng))
-//             .then((value) => { resolve(Number(value)); })
-//             .catch((err) => {
-//               reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-//             });
-//         });
-//       });
-//     }
+/**
+ * Calculates the amount of people within a bikeable radius of the point. Circular approximation.
+ * @customfunction POPDENS_BUFFER_BIKE
+ * @param {number} minutes
+ * @param {any} latitude_or_address
+ * @param {number} [longitude]
+ * @return {string} Cell with the amount of people.
+ */
+async function POPDENS_BUFFER_BIKE(minutes, latitude_or_address, longitude = false) {
+  try {
+    if (isNaN(minutes)) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('Minutes not a number'));
+    }
+    const coords = await PARSE_TO_LATLNG(latitude_or_address, longitude);
+    const url = `../../api/population_density_bike?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const token = g.localStorage.getItem('satf_token');
 
-//     const lat = latitude;
-//     const lng = longitude;
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
 
-//     return new Promise((resolve, reject) => {
-//       satfApiRequest('get', url(minutes, lat, lng))
-//         .then((value) => { resolve(Number(value)); })
-//         .catch((err) => {
-//           reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-//         });
-//     });
-//   } catch (err) {
-//     const error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
-//     throw error;
-//   }
-// }
-// g.PopulationDensityWalk = PopulationDensityWalk;
+    if (apiResponse.status === 401) { return 'Unauthorised'; }
 
-// function PopulationDensityBike(minutes, latitude, longitude = false) {
-//   const url = (buffer, lat, lng) => `${apiUrl}population_density_bike?lat=${lat}&lng=${lng}&minutes=${buffer}`; // eslint-disable-line
-//   try {
-//     if (isValidWhatFreeWords(latitude)) {
-//       return what3WordsToLatLng(latitude).then((latlng) => {
-//         const coords = JSON.parse(latlng);
-//         const lat = coords[0];
-//         const lng = coords[1];
+    const responseJSON = await apiResponse.json();
+    if (apiResponse.ok) { return responseJSON.message; }
 
-//         return new Promise((resolve, reject) => {
-//           satfApiRequest('get', url(minutes, lat, lng))
-//             .then((value) => { resolve(Number(value)); })
-//             .catch((err) => {
-//               reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-//             });
-//         });
-//       });
-//     }
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+  } catch (err) {
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+  }
+}
+g.POPDENS_BUFFER_BIKE = POPDENS_BUFFER_BIKE;
 
-//     if (isValidPluscode(latitude)) {
-//       return plusCodeToLatLng(latitude).then((latlng) => {
-//         const coords = JSON.parse(latlng);
-//         const lat = coords[0];
-//         const lng = coords[1];
+/**
+ * Calculates the amount of people within a drivable radius of the point. Circular approximation.
+ * @customfunction POPDENS_BUFFER_CAR
+ * @param {number} minutes
+ * @param {any} latitude_or_address
+ * @param {number} [longitude]
+ * @return {string} Cell with the amount of people.
+ */
+async function POPDENS_BUFFER_CAR(minutes, latitude_or_address, longitude = false) {
+  try {
+    if (isNaN(minutes)) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('Minutes not a number'));
+    }
+    const coords = await PARSE_TO_LATLNG(latitude_or_address, longitude);
+    const url = `../../api/population_density_car?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const token = g.localStorage.getItem('satf_token');
 
-//         return new Promise((resolve, reject) => {
-//           satfApiRequest('get', url(minutes, lat, lng))
-//             .then((value) => { resolve(Number(value)); })
-//             .catch((err) => {
-//               reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-//             });
-//         });
-//       });
-//     }
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
 
-//     const lat = latitude;
-//     const lng = longitude;
+    if (apiResponse.status === 401) { return 'Unauthorised'; }
 
-//     return new Promise((resolve, reject) => {
-//       satfApiRequest('get', url(minutes, lat, lng))
-//         .then((value) => { resolve(Number(value)); })
-//         .catch((err) => {
-//           reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-//         });
-//     });
-//   } catch (err) {
-//     const error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
-//     throw error;
-//   }
-// }
-// g.PopulationDensityBike = PopulationDensityBike;
+    const responseJSON = await apiResponse.json();
+    if (apiResponse.ok) { return responseJSON.message; }
 
-// function PopulationDensityCar(minutes, latitude, longitude = false) {
-//   const url = (buffer, lat, lng) => `${apiUrl}population_density_car?lat=${lat}&lng=${lng}&minutes=${buffer}`; // eslint-disable-line
-//   try {
-//     if (isValidWhatFreeWords(latitude)) {
-//       return what3WordsToLatLng(latitude).then((latlng) => {
-//         const coords = JSON.parse(latlng);
-//         const lat = coords[0];
-//         const lng = coords[1];
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+  } catch (err) {
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+  }
+}
+g.POPDENS_BUFFER_CAR = POPDENS_BUFFER_CAR;
 
-//         return new Promise((resolve, reject) => {
-//           satfApiRequest('get', url(minutes, lat, lng))
-//             .then((value) => { resolve(Number(value)); })
-//             .catch((err) => {
-//               reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-//             });
-//         });
-//       });
-//     }
+/**
+ * Finds the administrative zone of a point from Latitude and Longitude or an address.
+ * Level 1 is regions.
+ * @customfunction ADMIN_LEVEL1
+ * @param {any} latitude_or_address
+ * @param {number} [longitude]
+ * @return {string} Name of the administrative zone.
+ */
+async function ADMIN_LEVEL1(latitude_or_address, longitude = false) {
+  try {
+    const coords = await PARSE_TO_LATLNG(latitude_or_address, longitude);
+    const url = `../../api/admin_level_1?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const token = g.localStorage.getItem('satf_token');
 
-//     if (isValidPluscode(latitude)) {
-//       return plusCodeToLatLng(latitude).then((latlng) => {
-//         const coords = JSON.parse(latlng);
-//         const lat = coords[0];
-//         const lng = coords[1];
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+    if (apiResponse.status === 401) { return 'Unauthorised'; }
 
-//         return new Promise((resolve, reject) => {
-//           satfApiRequest('get', url(minutes, lat, lng))
-//             .then((value) => { resolve(Number(value)); })
-//             .catch((err) => {
-//               reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-//             });
-//         });
-//       });
-//     }
+    const responseJSON = await apiResponse.json();
+    if (apiResponse.ok) { return responseJSON.message; }
 
-//     const lat = latitude;
-//     const lng = longitude;
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+  } catch (err) {
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+  }
+}
+g.ADMIN_LEVEL1 = ADMIN_LEVEL1;
 
-//     return new Promise((resolve, reject) => {
-//       satfApiRequest('get', url(minutes, lat, lng))
-//         .then((value) => { resolve(Number(value)); })
-//         .catch((err) => {
-//           reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-//         });
-//     });
-//   } catch (err) {
-//     const error = new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
-//     throw error;
-//   }
-// }
-// g.PopulationDensityCar = PopulationDensityCar;
+/**
+ * Finds the administrative zone of a point from Latitude and Longitude or an address.
+ * Level 2 is municipalities.
+ * @customfunction ADMIN_LEVEL2
+ * @param {any} latitude_or_address
+ * @param {number} [longitude]
+ * @return {string} Name of the administrative zone.
+ */
+async function ADMIN_LEVEL2(latitude_or_address, longitude = false) {
+  try {
+    const coords = await PARSE_TO_LATLNG(latitude_or_address, longitude);
+    const url = `../../api/admin_level_2?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const token = g.localStorage.getItem('satf_token');
 
-// function AdminLevel1(latitude, longitude = false) {
-//   const baseurl = `${apiUrl}admin_level_1`;
-//   return new Promise(((resolve, reject) => {
-//     getLatLngInfo(baseurl, latitude, longitude)
-//       .then((value) => {
-//         resolve(value);
-//       })
-//       .catch((err) => {
-//         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-//       });
-//   }));
-// }
-// g.AdminLevel1 = AdminLevel1;
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+    if (apiResponse.status === 401) { return 'Unauthorised'; }
 
-// function AdminLevel2(latitude, longitude = false) {
-//   const baseurl = `${apiUrl}admin_level_2`;
-//   return new Promise(((resolve, reject) => {
-//     getLatLngInfo(baseurl, latitude, longitude)
-//       .then((value) => {
-//         resolve(value);
-//       })
-//       .catch((err) => {
-//         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-//       });
-//   }));
-// }
-// g.AdminLevel2 = AdminLevel2;
+    const responseJSON = await apiResponse.json();
+    if (apiResponse.ok) { return responseJSON.message; }
 
-// function AdminLevel2FuzzyLev(name) {
-//   return new Promise(((resolve, reject) => {
-//     satfApiRequest('get', `${apiUrl}admin_level_2_fuzzy_lev?name=${name}`)
-//       .then((value) => {
-//         resolve(value);
-//       })
-//       .catch((err) => {
-//         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-//       });
-//   }));
-// }
-// g.AdminLevel2FuzzyLev = AdminLevel2FuzzyLev;
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+  } catch (err) {
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+  }
+}
+g.ADMIN_LEVEL2 = ADMIN_LEVEL2;
 
-// function AdminLevel2FuzzyTri(name) {
-//   return new Promise(((resolve, reject) => {
-//     satfApiRequest('get', `${apiUrl}admin_level_2_fuzzy_tri?name=${name}`)
-//       .then((value) => {
-//         resolve(value);
-//       })
-//       .catch((err) => {
-//         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-//       });
-//   }));
-// }
-// g.AdminLevel2FuzzyTri = AdminLevel2FuzzyTri;
+/**
+ * Finds the administrative zone that matches the input string the closest.
+ * Uses the Levenstein Algorithm.
+ * @customfunction ADMIN_LEVEL2_FUZZY_LEV
+ * @param {string} latitude_or_address
+ * @return {string} Name of the administrative zone.
+ */
+async function ADMIN_LEVEL2_FUZZY_LEV(str) {
+  try {
+    const url = `../../api/admin_level_2_fuzzy_lev?name=${str}`;
+    const token = g.localStorage.getItem('satf_token');
 
-// function UrbanStatus(latitude, longitude = false) {
-//   const baseurl = `${apiUrl}urban_status`;
-//   return new Promise(((resolve, reject) => {
-//     getLatLngInfo(baseurl, latitude, longitude)
-//       .then((value) => {
-//         resolve(value);
-//       })
-//       .catch((err) => {
-//         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-//       });
-//   }));
-// }
-// g.UrbanStatus = UrbanStatus;
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+    if (apiResponse.status === 401) { return 'Unauthorised'; }
 
-// function UrbanStatusSimple(latitude, longitude = false) {
-//   const baseurl = `${apiUrl}urban_status_simple`;
-//   return new Promise(((resolve, reject) => {
-//     getLatLngInfo(baseurl, latitude, longitude)
-//       .then((value) => {
-//         resolve(value);
-//       })
-//       .catch((err) => {
-//         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-//       });
-//   }));
-// }
-// g.UrbanStatusSimple = UrbanStatusSimple;
+    const responseJSON = await apiResponse.json();
+    if (apiResponse.ok) { return responseJSON.message; }
 
-// function NearestPlace(latitude, longitude = false) {
-//   const baseurl = `${apiUrl}nearest_placename`;
-//   return new Promise(((resolve, reject) => {
-//     getLatLngInfo(baseurl, latitude, longitude)
-//       .then((value) => {
-//         resolve(value);
-//       })
-//       .catch((err) => {
-//         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-//       });
-//   }));
-// }
-// g.NearestPlace = NearestPlace;
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+  } catch (err) {
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+  }
+}
+g.ADMIN_LEVEL2_FUZZY_LEV = ADMIN_LEVEL2_FUZZY_LEV;
 
-// function NearestPoi(latitude, longitude = false) {
-//   const baseurl = `${apiUrl}nearest_poi`;
-//   return new Promise(((resolve, reject) => {
-//     getLatLngInfo(baseurl, latitude, longitude)
-//       .then((value) => {
-//         resolve(value);
-//       })
-//       .catch((err) => {
-//         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-//       });
-//   }));
-// }
-// g.NearestPoi = NearestPoi;
+/**
+ * Finds the administrative zone that matches the input string the closest.
+ * Uses trigrams.
+ * @customfunction ADMIN_LEVEL2_FUZZY_TRI
+ * @param {string} latitude_or_address
+ * @return {string} Name of the administrative zone.
+ */
+async function ADMIN_LEVEL2_FUZZY_TRI(str) {
+  try {
+    const url = `../../api/admin_level_2_fuzzy_tri?name=${str}`;
+    const token = g.localStorage.getItem('satf_token');
 
-// function NearestBank(latitude, longitude = false) {
-//   const baseurl = `${apiUrl}nearest_bank`;
-//   return new Promise(((resolve, reject) => {
-//     getLatLngInfo(baseurl, latitude, longitude)
-//       .then((value) => {
-//         resolve(value);
-//       })
-//       .catch((err) => {
-//         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-//       });
-//   }));
-// }
-// g.NearestBank = NearestBank;
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+    if (apiResponse.status === 401) { return 'Unauthorised'; }
 
-// /**
-//   * Gets the star count for a given Github repository.
-//   * @customfunction
-//   * @param {string} userName string name of Github user or organization.
-//   * @param {string} repoName string name of the Github repository.
-//   * @return {number} number of stars given to a Github repository.
-//   */
-// function NearestBankDist(latitude, longitude = false) {
-//   const baseurl = `${apiUrl}nearest_bank_distance`;
-//   return new Promise(((resolve, reject) => {
-//     getLatLngInfo(baseurl, latitude, longitude)
-//       .then((value) => {
-//         resolve(value);
-//       })
-//       .catch((err) => {
-//         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-//       });
-//   }));
-// }
-// g.NearestBankDist = NearestBankDist;
+    const responseJSON = await apiResponse.json();
+    if (apiResponse.ok) { return responseJSON.message; }
+
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+  } catch (err) {
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+  }
+}
+g.ADMIN_LEVEL2_FUZZY_TRI = ADMIN_LEVEL2_FUZZY_TRI;
+
+/**
+ * Finds the urban status of a location. #landcover #landuse #urban_status
+ * @customfunction URBAN_STATUS
+ * @param {string} latitude_or_address
+ * @return {string} Name of the administrative zone.
+ */
+async function URBAN_STATUS(latitude_or_address, longitude = false) {
+  try {
+    const coords = await PARSE_TO_LATLNG(latitude_or_address, longitude);
+    const url = `../../api/urban_status?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const token = g.localStorage.getItem('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+    if (apiResponse.status === 401) { return 'Unauthorised'; }
+
+    const responseJSON = await apiResponse.json();
+    if (apiResponse.ok) { return responseJSON.message; }
+
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+  } catch (err) {
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+  }
+}
+g.URBAN_STATUS = URBAN_STATUS;
+
+/**
+ * Finds the simplified (1km majority) urban status of a location. #landcover #landuse #urban_status
+ * @customfunction URBAN_STATUS_SIMPLE
+ * @param {string} latitude_or_address
+ * @return {string} Name of the administrative zone.
+ */
+async function URBAN_STATUS_SIMPLE(latitude_or_address, longitude = false) {
+  try {
+    const coords = await PARSE_TO_LATLNG(latitude_or_address, longitude);
+    const url = `../../api/urban_status_simple?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const token = g.localStorage.getItem('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+    if (apiResponse.status === 401) { return 'Unauthorised'; }
+
+    const responseJSON = await apiResponse.json();
+    if (apiResponse.ok) { return responseJSON.message; }
+
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+  } catch (err) {
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+  }
+}
+g.URBAN_STATUS_SIMPLE = URBAN_STATUS_SIMPLE;
+
+/**
+ * Finds the nearest placename to the location. Useful to figure out where the point is.
+ * @customfunction NEAREST_PLACE
+ * @param {string} latitude_or_address
+ * @return {string} Name of the administrative zone.
+ */
+async function NEAREST_PLACE(latitude_or_address, longitude = false) {
+  try {
+    const coords = await PARSE_TO_LATLNG(latitude_or_address, longitude);
+    const url = `../../api/nearest_placename?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const token = g.localStorage.getItem('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+    if (apiResponse.status === 401) { return 'Unauthorised'; }
+
+    const responseJSON = await apiResponse.json();
+    if (apiResponse.ok) { return responseJSON.message; }
+
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+  } catch (err) {
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+  }
+}
+g.NEAREST_PLACE = NEAREST_PLACE;
+
+/**
+ * Finds the nearest point of interest to the location. Useful to figure out where the point is.
+ * @customfunction NEAREST_POI
+ * @param {string} latitude_or_address
+ * @return {string} Name of the administrative zone.
+ */
+async function NEAREST_POI(latitude_or_address, longitude = false) {
+  try {
+    const coords = await PARSE_TO_LATLNG(latitude_or_address, longitude);
+    const url = `../../api/nearest_poi?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const token = g.localStorage.getItem('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+    if (apiResponse.status === 401) { return 'Unauthorised'; }
+
+    const responseJSON = await apiResponse.json();
+    if (apiResponse.ok) { return responseJSON.message; }
+
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+  } catch (err) {
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+  }
+}
+g.NEAREST_POI = NEAREST_POI;
+
+/**
+ * Finds the nearest bank to a location.
+ * @customfunction NEAREST_BANK
+ * @param {string} latitude_or_address
+ * @return {string} Name of the administrative zone.
+ */
+async function NEAREST_BANK(latitude_or_address, longitude = false) {
+  try {
+    const coords = await PARSE_TO_LATLNG(latitude_or_address, longitude);
+    const url = `../../api/nearest_bank?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const token = g.localStorage.getItem('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+    if (apiResponse.status === 401) { return 'Unauthorised'; }
+
+    const responseJSON = await apiResponse.json();
+    if (apiResponse.ok) { return responseJSON.message; }
+
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+  } catch (err) {
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+  }
+}
+g.NEAREST_BANK = NEAREST_BANK;
+
+/**
+ * Calculates the distance to the nearest bank.
+ * @customfunction NEAREST_BANK_DIST
+ * @param {string} latitude_or_address
+ * @return {string} Name of the administrative zone.
+ */
+async function NEAREST_BANK_DIST(latitude_or_address, longitude = false) {
+  try {
+    const coords = await PARSE_TO_LATLNG(latitude_or_address, longitude);
+    const url = `../../api/nearest_bank_distance?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const token = g.localStorage.getItem('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+    if (apiResponse.status === 401) { return 'Unauthorised'; }
+
+    const responseJSON = await apiResponse.json();
+    if (apiResponse.ok) { return responseJSON.message; }
+
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+  } catch (err) {
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+  }
+}
+g.NEAREST_BANK_DIST = NEAREST_BANK_DIST;
 
 console.log('Loaded: functions.js');

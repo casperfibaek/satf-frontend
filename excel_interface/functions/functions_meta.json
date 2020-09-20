@@ -71,7 +71,7 @@
             "name": "LATLNG_TO_WHAT3WORDS",
             "parameters": [
                 {
-                    "name": "latitude",
+                    "name": "latitude_or_address",
                     "type": "any"
                 },
                 {
@@ -90,7 +90,7 @@
             "name": "LATLNG_TO_PLUSCODE",
             "parameters": [
                 {
-                    "name": "latitude",
+                    "name": "latitude_or_address",
                     "type": "any"
                 },
                 {
@@ -116,6 +116,287 @@
                     "name": "longitude",
                     "optional": true,
                     "type": "number"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Tests if there is access to the API and the user is logged in.\nAn address can be used instead of Latitude.",
+            "id": "HELLO_WORLD",
+            "name": "HELLO_WORLD",
+            "parameters": [],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Calculates the amount of people within a circular radius of a point.\nAn address can be used instead of Latitude.",
+            "id": "POPDENS_BUFFER",
+            "name": "POPDENS_BUFFER",
+            "parameters": [
+                {
+                    "name": "bufferMeters",
+                    "type": "number"
+                },
+                {
+                    "name": "latitude_or_address",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "number"
+                }
+            ],
+            "result": {
+                "type": "number"
+            }
+        },
+        {
+            "description": "Calculates the amount of people within a walkable radius of the point. Circular approximation.",
+            "id": "POPDENS_BUFFER_WALK",
+            "name": "POPDENS_BUFFER_WALK",
+            "parameters": [
+                {
+                    "name": "minutes",
+                    "type": "number"
+                },
+                {
+                    "name": "latitude_or_address",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "number"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Calculates the amount of people within a bikeable radius of the point. Circular approximation.",
+            "id": "POPDENS_BUFFER_BIKE",
+            "name": "POPDENS_BUFFER_BIKE",
+            "parameters": [
+                {
+                    "name": "minutes",
+                    "type": "number"
+                },
+                {
+                    "name": "latitude_or_address",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "number"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Calculates the amount of people within a drivable radius of the point. Circular approximation.",
+            "id": "POPDENS_BUFFER_CAR",
+            "name": "POPDENS_BUFFER_CAR",
+            "parameters": [
+                {
+                    "name": "minutes",
+                    "type": "number"
+                },
+                {
+                    "name": "latitude_or_address",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "number"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Finds the administrative zone of a point from Latitude and Longitude or an address.\nLevel 1 is regions.",
+            "id": "ADMIN_LEVEL1",
+            "name": "ADMIN_LEVEL1",
+            "parameters": [
+                {
+                    "name": "latitude_or_address",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "number"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Finds the administrative zone of a point from Latitude and Longitude or an address.\nLevel 2 is municipalities.",
+            "id": "ADMIN_LEVEL2",
+            "name": "ADMIN_LEVEL2",
+            "parameters": [
+                {
+                    "name": "latitude_or_address",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "number"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Finds the administrative zone that matches the input string the closest.\nUses the Levenstein Algorithm.",
+            "id": "ADMIN_LEVEL2_FUZZY_LEV",
+            "name": "ADMIN_LEVEL2_FUZZY_LEV",
+            "parameters": [
+                {
+                    "name": "str",
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Finds the administrative zone that matches the input string the closest.\nUses trigrams.",
+            "id": "ADMIN_LEVEL2_FUZZY_TRI",
+            "name": "ADMIN_LEVEL2_FUZZY_TRI",
+            "parameters": [
+                {
+                    "name": "str",
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Finds the urban status of a location. #landcover #landuse #urban_status",
+            "id": "URBAN_STATUS",
+            "name": "URBAN_STATUS",
+            "parameters": [
+                {
+                    "name": "latitude_or_address",
+                    "type": "string"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Finds the simplified (1km majority) urban status of a location. #landcover #landuse #urban_status",
+            "id": "URBAN_STATUS_SIMPLE",
+            "name": "URBAN_STATUS_SIMPLE",
+            "parameters": [
+                {
+                    "name": "latitude_or_address",
+                    "type": "string"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Finds the nearest placename to the location. Useful to figure out where the point is.",
+            "id": "NEAREST_PLACE",
+            "name": "NEAREST_PLACE",
+            "parameters": [
+                {
+                    "name": "latitude_or_address",
+                    "type": "string"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Finds the nearest point of interest to the location. Useful to figure out where the point is.",
+            "id": "NEAREST_POI",
+            "name": "NEAREST_POI",
+            "parameters": [
+                {
+                    "name": "latitude_or_address",
+                    "type": "string"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Finds the nearest bank to a location.",
+            "id": "NEAREST_BANK",
+            "name": "NEAREST_BANK",
+            "parameters": [
+                {
+                    "name": "latitude_or_address",
+                    "type": "string"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Calculates the distance to the nearest bank.",
+            "id": "NEAREST_BANK_DIST",
+            "name": "NEAREST_BANK_DIST",
+            "parameters": [
+                {
+                    "name": "latitude_or_address",
+                    "type": "string"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "any"
                 }
             ],
             "result": {

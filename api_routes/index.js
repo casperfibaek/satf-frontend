@@ -1362,19 +1362,22 @@ async function delete_user(req, res) {
 
 router.route('/').get((req, res) => res.send('home/api'));
 
-// // GET
+router.route('./hello_world').get(auth, hello_world);
 router.route('/latlng_to_whatfreewords').get(auth, cache, latlng_to_whatfreewords);
-router.route('/population_density').get(auth, cache, population_density);
+router.route('/whatfreewords_to_latlng').get(auth, cache, whatfreewords_to_latlng);
+router.route('/latlng_to_pluscode').get(auth, cache, latlng_to_pluscode);
+router.route('/pluscode_to_latlng').get(auth, cache, pluscode_to_latlng);
 router.route('/population_density_walk').get(auth, cache, population_density_walk);
 router.route('/population_density_bike').get(auth, cache, population_density_bike);
 router.route('/population_density_car').get(auth, cache, population_density_car);
-router.route('/pop_density_isochrone_car').get(auth, cache, pop_density_isochrone_car);
 router.route('/pop_density_isochrone_walk').get(auth, cache, pop_density_isochrone_walk);
 router.route('/pop_density_isochrone_bike').get(auth, cache, pop_density_isochrone_bike);
+router.route('/pop_density_isochrone_car').get(auth, cache, pop_density_isochrone_car);
+router.route('/isochrone_walk').get(auth, cache, isochrone_walk);
+router.route('/isochrone_bike').get(auth, cache, isochrone_bike);
+router.route('/isochrone_car').get(auth, cache, isochrone_car);
 router.route('/population_density_buffer').get(auth, cache, population_density_buffer);
 router.route('/urban_status').get(auth, cache, urban_status);
-// router.route('/gpgps_to_latlng').get(gpgps_to_latlng);
-// router.route('/latlng_to_gpgps').get(latlng_to_gpgps);
 router.route('/urban_status_simple').get(auth, cache, urban_status_simple);
 router.route('/admin_level_1').get(auth, cache, admin_level_1);
 router.route('/admin_level_2').get(auth, cache, admin_level_2);
@@ -1384,12 +1387,6 @@ router.route('/nearest_placename').get(auth, cache, nearest_placename);
 router.route('/nearest_poi').get(auth, cache, nearest_poi);
 router.route('/nearest_bank').get(auth, cache, nearest_bank);
 router.route('/nearest_bank_distance').get(auth, cache, nearest_bank_distance);
-router.route('/isochrone_walk').get(auth, cache, isochrone_walk);
-router.route('/isochrone_bike').get(auth, cache, isochrone_bike);
-router.route('/isochrone_car').get(auth, cache, isochrone_car);
-router.route('/whatfreewords_to_latlng').get(auth, cache, whatfreewords_to_latlng);
-router.route('/latlng_to_pluscode').get(auth, cache, latlng_to_pluscode);
-router.route('/pluscode_to_latlng').get(auth, cache, pluscode_to_latlng);
 router.route('/create_user').post(create_user);
 router.route('/login_user').post(login_user);
 router.route('/delete_user').post(delete_user);
