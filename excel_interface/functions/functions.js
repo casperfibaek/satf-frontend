@@ -36,7 +36,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 window.sharedState = 'empty';
-window.sharedState = { bob: 'hund' };
 /* CustomFunctions, executed in Excel cells. Metadata defined in ./functions_meta.json */
 function isValidPluscode(code) {
     // A separator used to break the code into two parts to aid memorability.

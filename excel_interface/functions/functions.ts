@@ -1,5 +1,4 @@
 window.sharedState = 'empty';
-window.sharedState = { bob: 'hund' };
 
 /* CustomFunctions, executed in Excel cells. Metadata defined in ./functions_meta.json */
 function isValidPluscode(code) {
