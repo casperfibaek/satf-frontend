@@ -41,55 +41,55 @@ async function latlng_to_whatfreewords(req, res) {
   }
 }
 
-async function gpgps_to_latlng(req, res) {
-  if (!req.query.gpgps) {
-    return res.status(400).json({
-      status: 'Failure',
-      message: 'Request missing gpgps',
-      function: 'gpgps_to_latlng',
-    });
-  }
-  try {
-    const latlng = await gpgps.gpgps_to_latlng(req.query.gpgps);
-    return res.status(200).json({
-      status: 'success',
-      message: latlng,
-      function: 'gpgps_to_latlng',
-    });
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({
-      status: 'Failure',
-      message: 'Error encountered on server',
-      function: 'gpgps_to_latlng',
-    });
-  }
-}
+// async function gpgps_to_latlng(req, res) {
+//   if (!req.query.gpgps) {
+//     return res.status(400).json({
+//       status: 'Failure',
+//       message: 'Request missing gpgps',
+//       function: 'gpgps_to_latlng',
+//     });
+//   }
+//   try {
+//     const latlng = await gpgps.gpgps_to_latlng(req.query.gpgps);
+//     return res.status(200).json({
+//       status: 'success',
+//       message: latlng,
+//       function: 'gpgps_to_latlng',
+//     });
+//   } catch (err) {
+//     console.log(err);
+//     return res.status(500).json({
+//       status: 'Failure',
+//       message: 'Error encountered on server',
+//       function: 'gpgps_to_latlng',
+//     });
+//   }
+// }
 
-async function latlng_to_gpgps(req, res) {
-  if (!req.query.lat || !req.query.lng) {
-    return res.status(400).json({
-      status: 'Failure',
-      message: 'Request missing lat or lng',
-      function: 'latlng_to_gpgps',
-    });
-  }
-  try {
-    const GhanaPostalGPS = await gpgps.latlng_to_gpgps(req.query.lat, req.query.lng);
-    return res.status(200).json({
-      status: 'success',
-      message: GhanaPostalGPS,
-      function: 'latlng_to_gpgps',
-    });
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({
-      status: 'Failure',
-      message: 'Error encountered on server',
-      function: 'latlng_to_gpgps',
-    });
-  }
-}
+// async function latlng_to_gpgps(req, res) {
+//   if (!req.query.lat || !req.query.lng) {
+//     return res.status(400).json({
+//       status: 'Failure',
+//       message: 'Request missing lat or lng',
+//       function: 'latlng_to_gpgps',
+//     });
+//   }
+//   try {
+//     const GhanaPostalGPS = await gpgps.latlng_to_gpgps(req.query.lat, req.query.lng);
+//     return res.status(200).json({
+//       status: 'success',
+//       message: GhanaPostalGPS,
+//       function: 'latlng_to_gpgps',
+//     });
+//   } catch (err) {
+//     console.log(err);
+//     return res.status(500).json({
+//       status: 'Failure',
+//       message: 'Error encountered on server',
+//       function: 'latlng_to_gpgps',
+//     });
+//   }
+// }
 
 async function whatfreewords_to_latlng(req, res) {
   if (!req.query.words) {
@@ -414,24 +414,29 @@ async function urban_status_simple(req, res) {
     });
   }
 }
-// adapted to the new databse
-async function population_density(req, res) {
-  if (!req.query.lat || !req.query.lng) {
+
+async function population_density_buffer(req, res) {
+  if (!req.query.lat || !req.query.lng || !req.query.buffer) {
     return res.status(400).json({
       status: 'Failure',
-      message: 'Request missing lat or lng',
-      function: 'population_density',
+      message: 'Request missing lat, lng or buffer',
+      function: 'population_density_buffer',
     });
   }
 
   const dbQuery = `
     WITH const (pp_geom) AS (
-        values (ST_SetSRID(ST_Point(${req.query.lng}, ${req.query.lat}), 4326))
+        values (ST_Buffer(ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography, '${Number(req.query.buffer) + 250}')::geometry)
     )
     
-    SELECT ST_Value(rast, 1, pp_geom) AS pop_dense
-    FROM ghana_pop_dens, const
-    WHERE ST_Intersects(rast, pp_geom);
+    SELECT
+        SUM((ST_SummaryStats(ST_Clip(
+            ghana_pop_dens.rast, 
+            const.pp_geom
+        ))).sum::int) as pop_dense_buf
+    FROM
+        ghana_pop_dens, const
+    WHERE ST_Intersects(const.pp_geom, ghana_pop_dens.rast);
   `;
 
   try {
@@ -439,21 +444,21 @@ async function population_density(req, res) {
     if (dbResponse.rowCount > 0) {
       return res.status(200).json({
         status: 'success',
-        message: Math.round(Number(dbResponse.rows[0].pop_dense)),
-        function: 'population_density',
+        message: Math.round(Number(dbResponse.rows[0].pop_dense_buf)),
+        function: 'population_density_buffer',
       });
     }
     return res.status(500).json({
       status: 'Failure',
       message: 'Error encountered on server',
-      function: 'population_density',
+      function: 'population_density_buffer',
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
       status: 'Failure',
       message: 'Error encountered on server',
-      function: 'population_density',
+      function: 'population_density_buffer',
     });
   }
 }
@@ -709,54 +714,6 @@ async function pop_density_isochrone_car(req, res) {
       status: 'Failure',
       message: 'Error encountered on server',
       function: 'pop_density_isochrone_car',
-    });
-  }
-}
-
-async function population_density_buffer(req, res) {
-  if (!req.query.lat || !req.query.lng || !req.query.buffer) {
-    return res.status(400).json({
-      status: 'Failure',
-      message: 'Request missing lat, lng or buffer',
-      function: 'population_density_buffer',
-    });
-  }
-
-  const dbQuery = `
-    WITH const (pp_geom) AS (
-        values (ST_Buffer(ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography, '${Number(req.query.buffer) + 250}')::geometry)
-    )
-    
-    SELECT
-        SUM((ST_SummaryStats(ST_Clip(
-            ghana_pop_dens.rast, 
-            const.pp_geom
-        ))).sum::int) as pop_dense_buf
-    FROM
-        ghana_pop_dens, const
-    WHERE ST_Intersects(const.pp_geom, ghana_pop_dens.rast);
-  `;
-
-  try {
-    const dbResponse = await pool.query(dbQuery);
-    if (dbResponse.rowCount > 0) {
-      return res.status(200).json({
-        status: 'success',
-        message: Math.round(Number(dbResponse.rows[0].pop_dense_buf)),
-        function: 'population_density_buffer',
-      });
-    }
-    return res.status(500).json({
-      status: 'Failure',
-      message: 'Error encountered on server',
-      function: 'population_density_buffer',
-    });
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({
-      status: 'Failure',
-      message: 'Error encountered on server',
-      function: 'population_density_buffer',
     });
   }
 }
@@ -1362,14 +1319,14 @@ async function delete_user(req, res) {
 
 router.route('/').get((req, res) => res.send('home/api'));
 
-router.route('./hello_world').get(auth, hello_world);
+router.route('/hello_world').get(auth, hello_world);
 router.route('/latlng_to_whatfreewords').get(auth, cache, latlng_to_whatfreewords);
 router.route('/whatfreewords_to_latlng').get(auth, cache, whatfreewords_to_latlng);
 router.route('/latlng_to_pluscode').get(auth, cache, latlng_to_pluscode);
 router.route('/pluscode_to_latlng').get(auth, cache, pluscode_to_latlng);
-router.route('/population_density_walk').get(auth, cache, population_density_walk);
-router.route('/population_density_bike').get(auth, cache, population_density_bike);
-router.route('/population_density_car').get(auth, cache, population_density_car);
+router.route('/population_density_walk').get(population_density_walk);
+router.route('/population_density_bike').get(population_density_bike);
+router.route('/population_density_car').get(population_density_car);
 router.route('/pop_density_isochrone_walk').get(auth, cache, pop_density_isochrone_walk);
 router.route('/pop_density_isochrone_bike').get(auth, cache, pop_density_isochrone_bike);
 router.route('/pop_density_isochrone_car').get(auth, cache, pop_density_isochrone_car);

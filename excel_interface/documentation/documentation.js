@@ -39,12 +39,12 @@ System.register(["../functions/functions_meta.json"], function (exports_1, conte
                     this.setState({
                         functions: functionsObj.functions,
                     });
-                    this.fuzzy = new globalThis.Fuse(this.state.functions, {
+                    this.fuzzy = new Fuse(this.state.functions, {
                         keys: ['name'],
                     });
                 };
                 Documentation.prototype.UNSAFE_componentWillMount = function () {
-                    window._fuzzySearch = new window.Fuse(functionsObj.functions, {
+                    window._fuzzySearch = new Fuse(functionsObj.functions, {
                         keys: ['name', 'description'],
                     });
                 };
@@ -74,9 +74,7 @@ System.register(["../functions/functions_meta.json"], function (exports_1, conte
                             "Type: ",
                             p.type))); };
                     var listItems = this.state.functions.map(function (f, idx) { return (React.createElement("div", { key: idx, className: "function_card" },
-                        React.createElement(FluentUIReact.Text, { variant: "large", block: true },
-                            "satf.",
-                            f.name),
+                        React.createElement(FluentUIReact.Text, { variant: "large", block: true }, f.name),
                         React.createElement(FluentUIReact.Text, { variant: "medium" }, f.description),
                         React.createElement(FluentUIReact.Text, { variant: "medium", block: true, className: "text_with_margin" }, "Parameters:"),
                         f.parameters.length > 0 && f.parameters.map(iterParams),

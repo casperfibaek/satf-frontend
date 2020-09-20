@@ -20,13 +20,13 @@ class Documentation extends React.Component {
       functions: functionsObj.functions,
     });
 
-    this.fuzzy = new globalThis.Fuse(this.state.functions, {
+    this.fuzzy = new Fuse(this.state.functions, {
       keys: ['name'],
     });
   }
 
   UNSAFE_componentWillMount() {
-    window._fuzzySearch = new window.Fuse(functionsObj.functions, {
+    window._fuzzySearch = new Fuse(functionsObj.functions, {
       keys: ['name', 'description'],
     });
   }
@@ -54,7 +54,7 @@ class Documentation extends React.Component {
     );
     const listItems = this.state.functions.map((f, idx) => (
         <div key={idx} className="function_card">
-          <FluentUIReact.Text variant="large" block>satf.{f.name}</FluentUIReact.Text>
+          <FluentUIReact.Text variant="large" block>{f.name}</FluentUIReact.Text>
           <FluentUIReact.Text variant="medium">{f.description}</FluentUIReact.Text>
           <FluentUIReact.Text variant="medium" block className="text_with_margin">Parameters:</FluentUIReact.Text>
           {f.parameters.length > 0 && f.parameters.map(iterParams)}
