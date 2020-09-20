@@ -51,13 +51,13 @@ System.register(["../functions/functions_meta.json"], function (exports_1, conte
                 Documentation.prototype.fuzzySearch = function (input) {
                     if (input === '') {
                         this.setState({
-                            functions: functionsObj.functions
+                            functions: functionsObj.functions,
                         });
                     }
                     else {
                         var search = window._fuzzySearch.search(input);
                         this.setState({
-                            functions: search.map(function (e) { return e.item; })
+                            functions: search.map(function (e) { return e.item; }),
                         });
                     }
                 };

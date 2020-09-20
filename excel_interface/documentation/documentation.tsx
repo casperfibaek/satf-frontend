@@ -33,13 +33,13 @@ class Documentation extends React.Component {
   fuzzySearch(input) {
     if (input === '') {
       this.setState({
-        functions: functionsObj.functions;
-      })
+        functions: functionsObj.functions,
+      });
     } else {
       const search = window._fuzzySearch.search(input);
       this.setState({
-        functions: search.map(e => e.item)
-      })
+        functions: search.map((e) => e.item),
+      });
     }
   }
 

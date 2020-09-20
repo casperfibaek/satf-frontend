@@ -123,8 +123,18 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
                     _this.renderLogic = _this.renderLogic.bind(_this);
                     _this.deleteUser = _this.deleteUser.bind(_this);
                     _this.onKeyUp = _this.onKeyUp.bind(_this);
+                    _this.saveToken = _this.saveToken.bind(_this);
+                    _this.clearToken = _this.clearToken.bind(_this);
                     return _this;
                 }
+                Login.prototype.componentWillMount = function () {
+                    window._save_token = function (token) {
+                        window.localStorage.setItem('satf_token', token);
+                    };
+                    window._clear_token = function () {
+                        window.localStorage.removeItem('satf_token');
+                    };
+                };
                 Login.prototype.onKeyUp = function (event) {
                     if (event.charCode === 13) { // enter
                         if (this.state.registerPage) {
@@ -155,7 +165,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
                                     responseJSON = _a.sent();
                                     if (response.ok) {
                                         this.setState({ satfToken: responseJSON.username + ":" + responseJSON.token });
-                                        globalThis.localStorage.setItem('satf_token', this.state.satfToken);
+                                        this.saveToken();
                                         this.toWelcomePage();
                                     }
                                     else if (responseJSON.message) {
@@ -197,9 +207,12 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
                                 case 2:
                                     responseJSON = _a.sent();
                                     if (response.ok) {
-                                        this.setState({ satfToken: responseJSON.username + ":" + responseJSON.token });
-                                        globalThis.localStorage.setItem('satf_token', this.state.satfToken);
-                                        this.setState({ username: this.state.registerUsername, password: this.state.registerPassword });
+                                        this.setState({
+                                            username: this.state.registerUsername,
+                                            password: this.state.registerPassword,
+                                            satfToken: responseJSON.username + ":" + responseJSON.token,
+                                        });
+                                        this.saveToken();
                                         this.toWelcomePage();
                                     }
                                     else if (responseJSON.message) {
@@ -272,6 +285,13 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
                         displayMessageType: type,
                     });
                 };
+                Login.prototype.saveToken = function () {
+                    window._save_token(this.state.satfToken);
+                };
+                Login.prototype.clearToken = function () {
+                    window._clear_token();
+                    this.setState({ satfToken: '' });
+                };
                 Login.prototype.startLoading = function (message) {
                     this.clearMessageBar();
                     this.setState({
@@ -280,7 +300,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
                     });
                 };
                 Login.prototype.resetState = function () {
-                    globalThis.localStorage.removeItem('satf_token');
+                    this.clearToken();
                     this.setState({
                         username: '',
                         password: '',
@@ -314,7 +334,6 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
                     this.resetState();
                 };
                 Login.prototype.handleRegister = function () {
-                    // e.preventDefault();
                     this.register(this.state.registerUsername, this.state.registerPassword, this.state.registerConfirm);
                 };
                 Login.prototype.handleDelete = function () {
@@ -325,7 +344,6 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
                     this.logOut();
                 };
                 Login.prototype.handleLogin = function () {
-                    // e.preventDefault();
                     this.attemptLogIn(this.state.username, this.state.password);
                 };
                 Login.prototype.handleChange = function (e) {

@@ -43,6 +43,18 @@ class Login extends React.Component {
     this.renderLogic = this.renderLogic.bind(this);
     this.deleteUser = this.deleteUser.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
+    this.saveToken = this.saveToken.bind(this);
+    this.clearToken = this.clearToken.bind(this);
+  }
+
+  componentWillMount() {
+    window._save_token = (token) => {
+      window.localStorage.setItem('satf_token', token);
+    };
+
+    window._clear_token = () => {
+      window.localStorage.removeItem('satf_token');
+    };
   }
 
   onKeyUp(event) {
@@ -69,7 +81,7 @@ class Login extends React.Component {
 
       if (response.ok) {
         this.setState({ satfToken: `${responseJSON.username}:${responseJSON.token}` });
-        globalThis.localStorage.setItem('satf_token', this.state.satfToken);
+        this.saveToken();
         this.toWelcomePage();
       } else if (responseJSON.message) {
         this.setMessageBar(responseJSON.message, 1);
@@ -97,9 +109,12 @@ class Login extends React.Component {
       const responseJSON = await response.json();
 
       if (response.ok) {
-        this.setState({ satfToken: `${responseJSON.username}:${responseJSON.token}` });
-        globalThis.localStorage.setItem('satf_token', this.state.satfToken);
-        this.setState({ username: this.state.registerUsername, password: this.state.registerPassword });
+        this.setState({
+          username: this.state.registerUsername,
+          password: this.state.registerPassword,
+          satfToken: `${responseJSON.username}:${responseJSON.token}`,
+        });
+        this.saveToken();
         this.toWelcomePage();
       } else if (responseJSON.message) {
         this.setMessageBar(responseJSON.message, 1);
@@ -159,6 +174,15 @@ class Login extends React.Component {
     });
   }
 
+  saveToken() {
+    window._save_token(this.state.satfToken);
+  }
+
+  clearToken() {
+    window._clear_token();
+    this.setState({ satfToken: '' });
+  }
+
   startLoading(message) {
     this.clearMessageBar();
     this.setState({
@@ -175,7 +199,7 @@ class Login extends React.Component {
   }
 
   resetState() {
-    globalThis.localStorage.removeItem('satf_token');
+    this.clearToken();
 
     this.setState({
       username: '',
@@ -215,8 +239,6 @@ class Login extends React.Component {
   }
 
   handleRegister() {
-    // e.preventDefault();
-
     this.register(
       this.state.registerUsername,
       this.state.registerPassword,
@@ -234,7 +256,6 @@ class Login extends React.Component {
   }
 
   handleLogin() {
-    // e.preventDefault();
     this.attemptLogIn(this.state.username, this.state.password);
   }
 
