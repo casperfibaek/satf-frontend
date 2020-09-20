@@ -224,12 +224,12 @@ function getGlobal() {
 Office.onReady(function () { });
 var g = getGlobal();
 /**
- * Converts What3Words to two cells containing Latitude and Longitude.
- * @customfunction WHAT3WORDS_TO_LATLNG what3WordsToLatLng
+ * Converts What3Words to two adjacent cells containing Latitude and Longitude.
+ * @customfunction WHAT3WORDS_TO_LATLNG
  * @param {string} what3words
  * @return {number[][]} Two cells with latitude and longitude
  */
-function what3WordsToLatLng(what3words) {
+function WHAT3WORDS_TO_LATLNG(what3words) {
     return __awaiter(this, void 0, void 0, function () {
         var url, apiResponse, responseJSON, err_1;
         return __generator(this, function (_a) {
@@ -258,14 +258,14 @@ function what3WordsToLatLng(what3words) {
         });
     });
 }
-g.what3WordsToLatLng = what3WordsToLatLng;
+g.WHAT3WORDS_TO_LATLNG = WHAT3WORDS_TO_LATLNG;
 /**
- * Converts a Pluscode to two cells containing Latitude and Longitude.
- * @customfunction PLUSCODE_TO_LATLNG plusCodeToLatLng
+ * Converts a Pluscode to two adjacent cells containing Latitude and Longitude.
+ * @customfunction PLUSCODE_TO_LATLNG
  * @param {string} pluscode
  * @return {number[][]} Two adjacent cells with latitude and longitude
  */
-function plusCodeToLatLng(pluscode) {
+function PLUSCODE_TO_LATLNG(pluscode) {
     return __awaiter(this, void 0, void 0, function () {
         var url, apiResponse, responseJSON, err_2;
         return __generator(this, function (_a) {
@@ -294,14 +294,14 @@ function plusCodeToLatLng(pluscode) {
         });
     });
 }
-g.plusCodeToLatLng = plusCodeToLatLng;
+g.PLUSCODE_TO_LATLNG = PLUSCODE_TO_LATLNG;
 /**
- * Converts a Ghana Digital Address (Ghana Postal GPS) to two cells containing Latitude and Longitude.
- * @customfunction GPGPS_TO_LATLNG gpgpsToLatLng
+ * Converts a Ghana Digital Address (Ghana Postal GPS) to two adjacent cells containing Latitude and Longitude.
+ * @customfunction GPGPS_TO_LATLNG
  * @param {string} gpgps
  * @return {number[][]} Two adjacent cells with latitude and longitude
  */
-function gpgpsToLatLng(gpgps) {
+function GPGPS_TO_LATLNG(gpgps) {
     return __awaiter(this, void 0, void 0, function () {
         var url, apiResponse, responseJSON, err_3;
         return __generator(this, function (_a) {
@@ -330,15 +330,15 @@ function gpgpsToLatLng(gpgps) {
         });
     });
 }
-g.gpgpsToLatLng = gpgpsToLatLng;
+g.GPGPS_TO_LATLNG = GPGPS_TO_LATLNG;
 /**
  * Parses an unknown input to Latitude and Longitude if possible.
- * @customfunction PARSE_TO_LATLNG parseCoordinates
+ * @customfunction PARSE_TO_LATLNG
  * @param {any} latitude_or_address
- * @param {number} [longitude=false]
+ * @param {number} [longitude]
  * @return {number[][]} Two adjacent cells with latitude and longitude
  */
-function parseCoordinates(latitude_or_address, longitude) {
+function PARSE_TO_LATLNG(latitude_or_address, longitude) {
     if (longitude === void 0) { longitude = false; }
     return __awaiter(this, void 0, void 0, function () {
         var coordArray, coords, coords, coords, err_4;
@@ -356,19 +356,19 @@ function parseCoordinates(latitude_or_address, longitude) {
                         return [2 /*return*/, [[latitude_or_address, longitude]]];
                     }
                     if (!isValidWhatFreeWords(latitude_or_address)) return [3 /*break*/, 3];
-                    return [4 /*yield*/, what3WordsToLatLng(latitude_or_address)];
+                    return [4 /*yield*/, WHAT3WORDS_TO_LATLNG(latitude_or_address)];
                 case 2:
                     coords = _a.sent();
                     return [2 /*return*/, coords];
                 case 3:
                     if (!isValidPluscode(latitude_or_address)) return [3 /*break*/, 5];
-                    return [4 /*yield*/, plusCodeToLatLng(latitude_or_address)];
+                    return [4 /*yield*/, PLUSCODE_TO_LATLNG(latitude_or_address)];
                 case 4:
                     coords = _a.sent();
                     return [2 /*return*/, coords];
                 case 5:
                     if (!isValidGhanaPostalGPS(latitude_or_address)) return [3 /*break*/, 7];
-                    return [4 /*yield*/, gpgpsToLatLng(latitude_or_address)];
+                    return [4 /*yield*/, GPGPS_TO_LATLNG(latitude_or_address)];
                 case 6:
                     coords = _a.sent();
                     return [2 /*return*/, coords];
@@ -381,15 +381,15 @@ function parseCoordinates(latitude_or_address, longitude) {
         });
     });
 }
-g.parseCoordinates = parseCoordinates;
+g.PARSE_TO_LATLNG = PARSE_TO_LATLNG;
 /**
  * Converts Latitude and Longitude to What3Words. An address can be used instead of Latitude.
- * @customfunction LATLNG_TO_WHAT3WORDS LatLngToWhatFreeWords
+ * @customfunction LATLNG_TO_WHAT3WORDS
  * @param {any} latitude_or_address
- * @param {number} [longitude=false]
+ * @param {number} [longitude]
  * @return {string} Cell with What3Words address.
  */
-function LatLngToWhatFreeWords(latitude, longitude) {
+function LATLNG_TO_WHAT3WORDS(latitude, longitude) {
     if (longitude === void 0) { longitude = false; }
     return __awaiter(this, void 0, void 0, function () {
         var coords, url, apiResponse, responseJSON, err_5;
@@ -419,7 +419,7 @@ function LatLngToWhatFreeWords(latitude, longitude) {
         });
     });
 }
-g.LatLngToWhatFreeWords = LatLngToWhatFreeWords;
+g.LATLNG_TO_WHAT3WORDS = LATLNG_TO_WHAT3WORDS;
 // function LatLngToPluscode(latitude, longitude) {
 //   return new Promise((resolve, reject) => {
 //     satfApiRequest('get', `${apiUrl}latlng_to_pluscode?lat=${latitude}&lng=${longitude}`)

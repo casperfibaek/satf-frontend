@@ -152,12 +152,12 @@ Office.onReady(() => {});
 const g = getGlobal() as any;
 
 /**
- * Converts What3Words to two cells containing Latitude and Longitude.
- * @customfunction WHAT3WORDS_TO_LATLNG what3WordsToLatLng
+ * Converts What3Words to two adjacent cells containing Latitude and Longitude.
+ * @customfunction WHAT3WORDS_TO_LATLNG
  * @param {string} what3words
  * @return {number[][]} Two cells with latitude and longitude
  */
-async function what3WordsToLatLng(what3words) {
+async function WHAT3WORDS_TO_LATLNG(what3words) {
   if (isValidWhatFreeWords(what3words)) {
     try {
       const url = `../../api/whatfreewords_to_latlng?words=${what3words}`;
@@ -173,15 +173,15 @@ async function what3WordsToLatLng(what3words) {
   }
   throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('500: Invalid What3Words'));
 }
-g.what3WordsToLatLng = what3WordsToLatLng;
+g.WHAT3WORDS_TO_LATLNG = WHAT3WORDS_TO_LATLNG;
 
 /**
- * Converts a Pluscode to two cells containing Latitude and Longitude.
- * @customfunction PLUSCODE_TO_LATLNG plusCodeToLatLng
+ * Converts a Pluscode to two adjacent cells containing Latitude and Longitude.
+ * @customfunction PLUSCODE_TO_LATLNG
  * @param {string} pluscode
  * @return {number[][]} Two adjacent cells with latitude and longitude
  */
-async function plusCodeToLatLng(pluscode) {
+async function PLUSCODE_TO_LATLNG(pluscode) {
   if (isValidPluscode(pluscode)) {
     try {
       const url = `../../api/pluscode_to_latlng?code=${pluscode}`;
@@ -197,15 +197,15 @@ async function plusCodeToLatLng(pluscode) {
   }
   throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('500: Invalid pluscode'));
 }
-g.plusCodeToLatLng = plusCodeToLatLng;
+g.PLUSCODE_TO_LATLNG = PLUSCODE_TO_LATLNG;
 
 /**
- * Converts a Ghana Digital Address (Ghana Postal GPS) to two cells containing Latitude and Longitude.
- * @customfunction GPGPS_TO_LATLNG gpgpsToLatLng
+ * Converts a Ghana Digital Address (Ghana Postal GPS) to two adjacent cells containing Latitude and Longitude.
+ * @customfunction GPGPS_TO_LATLNG
  * @param {string} gpgps
  * @return {number[][]} Two adjacent cells with latitude and longitude
  */
-async function gpgpsToLatLng(gpgps) {
+async function GPGPS_TO_LATLNG(gpgps) {
   if (isValidGhanaPostalGPS(gpgps)) {
     try {
       const url = `../../api/gpgps_to_latlng?gpgps=${gpgps}`;
@@ -221,16 +221,16 @@ async function gpgpsToLatLng(gpgps) {
   }
   throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('500: Invalid Ghana Digital Address'));
 }
-g.gpgpsToLatLng = gpgpsToLatLng;
+g.GPGPS_TO_LATLNG = GPGPS_TO_LATLNG;
 
 /**
  * Parses an unknown input to Latitude and Longitude if possible.
- * @customfunction PARSE_TO_LATLNG parseCoordinates
+ * @customfunction PARSE_TO_LATLNG
  * @param {any} latitude_or_address
- * @param {number} [longitude=false]
+ * @param {number} [longitude]
  * @return {number[][]} Two adjacent cells with latitude and longitude
  */
-async function parseCoordinates(latitude_or_address, longitude = false) {
+async function PARSE_TO_LATLNG(latitude_or_address, longitude = false) {
   const coordArray = coordinateArray(latitude_or_address);
   try {
     if (coordArray) {
@@ -238,13 +238,13 @@ async function parseCoordinates(latitude_or_address, longitude = false) {
     } if (isValidLatitude(latitude_or_address) && isValidLongitude(longitude)) {
       return [[latitude_or_address, longitude]];
     } if (isValidWhatFreeWords(latitude_or_address)) {
-      const coords = await what3WordsToLatLng(latitude_or_address);
+      const coords = await WHAT3WORDS_TO_LATLNG(latitude_or_address);
       return coords;
     } if (isValidPluscode(latitude_or_address)) {
-      const coords = await plusCodeToLatLng(latitude_or_address);
+      const coords = await PLUSCODE_TO_LATLNG(latitude_or_address);
       return coords;
     } if (isValidGhanaPostalGPS(latitude_or_address)) {
-      const coords = await gpgpsToLatLng(latitude_or_address);
+      const coords = await GPGPS_TO_LATLNG(latitude_or_address);
       return coords;
     }
     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('400: Unable to parse input'));
@@ -252,16 +252,16 @@ async function parseCoordinates(latitude_or_address, longitude = false) {
     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
   }
 }
-g.parseCoordinates = parseCoordinates;
+g.PARSE_TO_LATLNG = PARSE_TO_LATLNG;
 
 /**
  * Converts Latitude and Longitude to What3Words. An address can be used instead of Latitude.
- * @customfunction LATLNG_TO_WHAT3WORDS LatLngToWhatFreeWords
+ * @customfunction LATLNG_TO_WHAT3WORDS
  * @param {any} latitude_or_address
- * @param {number} [longitude=false]
+ * @param {number} [longitude]
  * @return {string} Cell with What3Words address.
  */
-async function LatLngToWhatFreeWords(latitude, longitude = false) {
+async function LATLNG_TO_WHAT3WORDS(latitude, longitude = false) {
   try {
     const coords = await parseCoordinates(latitude, longitude);
     const url = `../../api/latlng_to_whatfreewords?lat=${coords[0][0]}&lng=${coords[0][1]}`;
@@ -275,7 +275,7 @@ async function LatLngToWhatFreeWords(latitude, longitude = false) {
     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
   }
 }
-g.LatLngToWhatFreeWords = LatLngToWhatFreeWords;
+g.LATLNG_TO_WHAT3WORDS = LATLNG_TO_WHAT3WORDS;
 
 // function LatLngToPluscode(latitude, longitude) {
 //   return new Promise((resolve, reject) => {

@@ -1,9 +1,9 @@
 {
     "functions": [
         {
-            "description": "Converts What3Words to two cells containing Latitude and Longitude.",
+            "description": "Converts What3Words to two adjacent cells containing Latitude and Longitude.",
             "id": "WHAT3WORDS_TO_LATLNG",
-            "name": "what3WordsToLatLng",
+            "name": "WHAT3WORDS_TO_LATLNG",
             "parameters": [
                 {
                     "name": "what3words",
@@ -16,9 +16,9 @@
             }
         },
         {
-            "description": "Converts a Pluscode to two cells containing Latitude and Longitude.",
+            "description": "Converts a Pluscode to two adjacent cells containing Latitude and Longitude.",
             "id": "PLUSCODE_TO_LATLNG",
-            "name": "plusCodeToLatLng",
+            "name": "PLUSCODE_TO_LATLNG",
             "parameters": [
                 {
                     "name": "pluscode",
@@ -31,9 +31,9 @@
             }
         },
         {
-            "description": "Converts a Ghana Digital Address (Ghana Postal GPS) to two cells containing Latitude and Longitude.",
+            "description": "Converts a Ghana Digital Address (Ghana Postal GPS) to two adjacent cells containing Latitude and Longitude.",
             "id": "GPGPS_TO_LATLNG",
-            "name": "gpgpsToLatLng",
+            "name": "GPGPS_TO_LATLNG",
             "parameters": [
                 {
                     "name": "gpgps",
@@ -48,7 +48,7 @@
         {
             "description": "Parses an unknown input to Latitude and Longitude if possible.",
             "id": "PARSE_TO_LATLNG",
-            "name": "parseCoordinates",
+            "name": "PARSE_TO_LATLNG",
             "parameters": [
                 {
                     "name": "latitude_or_address",
@@ -68,7 +68,7 @@
         {
             "description": "Converts Latitude and Longitude to What3Words. An address can be used instead of Latitude.",
             "id": "LATLNG_TO_WHAT3WORDS",
-            "name": "LatLngToWhatFreeWords",
+            "name": "LATLNG_TO_WHAT3WORDS",
             "parameters": [
                 {
                     "name": "latitude",
@@ -77,7 +77,7 @@
                 {
                     "name": "longitude",
                     "optional": true,
-                    "type": "any"
+                    "type": "number"
                 }
             ],
             "result": {
