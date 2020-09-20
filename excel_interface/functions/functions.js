@@ -243,6 +243,9 @@ function WHAT3WORDS_TO_LATLNG(what3words) {
                     return [4 /*yield*/, fetch(url, { headers: { Authorization: token } })];
                 case 2:
                     apiResponse = _a.sent();
+                    if (apiResponse.status === 401) {
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+                    }
                     return [4 /*yield*/, apiResponse.json()];
                 case 3:
                     responseJSON = _a.sent();
@@ -280,6 +283,9 @@ function PLUSCODE_TO_LATLNG(pluscode) {
                     return [4 /*yield*/, fetch(url, { headers: { Authorization: token } })];
                 case 2:
                     apiResponse = _a.sent();
+                    if (apiResponse.status === 401) {
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+                    }
                     return [4 /*yield*/, apiResponse.json()];
                 case 3:
                     responseJSON = _a.sent();
@@ -333,42 +339,35 @@ g.GPGPS_TO_LATLNG = GPGPS_TO_LATLNG;
 function PARSE_TO_LATLNG(latitude_or_address, longitude) {
     if (longitude === void 0) { longitude = false; }
     return __awaiter(this, void 0, void 0, function () {
-        var coordArray, coords, coords, coords, err_3;
+        var coordArray, coords, coords, coords;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     coordArray = coordinateArray(latitude_or_address);
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 8, , 9]);
                     if (coordArray) {
                         return [2 /*return*/, [coordArray]];
                     }
                     if (isValidLatitude(latitude_or_address) && isValidLongitude(longitude)) {
                         return [2 /*return*/, [[latitude_or_address, longitude]]];
                     }
-                    if (!isValidWhatFreeWords(latitude_or_address)) return [3 /*break*/, 3];
+                    if (!isValidWhatFreeWords(latitude_or_address)) return [3 /*break*/, 2];
                     return [4 /*yield*/, WHAT3WORDS_TO_LATLNG(latitude_or_address)];
+                case 1:
+                    coords = _a.sent();
+                    return [2 /*return*/, coords];
                 case 2:
-                    coords = _a.sent();
-                    return [2 /*return*/, coords];
-                case 3:
-                    if (!isValidPluscode(latitude_or_address)) return [3 /*break*/, 5];
+                    if (!isValidPluscode(latitude_or_address)) return [3 /*break*/, 4];
                     return [4 /*yield*/, PLUSCODE_TO_LATLNG(latitude_or_address)];
+                case 3:
+                    coords = _a.sent();
+                    return [2 /*return*/, coords];
                 case 4:
-                    coords = _a.sent();
-                    return [2 /*return*/, coords];
-                case 5:
-                    if (!isValidGhanaPostalGPS(latitude_or_address)) return [3 /*break*/, 7];
+                    if (!isValidGhanaPostalGPS(latitude_or_address)) return [3 /*break*/, 6];
                     return [4 /*yield*/, GPGPS_TO_LATLNG(latitude_or_address)];
-                case 6:
+                case 5:
                     coords = _a.sent();
                     return [2 /*return*/, coords];
-                case 7: throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('400: Unable to parse input'));
-                case 8:
-                    err_3 = _a.sent();
-                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_3));
-                case 9: return [2 /*return*/];
+                case 6: throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('400: Unable to parse input'));
             }
         });
     });
@@ -385,7 +384,7 @@ g.PARSE_TO_LATLNG = PARSE_TO_LATLNG;
 function LATLNG_TO_WHAT3WORDS(latitude, longitude) {
     if (longitude === void 0) { longitude = false; }
     return __awaiter(this, void 0, void 0, function () {
-        var coords, url, token, apiResponse, responseJSON, err_4;
+        var coords, url, token, apiResponse, responseJSON, err_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -398,6 +397,9 @@ function LATLNG_TO_WHAT3WORDS(latitude, longitude) {
                     return [4 /*yield*/, fetch(url, { headers: { Authorization: token } })];
                 case 2:
                     apiResponse = _a.sent();
+                    if (apiResponse.status === 401) {
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+                    }
                     return [4 /*yield*/, apiResponse.json()];
                 case 3:
                     responseJSON = _a.sent();
@@ -406,8 +408,8 @@ function LATLNG_TO_WHAT3WORDS(latitude, longitude) {
                     }
                     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
                 case 4:
-                    err_4 = _a.sent();
-                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_4));
+                    err_3 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_3));
                 case 5: return [2 /*return*/];
             }
         });
@@ -425,7 +427,7 @@ g.LATLNG_TO_WHAT3WORDS = LATLNG_TO_WHAT3WORDS;
 function LATLNG_TO_PLUSCODE(latitude, longitude) {
     if (longitude === void 0) { longitude = false; }
     return __awaiter(this, void 0, void 0, function () {
-        var coords, url, token, apiResponse, responseJSON, err_5;
+        var coords, url, token, apiResponse, responseJSON, err_4;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -438,6 +440,9 @@ function LATLNG_TO_PLUSCODE(latitude, longitude) {
                     return [4 /*yield*/, fetch(url, { headers: { Authorization: token } })];
                 case 2:
                     apiResponse = _a.sent();
+                    if (apiResponse.status === 401) {
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+                    }
                     return [4 /*yield*/, apiResponse.json()];
                 case 3:
                     responseJSON = _a.sent();
@@ -446,8 +451,8 @@ function LATLNG_TO_PLUSCODE(latitude, longitude) {
                     }
                     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
                 case 4:
-                    err_5 = _a.sent();
-                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_5));
+                    err_4 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_4));
                 case 5: return [2 /*return*/];
             }
         });
@@ -483,12 +488,43 @@ function LATLNG_TO_GPGPS(latitude, longitude) {
     });
 }
 g.LATLNG_TO_GPGPS = LATLNG_TO_GPGPS;
-// function helloWorld() {
-//   const id = globalThis.localStorage.getItem('satf_token');
-//   console.log('hello hello - from new - see me?');
-//   return `hello ${id}`;
-// }
-// g.helloWorld = helloWorld;
+/**
+ * Tests if there is access to the API and the user is logged in.
+ * An address can be used instead of Latitude.
+ * @customfunction LATLNG_TO_GPGPS
+ * @return {string} Cell saying 'Hello world!' or 'Unauthorised'.
+ */
+function HELLO_WORLD() {
+    return __awaiter(this, void 0, void 0, function () {
+        var url, token, apiResponse, responseJSON, err_5;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    url = '../../api/hello_world';
+                    token = g.localStorage.getItem('satf_token');
+                    return [4 /*yield*/, fetch(url, { headers: { Authorization: token } })];
+                case 1:
+                    apiResponse = _a.sent();
+                    if (apiResponse.status === 401) {
+                        return [2 /*return*/, 'Unauthorised'];
+                    }
+                    return [4 /*yield*/, apiResponse.json()];
+                case 2:
+                    responseJSON = _a.sent();
+                    if (apiResponse.ok) {
+                        return [2 /*return*/, responseJSON.message];
+                    }
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+                case 3:
+                    err_5 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_5));
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+}
+g.HELLO_WORLD = HELLO_WORLD;
 // function PopulationDensity(latitude, longitude = false) {
 //   const baseurl = `${apiUrl}population_density`;
 //   return new Promise(((resolve, reject) => {

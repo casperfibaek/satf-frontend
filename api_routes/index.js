@@ -247,6 +247,14 @@ async function admin_level_2(req, res) {
   }
 }
 
+async function hello_world(req, res) {
+  return res.status(200).json({
+    status: 'Success',
+    message: 'Hello World!',
+    function: 'hello_world',
+  });
+}
+
 async function admin_level_2_fuzzy_tri(req, res) {
   if (!req.query.name) {
     return res.status(400).json({

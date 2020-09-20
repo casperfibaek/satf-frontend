@@ -162,8 +162,12 @@ async function WHAT3WORDS_TO_LATLNG(what3words) {
       const token = g.localStorage.getItem('satf_token');
 
       const apiResponse = await fetch(url, { headers: { Authorization: token } });
-      const responseJSON = await apiResponse.json();
 
+      if (apiResponse.status === 401) {
+        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+      }
+
+      const responseJSON = await apiResponse.json();
       if (apiResponse.ok) { return [responseJSON.message]; }
 
       throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
@@ -186,10 +190,14 @@ async function PLUSCODE_TO_LATLNG(pluscode) {
     try {
       const url = `../../api/pluscode_to_latlng?code=${pluscode}`;
       const token = g.localStorage.getItem('satf_token');
-  
-      const apiResponse = await fetch(url, { headers: { Authorization: token } });
-      const responseJSON = await apiResponse.json();
 
+      const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+      if (apiResponse.status === 401) {
+        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+      }
+
+      const responseJSON = await apiResponse.json();
       if (apiResponse.ok) { return [responseJSON.message]; }
 
       throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
@@ -236,25 +244,23 @@ g.GPGPS_TO_LATLNG = GPGPS_TO_LATLNG;
  */
 async function PARSE_TO_LATLNG(latitude_or_address, longitude = false) {
   const coordArray = coordinateArray(latitude_or_address);
-  try {
-    if (coordArray) {
-      return [coordArray];
-    } if (isValidLatitude(latitude_or_address) && isValidLongitude(longitude)) {
-      return [[latitude_or_address, longitude]];
-    } if (isValidWhatFreeWords(latitude_or_address)) {
-      const coords = await WHAT3WORDS_TO_LATLNG(latitude_or_address);
-      return coords;
-    } if (isValidPluscode(latitude_or_address)) {
-      const coords = await PLUSCODE_TO_LATLNG(latitude_or_address);
-      return coords;
-    } if (isValidGhanaPostalGPS(latitude_or_address)) {
-      const coords = await GPGPS_TO_LATLNG(latitude_or_address);
-      return coords;
-    }
-    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('400: Unable to parse input'));
-  } catch (err) {
-    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+
+  if (coordArray) {
+    return [coordArray];
+  } if (isValidLatitude(latitude_or_address) && isValidLongitude(longitude)) {
+    return [[latitude_or_address, longitude]];
+  } if (isValidWhatFreeWords(latitude_or_address)) {
+    const coords = await WHAT3WORDS_TO_LATLNG(latitude_or_address);
+    return coords;
+  } if (isValidPluscode(latitude_or_address)) {
+    const coords = await PLUSCODE_TO_LATLNG(latitude_or_address);
+    return coords;
+  } if (isValidGhanaPostalGPS(latitude_or_address)) {
+    const coords = await GPGPS_TO_LATLNG(latitude_or_address);
+    return coords;
   }
+
+  throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('400: Unable to parse input'));
 }
 g.PARSE_TO_LATLNG = PARSE_TO_LATLNG;
 
@@ -273,6 +279,11 @@ async function LATLNG_TO_WHAT3WORDS(latitude, longitude = false) {
     const token = g.localStorage.getItem('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+    if (apiResponse.status === 401) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+    }
+
     const responseJSON = await apiResponse.json();
 
     if (apiResponse.ok) { return responseJSON.message; }
@@ -299,6 +310,11 @@ async function LATLNG_TO_PLUSCODE(latitude, longitude = false) {
     const token = g.localStorage.getItem('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+    if (apiResponse.status === 401) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+    }
+
     const responseJSON = await apiResponse.json();
 
     if (apiResponse.ok) { return responseJSON.message; }
@@ -342,12 +358,30 @@ async function LATLNG_TO_GPGPS(latitude, longitude = false) {
 }
 g.LATLNG_TO_GPGPS = LATLNG_TO_GPGPS;
 
-// function helloWorld() {
-//   const id = globalThis.localStorage.getItem('satf_token');
-//   console.log('hello hello - from new - see me?');
-//   return `hello ${id}`;
-// }
-// g.helloWorld = helloWorld;
+/**
+ * Tests if there is access to the API and the user is logged in.
+ * An address can be used instead of Latitude.
+ * @customfunction LATLNG_TO_GPGPS
+ * @return {string} Cell saying 'Hello world!' or 'Unauthorised'.
+ */
+async function HELLO_WORLD() {
+  try {
+    const url = '../../api/hello_world';
+    const token = g.localStorage.getItem('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+    if (apiResponse.status === 401) { return 'Unauthorised'; }
+
+    const responseJSON = await apiResponse.json();
+    if (apiResponse.ok) { return responseJSON.message; }
+
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+  } catch (err) {
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+  }
+}
+g.HELLO_WORLD = HELLO_WORLD;
 
 // function PopulationDensity(latitude, longitude = false) {
 //   const baseurl = `${apiUrl}population_density`;
