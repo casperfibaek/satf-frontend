@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import documentationObject from '../functions/functions_meta.json';
 
 const { ReactDOM, React, FluentUIReact, Fuse } = window as any; // eslint-disable-line
@@ -24,7 +25,7 @@ class Documentation extends React.Component {
     });
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     window._fuzzySearch = new window.Fuse(functionsObj.functions, {
       keys: ['name', 'description'],
     });

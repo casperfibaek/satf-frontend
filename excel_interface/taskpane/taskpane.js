@@ -122,7 +122,7 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
                     _this.clearToken = _this.clearToken.bind(_this);
                     return _this;
                 }
-                Login.prototype.componentWillMount = function () {
+                Login.prototype.UNSAFE_componentWillMount = function () {
                     window._save_token = function (token) {
                         window.localStorage.setItem('satf_token', token);
                     };

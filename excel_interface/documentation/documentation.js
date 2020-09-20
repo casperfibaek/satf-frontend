@@ -43,7 +43,7 @@ System.register(["../functions/functions_meta.json"], function (exports_1, conte
                         keys: ['name'],
                     });
                 };
-                Documentation.prototype.componentWillMount = function () {
+                Documentation.prototype.UNSAFE_componentWillMount = function () {
                     window._fuzzySearch = new window.Fuse(functionsObj.functions, {
                         keys: ['name', 'description'],
                     });

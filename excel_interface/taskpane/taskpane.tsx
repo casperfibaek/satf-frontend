@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import LoginPage from './loginpage.js';
 import WelcomePage from './welcomepage.js';
 import RegisterPage from './registerpage.js';
@@ -45,8 +46,8 @@ class Login extends React.Component {
     this.clearToken = this.clearToken.bind(this);
   }
 
-  componentWillMount() {
-    window._save_token = (token) => {
+  UNSAFE_componentWillMount() {
+    window._save_token = (token: string) => {
       window.localStorage.setItem('satf_token', token);
     };
 
