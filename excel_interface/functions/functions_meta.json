@@ -155,7 +155,7 @@
             }
         },
         {
-            "description": "Calculates the amount of people within a walkable radius of the point. Circular approximation.",
+            "description": "Calculates the amount of people within a walkable timeframe of the point. Circular approximation.",
             "id": "POPDENS_BUFFER_WALK",
             "name": "POPDENS_BUFFER_WALK",
             "parameters": [
@@ -178,7 +178,7 @@
             }
         },
         {
-            "description": "Calculates the amount of people within a bikeable radius of the point. Circular approximation.",
+            "description": "Calculates the amount of people within a bikeable timeframe of the point. Circular approximation.",
             "id": "POPDENS_BUFFER_BIKE",
             "name": "POPDENS_BUFFER_BIKE",
             "parameters": [
@@ -201,9 +201,78 @@
             }
         },
         {
-            "description": "Calculates the amount of people within a drivable radius of the point. Circular approximation.",
+            "description": "Calculates the amount of people within a drivable timeframe of the point. Circular approximation.",
             "id": "POPDENS_BUFFER_CAR",
             "name": "POPDENS_BUFFER_CAR",
+            "parameters": [
+                {
+                    "name": "minutes",
+                    "type": "number"
+                },
+                {
+                    "name": "latitude_or_address",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "number"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Calculates the amount of people within a walkable timeframe of the point. Traverses the road network.",
+            "id": "POPDENS_ISO_WALK",
+            "name": "POPDENS_ISO_WALK",
+            "parameters": [
+                {
+                    "name": "minutes",
+                    "type": "number"
+                },
+                {
+                    "name": "latitude_or_address",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "number"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Calculates the amount of people within a bikeable timeframe of the point. Traverses the road network.",
+            "id": "POPDENS_ISO_BIKE",
+            "name": "POPDENS_ISO_BIKE",
+            "parameters": [
+                {
+                    "name": "minutes",
+                    "type": "number"
+                },
+                {
+                    "name": "latitude_or_address",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "number"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Calculates the amount of people within a drivable timeframe of the point. Traverses the road network.",
+            "id": "POPDENS_ISO_CAR",
+            "name": "POPDENS_ISO_CAR",
             "parameters": [
                 {
                     "name": "minutes",
