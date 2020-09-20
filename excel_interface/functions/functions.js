@@ -573,7 +573,7 @@ function POPDENS_BUFFER(bufferMeters, latitude_or_address, longitude) {
 }
 g.POPDENS_BUFFER = POPDENS_BUFFER;
 /**
- * Calculates the amount of people within a walkable radius of the point. Circular approximation.
+ * Calculates the amount of people within a walkable timeframe of the point. Circular approximation.
  * @customfunction POPDENS_BUFFER_WALK
  * @param {number} minutes
  * @param {any} latitude_or_address
@@ -619,7 +619,7 @@ function POPDENS_BUFFER_WALK(minutes, latitude_or_address, longitude) {
 }
 g.POPDENS_BUFFER_WALK = POPDENS_BUFFER_WALK;
 /**
- * Calculates the amount of people within a bikeable radius of the point. Circular approximation.
+ * Calculates the amount of people within a bikeable timeframe of the point. Circular approximation.
  * @customfunction POPDENS_BUFFER_BIKE
  * @param {number} minutes
  * @param {any} latitude_or_address
@@ -665,7 +665,7 @@ function POPDENS_BUFFER_BIKE(minutes, latitude_or_address, longitude) {
 }
 g.POPDENS_BUFFER_BIKE = POPDENS_BUFFER_BIKE;
 /**
- * Calculates the amount of people within a drivable radius of the point. Circular approximation.
+ * Calculates the amount of people within a drivable timeframe of the point. Circular approximation.
  * @customfunction POPDENS_BUFFER_CAR
  * @param {number} minutes
  * @param {any} latitude_or_address
@@ -711,6 +711,144 @@ function POPDENS_BUFFER_CAR(minutes, latitude_or_address, longitude) {
 }
 g.POPDENS_BUFFER_CAR = POPDENS_BUFFER_CAR;
 /**
+ * Calculates the amount of people within a walkable timeframe of the point. Traverses the road network.
+ * @customfunction POPDENS_ISO_WALK
+ * @param {number} minutes
+ * @param {any} latitude_or_address
+ * @param {number} [longitude]
+ * @return {string} Cell with the amount of people.
+ */
+function POPDENS_ISO_WALK(minutes, latitude_or_address, longitude) {
+    if (longitude === void 0) { longitude = false; }
+    return __awaiter(this, void 0, void 0, function () {
+        var coords, url, token, apiResponse, responseJSON, err_10;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 4, , 5]);
+                    if (isNaN(minutes)) {
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('Minutes not a number'));
+                    }
+                    return [4 /*yield*/, PARSE_TO_LATLNG(latitude_or_address, longitude)];
+                case 1:
+                    coords = _a.sent();
+                    url = "../../api/pop_density_isochrone_walk?minutes=" + minutes + "&lat=" + coords[0][0] + "&lng=" + coords[0][1];
+                    token = g.localStorage.getItem('satf_token');
+                    return [4 /*yield*/, fetch(url, { headers: { Authorization: token } })];
+                case 2:
+                    apiResponse = _a.sent();
+                    if (apiResponse.status === 401) {
+                        return [2 /*return*/, 'Unauthorised'];
+                    }
+                    return [4 /*yield*/, apiResponse.json()];
+                case 3:
+                    responseJSON = _a.sent();
+                    if (apiResponse.ok) {
+                        return [2 /*return*/, responseJSON.message];
+                    }
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+                case 4:
+                    err_10 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_10));
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+g.POPDENS_ISO_WALK = POPDENS_ISO_WALK;
+/**
+ * Calculates the amount of people within a bikeable timeframe of the point. Traverses the road network.
+ * @customfunction POPDENS_ISO_BIKE
+ * @param {number} minutes
+ * @param {any} latitude_or_address
+ * @param {number} [longitude]
+ * @return {string} Cell with the amount of people.
+ */
+function POPDENS_ISO_BIKE(minutes, latitude_or_address, longitude) {
+    if (longitude === void 0) { longitude = false; }
+    return __awaiter(this, void 0, void 0, function () {
+        var coords, url, token, apiResponse, responseJSON, err_11;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 4, , 5]);
+                    if (isNaN(minutes)) {
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('Minutes not a number'));
+                    }
+                    return [4 /*yield*/, PARSE_TO_LATLNG(latitude_or_address, longitude)];
+                case 1:
+                    coords = _a.sent();
+                    url = "../../api/pop_density_isochrone_bike?minutes=" + minutes + "&lat=" + coords[0][0] + "&lng=" + coords[0][1];
+                    token = g.localStorage.getItem('satf_token');
+                    return [4 /*yield*/, fetch(url, { headers: { Authorization: token } })];
+                case 2:
+                    apiResponse = _a.sent();
+                    if (apiResponse.status === 401) {
+                        return [2 /*return*/, 'Unauthorised'];
+                    }
+                    return [4 /*yield*/, apiResponse.json()];
+                case 3:
+                    responseJSON = _a.sent();
+                    if (apiResponse.ok) {
+                        return [2 /*return*/, responseJSON.message];
+                    }
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+                case 4:
+                    err_11 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_11));
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+g.POPDENS_ISO_BIKE = POPDENS_ISO_BIKE;
+/**
+ * Calculates the amount of people within a drivable timeframe of the point. Traverses the road network.
+ * @customfunction POPDENS_ISO_CAR
+ * @param {number} minutes
+ * @param {any} latitude_or_address
+ * @param {number} [longitude]
+ * @return {string} Cell with the amount of people.
+ */
+function POPDENS_ISO_CAR(minutes, latitude_or_address, longitude) {
+    if (longitude === void 0) { longitude = false; }
+    return __awaiter(this, void 0, void 0, function () {
+        var coords, url, token, apiResponse, responseJSON, err_12;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 4, , 5]);
+                    if (isNaN(minutes)) {
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('Minutes not a number'));
+                    }
+                    return [4 /*yield*/, PARSE_TO_LATLNG(latitude_or_address, longitude)];
+                case 1:
+                    coords = _a.sent();
+                    url = "../../api/pop_density_isochrone_car?minutes=" + minutes + "&lat=" + coords[0][0] + "&lng=" + coords[0][1];
+                    token = g.localStorage.getItem('satf_token');
+                    return [4 /*yield*/, fetch(url, { headers: { Authorization: token } })];
+                case 2:
+                    apiResponse = _a.sent();
+                    if (apiResponse.status === 401) {
+                        return [2 /*return*/, 'Unauthorised'];
+                    }
+                    return [4 /*yield*/, apiResponse.json()];
+                case 3:
+                    responseJSON = _a.sent();
+                    if (apiResponse.ok) {
+                        return [2 /*return*/, responseJSON.message];
+                    }
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+                case 4:
+                    err_12 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_12));
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+g.POPDENS_ISO_CAR = POPDENS_ISO_CAR;
+/**
  * Finds the administrative zone of a point from Latitude and Longitude or an address.
  * Level 1 is regions.
  * @customfunction ADMIN_LEVEL1
@@ -721,7 +859,7 @@ g.POPDENS_BUFFER_CAR = POPDENS_BUFFER_CAR;
 function ADMIN_LEVEL1(latitude_or_address, longitude) {
     if (longitude === void 0) { longitude = false; }
     return __awaiter(this, void 0, void 0, function () {
-        var coords, url, token, apiResponse, responseJSON, err_10;
+        var coords, url, token, apiResponse, responseJSON, err_13;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -745,8 +883,8 @@ function ADMIN_LEVEL1(latitude_or_address, longitude) {
                     }
                     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
                 case 4:
-                    err_10 = _a.sent();
-                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_10));
+                    err_13 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_13));
                 case 5: return [2 /*return*/];
             }
         });
@@ -764,7 +902,7 @@ g.ADMIN_LEVEL1 = ADMIN_LEVEL1;
 function ADMIN_LEVEL2(latitude_or_address, longitude) {
     if (longitude === void 0) { longitude = false; }
     return __awaiter(this, void 0, void 0, function () {
-        var coords, url, token, apiResponse, responseJSON, err_11;
+        var coords, url, token, apiResponse, responseJSON, err_14;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -788,8 +926,8 @@ function ADMIN_LEVEL2(latitude_or_address, longitude) {
                     }
                     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
                 case 4:
-                    err_11 = _a.sent();
-                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_11));
+                    err_14 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_14));
                 case 5: return [2 /*return*/];
             }
         });
@@ -805,7 +943,7 @@ g.ADMIN_LEVEL2 = ADMIN_LEVEL2;
  */
 function ADMIN_LEVEL2_FUZZY_LEV(str) {
     return __awaiter(this, void 0, void 0, function () {
-        var url, token, apiResponse, responseJSON, err_12;
+        var url, token, apiResponse, responseJSON, err_15;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -826,8 +964,8 @@ function ADMIN_LEVEL2_FUZZY_LEV(str) {
                     }
                     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
                 case 3:
-                    err_12 = _a.sent();
-                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_12));
+                    err_15 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_15));
                 case 4: return [2 /*return*/];
             }
         });
@@ -843,7 +981,7 @@ g.ADMIN_LEVEL2_FUZZY_LEV = ADMIN_LEVEL2_FUZZY_LEV;
  */
 function ADMIN_LEVEL2_FUZZY_TRI(str) {
     return __awaiter(this, void 0, void 0, function () {
-        var url, token, apiResponse, responseJSON, err_13;
+        var url, token, apiResponse, responseJSON, err_16;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -864,8 +1002,8 @@ function ADMIN_LEVEL2_FUZZY_TRI(str) {
                     }
                     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
                 case 3:
-                    err_13 = _a.sent();
-                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_13));
+                    err_16 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_16));
                 case 4: return [2 /*return*/];
             }
         });
@@ -881,7 +1019,7 @@ g.ADMIN_LEVEL2_FUZZY_TRI = ADMIN_LEVEL2_FUZZY_TRI;
 function URBAN_STATUS(latitude_or_address, longitude) {
     if (longitude === void 0) { longitude = false; }
     return __awaiter(this, void 0, void 0, function () {
-        var coords, url, token, apiResponse, responseJSON, err_14;
+        var coords, url, token, apiResponse, responseJSON, err_17;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -905,8 +1043,8 @@ function URBAN_STATUS(latitude_or_address, longitude) {
                     }
                     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
                 case 4:
-                    err_14 = _a.sent();
-                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_14));
+                    err_17 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_17));
                 case 5: return [2 /*return*/];
             }
         });
@@ -922,7 +1060,7 @@ g.URBAN_STATUS = URBAN_STATUS;
 function URBAN_STATUS_SIMPLE(latitude_or_address, longitude) {
     if (longitude === void 0) { longitude = false; }
     return __awaiter(this, void 0, void 0, function () {
-        var coords, url, token, apiResponse, responseJSON, err_15;
+        var coords, url, token, apiResponse, responseJSON, err_18;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -946,8 +1084,8 @@ function URBAN_STATUS_SIMPLE(latitude_or_address, longitude) {
                     }
                     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
                 case 4:
-                    err_15 = _a.sent();
-                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_15));
+                    err_18 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_18));
                 case 5: return [2 /*return*/];
             }
         });
@@ -963,7 +1101,7 @@ g.URBAN_STATUS_SIMPLE = URBAN_STATUS_SIMPLE;
 function NEAREST_PLACE(latitude_or_address, longitude) {
     if (longitude === void 0) { longitude = false; }
     return __awaiter(this, void 0, void 0, function () {
-        var coords, url, token, apiResponse, responseJSON, err_16;
+        var coords, url, token, apiResponse, responseJSON, err_19;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -987,8 +1125,8 @@ function NEAREST_PLACE(latitude_or_address, longitude) {
                     }
                     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
                 case 4:
-                    err_16 = _a.sent();
-                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_16));
+                    err_19 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_19));
                 case 5: return [2 /*return*/];
             }
         });
@@ -1004,7 +1142,7 @@ g.NEAREST_PLACE = NEAREST_PLACE;
 function NEAREST_POI(latitude_or_address, longitude) {
     if (longitude === void 0) { longitude = false; }
     return __awaiter(this, void 0, void 0, function () {
-        var coords, url, token, apiResponse, responseJSON, err_17;
+        var coords, url, token, apiResponse, responseJSON, err_20;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1028,8 +1166,8 @@ function NEAREST_POI(latitude_or_address, longitude) {
                     }
                     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
                 case 4:
-                    err_17 = _a.sent();
-                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_17));
+                    err_20 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_20));
                 case 5: return [2 /*return*/];
             }
         });
@@ -1045,7 +1183,7 @@ g.NEAREST_POI = NEAREST_POI;
 function NEAREST_BANK(latitude_or_address, longitude) {
     if (longitude === void 0) { longitude = false; }
     return __awaiter(this, void 0, void 0, function () {
-        var coords, url, token, apiResponse, responseJSON, err_18;
+        var coords, url, token, apiResponse, responseJSON, err_21;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1069,8 +1207,8 @@ function NEAREST_BANK(latitude_or_address, longitude) {
                     }
                     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
                 case 4:
-                    err_18 = _a.sent();
-                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_18));
+                    err_21 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_21));
                 case 5: return [2 /*return*/];
             }
         });
@@ -1086,7 +1224,7 @@ g.NEAREST_BANK = NEAREST_BANK;
 function NEAREST_BANK_DIST(latitude_or_address, longitude) {
     if (longitude === void 0) { longitude = false; }
     return __awaiter(this, void 0, void 0, function () {
-        var coords, url, token, apiResponse, responseJSON, err_19;
+        var coords, url, token, apiResponse, responseJSON, err_22;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1110,8 +1248,8 @@ function NEAREST_BANK_DIST(latitude_or_address, longitude) {
                     }
                     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
                 case 4:
-                    err_19 = _a.sent();
-                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_19));
+                    err_22 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_22));
                 case 5: return [2 /*return*/];
             }
         });

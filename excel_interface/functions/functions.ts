@@ -416,7 +416,7 @@ async function POPDENS_BUFFER(bufferMeters, latitude_or_address, longitude = fal
 g.POPDENS_BUFFER = POPDENS_BUFFER;
 
 /**
- * Calculates the amount of people within a walkable radius of the point. Circular approximation.
+ * Calculates the amount of people within a walkable timeframe of the point. Circular approximation.
  * @customfunction POPDENS_BUFFER_WALK
  * @param {number} minutes
  * @param {any} latitude_or_address
@@ -447,7 +447,7 @@ async function POPDENS_BUFFER_WALK(minutes, latitude_or_address, longitude = fal
 g.POPDENS_BUFFER_WALK = POPDENS_BUFFER_WALK;
 
 /**
- * Calculates the amount of people within a bikeable radius of the point. Circular approximation.
+ * Calculates the amount of people within a bikeable timeframe of the point. Circular approximation.
  * @customfunction POPDENS_BUFFER_BIKE
  * @param {number} minutes
  * @param {any} latitude_or_address
@@ -478,7 +478,7 @@ async function POPDENS_BUFFER_BIKE(minutes, latitude_or_address, longitude = fal
 g.POPDENS_BUFFER_BIKE = POPDENS_BUFFER_BIKE;
 
 /**
- * Calculates the amount of people within a drivable radius of the point. Circular approximation.
+ * Calculates the amount of people within a drivable timeframe of the point. Circular approximation.
  * @customfunction POPDENS_BUFFER_CAR
  * @param {number} minutes
  * @param {any} latitude_or_address
@@ -507,6 +507,99 @@ async function POPDENS_BUFFER_CAR(minutes, latitude_or_address, longitude = fals
   }
 }
 g.POPDENS_BUFFER_CAR = POPDENS_BUFFER_CAR;
+
+/**
+ * Calculates the amount of people within a walkable timeframe of the point. Traverses the road network.
+ * @customfunction POPDENS_ISO_WALK
+ * @param {number} minutes
+ * @param {any} latitude_or_address
+ * @param {number} [longitude]
+ * @return {string} Cell with the amount of people.
+ */
+async function POPDENS_ISO_WALK(minutes, latitude_or_address, longitude = false) {
+  try {
+    if (isNaN(minutes)) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('Minutes not a number'));
+    }
+    const coords = await PARSE_TO_LATLNG(latitude_or_address, longitude);
+    const url = `../../api/pop_density_isochrone_walk?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const token = g.localStorage.getItem('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+    if (apiResponse.status === 401) { return 'Unauthorised'; }
+
+    const responseJSON = await apiResponse.json();
+    if (apiResponse.ok) { return responseJSON.message; }
+
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+  } catch (err) {
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+  }
+}
+g.POPDENS_ISO_WALK = POPDENS_ISO_WALK;
+
+/**
+ * Calculates the amount of people within a bikeable timeframe of the point. Traverses the road network.
+ * @customfunction POPDENS_ISO_BIKE
+ * @param {number} minutes
+ * @param {any} latitude_or_address
+ * @param {number} [longitude]
+ * @return {string} Cell with the amount of people.
+ */
+async function POPDENS_ISO_BIKE(minutes, latitude_or_address, longitude = false) {
+  try {
+    if (isNaN(minutes)) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('Minutes not a number'));
+    }
+    const coords = await PARSE_TO_LATLNG(latitude_or_address, longitude);
+    const url = `../../api/pop_density_isochrone_bike?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const token = g.localStorage.getItem('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+    if (apiResponse.status === 401) { return 'Unauthorised'; }
+
+    const responseJSON = await apiResponse.json();
+    if (apiResponse.ok) { return responseJSON.message; }
+
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+  } catch (err) {
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+  }
+}
+g.POPDENS_ISO_BIKE = POPDENS_ISO_BIKE;
+
+/**
+ * Calculates the amount of people within a drivable timeframe of the point. Traverses the road network.
+ * @customfunction POPDENS_ISO_CAR
+ * @param {number} minutes
+ * @param {any} latitude_or_address
+ * @param {number} [longitude]
+ * @return {string} Cell with the amount of people.
+ */
+async function POPDENS_ISO_CAR(minutes, latitude_or_address, longitude = false) {
+  try {
+    if (isNaN(minutes)) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('Minutes not a number'));
+    }
+    const coords = await PARSE_TO_LATLNG(latitude_or_address, longitude);
+    const url = `../../api/pop_density_isochrone_car?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const token = g.localStorage.getItem('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+    if (apiResponse.status === 401) { return 'Unauthorised'; }
+
+    const responseJSON = await apiResponse.json();
+    if (apiResponse.ok) { return responseJSON.message; }
+
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+  } catch (err) {
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+  }
+}
+g.POPDENS_ISO_CAR = POPDENS_ISO_CAR;
 
 /**
  * Finds the administrative zone of a point from Latitude and Longitude or an address.
