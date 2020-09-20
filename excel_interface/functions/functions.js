@@ -35,7 +35,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-window.sharedState = 'empty';
 /* CustomFunctions, executed in Excel cells. Metadata defined in ./functions_meta.json */
 function isValidPluscode(code) {
     // A separator used to break the code into two parts to aid memorability.
@@ -231,7 +230,7 @@ var g = getGlobal();
  */
 function WHAT3WORDS_TO_LATLNG(what3words) {
     return __awaiter(this, void 0, void 0, function () {
-        var url, apiResponse, responseJSON, err_1;
+        var url, token, apiResponse, responseJSON, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -240,7 +239,8 @@ function WHAT3WORDS_TO_LATLNG(what3words) {
                 case 1:
                     _a.trys.push([1, 4, , 5]);
                     url = "../../api/whatfreewords_to_latlng?words=" + what3words;
-                    return [4 /*yield*/, fetch(url, { headers: { Authorization: globalThis.localStorage.getItem('satf_token') } })];
+                    token = g.localStorage.getItem('satf_token');
+                    return [4 /*yield*/, fetch(url, { headers: { Authorization: token } })];
                 case 2:
                     apiResponse = _a.sent();
                     return [4 /*yield*/, apiResponse.json()];
@@ -267,7 +267,7 @@ g.WHAT3WORDS_TO_LATLNG = WHAT3WORDS_TO_LATLNG;
  */
 function PLUSCODE_TO_LATLNG(pluscode) {
     return __awaiter(this, void 0, void 0, function () {
-        var url, apiResponse, responseJSON, err_2;
+        var url, token, apiResponse, responseJSON, err_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -276,10 +276,11 @@ function PLUSCODE_TO_LATLNG(pluscode) {
                 case 1:
                     _a.trys.push([1, 4, , 5]);
                     url = "../../api/pluscode_to_latlng?code=" + pluscode;
-                    return [4 /*yield*/, fetch(url, { headers: { Authorization: globalThis.localStorage.getItem('satf_token') } })];
+                    token = g.localStorage.getItem('satf_token');
+                    return [4 /*yield*/, fetch(url, { headers: { Authorization: token } })];
                 case 2:
                     apiResponse = _a.sent();
-                    return [4 /*yield*/, [apiResponse.json()]];
+                    return [4 /*yield*/, apiResponse.json()];
                 case 3:
                     responseJSON = _a.sent();
                     if (apiResponse.ok) {
@@ -303,30 +304,21 @@ g.PLUSCODE_TO_LATLNG = PLUSCODE_TO_LATLNG;
  */
 function GPGPS_TO_LATLNG(gpgps) {
     return __awaiter(this, void 0, void 0, function () {
-        var url, apiResponse, responseJSON, err_3;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    if (!isValidGhanaPostalGPS(gpgps)) return [3 /*break*/, 5];
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 4, , 5]);
-                    url = "../../api/gpgps_to_latlng?gpgps=" + gpgps;
-                    return [4 /*yield*/, fetch(url, { headers: { Authorization: globalThis.localStorage.getItem('satf_token') } })];
-                case 2:
-                    apiResponse = _a.sent();
-                    return [4 /*yield*/, apiResponse.json()];
-                case 3:
-                    responseJSON = _a.sent();
-                    if (apiResponse.ok) {
-                        return [2 /*return*/, [responseJSON.message]];
-                    }
-                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
-                case 4:
-                    err_3 = _a.sent();
-                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_3));
-                case 5: throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('500: Invalid Ghana Digital Address'));
+            if (isValidGhanaPostalGPS(gpgps)) {
+                return [2 /*return*/, [[0.0, 0.0]]];
+                // try {
+                //   const url = `../../api/gpgps_to_latlng?gpgps=${gpgps}`;
+                //   const token = g.localStorage.getItem('satf_token');
+                //   const apiResponse = await fetch(url, { headers: { Authorization: token } });
+                //   const responseJSON = await apiResponse.json();
+                //   if (apiResponse.ok) { return [responseJSON.message]; }
+                //   throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+                // } catch (err) {
+                //   throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+                // }
             }
+            throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('500: Invalid Ghana Digital Address'));
         });
     });
 }
@@ -341,7 +333,7 @@ g.GPGPS_TO_LATLNG = GPGPS_TO_LATLNG;
 function PARSE_TO_LATLNG(latitude_or_address, longitude) {
     if (longitude === void 0) { longitude = false; }
     return __awaiter(this, void 0, void 0, function () {
-        var coordArray, coords, coords, coords, err_4;
+        var coordArray, coords, coords, coords, err_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -374,8 +366,8 @@ function PARSE_TO_LATLNG(latitude_or_address, longitude) {
                     return [2 /*return*/, coords];
                 case 7: throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('400: Unable to parse input'));
                 case 8:
-                    err_4 = _a.sent();
-                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_4));
+                    err_3 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_3));
                 case 9: return [2 /*return*/];
             }
         });
@@ -383,7 +375,8 @@ function PARSE_TO_LATLNG(latitude_or_address, longitude) {
 }
 g.PARSE_TO_LATLNG = PARSE_TO_LATLNG;
 /**
- * Converts Latitude and Longitude to What3Words. An address can be used instead of Latitude.
+ * Converts Latitude and Longitude to What3Words.
+ * An address can be used instead of Latitude.
  * @customfunction LATLNG_TO_WHAT3WORDS
  * @param {any} latitude_or_address
  * @param {number} [longitude]
@@ -392,23 +385,64 @@ g.PARSE_TO_LATLNG = PARSE_TO_LATLNG;
 function LATLNG_TO_WHAT3WORDS(latitude, longitude) {
     if (longitude === void 0) { longitude = false; }
     return __awaiter(this, void 0, void 0, function () {
-        var coords, url, apiResponse, responseJSON, err_5;
+        var coords, url, token, apiResponse, responseJSON, err_4;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 4, , 5]);
-                    return [4 /*yield*/, parseCoordinates(latitude, longitude)];
+                    return [4 /*yield*/, PARSE_TO_LATLNG(latitude, longitude)];
                 case 1:
                     coords = _a.sent();
                     url = "../../api/latlng_to_whatfreewords?lat=" + coords[0][0] + "&lng=" + coords[0][1];
-                    return [4 /*yield*/, fetch(url, { headers: { Authorization: globalThis.localStorage.getItem('satf_token') } })];
+                    token = g.localStorage.getItem('satf_token');
+                    return [4 /*yield*/, fetch(url, { headers: { Authorization: token } })];
                 case 2:
                     apiResponse = _a.sent();
                     return [4 /*yield*/, apiResponse.json()];
                 case 3:
                     responseJSON = _a.sent();
                     if (apiResponse.ok) {
-                        return [2 /*return*/, [responseJSON.message]];
+                        return [2 /*return*/, responseJSON.message];
+                    }
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+                case 4:
+                    err_4 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_4));
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+g.LATLNG_TO_WHAT3WORDS = LATLNG_TO_WHAT3WORDS;
+/**
+ * Converts Latitude and Longitude to PlusCodes.
+ * An address can be used instead of Latitude.
+ * @customfunction LATLNG_TO_PLUSCODE
+ * @param {any} latitude_or_address
+ * @param {number} [longitude]
+ * @return {string} Cell with PlusCode address.
+ */
+function LATLNG_TO_PLUSCODE(latitude, longitude) {
+    if (longitude === void 0) { longitude = false; }
+    return __awaiter(this, void 0, void 0, function () {
+        var coords, url, token, apiResponse, responseJSON, err_5;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 4, , 5]);
+                    return [4 /*yield*/, PARSE_TO_LATLNG(latitude, longitude)];
+                case 1:
+                    coords = _a.sent();
+                    url = "../../api/latlng_to_pluscode?lat=" + coords[0][0] + "&lng=" + coords[0][1];
+                    token = g.localStorage.getItem('satf_token');
+                    return [4 /*yield*/, fetch(url, { headers: { Authorization: token } })];
+                case 2:
+                    apiResponse = _a.sent();
+                    return [4 /*yield*/, apiResponse.json()];
+                case 3:
+                    responseJSON = _a.sent();
+                    if (apiResponse.ok) {
+                        return [2 /*return*/, responseJSON.message];
                     }
                     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
                 case 4:
@@ -419,19 +453,36 @@ function LATLNG_TO_WHAT3WORDS(latitude, longitude) {
         });
     });
 }
-g.LATLNG_TO_WHAT3WORDS = LATLNG_TO_WHAT3WORDS;
-// function LatLngToPluscode(latitude, longitude) {
-//   return new Promise((resolve, reject) => {
-//     satfApiRequest('get', `${apiUrl}latlng_to_pluscode?lat=${latitude}&lng=${longitude}`)
-//       .then((value) => {
-//         resolve(value);
-//       })
-//       .catch((err) => {
-//         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-//       });
-//   });
-// }
-// g.LatLngToPluscode = LatLngToPluscode;
+g.LATLNG_TO_PLUSCODE = LATLNG_TO_PLUSCODE;
+/**
+ * Converts Latitude and Longitude to Ghana Digital Address (Ghana Postal GPS).
+ * An address can be used instead of Latitude.
+ * @customfunction LATLNG_TO_GPGPS
+ * @param {any} latitude_or_address
+ * @param {number} [longitude]
+ * @return {string} Cell with Ghana Digital Address.
+ */
+function LATLNG_TO_GPGPS(latitude, longitude) {
+    if (longitude === void 0) { longitude = false; }
+    return __awaiter(this, void 0, void 0, function () {
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, PARSE_TO_LATLNG(latitude, longitude)];
+                case 1:
+                    _b.sent();
+                    return [2 /*return*/, 'CP-0968-1906'];
+                case 2:
+                    _a = _b.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('Unable to parse input'));
+                case 3: return [2 /*return*/];
+            }
+        });
+    });
+}
+g.LATLNG_TO_GPGPS = LATLNG_TO_GPGPS;
 // function helloWorld() {
 //   const id = globalThis.localStorage.getItem('satf_token');
 //   console.log('hello hello - from new - see me?');

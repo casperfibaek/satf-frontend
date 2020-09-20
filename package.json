@@ -12,10 +12,6 @@
     "validate": "office-addin-manifest validate ./excel_interface/manifest_local.xml"
   },
   "dependencies": {
-    "@types/jest": "^26.0.13",
-    "@types/node": "^14.10.1",
-    "@types/react": "^16.9.49",
-    "@types/react-dom": "^16.9.8",
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
     "cookie-parser": "~1.4.5",
@@ -26,10 +22,12 @@
     "morgan": "~1.10.0",
     "nocache": "^2.1.0",
     "nodemon": "^2.0.4",
-    "pg": "^8.3.3",
-    "puppeteer": "^5.3.0"
+    "pg": "^8.3.3"
   },
   "devDependencies": {
+    "@types/node": "^14.10.1",
+    "@types/react": "^16.9.49",
+    "@types/react-dom": "^16.9.8",
     "@types/custom-functions-runtime": "^1.5.3",
     "@types/leaflet": "^1.5.17",
     "@types/office-js": "^1.0.131",
@@ -40,7 +38,6 @@
     "eslint-plugin-import": "^2.22.0",
     "office-addin-debugging": "^3.0.33",
     "office-addin-manifest": "^1.5.6",
-    "tape": "^5.0.1",
     "typescript": "^4.0.2"
   }
 }

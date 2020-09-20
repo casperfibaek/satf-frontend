@@ -66,9 +66,47 @@
             }
         },
         {
-            "description": "Converts Latitude and Longitude to What3Words. An address can be used instead of Latitude.",
+            "description": "Converts Latitude and Longitude to What3Words.\nAn address can be used instead of Latitude.",
             "id": "LATLNG_TO_WHAT3WORDS",
             "name": "LATLNG_TO_WHAT3WORDS",
+            "parameters": [
+                {
+                    "name": "latitude",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "number"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Converts Latitude and Longitude to PlusCodes.\nAn address can be used instead of Latitude.",
+            "id": "LATLNG_TO_PLUSCODE",
+            "name": "LATLNG_TO_PLUSCODE",
+            "parameters": [
+                {
+                    "name": "latitude",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "number"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Converts Latitude and Longitude to Ghana Digital Address (Ghana Postal GPS).\nAn address can be used instead of Latitude.",
+            "id": "LATLNG_TO_GPGPS",
+            "name": "LATLNG_TO_GPGPS",
             "parameters": [
                 {
                     "name": "latitude",

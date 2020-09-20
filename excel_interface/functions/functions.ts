@@ -1,5 +1,3 @@
-window.sharedState = 'empty';
-
 /* CustomFunctions, executed in Excel cells. Metadata defined in ./functions_meta.json */
 function isValidPluscode(code) {
   // A separator used to break the code into two parts to aid memorability.
@@ -161,7 +159,9 @@ async function WHAT3WORDS_TO_LATLNG(what3words) {
   if (isValidWhatFreeWords(what3words)) {
     try {
       const url = `../../api/whatfreewords_to_latlng?words=${what3words}`;
-      const apiResponse = await fetch(url, { headers: { Authorization: globalThis.localStorage.getItem('satf_token') } });
+      const token = g.localStorage.getItem('satf_token');
+
+      const apiResponse = await fetch(url, { headers: { Authorization: token } });
       const responseJSON = await apiResponse.json();
 
       if (apiResponse.ok) { return [responseJSON.message]; }
@@ -185,8 +185,10 @@ async function PLUSCODE_TO_LATLNG(pluscode) {
   if (isValidPluscode(pluscode)) {
     try {
       const url = `../../api/pluscode_to_latlng?code=${pluscode}`;
-      const apiResponse = await fetch(url, { headers: { Authorization: globalThis.localStorage.getItem('satf_token') } });
-      const responseJSON = await [apiResponse.json()];
+      const token = g.localStorage.getItem('satf_token');
+  
+      const apiResponse = await fetch(url, { headers: { Authorization: token } });
+      const responseJSON = await apiResponse.json();
 
       if (apiResponse.ok) { return [responseJSON.message]; }
 
@@ -207,17 +209,19 @@ g.PLUSCODE_TO_LATLNG = PLUSCODE_TO_LATLNG;
  */
 async function GPGPS_TO_LATLNG(gpgps) {
   if (isValidGhanaPostalGPS(gpgps)) {
-    try {
-      const url = `../../api/gpgps_to_latlng?gpgps=${gpgps}`;
-      const apiResponse = await fetch(url, { headers: { Authorization: globalThis.localStorage.getItem('satf_token') } });
-      const responseJSON = await apiResponse.json();
+    return [[0.0, 0.0]];
+    // try {
+    //   const url = `../../api/gpgps_to_latlng?gpgps=${gpgps}`;
+    //   const token = g.localStorage.getItem('satf_token');
+    //   const apiResponse = await fetch(url, { headers: { Authorization: token } });
+    //   const responseJSON = await apiResponse.json();
 
-      if (apiResponse.ok) { return [responseJSON.message]; }
+    //   if (apiResponse.ok) { return [responseJSON.message]; }
 
-      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
-    } catch (err) {
-      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
-    }
+    //   throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+    // } catch (err) {
+    //   throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+    // }
   }
   throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('500: Invalid Ghana Digital Address'));
 }
@@ -255,7 +259,8 @@ async function PARSE_TO_LATLNG(latitude_or_address, longitude = false) {
 g.PARSE_TO_LATLNG = PARSE_TO_LATLNG;
 
 /**
- * Converts Latitude and Longitude to What3Words. An address can be used instead of Latitude.
+ * Converts Latitude and Longitude to What3Words.
+ * An address can be used instead of Latitude.
  * @customfunction LATLNG_TO_WHAT3WORDS
  * @param {any} latitude_or_address
  * @param {number} [longitude]
@@ -263,12 +268,14 @@ g.PARSE_TO_LATLNG = PARSE_TO_LATLNG;
  */
 async function LATLNG_TO_WHAT3WORDS(latitude, longitude = false) {
   try {
-    const coords = await parseCoordinates(latitude, longitude);
+    const coords = await PARSE_TO_LATLNG(latitude, longitude);
     const url = `../../api/latlng_to_whatfreewords?lat=${coords[0][0]}&lng=${coords[0][1]}`;
-    const apiResponse = await fetch(url, { headers: { Authorization: globalThis.localStorage.getItem('satf_token') } });
+    const token = g.localStorage.getItem('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
     const responseJSON = await apiResponse.json();
 
-    if (apiResponse.ok) { return [responseJSON.message]; }
+    if (apiResponse.ok) { return responseJSON.message; }
 
     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
   } catch (err) {
@@ -277,18 +284,63 @@ async function LATLNG_TO_WHAT3WORDS(latitude, longitude = false) {
 }
 g.LATLNG_TO_WHAT3WORDS = LATLNG_TO_WHAT3WORDS;
 
-// function LatLngToPluscode(latitude, longitude) {
-//   return new Promise((resolve, reject) => {
-//     satfApiRequest('get', `${apiUrl}latlng_to_pluscode?lat=${latitude}&lng=${longitude}`)
-//       .then((value) => {
-//         resolve(value);
-//       })
-//       .catch((err) => {
-//         reject(new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err)));
-//       });
-//   });
-// }
-// g.LatLngToPluscode = LatLngToPluscode;
+/**
+ * Converts Latitude and Longitude to PlusCodes.
+ * An address can be used instead of Latitude.
+ * @customfunction LATLNG_TO_PLUSCODE
+ * @param {any} latitude_or_address
+ * @param {number} [longitude]
+ * @return {string} Cell with PlusCode address.
+ */
+async function LATLNG_TO_PLUSCODE(latitude, longitude = false) {
+  try {
+    const coords = await PARSE_TO_LATLNG(latitude, longitude);
+    const url = `../../api/latlng_to_pluscode?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const token = g.localStorage.getItem('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+    const responseJSON = await apiResponse.json();
+
+    if (apiResponse.ok) { return responseJSON.message; }
+
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+  } catch (err) {
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+  }
+}
+g.LATLNG_TO_PLUSCODE = LATLNG_TO_PLUSCODE;
+
+/**
+ * Converts Latitude and Longitude to Ghana Digital Address (Ghana Postal GPS).
+ * An address can be used instead of Latitude.
+ * @customfunction LATLNG_TO_GPGPS
+ * @param {any} latitude_or_address
+ * @param {number} [longitude]
+ * @return {string} Cell with Ghana Digital Address.
+ */
+async function LATLNG_TO_GPGPS(latitude, longitude = false) {
+  try {
+    await PARSE_TO_LATLNG(latitude, longitude);
+    return 'CP-0968-1906';
+  } catch {
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String('Unable to parse input'));
+  }
+  // try {
+  //   const coords = await PARSE_TO_LATLNG(latitude, longitude);
+  //   const url = `../../api/latlng_to_pluscode?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+  //   const token = g.localStorage.getItem('satf_token');
+
+  //   const apiResponse = await fetch(url, { headers: { Authorization: token } });
+  //   const responseJSON = await apiResponse.json();
+
+  //   if (apiResponse.ok) { return responseJSON.message; }
+
+  //   throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+  // } catch (err) {
+  //   throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+  // }
+}
+g.LATLNG_TO_GPGPS = LATLNG_TO_GPGPS;
 
 // function helloWorld() {
 //   const id = globalThis.localStorage.getItem('satf_token');
