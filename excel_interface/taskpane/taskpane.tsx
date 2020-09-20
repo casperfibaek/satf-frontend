@@ -4,8 +4,6 @@ import RegisterPage from './registerpage.js';
 import MessageBar from './messageBar.js';
 import Spinner from './spinner.js';
 
-async function sleep(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
-
 const { ReactDOM, React, FluentUIReact } = window; // eslint-disable-line
 
 class Login extends React.Component {

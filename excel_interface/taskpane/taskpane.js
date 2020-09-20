@@ -51,11 +51,6 @@ System.register(["./loginpage.js", "./welcomepage.js", "./registerpage.js", "./m
     };
     var loginpage_js_1, welcomepage_js_1, registerpage_js_1, messageBar_js_1, spinner_js_1, ReactDOM, React, FluentUIReact, Login;
     var __moduleName = context_1 && context_1.id;
-    function sleep(ms) {
-        return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
-            return [2 /*return*/, new Promise(function (resolve) { return setTimeout(resolve, ms); })];
-        }); });
-    }
     return {
         setters: [
             function (loginpage_js_1_1) {

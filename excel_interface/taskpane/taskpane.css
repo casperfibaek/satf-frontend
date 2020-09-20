@@ -7,11 +7,10 @@
   max-width: 500px;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 20px;
-  box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,.132), 0 0.3px 0.9px 0 rgba(0,0,0,.108);
+  /* margin-top: 20px; */
+  /* box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,.132), 0 0.3px 0.9px 0 rgba(218, 163, 163, 0.108); */
   padding: 20px;
   padding-bottom: 40px;
-  background: #faf9f8;
 }
 
 #login_buttons,
@@ -53,4 +52,10 @@
 
 .ms-TextField-wrapper{
   margin-top: 20px;
+}
+
+html, body{
+  height: 100%;
+  background: #faf9f8;
+  margin: 0;
 }
