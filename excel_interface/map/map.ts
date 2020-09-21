@@ -79,11 +79,12 @@ const basemaps = {
 };
 
 L.control.scale().addTo(map);
-
 L.control.layers(basemaps, overlaymaps, { collapsed: false }).addTo(map);
 
 // OpacityControl https://github.com/dayjournal/Leaflet.Control.Opacity
 L.control.opacity(overlaymaps, { collapsed: true }).addTo(map);
+
+const markerLayers = L.layerGroup().addTo(map);
 
 function eventDispatcher(event, data) {
   console.log(event);
@@ -95,7 +96,8 @@ function eventDispatcher(event, data) {
         onEachFeature(f, l) {
           l.bindPopup(`<pre>${JSON.stringify(f.properties, null, ' ').replace(/[\{\}"]/g, '')}</pre>`);
         },
-      }).addTo(map);
+      });
+      markerLayers.addLayer(geojsonLayer);
       map.fitBounds(geojsonLayer.getBounds());
     } else {
       console.log('Did not understand event');
@@ -120,7 +122,8 @@ function onMessageFromParent(arg) {
 }
 
 function addMarker(e) {
-  L.marker(e.latlng).addTo(map);
+  const marker = L.marker(e.latlng);
+  markerLayers.addLayer(marker);
   sendToParent('createdMarker', e.latlng);
 }
 map.on('click', addMarker);
@@ -128,6 +131,12 @@ map.on('click', addMarker);
 const buttonRequest = document.getElementById('button_request');
 buttonRequest.addEventListener('click', () => {
   sendToParent('requestData');
+});
+
+const buttonClear = document.getElementById('button_clear');
+buttonClear.addEventListener('click', () => {
+  markerLayers.clearLayers();
+  sendToParent('clearedData');
 });
 
 Office.onReady().then(() => {

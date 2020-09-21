@@ -4,8 +4,8 @@ const express = require('express');
 const pg = require('pg');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-// const cache = require('./cache');
-// const auth = require('./auth');
+const cache = require('./cache');
+const auth = require('./auth');
 const credentials = require('./credentials');
 const utils = require('./utils');
 const validators = require('./validators');
@@ -936,7 +936,7 @@ async function get_banks(req, res) {
       round(ST_X("geom")::numeric, 6) AS "lng",
       round(ST_Y("geom")::numeric, 6) AS "lat"
     FROM ghana_poi
-    WHERE "fclass" = 'bank' AND (LOWER("name") LIKE '%${name}%' OR similarity("name", '${name}') > ${target})
+    WHERE "fclass" = 'bank' AND (LOWER("name") LIKE '%${name.toLowerCase()}%' OR similarity("name", '${name}') > ${target})
     ORDER BY SIMILARITY("name", 'absa') DESC;
   `;
 
@@ -1531,34 +1531,34 @@ async function delete_user(req, res) {
   });
 }
 
-router.route('/').get((req, res) => res.send('home/api'));
+router.route('/').get(auth, (req, res) => res.send('home/api'));
 
-router.route('/hello_world').get(hello_world);
-router.route('/latlng_to_what3words').get(latlng_to_what3words);
-router.route('/what3words_to_latlng').get(what3words_to_latlng);
-router.route('/latlng_to_pluscode').get(latlng_to_pluscode);
-router.route('/pluscode_to_latlng').get(pluscode_to_latlng);
-router.route('/population_density_walk').get(population_density_walk);
-router.route('/population_density_bike').get(population_density_bike);
-router.route('/population_density_car').get(population_density_car);
-router.route('/pop_density_isochrone_walk').get(pop_density_isochrone_walk);
-router.route('/pop_density_isochrone_bike').get(pop_density_isochrone_bike);
-router.route('/pop_density_isochrone_car').get(pop_density_isochrone_car);
-router.route('/isochrone_walk').get(isochrone_walk);
-router.route('/isochrone_bike').get(isochrone_bike);
-router.route('/isochrone_car').get(isochrone_car);
-router.route('/population_density_buffer').get(population_density_buffer);
-router.route('/urban_status').get(urban_status);
-router.route('/urban_status_simple').get(urban_status_simple);
-router.route('/admin_level_1').get(admin_level_1);
-router.route('/admin_level_2').get(admin_level_2);
-router.route('/admin_level_2_fuzzy_tri').get(admin_level_2_fuzzy_tri);
-router.route('/admin_level_2_fuzzy_lev').get(admin_level_2_fuzzy_lev);
-router.route('/nearest_placename').get(nearest_placename);
-router.route('/nearest_poi').get(nearest_poi);
-router.route('/nearest_bank').get(nearest_bank);
-router.route('/nearest_bank_distance').get(nearest_bank_distance);
-router.route('/get_banks').get(get_banks);
+router.route('/hello_world').get(auth, cache, hello_world);
+router.route('/latlng_to_what3words').get(auth, cache, latlng_to_what3words);
+router.route('/what3words_to_latlng').get(auth, cache, what3words_to_latlng);
+router.route('/latlng_to_pluscode').get(auth, cache, latlng_to_pluscode);
+router.route('/pluscode_to_latlng').get(auth, cache, pluscode_to_latlng);
+router.route('/population_density_walk').get(auth, cache, population_density_walk);
+router.route('/population_density_bike').get(auth, cache, population_density_bike);
+router.route('/population_density_car').get(auth, cache, population_density_car);
+router.route('/pop_density_isochrone_walk').get(auth, cache, pop_density_isochrone_walk);
+router.route('/pop_density_isochrone_bike').get(auth, cache, pop_density_isochrone_bike);
+router.route('/pop_density_isochrone_car').get(auth, cache, pop_density_isochrone_car);
+router.route('/isochrone_walk').get(auth, cache, isochrone_walk);
+router.route('/isochrone_bike').get(auth, cache, isochrone_bike);
+router.route('/isochrone_car').get(auth, cache, isochrone_car);
+router.route('/population_density_buffer').get(auth, cache, population_density_buffer);
+router.route('/urban_status').get(auth, cache, urban_status);
+router.route('/urban_status_simple').get(auth, cache, urban_status_simple);
+router.route('/admin_level_1').get(auth, cache, admin_level_1);
+router.route('/admin_level_2').get(auth, cache, admin_level_2);
+router.route('/admin_level_2_fuzzy_tri').get(auth, cache, admin_level_2_fuzzy_tri);
+router.route('/admin_level_2_fuzzy_lev').get(auth, cache, admin_level_2_fuzzy_lev);
+router.route('/nearest_placename').get(auth, cache, nearest_placename);
+router.route('/nearest_poi').get(auth, cache, nearest_poi);
+router.route('/nearest_bank').get(auth, cache, nearest_bank);
+router.route('/nearest_bank_distance').get(auth, cache, nearest_bank_distance);
+router.route('/get_banks').get(auth, cache, get_banks);
 router.route('/create_user').post(create_user);
 router.route('/login_user').post(login_user);
 router.route('/delete_user').post(delete_user);

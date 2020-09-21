@@ -1,6 +1,6 @@
 System.register(["./arrayToGeojson.js"], function (exports_1, context_1) {
     "use strict";
-    var arrayToGeojson_js_1, map, osm, esri, southWest, northEast, mybounds, lyr_2020, lyr_2019, lyr_grd, lyr_coh, lyr_ndvi, lyr_nl, lyr_cxb, lyr_terrain, lyr_slope, lyr_urban_status, lyr_urban_status_simple, overlaymaps, basemaps, buttonRequest;
+    var arrayToGeojson_js_1, map, osm, esri, southWest, northEast, mybounds, lyr_2020, lyr_2019, lyr_grd, lyr_coh, lyr_ndvi, lyr_nl, lyr_cxb, lyr_terrain, lyr_slope, lyr_urban_status, lyr_urban_status_simple, overlaymaps, basemaps, markerLayers, buttonRequest, buttonClear;
     var __moduleName = context_1 && context_1.id;
     function eventDispatcher(event, data) {
         console.log(event);
@@ -12,7 +12,8 @@ System.register(["./arrayToGeojson.js"], function (exports_1, context_1) {
                     onEachFeature: function (f, l) {
                         l.bindPopup("<pre>" + JSON.stringify(f.properties, null, ' ').replace(/[\{\}"]/g, '') + "</pre>");
                     },
-                }).addTo(map);
+                });
+                markerLayers.addLayer(geojsonLayer);
                 map.fitBounds(geojsonLayer.getBounds());
             }
             else {
@@ -38,7 +39,8 @@ System.register(["./arrayToGeojson.js"], function (exports_1, context_1) {
         }
     }
     function addMarker(e) {
-        L.marker(e.latlng).addTo(map);
+        var marker = L.marker(e.latlng);
+        markerLayers.addLayer(marker);
         sendToParent('createdMarker', e.latlng);
     }
     return {
@@ -122,10 +124,16 @@ System.register(["./arrayToGeojson.js"], function (exports_1, context_1) {
             L.control.layers(basemaps, overlaymaps, { collapsed: false }).addTo(map);
             // OpacityControl https://github.com/dayjournal/Leaflet.Control.Opacity
             L.control.opacity(overlaymaps, { collapsed: true }).addTo(map);
+            markerLayers = L.layerGroup().addTo(map);
             map.on('click', addMarker);
             buttonRequest = document.getElementById('button_request');
             buttonRequest.addEventListener('click', function () {
                 sendToParent('requestData');
+            });
+            buttonClear = document.getElementById('button_clear');
+            buttonClear.addEventListener('click', function () {
+                markerLayers.clearLayers();
+                sendToParent('clearedData');
             });
             Office.onReady().then(function () {
                 try {
