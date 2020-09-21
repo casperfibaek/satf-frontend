@@ -1020,7 +1020,7 @@ g.ADMIN_LEVEL2_FUZZY_TRI = ADMIN_LEVEL2_FUZZY_TRI;
 function GET_BANKS(name, target) {
     if (target === void 0) { target = 0.4; }
     return __awaiter(this, void 0, void 0, function () {
-        var url, token, apiResponse, responseJSON, err_17;
+        var url, token, apiResponse, responseJSON, cell, i, err_17;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1037,7 +1037,15 @@ function GET_BANKS(name, target) {
                 case 2:
                     responseJSON = _a.sent();
                     if (apiResponse.ok) {
-                        return [2 /*return*/, responseJSON.message];
+                        cell = [];
+                        for (i = 0; i < responseJSON.message.length; i += 1) {
+                            cell.push([
+                                responseJSON.message[i].name,
+                                Number(responseJSON.message[i].lat),
+                                (responseJSON.message[i].lng),
+                            ]);
+                        }
+                        return [2 /*return*/, cell];
                     }
                     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
                 case 3:

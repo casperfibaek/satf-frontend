@@ -358,10 +358,9 @@ async function urban_status(req, res) {
   }
 
   const dbQuery = `
-    SELECT ensemble
-    FROM public.urban_rural_classification_vect
-    WHERE ST_Contains(public.urban_rural_classification_vect.geom, ST_SetSRID(ST_Point(${req.query.lng}, ${req.query.lat}), 4326))
-    LIMIT 1;
+    SELECT ST_Value(urban_status.rast, ST_SetSRID(ST_MakePoint(${req.query.lng}, ${req.query.lat}), 4326)) as urban_status
+    FROM urban_status
+    WHERE ST_Intersects(urban_status.rast, ST_SetSRID(ST_MakePoint(${req.query.lng}, ${req.query.lat}, 4326))
   `;
 
   try {
@@ -369,13 +368,13 @@ async function urban_status(req, res) {
     if (dbResponse.rowCount > 0) {
       return res.status(200).json({
         status: 'success',
-        message: utils.translateUrbanClasses(dbResponse.rows[0].ensemble),
+        message: utils.translateUrbanClasses(dbResponse.rows[0].urban_status),
         function: 'urban_status',
       });
     }
     return res.status(200).json({
       status: 'success',
-      message: 'Hinterlands',
+      message: utils.translateUrbanClasses('0'),
       function: 'urban_status',
     });
   } catch (err) {
@@ -406,10 +405,9 @@ async function urban_status_simple(req, res) {
   }
 
   const dbQuery = `
-    SELECT ensemble
-    FROM public.urban_rural_classification_vect
-    WHERE ST_Contains(public.urban_rural_classification_vect.geom, ST_SetSRID(ST_Point(${req.query.lng}, ${req.query.lat}), 4326))
-    LIMIT 1;
+    SELECT ST_Value(urban_status_simple.rast, ST_SetSRID(ST_MakePoint(${req.query.lng}, ${req.query.lat}), 4326)) as urban_status_simple
+    FROM urban_status_simple
+    WHERE ST_Intersects(urban_status_simple.rast, ST_SetSRID(ST_MakePoint(${req.query.lng}, ${req.query.lat}, 4326))
   `;
 
   try {
@@ -417,13 +415,13 @@ async function urban_status_simple(req, res) {
     if (dbResponse.rowCount > 0) {
       return res.status(200).json({
         status: 'success',
-        message: utils.translateUrbanClasses(dbResponse.rows[0].ensemble, true),
+        message: utils.translateUrbanClasses(dbResponse.rows[0].urban_status_simple),
         function: 'urban_status_simple',
       });
     }
     return res.status(200).json({
       status: 'success',
-      message: 'Hinterlands',
+      message: utils.translateUrbanClasses('0'),
       function: 'urban_status_simple',
     });
   } catch (err) {

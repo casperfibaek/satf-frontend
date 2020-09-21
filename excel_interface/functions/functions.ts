@@ -721,7 +721,17 @@ async function GET_BANKS(name, target = 0.4) {
     if (apiResponse.status === 401) { return 'Unauthorised'; }
 
     const responseJSON = await apiResponse.json();
-    if (apiResponse.ok) { return responseJSON.message; }
+    if (apiResponse.ok) {
+      const cell = [];
+      for (let i = 0; i < responseJSON.message.length; i += 1) {
+        cell.push([
+          responseJSON.message[i].name,
+          Number(responseJSON.message[i].lat),
+          (responseJSON.message[i].lng),
+        ]);
+      }
+      return cell;
+    }
 
     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
   } catch (err) {
