@@ -83,11 +83,13 @@ System.register(["../functions/functions_meta.json"], function (exports_1, conte
                             React.createElement("li", null,
                                 React.createElement("b", null, f.result.type))))); });
                     return (React.createElement("div", { id: "root_functions" },
-                        React.createElement("div", { className: "documentation_intro_text" },
-                            React.createElement(FluentUIReact.Icon, { iconName: "TextDocument" }),
-                            React.createElement(FluentUIReact.Text, { variant: "xLarge", block: true }, "Search the documentation")),
-                        React.createElement(FluentUIReact.SearchBox, { className: "function_search", placeholder: "Search", onChanged: function (newValue) { return _this.fuzzySearch(newValue); } }),
-                        listItems));
+                        React.createElement("div", { className: "container" },
+                            React.createElement("div", { id: "documentation_header" },
+                                React.createElement("div", { className: "documentation_intro_text" },
+                                    React.createElement(FluentUIReact.Icon, { iconName: "TextDocument" }),
+                                    React.createElement(FluentUIReact.Text, { variant: "xLarge", block: true }, "Search the documentation")),
+                                React.createElement(FluentUIReact.SearchBox, { className: "function_search", placeholder: "Search", onChanged: function (newValue) { return _this.fuzzySearch(newValue); } }))),
+                        React.createElement("div", { id: "card_holder" }, listItems)));
                 };
                 return Documentation;
             }(React.Component));

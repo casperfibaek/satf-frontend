@@ -66,12 +66,18 @@ class Documentation extends React.Component {
     ));
     return (
       <div id="root_functions">
-        <div className="documentation_intro_text">
-          <FluentUIReact.Icon iconName="TextDocument"/>
-          <FluentUIReact.Text variant="xLarge" block>Search the documentation</FluentUIReact.Text>
+        <div className="container">
+          <div id="documentation_header">
+            <div className="documentation_intro_text">
+              <FluentUIReact.Icon iconName="TextDocument"/>
+              <FluentUIReact.Text variant="xLarge" block>Search the documentation</FluentUIReact.Text>
+            </div>
+            <FluentUIReact.SearchBox className="function_search" placeholder="Search" onChanged={(newValue) => this.fuzzySearch(newValue)} />
+          </div>
         </div>
-        <FluentUIReact.SearchBox className="function_search" placeholder="Search" onChanged={(newValue) => this.fuzzySearch(newValue)} />
-        {listItems}
+        <div id="card_holder">
+          {listItems}
+        </div>
       </div>);
   }
 }
