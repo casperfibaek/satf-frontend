@@ -1,5 +1,4 @@
 import arrayToGeojson from './arrayToGeojson.js';
-window.arrayToGeojson = arrayToGeojson;
 
 const map = L.map('map', {
   center: [7.955811115092113, -1.0050627119953766],
@@ -86,16 +85,18 @@ L.control.layers(basemaps, overlaymaps, { collapsed: false }).addTo(map);
 // OpacityControl https://github.com/dayjournal/Leaflet.Control.Opacity
 L.control.opacity(overlaymaps, { collapsed: true }).addTo(map);
 
-console.log(arrayToGeojson);
-
 function eventDispatcher(event, data) {
   console.log(event);
   console.log(data);
   try {
     if (event === 'selectedCells') {
       const geojson = arrayToGeojson(data);
-      L.geoJSON(geojson).addTo(map);
-      console.log(geojson);
+      const geojsonLayer = L.geoJSON(geojson, {
+        onEachFeature(f, l) {
+          l.bindPopup(`<pre>${JSON.stringify(f.properties, null, ' ').replace(/[\{\}"]/g, '')}</pre>`);
+        },
+      }).addTo(map);
+      map.fitBounds(geojsonLayer.getBounds());
     } else {
       console.log('Did not understand event');
     }

@@ -146,7 +146,7 @@ System.register(["./whatfreewords.js", "./pluscodes.js"], function (exports_1, c
             properties: properties,
             geometry: {
                 type: 'Point',
-                coordinates: coords,
+                coordinates: coords.slice().reverse(),
             },
         };
     }

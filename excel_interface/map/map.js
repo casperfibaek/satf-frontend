@@ -8,8 +8,12 @@ System.register(["./arrayToGeojson.js"], function (exports_1, context_1) {
         try {
             if (event === 'selectedCells') {
                 var geojson = arrayToGeojson_js_1.default(data);
-                L.geoJSON(geojson).addTo(map);
-                console.log(geojson);
+                var geojsonLayer = L.geoJSON(geojson, {
+                    onEachFeature: function (f, l) {
+                        l.bindPopup("<pre>" + JSON.stringify(f.properties, null, ' ').replace(/[\{\}"]/g, '') + "</pre>");
+                    },
+                }).addTo(map);
+                map.fitBounds(geojsonLayer.getBounds());
             }
             else {
                 console.log('Did not understand event');
@@ -44,7 +48,6 @@ System.register(["./arrayToGeojson.js"], function (exports_1, context_1) {
             }
         ],
         execute: function () {
-            window.arrayToGeojson = arrayToGeojson_js_1.default;
             map = L.map('map', {
                 center: [7.955811115092113, -1.0050627119953766],
                 zoom: 7,
@@ -119,7 +122,6 @@ System.register(["./arrayToGeojson.js"], function (exports_1, context_1) {
             L.control.layers(basemaps, overlaymaps, { collapsed: false }).addTo(map);
             // OpacityControl https://github.com/dayjournal/Leaflet.Control.Opacity
             L.control.opacity(overlaymaps, { collapsed: true }).addTo(map);
-            console.log(arrayToGeojson_js_1.default);
             map.on('click', addMarker);
             buttonRequest = document.getElementById('button_request');
             buttonRequest.addEventListener('click', function () {

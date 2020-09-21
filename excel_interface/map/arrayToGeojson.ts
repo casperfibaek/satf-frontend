@@ -247,7 +247,7 @@ function generatePoint(coords, properties = {}) {
     properties,
     geometry: {
       type: 'Point',
-      coordinates: coords,
+      coordinates: coords.slice().reverse(),
     },
   };
 }
