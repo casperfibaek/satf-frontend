@@ -184,7 +184,7 @@ function onEventFromDialog(arg) {
             break;
         case 12006:
             console.log('Dialog closed.');
-            g.dialog.close();
+            dialog.close();
             break;
         default:
             console.log('Unknown error in dialog box.');
