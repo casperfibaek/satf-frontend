@@ -1,7 +1,4 @@
 /* eslint-disable max-len */
-
-let dialog = null;
-
 function getGlobal() {
   if (typeof self !== 'undefined') {
     return self;
@@ -15,8 +12,10 @@ function getGlobal() {
 
 const g = getGlobal() as any;
 
+let dialog = null;
+
 function sendToDialog(event, data) {
-  dialog.sendMessage(JSON.stringify({ event, data }));
+  dialog.messageChild(JSON.stringify({ event, data }));
 }
 
 function oneDown(adr) {
@@ -92,7 +91,7 @@ function onEventFromDialog(arg) {
       console.log('The dialog box has been directed to a URL with the HTTP protocol. HTTPS is required.'); break;
     case 12006:
       console.log('Dialog closed.');
-      dialog.close();
+      g.dialog.close();
       break;
     default:
       console.log('Unknown error in dialog box.');

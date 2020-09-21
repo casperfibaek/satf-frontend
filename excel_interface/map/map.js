@@ -1,6 +1,6 @@
 System.register(["./arrayToGeojson.js"], function (exports_1, context_1) {
     "use strict";
-    var arrayToGeojson_js_1, map, osm, esri, southWest, northEast, mybounds, lyr_2020, lyr_2019, lyr_grd, lyr_coh, lyr_ndvi, lyr_nl, lyr_cxb, lyr_terrain, lyr_slope, lyr_urban_status, lyr_urban_status_simple, overlaymaps, basemaps;
+    var arrayToGeojson_js_1, map, osm, esri, southWest, northEast, mybounds, lyr_2020, lyr_2019, lyr_grd, lyr_coh, lyr_ndvi, lyr_nl, lyr_cxb, lyr_terrain, lyr_slope, lyr_urban_status, lyr_urban_status_simple, overlaymaps, basemaps, buttonRequest;
     var __moduleName = context_1 && context_1.id;
     function eventDispatcher(event, data) {
         console.log(event);
@@ -118,10 +118,19 @@ System.register(["./arrayToGeojson.js"], function (exports_1, context_1) {
             // OpacityControl https://github.com/dayjournal/Leaflet.Control.Opacity
             L.control.opacity(overlaymaps, { collapsed: true }).addTo(map);
             map.on('click', addMarker);
-            Office.onReady().then(function () {
-                Office.context.ui.addHandlerAsync(Office.EventType.DialogParentMessageReceived, onMessageFromParent);
-                sendToParent('ready');
+            buttonRequest = document.getElementById('button_request');
+            buttonRequest.addEventListener('click', function () {
                 sendToParent('requestData');
+            });
+            Office.onReady().then(function () {
+                try {
+                    Office.context.ui.addHandlerAsync(Office.EventType.DialogParentMessageReceived, onMessageFromParent);
+                    sendToParent('ready');
+                    sendToParent('requestData');
+                }
+                catch (_a) {
+                    console.log('Unable to initialise OfficeJS, is this running inside office?');
+                }
             });
             console.log('Loaded: map.js');
         }

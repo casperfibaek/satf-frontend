@@ -19,6 +19,7 @@
     <link rel="icon" type="image/png" href="../assets/icons/favicon-16x16.png" sizes="16x16">
 
     <!-- CSS -->
+    <link href="../assets/fabric.min.css" rel="stylesheet"/>
     <link href="../assets/leaflet.css" rel="stylesheet"/>
 
     <!-- Javascript -->
@@ -29,22 +30,128 @@
     
   </head>
   <style>
-    tr > td:first-child {
-      text-align: right;
-      padding-left: 2px;
-      padding-right: 4px;
-      border: 1px solid black;
+    body{
+      margin: 0;
+      overflow: hidden;
+      padding: 0;
+      position: absolute;
+      width: 100%;
+      height: 100%;
     }
 
-    tr > td:nth-child(2) {
-      text-align: left;
-      padding-left: 4px;
-      padding-right: 2px;
-      border: 1px solid grey;
+    #map-wrapper {
+        position: relative;
+        height: 100%;
+        width: 100%;
+    }
+
+    #map {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .btnStyle{
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    #button-wrapper {
+        position: absolute;
+        bottom: 10px;
+        width: 100%;
+        z-index: 10000;
+        margin-left: 100px;
+    }
+
+    .button_root{
+      outline: transparent;
+      position: relative;
+      font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      font-size: 14px;
+      font-weight: 400;
+      box-sizing: border-box;
+      border: 1px solid rgb(33, 115, 70);
+      display: inline-block;
+      text-decoration: none;
+      text-align: center;
+      cursor: pointer;
+      padding: 0px 16px;
+      border-radius: 2px;
+      min-width: 80px;
+      height: 32px;
+      background-color: rgb(33, 115, 70);
+      color: rgb(255, 255, 255);
+      user-select: none;
+    }
+
+    .button_root:hover{
+      background-color: rgb(30, 103, 63);
+      border: 1px solid rgb(30, 103, 63);
+      color: rgb(255, 255, 255);
+    }
+
+    .button_span_1{
+      font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      font-size: 14px;
+      font-weight: 400;
+      text-align: center;
+      cursor: pointer;
+      color: rgb(255, 255, 255);
+      user-select: none;
+      display: flex;
+      height: 100%;
+      flex-wrap: nowrap;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .button_span_2{
+      font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      font-size: 14px;
+      font-weight: 400;
+      text-align: center;
+      cursor: pointer;
+      color: rgb(255, 255, 255);
+      user-select: none;
+      flex-grow: 1;
+      display: block;
+    }
+
+    .button_span_3{
+      font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      font-size: 14px;
+      text-align: center;
+      cursor: pointer;
+      color: rgb(255, 255, 255);
+      user-select: none;
+      margin: 0px 4px;
+      line-height: 100%;
+      display: block;
+      font-weight: 600;
     }
   </style>
-  <body style="margin:0; padding:0; overflow: hidden">
-    <div id="map" style="width: 100%; height: 100%; position:absolute; margin: 0; padding: 0"></div>
+  <body>
+      <div id="map-wrapper">
+          <div id="map"></div>
+          <div id="button-wrapper">
+            <button type="button" id="button_request" class="button_root" data-is-focusable="true">
+              <span class="button_span_1" data-automationid="splitbuttonprimary">
+                <span class="button_span_2">
+                  <span class=".button_span_3">Request Excel Data</span>
+                </span>
+              </span>
+            </button>
+              <!-- <button type="button" id="button_request" value="Request Excel Data" class="btnStyle" /> -->
+              <!-- <input type="button" id="Btn2" value="Btn2" class="btnStyle" /> 
+              <input type="button" id="Btn3" value="Btn3" class="btnStyle" /> -->
+           </div> 
+      </div>
     <script src="./map.js" type="text/javascript"></script>
     <script>console.log('Loaded: map.html');</script>
   </body>

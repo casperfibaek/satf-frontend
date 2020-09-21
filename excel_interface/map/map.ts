@@ -120,10 +120,19 @@ function addMarker(e) {
 }
 map.on('click', addMarker);
 
-Office.onReady().then(() => {
-  Office.context.ui.addHandlerAsync(Office.EventType.DialogParentMessageReceived, onMessageFromParent);
-  sendToParent('ready');
+const buttonRequest = document.getElementById('button_request');
+buttonRequest.addEventListener('click', () => {
   sendToParent('requestData');
+});
+
+Office.onReady().then(() => {
+  try {
+    Office.context.ui.addHandlerAsync(Office.EventType.DialogParentMessageReceived, onMessageFromParent);
+    sendToParent('ready');
+    sendToParent('requestData');
+  } catch {
+    console.log('Unable to initialise OfficeJS, is this running inside office?');
+  }
 });
 
 console.log('Loaded: map.js');

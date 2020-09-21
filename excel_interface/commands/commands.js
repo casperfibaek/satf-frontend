@@ -1,5 +1,4 @@
 "use strict";
-/* eslint-disable max-len */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -36,7 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var dialog = null;
+/* eslint-disable max-len */
 function getGlobal() {
     if (typeof self !== 'undefined') {
         return self;
@@ -50,8 +49,9 @@ function getGlobal() {
     throw new Error('Unable to get global namespace.');
 }
 var g = getGlobal();
+var dialog = null;
 function sendToDialog(event, data) {
-    dialog.sendMessage(JSON.stringify({ event: event, data: data }));
+    dialog.messageChild(JSON.stringify({ event: event, data: data }));
 }
 function oneDown(adr) {
     var sheet = adr.split('!')[0] + "!";
@@ -184,7 +184,7 @@ function onEventFromDialog(arg) {
             break;
         case 12006:
             console.log('Dialog closed.');
-            dialog.close();
+            g.dialog.close();
             break;
         default:
             console.log('Unknown error in dialog box.');
