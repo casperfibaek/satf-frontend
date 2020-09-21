@@ -1025,7 +1025,7 @@ function GET_BANKS(name, target) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    url = "../../api/get_banks?name" + String(name).replace(/\s/g, '+') + "&target=" + Number(target);
+                    url = "../../api/get_banks?name=" + String(name).replace(/\s/g, '+') + "&target=" + Number(target);
                     token = g.localStorage.getItem('satf_token');
                     return [4 /*yield*/, fetch(url, { headers: { Authorization: token } })];
                 case 1:

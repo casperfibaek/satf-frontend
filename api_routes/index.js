@@ -455,7 +455,7 @@ async function population_density_buffer(req, res) {
 
   const dbQuery = `
     WITH const (pp_geom) AS (
-        values (ST_Buffer(ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography, '${Number(req.query.buffer) + 250}')::geometry)
+        values (ST_Buffer(ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography, '${Number(req.query.buffer) + 50}')::geometry)
     )
     
     SELECT
@@ -511,7 +511,7 @@ async function population_density_walk(req, res) {
 
   const dbQuery = `
     WITH const (pp_geom) AS (
-        values (ST_Buffer(ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography, '${(Number(req.query.minutes) * 55) + 10}')::geometry)
+        values (ST_Buffer(ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography, '${(Number(req.query.minutes) * 55) + 50}')::geometry)
     )
     
     SELECT
@@ -567,7 +567,7 @@ async function population_density_bike(req, res) {
 
   const dbQuery = `
     WITH const (pp_geom) AS (
-        values (ST_Buffer(ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography, '${(Number(req.query.minutes) * 155) + 10}')::geometry)
+        values (ST_Buffer(ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography, '${(Number(req.query.minutes) * 155) + 50}')::geometry)
     )
     
     SELECT
@@ -623,7 +623,7 @@ async function population_density_car(req, res) {
 
   const dbQuery = `
     WITH const (pp_geom) AS (
-        values (ST_Buffer(ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography, '${(Number(req.query.minutes) * 444) + 10}')::geometry)
+        values (ST_Buffer(ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography, '${(Number(req.query.minutes) * 444) + 50}')::geometry)
     )
     
     SELECT
@@ -936,7 +936,7 @@ async function get_banks(req, res) {
     SELECT
       "name",
       round(ST_X("geom")::numeric, 6) AS "lng",
-      round(ST_Y("geom")::numeric, 6) AS "lng"
+      round(ST_Y("geom")::numeric, 6) AS "lat"
     FROM ghana_poi
     WHERE "fclass" = 'bank' AND similarity("name", '${name}') > ${target}
     ORDER BY SIMILARITY("name", 'absa') DESC;
