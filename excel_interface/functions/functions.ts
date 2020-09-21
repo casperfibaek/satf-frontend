@@ -714,7 +714,8 @@ g.ADMIN_LEVEL2_FUZZY_TRI = ADMIN_LEVEL2_FUZZY_TRI;
  */
 async function GET_BANKS(name, target = 0.4) {
   try {
-    const url = `../../api/get_banks?name=${String(name).replace(/\s/g, '+')}&target=${Number(target)}`;
+    const target_test = (target === 0) ? 0.4 : target;
+    const url = `../../api/get_banks?name=${String(name).replace(/\s/g, '+')}&target=${target_test}`;
     const token = g.localStorage.getItem('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });

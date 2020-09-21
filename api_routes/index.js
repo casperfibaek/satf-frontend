@@ -936,7 +936,7 @@ async function get_banks(req, res) {
       round(ST_X("geom")::numeric, 6) AS "lng",
       round(ST_Y("geom")::numeric, 6) AS "lat"
     FROM ghana_poi
-    WHERE "fclass" = 'bank' AND similarity("name", '${name}') > ${target}
+    WHERE "fclass" = 'bank' AND (LOWER("name") LIKE '%${name}%' OR similarity("name", '${name}') > ${target})
     ORDER BY SIMILARITY("name", 'absa') DESC;
   `;
 

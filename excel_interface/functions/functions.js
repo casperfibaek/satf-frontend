@@ -1020,12 +1020,13 @@ g.ADMIN_LEVEL2_FUZZY_TRI = ADMIN_LEVEL2_FUZZY_TRI;
 function GET_BANKS(name, target) {
     if (target === void 0) { target = 0.4; }
     return __awaiter(this, void 0, void 0, function () {
-        var url, token, apiResponse, responseJSON, cell, i, err_17;
+        var target_test, url, token, apiResponse, responseJSON, cell, i, err_17;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    url = "../../api/get_banks?name=" + String(name).replace(/\s/g, '+') + "&target=" + Number(target);
+                    target_test = (target === 0) ? 0.4 : target;
+                    url = "../../api/get_banks?name=" + String(name).replace(/\s/g, '+') + "&target=" + target_test;
                     token = g.localStorage.getItem('satf_token');
                     return [4 /*yield*/, fetch(url, { headers: { Authorization: token } })];
                 case 1:
