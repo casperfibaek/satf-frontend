@@ -17,10 +17,10 @@
     <AppDomain>https://satf.azurewebsites.net/excel_interface/assets/</AppDomain>
     <AppDomain>https://satf.azurewebsites.net/excel_interface/map/</AppDomain>
     <AppDomain>https://satf.azurewebsites.net/excel_interface/functions/</AppDomain>
-    <AppDomain>https://www.niras.com/</AppDomain>
+    <!-- <AppDomain>https://www.niras.com/</AppDomain>
     <AppDomain>https://mastercard.com</AppDomain>
     <AppDomain>https://www.opml.co.uk/</AppDomain>
-    <AppDomain>https://www.opml.co.uk/projects/savings-frontier</AppDomain>
+    <AppDomain>https://www.opml.co.uk/projects/savings-frontier</AppDomain> -->
   </AppDomains>
   <Hosts>
     <Host Name="Workbook"/>

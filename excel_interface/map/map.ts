@@ -1,3 +1,5 @@
+import arrayToGeojson from './arrayToGeojson.js';
+
 const map = L.map('map', {
   center: [7.955811115092113, -1.0050627119953766],
   zoom: 7,
@@ -48,6 +50,14 @@ const lyr_slope = L.tileLayer('https://{s}.imap.niras.dk/ghana/dem/slope/{z}/{x}
   tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 13, bounds: mybounds,
 });
 
+const lyr_urban_status = L.tileLayer('https://{s}.imap.niras.dk/ghana/tiles_classification/{z}/{x}/{y}.png', {
+  tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 15, bounds: mybounds,
+});
+
+const lyr_urban_status_simple = L.tileLayer('https://{s}.imap.niras.dk/ghana/tiles_classification_simple/{z}/{x}/{y}.png', {
+  tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 15, bounds: mybounds,
+});
+
 const overlaymaps = {
   'Nighttime Lights (2020)': lyr_nl,
   'Normalised Vegetation Index': lyr_ndvi,
@@ -56,6 +66,8 @@ const overlaymaps = {
   'Coherence x Backscatter': lyr_cxb,
   'Terrain (Slope)': lyr_slope,
   'Terrain (Height)': lyr_terrain,
+  'Urban Status': lyr_urban_status,
+  'Urban Status (simple)': lyr_urban_status_simple,
 };
 
 const basemaps = {
@@ -73,13 +85,33 @@ L.control.layers(basemaps, overlaymaps, { collapsed: false }).addTo(map);
 // OpacityControl https://github.com/dayjournal/Leaflet.Control.Opacity
 L.control.opacity(overlaymaps, { collapsed: true }).addTo(map);
 
-function sendToParent(event, data) {
+function eventDispatcher(event, data) {
+  console.log(event);
+  console.log(data);
+  try {
+    if (event === 'selectedCells') {
+      const geojson = arrayToGeojson(data);
+      L.geoJSON(geojson).addTo(map);
+    } else {
+      console.log('Did not understand event');
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+function sendToParent(event, data = {}) {
   Office.context.ui.messageParent(JSON.stringify({ event, data }));
 }
 
-function onMessageFromParent(event) {
-  const messageFromParent = JSON.parse(event.message);
-  console.log(messageFromParent);
+function onMessageFromParent(arg) {
+  try {
+    const messageFromParent = JSON.parse(arg.message);
+    const { event, data } = messageFromParent;
+    eventDispatcher(event, data);
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 function addMarker(e) {
@@ -90,7 +122,8 @@ map.on('click', addMarker);
 
 Office.onReady().then(() => {
   Office.context.ui.addHandlerAsync(Office.EventType.DialogParentMessageReceived, onMessageFromParent);
-  sendToParent('ready', 'string');
+  sendToParent('ready');
+  sendToParent('requestData');
 });
 
 console.log('Loaded: map.js');

@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var dialog = null;
 function getGlobal() {
     if (typeof self !== 'undefined') {
         return self;
@@ -49,6 +50,9 @@ function getGlobal() {
     throw new Error('Unable to get global namespace.');
 }
 var g = getGlobal();
+function sendToDialog(event, data) {
+    dialog.sendMessage(JSON.stringify({ event: event, data: data }));
+}
 function oneDown(adr) {
     var sheet = adr.split('!')[0] + "!";
     var x = adr.split('!')[1].split(':')[0];
@@ -57,62 +61,45 @@ function oneDown(adr) {
     var yn = y.replace(/\d+/g, '') + (Number(y.match(/\d+/)[0]) + 1);
     return sheet + xn + ":" + yn;
 }
-function handleCoords(event) {
+function handleCoords(coords) {
     return __awaiter(this, void 0, void 0, function () {
-        var coords;
         var _this = this;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    coords = JSON.parse(localStorage.getItem('newCoords'));
-                    return [4 /*yield*/, Excel.run(function (context) { return __awaiter(_this, void 0, void 0, function () {
-                            var range, sheet;
-                            var _this = this;
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0:
-                                        range = context.workbook.getSelectedRange();
-                                        sheet = context.workbook.worksheets.getActiveWorksheet();
-                                        range.values = [[coords.lat, coords.lng]];
-                                        range.load('address');
-                                        return [4 /*yield*/, context.sync().then(function () { return __awaiter(_this, void 0, void 0, function () {
-                                                var downrange;
-                                                return __generator(this, function (_a) {
-                                                    switch (_a.label) {
-                                                        case 0:
-                                                            downrange = sheet.getRange(oneDown(range.address));
-                                                            downrange.select();
-                                                            return [4 /*yield*/, context.sync()];
-                                                        case 1:
-                                                            _a.sent();
-                                                            return [2 /*return*/];
-                                                    }
-                                                });
-                                            }); })];
-                                    case 1:
-                                        _a.sent();
-                                        return [2 /*return*/];
-                                }
-                            });
-                        }); })];
+                case 0: return [4 /*yield*/, Excel.run(function (context) { return __awaiter(_this, void 0, void 0, function () {
+                        var range, sheet;
+                        var _this = this;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    range = context.workbook.getSelectedRange();
+                                    sheet = context.workbook.worksheets.getActiveWorksheet();
+                                    range.values = [[coords.lat, coords.lng]];
+                                    range.load('address');
+                                    return [4 /*yield*/, context.sync().then(function () { return __awaiter(_this, void 0, void 0, function () {
+                                            var downrange;
+                                            return __generator(this, function (_a) {
+                                                switch (_a.label) {
+                                                    case 0:
+                                                        downrange = sheet.getRange(oneDown(range.address));
+                                                        downrange.select();
+                                                        return [4 /*yield*/, context.sync()];
+                                                    case 1:
+                                                        _a.sent();
+                                                        return [2 /*return*/];
+                                                }
+                                            });
+                                        }); })];
+                                case 1:
+                                    _a.sent();
+                                    return [2 /*return*/];
+                            }
+                        });
+                    }); })];
                 case 1:
                     _a.sent();
-                    event.completed();
                     return [2 /*return*/];
             }
-        });
-    });
-}
-function processMessage(event) {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            if (event.message === 'newCoords') {
-                handleCoords(event);
-            }
-            else {
-                event.completed();
-            }
-            return [2 /*return*/];
         });
     });
 }
@@ -141,58 +128,46 @@ function getSelectedCells() {
                         }); })];
                 case 1:
                     _a.sent();
-                    return [2 /*return*/, JSON.stringify(values)];
+                    return [2 /*return*/, values];
             }
         });
     });
 }
-function toggleProtection(event) {
-    Excel.run(function (context) {
-        var sheet = context.workbook.worksheets.getActiveWorksheet();
-        sheet.load('protection/protected');
-        return context
-            .sync()
-            .then(function () {
-            if (sheet.protection.protected) {
-                sheet.protection.unprotect();
-            }
-            else {
-                sheet.protection.protect();
-            }
-        })
-            .then(context.sync);
-    }).catch(function (error) {
-        console.log("Error: " + error);
-        if (error instanceof OfficeExtension.Error) {
-            console.log("Debug info: " + JSON.stringify(error.debugInfo));
-        }
-    });
-    event.completed();
-}
-var dialog = {};
-g.dialog = dialog;
 function eventDispatcher(event, data) {
-    console.log(event);
-    console.log(data);
-    switch (event) {
-        case 'ready':
-            console.log('Map is ready for input');
-            break;
-        case 'requestData':
-            console.log('Map is requesting data');
-            break;
-        case 'createdMarker':
-            console.log('Map created marker');
-            break;
-        default:
-            console.log('Did not understand event');
-            break;
-    }
+    return __awaiter(this, void 0, void 0, function () {
+        var cells;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    console.log(event);
+                    console.log(data);
+                    if (!(event === 'ready')) return [3 /*break*/, 1];
+                    console.log('Map is ready for input');
+                    return [3 /*break*/, 4];
+                case 1:
+                    if (!(event === 'requestData')) return [3 /*break*/, 3];
+                    return [4 /*yield*/, getSelectedCells()];
+                case 2:
+                    cells = _a.sent();
+                    sendToDialog('selectedCells', cells);
+                    return [3 /*break*/, 4];
+                case 3:
+                    if (event === 'createdMarker') {
+                        handleCoords(data);
+                    }
+                    else {
+                        console.log('Did not understand event');
+                    }
+                    _a.label = 4;
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
 }
 function onMessageFromDialog(arg) {
     try {
-        var message = JSON.parse(arg);
-        var data = message.data, event_1 = message.event;
+        var messageFromDialog = JSON.parse(arg.message);
+        var event_1 = messageFromDialog.event, data = messageFromDialog.data;
         eventDispatcher(event_1, data);
     }
     catch (err) {
@@ -239,7 +214,6 @@ function openDialogSUPPORT() { openDialog('https://satf.azurewebsites.net/excel_
 function openDialogDOCUMENTATION() { openDialog('https://satf.azurewebsites.net/excel_interface/documentation/documentation.html', false); }
 Office.onReady().then(function () {
     // the add-in command functions need to be available in global scope
-    g.toggleProtection = toggleProtection;
     g.openDialogNIRAS = openDialogNIRAS;
     g.openDialogOPM = openDialogOPM;
     g.openDialogSATF = openDialogSATF;

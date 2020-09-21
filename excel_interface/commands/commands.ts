@@ -1,5 +1,7 @@
 /* eslint-disable max-len */
 
+let dialog = null;
+
 function getGlobal() {
   if (typeof self !== 'undefined') {
     return self;
@@ -13,6 +15,10 @@ function getGlobal() {
 
 const g = getGlobal() as any;
 
+function sendToDialog(event, data) {
+  dialog.sendMessage(JSON.stringify({ event, data }));
+}
+
 function oneDown(adr) {
   const sheet = `${adr.split('!')[0]}!`;
   const x = adr.split('!')[1].split(':')[0];
@@ -23,8 +29,7 @@ function oneDown(adr) {
   return `${sheet + xn}:${yn}`;
 }
 
-async function handleCoords(event) {
-  const coords = JSON.parse(localStorage.getItem('newCoords'));
+async function handleCoords(coords) {
   await Excel.run(async (context) => {
     const range = context.workbook.getSelectedRange();
     const sheet = context.workbook.worksheets.getActiveWorksheet();
@@ -38,15 +43,6 @@ async function handleCoords(event) {
       await context.sync();
     });
   });
-  event.completed();
-}
-
-async function processMessage(event) {
-  if (event.message === 'newCoords') {
-    handleCoords(event);
-  } else {
-    event.completed();
-  }
 }
 
 async function getSelectedCells() {
@@ -59,62 +55,28 @@ async function getSelectedCells() {
     values = range.values;
   });
 
-  return JSON.stringify(values);
+  return values;
 }
 
-function toggleProtection(event) {
-  Excel.run((context) => {
-    const sheet = context.workbook.worksheets.getActiveWorksheet();
-    sheet.load('protection/protected');
-    return context
-      .sync()
-      .then(() => {
-        if (sheet.protection.protected) {
-          sheet.protection.unprotect();
-        } else {
-          sheet.protection.protect();
-        }
-      })
-      .then(context.sync);
-  }).catch((error) => {
-    console.log(`Error: ${error}`);
-    if (error instanceof OfficeExtension.Error) {
-      console.log(`Debug info: ${JSON.stringify(error.debugInfo)}`);
-    }
-  });
-  event.completed();
-}
-
-let dialog = {};
-g.dialog = dialog;
-
-function eventDispatcher(event, data) {
+async function eventDispatcher(event, data) {
   console.log(event);
   console.log(data);
-  switch (event) {
-    case 'ready':
-      console.log('Map is ready for input');
-      break;
-
-    case 'requestData':
-      console.log('Map is requesting data');
-      break;
-
-    case 'createdMarker':
-      console.log('Map created marker');
-      break;
-
-    default:
-      console.log('Did not understand event');
-      break;
+  if (event === 'ready') {
+    console.log('Map is ready for input');
+  } else if (event === 'requestData') {
+    const cells = await getSelectedCells();
+    sendToDialog('selectedCells', cells);
+  } else if (event === 'createdMarker') {
+    handleCoords(data);
+  } else {
+    console.log('Did not understand event');
   }
 }
 
 function onMessageFromDialog(arg) {
   try {
-    const message = JSON.parse(arg);
-    const { data, event } = message;
-
+    const messageFromDialog = JSON.parse(arg.message);
+    const { event, data } = messageFromDialog;
     eventDispatcher(event, data);
   } catch (err) {
     console.log(err);
@@ -161,7 +123,6 @@ function openDialogDOCUMENTATION() { openDialog('https://satf.azurewebsites.net/
 
 Office.onReady().then(() => {
   // the add-in command functions need to be available in global scope
-  g.toggleProtection = toggleProtection;
   g.openDialogNIRAS = openDialogNIRAS;
   g.openDialogOPM = openDialogOPM;
   g.openDialogSATF = openDialogSATF;
