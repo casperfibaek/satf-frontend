@@ -169,7 +169,7 @@ function toggleProtection(event) {
     event.completed();
 }
 var dialog;
-function messageHandler(arg) {
+function onMessageFromDialog(arg) {
     var messageFromDialog = JSON.parse(arg.message);
     console.log(arg.message);
     dialog.messageChild(JSON.stringify({
@@ -179,53 +179,52 @@ function messageHandler(arg) {
         dialog.close();
     }
 }
-function eventHandler(arg) {
-    // In addition to general system errors, there are 2 specific errors
-    // and one event that you can handle individually.
-    switch (arg.error) {
-        case 12002:
-            console.log('Cannot load URL, no such page or bad URL syntax.');
-            break;
-        case 12003:
-            console.log('HTTPS is required.');
-            break;
-        case 12006:
-            // The dialog was closed, typically because the user the pressed X button.
-            console.log('Dialog closed by user');
-            break;
-        default:
-            console.log('Undefined error in dialog window');
-            break;
-    }
-}
-function dialogCallback(asyncResult, event) {
-    if (asyncResult.status === 'failed') {
-        // In addition to general system errors, there are 3 specific errors for
-        // displayDialogAsync that you can handle individually.
-        switch (asyncResult.error.code) {
-            case 12004:
-                console.log('Domain is not trusted');
-                break;
-            case 12005:
-                console.log('HTTPS is required');
-                break;
-            case 12007:
-                console.log('A dialog is already opened.');
-                break;
-            default:
-                console.log(asyncResult.error.message);
-                break;
-        }
-    }
-    else {
-        dialog = asyncResult.value;
-        /* Messages are sent by developers programatically from the dialog using office.context.ui.messageParent(...) */
-        dialog.addEventHandler(Office.EventType.DialogMessageReceived, messageHandler);
-        /* Events are sent by the platform in response to user actions or errors. For example, the dialog is closed via the 'x' button */
-        dialog.addEventHandler(Office.EventType.DialogEventReceived, eventHandler);
-    }
-    event.completed();
-}
+// function eventHandler(arg) {
+//   // In addition to general system errors, there are 2 specific errors
+//   // and one event that you can handle individually.
+//   switch (arg.error) {
+//     case 12002:
+//       console.log('Cannot load URL, no such page or bad URL syntax.');
+//       break;
+//     case 12003:
+//       console.log('HTTPS is required.');
+//       break;
+//     case 12006:
+//       // The dialog was closed, typically because the user the pressed X button.
+//       console.log('Dialog closed by user');
+//       break;
+//     default:
+//       console.log('Undefined error in dialog window');
+//       break;
+//   }
+// }
+// function dialogCallback(asyncResult, event) {
+//   if (asyncResult.status === 'failed') {
+//     // In addition to general system errors, there are 3 specific errors for
+//     // displayDialogAsync that you can handle individually.
+//     switch (asyncResult.error.code) {
+//       case 12004:
+//         console.log('Domain is not trusted');
+//         break;
+//       case 12005:
+//         console.log('HTTPS is required');
+//         break;
+//       case 12007:
+//         console.log('A dialog is already opened.');
+//         break;
+//       default:
+//         console.log(asyncResult.error.message);
+//         break;
+//     }
+//   } else {
+//     dialog = asyncResult.value;
+//     /* Messages are sent by developers programatically from the dialog using office.context.ui.messageParent(...) */
+//     dialog.addEventHandler(Office.EventType.DialogMessageReceived, messageHandler);
+//     /* Events are sent by the platform in response to user actions or errors. For example, the dialog is closed via the 'x' button */
+//     dialog.addEventHandler(Office.EventType.DialogEventReceived, eventHandler);
+//   }
+//   event.completed();
+// }
 function openDialogWindow(link, event, iframe, height, width, prompt) {
     if (iframe === void 0) { iframe = false; }
     if (height === void 0) { height = 40; }
@@ -237,7 +236,9 @@ function openDialogWindow(link, event, iframe, height, width, prompt) {
         promptBeforeOpen: prompt,
         displayInIframe: iframe,
     }, function (asyncResult) {
-        dialogCallback(asyncResult, event);
+        dialog = asyncResult.value;
+        dialog.addEventHandler(Office.EventType.DialogMessageReceived, onMessageFromDialog);
+        // dialogCallback(asyncResult, event);
     });
 }
 function openDialogNIRAS(event) {
@@ -272,26 +273,22 @@ function openDialogDOCUMENTATION(event) {
 }
 function openDialogMAP(event) {
     return __awaiter(this, void 0, void 0, function () {
-        var markers;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, getSelectedCells()];
-                case 1:
-                    markers = _a.sent();
-                    localStorage.setItem('markers', markers);
-                    openDialogWindow('https://satf.azurewebsites.net/excel_interface/map/map.html', event);
-                    return [2 /*return*/];
-            }
+            openDialogWindow('https://satf.azurewebsites.net/excel_interface/map/map.html', event);
+            return [2 /*return*/];
         });
     });
 }
-// the add-in command functions need to be available in global scope
-g.toggleProtection = toggleProtection;
-g.openDialogNIRAS = openDialogNIRAS;
-g.openDialogOPM = openDialogOPM;
-g.openDialogSATF = openDialogSATF;
-g.openDialogMAP = openDialogMAP;
-g.openDialogSUPPORT = openDialogSUPPORT;
-g.openDialogDOCUMENTATION = openDialogDOCUMENTATION;
+Office.onReady().then(function () {
+    // the add-in command functions need to be available in global scope
+    console.log('Office ready in parent.');
+    g.toggleProtection = toggleProtection;
+    g.openDialogNIRAS = openDialogNIRAS;
+    g.openDialogOPM = openDialogOPM;
+    g.openDialogSATF = openDialogSATF;
+    g.openDialogMAP = openDialogMAP;
+    g.openDialogSUPPORT = openDialogSUPPORT;
+    g.openDialogDOCUMENTATION = openDialogDOCUMENTATION;
+});
 console.log('Loaded: commands.js');
 //# sourceMappingURL=commands.js.map

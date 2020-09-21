@@ -85,7 +85,7 @@ function toggleProtection(event) {
 
 let dialog;
 
-function messageHandler(arg) {
+function onMessageFromDialog(arg) {
   const messageFromDialog = JSON.parse(arg.message);
   console.log(arg.message);
 
@@ -98,56 +98,56 @@ function messageHandler(arg) {
   }
 }
 
-function eventHandler(arg) {
-  // In addition to general system errors, there are 2 specific errors
-  // and one event that you can handle individually.
-  switch (arg.error) {
-    case 12002:
-      console.log('Cannot load URL, no such page or bad URL syntax.');
-      break;
-    case 12003:
-      console.log('HTTPS is required.');
-      break;
-    case 12006:
-      // The dialog was closed, typically because the user the pressed X button.
-      console.log('Dialog closed by user');
-      break;
-    default:
-      console.log('Undefined error in dialog window');
-      break;
-  }
-}
+// function eventHandler(arg) {
+//   // In addition to general system errors, there are 2 specific errors
+//   // and one event that you can handle individually.
+//   switch (arg.error) {
+//     case 12002:
+//       console.log('Cannot load URL, no such page or bad URL syntax.');
+//       break;
+//     case 12003:
+//       console.log('HTTPS is required.');
+//       break;
+//     case 12006:
+//       // The dialog was closed, typically because the user the pressed X button.
+//       console.log('Dialog closed by user');
+//       break;
+//     default:
+//       console.log('Undefined error in dialog window');
+//       break;
+//   }
+// }
 
-function dialogCallback(asyncResult, event) {
-  if (asyncResult.status === 'failed') {
-    // In addition to general system errors, there are 3 specific errors for
-    // displayDialogAsync that you can handle individually.
-    switch (asyncResult.error.code) {
-      case 12004:
-        console.log('Domain is not trusted');
-        break;
-      case 12005:
-        console.log('HTTPS is required');
-        break;
-      case 12007:
-        console.log('A dialog is already opened.');
-        break;
-      default:
-        console.log(asyncResult.error.message);
-        break;
-    }
-  } else {
-    dialog = asyncResult.value;
+// function dialogCallback(asyncResult, event) {
+//   if (asyncResult.status === 'failed') {
+//     // In addition to general system errors, there are 3 specific errors for
+//     // displayDialogAsync that you can handle individually.
+//     switch (asyncResult.error.code) {
+//       case 12004:
+//         console.log('Domain is not trusted');
+//         break;
+//       case 12005:
+//         console.log('HTTPS is required');
+//         break;
+//       case 12007:
+//         console.log('A dialog is already opened.');
+//         break;
+//       default:
+//         console.log(asyncResult.error.message);
+//         break;
+//     }
+//   } else {
+//     dialog = asyncResult.value;
 
-    /* Messages are sent by developers programatically from the dialog using office.context.ui.messageParent(...) */
-    dialog.addEventHandler(Office.EventType.DialogMessageReceived, messageHandler);
+//     /* Messages are sent by developers programatically from the dialog using office.context.ui.messageParent(...) */
+//     dialog.addEventHandler(Office.EventType.DialogMessageReceived, messageHandler);
 
-    /* Events are sent by the platform in response to user actions or errors. For example, the dialog is closed via the 'x' button */
-    dialog.addEventHandler(Office.EventType.DialogEventReceived, eventHandler);
-  }
+//     /* Events are sent by the platform in response to user actions or errors. For example, the dialog is closed via the 'x' button */
+//     dialog.addEventHandler(Office.EventType.DialogEventReceived, eventHandler);
+//   }
 
-  event.completed();
-}
+//   event.completed();
+// }
 
 function openDialogWindow(link, event, iframe = false, height = 40, width = 30, prompt = false) {
   Office.context.ui.displayDialogAsync(link, {
@@ -156,7 +156,9 @@ function openDialogWindow(link, event, iframe = false, height = 40, width = 30, 
     promptBeforeOpen: prompt,
     displayInIframe: iframe,
   }, (asyncResult) => {
-    dialogCallback(asyncResult, event);
+    dialog = asyncResult.value;
+    dialog.addEventHandler(Office.EventType.DialogMessageReceived, onMessageFromDialog);
+    // dialogCallback(asyncResult, event);
   });
 }
 
@@ -175,21 +177,20 @@ async function openDialogSUPPORT(event) {
 async function openDialogDOCUMENTATION(event) {
   openDialogWindow('https://satf.azurewebsites.net/excel_interface/documentation/documentation.html', event);
 }
-
 async function openDialogMAP(event) {
-  const markers = await getSelectedCells();
-  localStorage.setItem('markers', markers);
-
   openDialogWindow('https://satf.azurewebsites.net/excel_interface/map/map.html', event);
 }
 
-// the add-in command functions need to be available in global scope
-g.toggleProtection = toggleProtection;
-g.openDialogNIRAS = openDialogNIRAS;
-g.openDialogOPM = openDialogOPM;
-g.openDialogSATF = openDialogSATF;
-g.openDialogMAP = openDialogMAP;
-g.openDialogSUPPORT = openDialogSUPPORT;
-g.openDialogDOCUMENTATION = openDialogDOCUMENTATION;
+Office.onReady().then(() => {
+  // the add-in command functions need to be available in global scope
+  console.log('Office ready in parent.');
+  g.toggleProtection = toggleProtection;
+  g.openDialogNIRAS = openDialogNIRAS;
+  g.openDialogOPM = openDialogOPM;
+  g.openDialogSATF = openDialogSATF;
+  g.openDialogMAP = openDialogMAP;
+  g.openDialogSUPPORT = openDialogSUPPORT;
+  g.openDialogDOCUMENTATION = openDialogDOCUMENTATION;
+});
 
 console.log('Loaded: commands.js');
