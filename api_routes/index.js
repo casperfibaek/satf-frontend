@@ -4,8 +4,8 @@ const express = require('express');
 const pg = require('pg');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-const cache = require('./cache');
-const auth = require('./auth');
+// const cache = require('./cache');
+// const auth = require('./auth');
 const credentials = require('./credentials');
 const utils = require('./utils');
 const validators = require('./validators');
@@ -21,7 +21,7 @@ const pool = new pg.Pool(credentials);
 async function latlng_to_what3words(req, res) {
   if (!req.query.lat || !req.query.lng) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing lat or lng',
       function: 'latlng_to_what3words',
     });
@@ -29,7 +29,7 @@ async function latlng_to_what3words(req, res) {
 
   if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng)) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Invalid input',
       function: 'latlng_to_what3words',
     });
@@ -44,7 +44,7 @@ async function latlng_to_what3words(req, res) {
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'latlng_to_what3words',
     });
@@ -54,7 +54,7 @@ async function latlng_to_what3words(req, res) {
 async function what3words_to_latlng(req, res) {
   if (!req.query.words) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing words',
       function: 'what3words_to_latlng',
     });
@@ -62,7 +62,7 @@ async function what3words_to_latlng(req, res) {
 
   if (!validators.isValidWhatFreeWords(req.query.words)) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Invalid what3words input',
       function: 'what3words_to_latlng',
     });
@@ -77,7 +77,7 @@ async function what3words_to_latlng(req, res) {
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'what3words_to_latlng',
     });
@@ -87,7 +87,7 @@ async function what3words_to_latlng(req, res) {
 async function latlng_to_pluscode(req, res) {
   if (!req.query.lat || !req.query.lng) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing lat or lng',
       function: 'latlng_to_pluscode',
     });
@@ -95,7 +95,7 @@ async function latlng_to_pluscode(req, res) {
 
   if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng)) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Invalid input',
       function: 'latlng_to_pluscode',
     });
@@ -111,7 +111,7 @@ async function latlng_to_pluscode(req, res) {
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Server unable to parse pluscode',
       function: 'latlng_to_pluscode',
     });
@@ -121,7 +121,7 @@ async function latlng_to_pluscode(req, res) {
 async function pluscode_to_latlng(req, res) {
   if (!req.query.code) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing code',
       function: 'pluscode_to_latlng',
     });
@@ -131,7 +131,7 @@ async function pluscode_to_latlng(req, res) {
 
   if (!validators.isValidPluscode(pluscode)) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Invalid pluscode input',
       function: 'pluscode_to_latlng',
     });
@@ -147,7 +147,7 @@ async function pluscode_to_latlng(req, res) {
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'pluscode_to_latlng',
     });
@@ -157,7 +157,7 @@ async function pluscode_to_latlng(req, res) {
 async function admin_level_1(req, res) {
   if (!req.query.lat || !req.query.lng) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing lat or lng',
       function: 'admin_level_1',
     });
@@ -165,7 +165,7 @@ async function admin_level_1(req, res) {
 
   if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng)) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Invalid input',
       function: 'admin_level_1',
     });
@@ -189,14 +189,14 @@ async function admin_level_1(req, res) {
       });
     }
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'admin_level_1',
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'admin_level_1',
     });
@@ -206,7 +206,7 @@ async function admin_level_1(req, res) {
 async function admin_level_2(req, res) {
   if (!req.query.lat || !req.query.lng) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing lat or lng',
       function: 'admin_level_2',
     });
@@ -214,7 +214,7 @@ async function admin_level_2(req, res) {
 
   if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng)) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Invalid input',
       function: 'admin_level_2',
     });
@@ -238,14 +238,14 @@ async function admin_level_2(req, res) {
       });
     }
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'admin_level_2',
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'admin_level_2',
     });
@@ -254,7 +254,7 @@ async function admin_level_2(req, res) {
 
 async function hello_world(req, res) {
   return res.status(200).json({
-    status: 'Success',
+    status: 'success',
     message: 'Hello World!',
     function: 'hello_world',
   });
@@ -263,7 +263,7 @@ async function hello_world(req, res) {
 async function admin_level_2_fuzzy_tri(req, res) {
   if (!req.query.name) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing name',
       function: 'admin_level_2_fuzzy_tri',
     });
@@ -286,14 +286,14 @@ async function admin_level_2_fuzzy_tri(req, res) {
       });
     }
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'admin_level_2_fuzzy_tri',
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'admin_level_2_fuzzy_tri',
     });
@@ -303,7 +303,7 @@ async function admin_level_2_fuzzy_tri(req, res) {
 async function admin_level_2_fuzzy_lev(req, res) {
   if (!req.query.name) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing name',
       function: 'admin_level_2_fuzzy_lev',
     });
@@ -326,14 +326,14 @@ async function admin_level_2_fuzzy_lev(req, res) {
       });
     }
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'admin_level_2_fuzzy_lev',
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'admin_level_2_fuzzy_lev',
     });
@@ -343,7 +343,7 @@ async function admin_level_2_fuzzy_lev(req, res) {
 async function urban_status(req, res) {
   if (!req.query.lat || !req.query.lng) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing lat or lng',
       function: 'urban_status',
     });
@@ -351,7 +351,7 @@ async function urban_status(req, res) {
 
   if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng)) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Invalid input',
       function: 'urban_status',
     });
@@ -381,7 +381,7 @@ async function urban_status(req, res) {
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'urban_status',
     });
@@ -391,7 +391,7 @@ async function urban_status(req, res) {
 async function urban_status_simple(req, res) {
   if (!req.query.lat || !req.query.lng) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing lat or lng',
       function: 'urban_status_simple',
     });
@@ -399,7 +399,7 @@ async function urban_status_simple(req, res) {
 
   if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng)) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Invalid input',
       function: 'urban_status_simple',
     });
@@ -429,7 +429,7 @@ async function urban_status_simple(req, res) {
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'urban_status_simple',
     });
@@ -439,7 +439,7 @@ async function urban_status_simple(req, res) {
 async function population_density_buffer(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.buffer) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing lat, lng or buffer',
       function: 'population_density_buffer',
     });
@@ -447,7 +447,7 @@ async function population_density_buffer(req, res) {
 
   if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng || isNaN(req.query.buffer))) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Invalid input',
       function: 'population_density_buffer',
     });
@@ -460,12 +460,12 @@ async function population_density_buffer(req, res) {
     
     SELECT
         SUM((ST_SummaryStats(ST_Clip(
-            ghana_pop_dens.rast, 
+            ppp_avg.rast, 
             const.pp_geom
         ))).sum::int) as pop_dense_buf
     FROM
-        ghana_pop_dens, const
-    WHERE ST_Intersects(const.pp_geom, ghana_pop_dens.rast);
+      ppp_avg, const
+    WHERE ST_Intersects(const.pp_geom, ppp_avg.rast);
   `;
 
   try {
@@ -478,14 +478,14 @@ async function population_density_buffer(req, res) {
       });
     }
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'population_density_buffer',
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'population_density_buffer',
     });
@@ -495,7 +495,7 @@ async function population_density_buffer(req, res) {
 async function population_density_walk(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.minutes) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing lat, lng or minutes',
       function: 'population_density_walk',
     });
@@ -503,7 +503,7 @@ async function population_density_walk(req, res) {
 
   if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng || isNaN(req.query.minutes))) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Invalid input',
       function: 'population_density_walk',
     });
@@ -516,12 +516,12 @@ async function population_density_walk(req, res) {
     
     SELECT
         SUM((ST_SummaryStats(ST_Clip(
-            ppl_per_hectare.rast, 
+            ppp_avg.rast, 
             const.pp_geom
         ))).sum::int) as pop_dense_walk
     FROM
-        ppl_per_hectare, const
-    WHERE ST_Intersects(const.pp_geom, ppl_per_hectare.rast);
+      ppp_avg, const
+    WHERE ST_Intersects(const.pp_geom, ppp_avg.rast);
   `;
 
   try {
@@ -534,14 +534,14 @@ async function population_density_walk(req, res) {
       });
     }
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'population_density_walk',
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'population_density_walk',
     });
@@ -551,7 +551,7 @@ async function population_density_walk(req, res) {
 async function population_density_bike(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.minutes) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing lat, lng or minutes',
       function: 'population_density_bike',
     });
@@ -559,7 +559,7 @@ async function population_density_bike(req, res) {
 
   if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng || isNaN(req.query.minutes))) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Invalid input',
       function: 'population_density_bike',
     });
@@ -572,12 +572,12 @@ async function population_density_bike(req, res) {
     
     SELECT
         SUM((ST_SummaryStats(ST_Clip(
-            ppl_per_hectare.rast, 
+            ppp_avg.rast, 
             const.pp_geom
         ))).sum::int) as pop_dense_bike
     FROM
-        ppl_per_hectare, const
-    WHERE ST_Intersects(const.pp_geom, ppl_per_hectare.rast);
+      ppp_avg, const
+    WHERE ST_Intersects(const.pp_geom, ppp_avg.rast);
   `;
 
   try {
@@ -590,14 +590,14 @@ async function population_density_bike(req, res) {
       });
     }
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'population_density_bike',
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'population_density_bike',
     });
@@ -607,7 +607,7 @@ async function population_density_bike(req, res) {
 async function population_density_car(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.minutes) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing lat, lng or minutes',
       function: 'population_density_car',
     });
@@ -615,7 +615,7 @@ async function population_density_car(req, res) {
 
   if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng || isNaN(req.query.minutes))) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Invalid input',
       function: 'population_density_car',
     });
@@ -628,12 +628,12 @@ async function population_density_car(req, res) {
     
     SELECT
         SUM((ST_SummaryStats(ST_Clip(
-            ppl_per_hectare.rast, 
+            ppp_avg.rast, 
             const.pp_geom
         ))).sum::int) as pop_dense_car
     FROM
-        ppl_per_hectare, const
-    WHERE ST_Intersects(const.pp_geom, ppl_per_hectare.rast);
+      ppp_avg, const
+    WHERE ST_Intersects(const.pp_geom, ppp_avg.rast);
   `;
 
   try {
@@ -646,14 +646,14 @@ async function population_density_car(req, res) {
       });
     }
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'population_density_car',
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'population_density_car',
     });
@@ -663,7 +663,7 @@ async function population_density_car(req, res) {
 async function pop_density_isochrone_walk(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.minutes) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing lat, lng or minutes',
       function: 'pop_density_isochrone_walk',
     });
@@ -671,7 +671,7 @@ async function pop_density_isochrone_walk(req, res) {
 
   if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng || isNaN(req.query.minutes))) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Invalid input',
       function: 'pop_density_isochrone_walk',
     });
@@ -692,14 +692,14 @@ async function pop_density_isochrone_walk(req, res) {
       });
     }
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'pop_density_isochrone_walk',
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'pop_density_isochrone_walk',
     });
@@ -709,7 +709,7 @@ async function pop_density_isochrone_walk(req, res) {
 async function pop_density_isochrone_bike(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.minutes) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing lat, lng or minutes',
       function: 'pop_density_isochrone_bike',
     });
@@ -717,7 +717,7 @@ async function pop_density_isochrone_bike(req, res) {
 
   if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng || isNaN(req.query.minutes))) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Invalid input',
       function: 'pop_density_isochrone_bike',
     });
@@ -738,14 +738,14 @@ async function pop_density_isochrone_bike(req, res) {
       });
     }
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'pop_density_isochrone_bike',
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'pop_density_isochrone_bike',
     });
@@ -755,7 +755,7 @@ async function pop_density_isochrone_bike(req, res) {
 async function pop_density_isochrone_car(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.minutes) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing lat, lng or minutes',
       function: 'pop_density_isochrone_car',
     });
@@ -763,7 +763,7 @@ async function pop_density_isochrone_car(req, res) {
 
   if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng || isNaN(req.query.minutes))) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Invalid input',
       function: 'pop_density_isochrone_car',
     });
@@ -784,14 +784,14 @@ async function pop_density_isochrone_car(req, res) {
       });
     }
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'pop_density_isochrone_car',
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'pop_density_isochrone_car',
     });
@@ -801,7 +801,7 @@ async function pop_density_isochrone_car(req, res) {
 async function nearest_placename(req, res) {
   if (!req.query.lat || !req.query.lng) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing lat or lng',
       function: 'nearest_placename',
     });
@@ -809,7 +809,7 @@ async function nearest_placename(req, res) {
 
   if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng)) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Invalid input',
       function: 'nearest_placename',
     });
@@ -831,14 +831,14 @@ async function nearest_placename(req, res) {
       });
     }
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'nearest_placename',
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'nearest_placename',
     });
@@ -848,7 +848,7 @@ async function nearest_placename(req, res) {
 async function nearest_poi(req, res) {
   if (!req.query.lat || !req.query.lng) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing lat or lng',
       function: 'nearest_poi',
     });
@@ -856,7 +856,7 @@ async function nearest_poi(req, res) {
 
   if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng)) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Invalid input',
       function: 'nearest_poi',
     });
@@ -878,16 +878,93 @@ async function nearest_poi(req, res) {
       });
     }
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'nearest_poi',
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'nearest_poi',
+    });
+  }
+}
+
+async function get_banks(req, res) {
+  if (!req.query.name) {
+    return res.status(400).json({
+      status: 'failure',
+      message: 'Request missing name',
+      function: 'get_banks',
+    });
+  }
+
+  if (String(req.query.name).lenght < 2) {
+    return res.status(400).json({
+      status: 'failure',
+      message: 'Invalid input (name)',
+      function: 'get_banks',
+    });
+  }
+
+  let target = 0.4;
+  const { name } = req.query;
+
+  if (req.query.target) {
+    if (isNaN(req.query.target)) {
+      return res.status(400).json({
+        status: 'failure',
+        message: 'Invalid input (target)',
+        function: 'get_banks',
+      });
+    }
+
+    if (Number(req.query.target) > 1 || Number(req.query.target) < 0) {
+      return res.status(400).json({
+        status: 'failure',
+        message: 'Invalid input (target)',
+        function: 'get_banks',
+      });
+    }
+
+    target = Number(req.query.target);
+  }
+
+  const dbQuery = `
+    SELECT
+      "name",
+      round(ST_X("geom")::numeric, 6) AS "lng",
+      round(ST_Y("geom")::numeric, 6) AS "lng"
+    FROM ghana_poi
+    WHERE "fclass" = 'bank' AND similarity("name", '${name}') > ${target}
+    ORDER BY SIMILARITY("name", 'absa') DESC;
+  `;
+
+  try {
+    const dbResponse = await pool.query(dbQuery);
+
+    const returnArray = [];
+    for (let i = 0; i < dbResponse.rows.length; i += 1) {
+      returnArray.push({
+        name: dbResponse.rows[i].name,
+        lat: dbResponse.rows[i].lat,
+        lng: dbResponse.rows[i].lng,
+      });
+    }
+
+    return res.status(200).json({
+      status: 'success',
+      message: returnArray,
+      function: 'get_banks',
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      status: 'failure',
+      message: 'Error encountered on server',
+      function: 'get_banks',
     });
   }
 }
@@ -895,7 +972,7 @@ async function nearest_poi(req, res) {
 async function nearest_bank(req, res) {
   if (!req.query.lat || !req.query.lng) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing lat or lng',
       function: 'nearest_bank',
     });
@@ -903,7 +980,7 @@ async function nearest_bank(req, res) {
 
   if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng)) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Invalid input',
       function: 'nearest_bank',
     });
@@ -927,14 +1004,14 @@ async function nearest_bank(req, res) {
       });
     }
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'nearest_bank',
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'nearest_bank',
     });
@@ -944,7 +1021,7 @@ async function nearest_bank(req, res) {
 async function nearest_bank_distance(req, res) {
   if (!req.query.lat || !req.query.lng) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing lat or lng',
       function: 'nearest_bank_distance',
     });
@@ -952,7 +1029,7 @@ async function nearest_bank_distance(req, res) {
 
   if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng)) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Invalid input',
       function: 'nearest_bank_distance',
     });
@@ -976,14 +1053,14 @@ async function nearest_bank_distance(req, res) {
     }
 
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'nearest_bank_distance',
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error encountered on server',
       function: 'nearest_bank_distance',
     });
@@ -993,7 +1070,7 @@ async function nearest_bank_distance(req, res) {
 async function isochrone_walk(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.minutes) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing lat, lng or minutes',
       function: 'isochrone_walk',
     });
@@ -1001,7 +1078,7 @@ async function isochrone_walk(req, res) {
 
   if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng || isNaN(req.query.minutes))) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Invalid input',
       function: 'isochrone_walk',
     });
@@ -1016,20 +1093,20 @@ async function isochrone_walk(req, res) {
     const dbResponse = await pool.query(dbQuery);
     if (dbResponse.rowCount > 0) {
       return res.status(200).json({
-        status: 'Success',
+        status: 'success',
         message: JSON.parse(dbResponse.rows[0].geom),
         function: 'isochrone_walk',
       });
     }
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error while calculating isocrone',
       function: 'isochrone_walk',
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error while calculating isocrone',
       function: 'isochrone_walk',
     });
@@ -1039,7 +1116,7 @@ async function isochrone_walk(req, res) {
 async function isochrone_bike(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.minutes) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing lat, lng or minutes',
       function: 'isochrone_bike',
     });
@@ -1047,7 +1124,7 @@ async function isochrone_bike(req, res) {
 
   if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng || isNaN(req.query.minutes))) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Invalid input',
       function: 'isochrone_bike',
     });
@@ -1062,20 +1139,20 @@ async function isochrone_bike(req, res) {
     const dbResponse = await pool.query(dbQuery);
     if (dbResponse.rowCount > 0) {
       return res.status(200).json({
-        status: 'Success',
+        status: 'success',
         message: JSON.parse(dbResponse.rows[0].geom),
         function: 'isochrone_bike',
       });
     }
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error while calculating isocrone',
       function: 'isochrone_bike',
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error while calculating isocrone',
       function: 'isochrone_bike',
     });
@@ -1085,7 +1162,7 @@ async function isochrone_bike(req, res) {
 async function isochrone_car(req, res) {
   if (!req.query.lat || !req.query.lng || !req.query.minutes) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing lat, lng or minutes',
       function: 'isochrone_car',
     });
@@ -1093,7 +1170,7 @@ async function isochrone_car(req, res) {
 
   if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng || isNaN(req.query.minutes))) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Invalid input',
       function: 'isochrone_car',
     });
@@ -1108,20 +1185,20 @@ async function isochrone_car(req, res) {
     const dbResponse = await pool.query(dbQuery);
     if (dbResponse.rowCount > 0) {
       return res.status(200).json({
-        status: 'Success',
+        status: 'success',
         message: JSON.parse(dbResponse.rows[0].geom),
         function: 'isochrone_car',
       });
     }
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error while calculating isocrone',
       function: 'isochrone_car',
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Error while calculating isocrone',
       function: 'isochrone_car',
     });
@@ -1224,7 +1301,7 @@ async function deleteUser(username) {
 async function create_user(req, res) {
   if (!req.body.username || !req.body.password || !req.body.confirm) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing username, password or confirmPassword',
     });
   }
@@ -1235,7 +1312,7 @@ async function create_user(req, res) {
     // Check if user with the same email is also registered
     if (!checkPassword(password)) {
       return res.status(400).json({
-        status: 'Failure',
+        status: 'failure',
         message: 'Password must be between 6 to 14 characters which contain only characters, numeric digits, underscore and first character must be a letter', // eslint-disable-line
         function: 'create_user',
       });
@@ -1243,7 +1320,7 @@ async function create_user(req, res) {
 
     if (!checkUsername(username)) {
       return res.status(400).json({
-        status: 'Failure',
+        status: 'failure',
         message: 'Username must be between 6 to 14 characters which contain only characters, numeric digits, underscore and first character must be a letter', // eslint-disable-line
         function: 'create_user',
       });
@@ -1252,7 +1329,7 @@ async function create_user(req, res) {
     const user_exists = await usernameExists(username);
     if (user_exists) {
       return res.status(409).json({
-        status: 'Failure',
+        status: 'failure',
         message: 'Username already exists',
         function: 'create_user',
       });
@@ -1265,7 +1342,7 @@ async function create_user(req, res) {
       const token = jwt.sign({ userId: username }, credentials.admin_key, { expiresIn: '24h' });
 
       return res.status(200).json({
-        status: 'Success',
+        status: 'success',
         message: 'User Successfully Created',
         function: 'create_user',
         username,
@@ -1273,13 +1350,13 @@ async function create_user(req, res) {
       });
     }
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Internal error while creating user.',
       function: 'create_user',
     });
   }
   return res.status(400).send({
-    status: 'Failure',
+    status: 'failure',
     message: 'Passwords do not match.',
     function: 'create_user',
   });
@@ -1288,7 +1365,7 @@ async function create_user(req, res) {
 async function login_user(req, res) {
   if (!req.body.username || !req.body.password) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing username or password',
       function: 'login_user',
     });
@@ -1297,7 +1374,7 @@ async function login_user(req, res) {
 
   if (!checkUsername(username)) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Username must be between 6-16 characters.',
       function: 'login_user',
     });
@@ -1305,7 +1382,7 @@ async function login_user(req, res) {
 
   if (!checkPassword(password)) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Password must be between 6-16 characters.',
       function: 'login_user',
     });
@@ -1325,7 +1402,7 @@ async function login_user(req, res) {
     if (dbResponse.rowCount > 0) {
       const token = jwt.sign({ userId: username }, credentials.admin_key, { expiresIn: '24h' });
       return res.status(200).json({
-        status: 'Success',
+        status: 'success',
         message: 'User Successfully Logged in',
         function: 'login_user',
         username,
@@ -1333,14 +1410,14 @@ async function login_user(req, res) {
       });
     }
     return res.status(401).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'User not found or unauthorised.',
       function: 'login_user',
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Internal Error while logging user in.',
       function: 'login_user',
     });
@@ -1375,7 +1452,7 @@ async function delete_user(req, res) {
 
     if (!authorised) {
       return res.status(400).json({
-        status: 'Failure',
+        status: 'failure',
         message: 'Invalid token.',
         function: 'delete_user',
       });
@@ -1386,7 +1463,7 @@ async function delete_user(req, res) {
 
       if (!userExists) {
         return res.status(400).json({
-          status: 'Failure',
+          status: 'failure',
           message: 'User does not exist',
           function: 'delete_user',
         });
@@ -1396,7 +1473,7 @@ async function delete_user(req, res) {
       const userStillExists = await usernameExists(username);
       if (deletedUser && !userStillExists) {
         return res.status(200).json({
-          status: 'Success',
+          status: 'success',
           message: 'User deleted',
           function: 'delete_user',
           username,
@@ -1405,7 +1482,7 @@ async function delete_user(req, res) {
     } catch (err) {
       console.log(err);
       return res.status(500).json({
-        status: 'Failure',
+        status: 'failure',
         message: 'Internal Error while logging user in.',
         function: 'delete_user',
       });
@@ -1413,7 +1490,7 @@ async function delete_user(req, res) {
   }
   if (!req.body.username || !req.body.password) {
     return res.status(400).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Request missing username or password',
       function: 'delete_user',
     });
@@ -1432,7 +1509,7 @@ async function delete_user(req, res) {
         const userStillExists = await usernameExists(username);
         if (deletedUser && !userStillExists) {
           return res.status(200).json({
-            status: 'Success',
+            status: 'success',
             message: 'User deleted',
             function: 'delete_user',
             username,
@@ -1443,14 +1520,14 @@ async function delete_user(req, res) {
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: 'Failure',
+      status: 'failure',
       message: 'Internal Error while logging user in.',
       function: 'delete_user',
     });
   }
 
   return res.status(401).json({
-    status: 'Failure',
+    status: 'failure',
     message: 'Invalid credentials to delete user.',
     function: 'delete_user',
   });
@@ -1483,6 +1560,7 @@ router.route('/nearest_placename').get(nearest_placename);
 router.route('/nearest_poi').get(nearest_poi);
 router.route('/nearest_bank').get(nearest_bank);
 router.route('/nearest_bank_distance').get(nearest_bank_distance);
+router.route('/get_banks').get(get_banks);
 router.route('/create_user').post(create_user);
 router.route('/login_user').post(login_user);
 router.route('/delete_user').post(delete_user);
