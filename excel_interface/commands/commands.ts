@@ -105,6 +105,7 @@ function onEventFromDialog(arg) {
       console.log('The dialog box has been directed to a URL with the HTTP protocol. HTTPS is required.'); break;
     case 12006:
       console.log('Dialog closed.');
+      dialog.close();
       break;
     default:
       console.log('Unknown error in dialog box.');
@@ -112,12 +113,13 @@ function onEventFromDialog(arg) {
   }
 }
 
-function openDialog(url) {
-  Office.context.ui.displayDialogAsync(url, { height: 40, width: 30 }, (asyncResult) => {
+function openDialog(url, ask = true, listen = false) {
+  Office.context.ui.displayDialogAsync(url, { height: 40, width: 30, promptBeforeOpen: ask }, (asyncResult) => {
     if (asyncResult.status === Office.AsyncResultStatus.Failed) {
       console.log('Failed to open window and attach listeners..');
       console.log(asyncResult);
-    } else {
+    }
+    if (listen) {
       dialog = asyncResult.value;
       dialog.addEventHandler(Office.EventType.DialogMessageReceived, onMessageFromDialog);
       dialog.addEventHandler(Office.EventType.DialogEventReceived, onEventFromDialog);
@@ -125,13 +127,12 @@ function openDialog(url) {
   });
 }
 
-function openDialogMAP() { openDialog('https://satf.azurewebsites.net/excel_interface/map/map.html'); }
-function openDialogNIRAS() { openDialog('https://satf.azurewebsites.net/excel_interface/commands/niras.html'); }
-function openDialogOPM() { openDialog('https://satf.azurewebsites.net/excel_interface/commands/opm.html'); }
-function openDialogSATF() { openDialog('https://satf.azurewebsites.net/excel_interface/commands/satf.html'); }
-function openDialogSUPPORT() { openDialog('https://satf.azurewebsites.net/excel_interface/support/support.html'); }
-function openDialogDOCUMENTATION() { openDialog('https://satf.azurewebsites.net/excel_interface/documentation/documentation.html'); }
-
+function openDialogMAP() { openDialog('https://satf.azurewebsites.net/excel_interface/map/map.html', true, true); }
+function openDialogNIRAS() { openDialog('https://satf.azurewebsites.net/excel_interface/commands/niras.html', false); }
+function openDialogOPM() { openDialog('https://satf.azurewebsites.net/excel_interface/commands/opm.html', false); }
+function openDialogSATF() { openDialog('https://satf.azurewebsites.net/excel_interface/commands/satf.html', false); }
+function openDialogSUPPORT() { openDialog('https://satf.azurewebsites.net/excel_interface/support/support.html', false); }
+function openDialogDOCUMENTATION() { openDialog('https://satf.azurewebsites.net/excel_interface/documentation/documentation.html', false); }
 
 Office.onReady().then(() => {
   // the add-in command functions need to be available in global scope
