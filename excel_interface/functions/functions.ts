@@ -158,7 +158,7 @@ const g = getGlobal() as any;
 async function WHAT3WORDS_TO_LATLNG(what3words) {
   if (isValidWhatFreeWords(what3words)) {
     try {
-      const url = `../../api/whatfreewords_to_latlng?words=${what3words}`;
+      const url = `../../api/what3words_to_latlng?words=${what3words}`;
       const token = g.localStorage.getItem('satf_token');
 
       const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -275,7 +275,7 @@ g.PARSE_TO_LATLNG = PARSE_TO_LATLNG;
 async function LATLNG_TO_WHAT3WORDS(latitude_or_address, longitude = false) {
   try {
     const coords = await PARSE_TO_LATLNG(latitude_or_address, longitude);
-    const url = `../../api/latlng_to_whatfreewords?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `../../api/latlng_to_what3words?lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = g.localStorage.getItem('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -704,6 +704,31 @@ async function ADMIN_LEVEL2_FUZZY_TRI(str) {
   }
 }
 g.ADMIN_LEVEL2_FUZZY_TRI = ADMIN_LEVEL2_FUZZY_TRI;
+
+/**
+ * Finds all the banks and their addresses matching a naming pattern
+ * @customfunction GET_BANKS
+ * @param {string} name
+ * @param {number} [target]
+ * @return {any[][]}
+ */
+async function GET_BANKS(name, target = 0.4) {
+  try {
+    const url = `../../api/get_banks?name${String(name).replace(/\s/g, '+')}&target=${Number(target)}`;
+    const token = g.localStorage.getItem('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+    if (apiResponse.status === 401) { return 'Unauthorised'; }
+
+    const responseJSON = await apiResponse.json();
+    if (apiResponse.ok) { return responseJSON.message; }
+
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+  } catch (err) {
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err));
+  }
+}
+g.GET_BANKS = GET_BANKS;
 
 /**
  * Finds the urban status of a location. #landcover #landuse #urban_status

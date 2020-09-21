@@ -238,7 +238,7 @@ function WHAT3WORDS_TO_LATLNG(what3words) {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 4, , 5]);
-                    url = "../../api/whatfreewords_to_latlng?words=" + what3words;
+                    url = "../../api/what3words_to_latlng?words=" + what3words;
                     token = g.localStorage.getItem('satf_token');
                     return [4 /*yield*/, fetch(url, { headers: { Authorization: token } })];
                 case 2:
@@ -392,7 +392,7 @@ function LATLNG_TO_WHAT3WORDS(latitude_or_address, longitude) {
                     return [4 /*yield*/, PARSE_TO_LATLNG(latitude_or_address, longitude)];
                 case 1:
                     coords = _a.sent();
-                    url = "../../api/latlng_to_whatfreewords?lat=" + coords[0][0] + "&lng=" + coords[0][1];
+                    url = "../../api/latlng_to_what3words?lat=" + coords[0][0] + "&lng=" + coords[0][1];
                     token = g.localStorage.getItem('satf_token');
                     return [4 /*yield*/, fetch(url, { headers: { Authorization: token } })];
                 case 2:
@@ -1011,6 +1011,45 @@ function ADMIN_LEVEL2_FUZZY_TRI(str) {
 }
 g.ADMIN_LEVEL2_FUZZY_TRI = ADMIN_LEVEL2_FUZZY_TRI;
 /**
+ * Finds all the banks and their addresses matching a naming pattern
+ * @customfunction GET_BANKS
+ * @param {string} name
+ * @param {number} [target]
+ * @return {any[][]}
+ */
+function GET_BANKS(name, target) {
+    if (target === void 0) { target = 0.4; }
+    return __awaiter(this, void 0, void 0, function () {
+        var url, token, apiResponse, responseJSON, err_17;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    url = "../../api/get_banks?name" + String(name).replace(/\s/g, '+') + "&target=" + Number(target);
+                    token = g.localStorage.getItem('satf_token');
+                    return [4 /*yield*/, fetch(url, { headers: { Authorization: token } })];
+                case 1:
+                    apiResponse = _a.sent();
+                    if (apiResponse.status === 401) {
+                        return [2 /*return*/, 'Unauthorised'];
+                    }
+                    return [4 /*yield*/, apiResponse.json()];
+                case 2:
+                    responseJSON = _a.sent();
+                    if (apiResponse.ok) {
+                        return [2 /*return*/, responseJSON.message];
+                    }
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
+                case 3:
+                    err_17 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_17));
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+}
+g.GET_BANKS = GET_BANKS;
+/**
  * Finds the urban status of a location. #landcover #landuse #urban_status
  * @customfunction URBAN_STATUS
  * @param {string} latitude_or_address
@@ -1019,7 +1058,7 @@ g.ADMIN_LEVEL2_FUZZY_TRI = ADMIN_LEVEL2_FUZZY_TRI;
 function URBAN_STATUS(latitude_or_address, longitude) {
     if (longitude === void 0) { longitude = false; }
     return __awaiter(this, void 0, void 0, function () {
-        var coords, url, token, apiResponse, responseJSON, err_17;
+        var coords, url, token, apiResponse, responseJSON, err_18;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1043,8 +1082,8 @@ function URBAN_STATUS(latitude_or_address, longitude) {
                     }
                     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
                 case 4:
-                    err_17 = _a.sent();
-                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_17));
+                    err_18 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_18));
                 case 5: return [2 /*return*/];
             }
         });
@@ -1060,7 +1099,7 @@ g.URBAN_STATUS = URBAN_STATUS;
 function URBAN_STATUS_SIMPLE(latitude_or_address, longitude) {
     if (longitude === void 0) { longitude = false; }
     return __awaiter(this, void 0, void 0, function () {
-        var coords, url, token, apiResponse, responseJSON, err_18;
+        var coords, url, token, apiResponse, responseJSON, err_19;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1084,8 +1123,8 @@ function URBAN_STATUS_SIMPLE(latitude_or_address, longitude) {
                     }
                     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
                 case 4:
-                    err_18 = _a.sent();
-                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_18));
+                    err_19 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_19));
                 case 5: return [2 /*return*/];
             }
         });
@@ -1101,7 +1140,7 @@ g.URBAN_STATUS_SIMPLE = URBAN_STATUS_SIMPLE;
 function NEAREST_PLACE(latitude_or_address, longitude) {
     if (longitude === void 0) { longitude = false; }
     return __awaiter(this, void 0, void 0, function () {
-        var coords, url, token, apiResponse, responseJSON, err_19;
+        var coords, url, token, apiResponse, responseJSON, err_20;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1125,8 +1164,8 @@ function NEAREST_PLACE(latitude_or_address, longitude) {
                     }
                     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
                 case 4:
-                    err_19 = _a.sent();
-                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_19));
+                    err_20 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_20));
                 case 5: return [2 /*return*/];
             }
         });
@@ -1142,7 +1181,7 @@ g.NEAREST_PLACE = NEAREST_PLACE;
 function NEAREST_POI(latitude_or_address, longitude) {
     if (longitude === void 0) { longitude = false; }
     return __awaiter(this, void 0, void 0, function () {
-        var coords, url, token, apiResponse, responseJSON, err_20;
+        var coords, url, token, apiResponse, responseJSON, err_21;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1166,8 +1205,8 @@ function NEAREST_POI(latitude_or_address, longitude) {
                     }
                     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
                 case 4:
-                    err_20 = _a.sent();
-                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_20));
+                    err_21 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_21));
                 case 5: return [2 /*return*/];
             }
         });
@@ -1183,7 +1222,7 @@ g.NEAREST_POI = NEAREST_POI;
 function NEAREST_BANK(latitude_or_address, longitude) {
     if (longitude === void 0) { longitude = false; }
     return __awaiter(this, void 0, void 0, function () {
-        var coords, url, token, apiResponse, responseJSON, err_21;
+        var coords, url, token, apiResponse, responseJSON, err_22;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1207,8 +1246,8 @@ function NEAREST_BANK(latitude_or_address, longitude) {
                     }
                     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
                 case 4:
-                    err_21 = _a.sent();
-                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_21));
+                    err_22 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_22));
                 case 5: return [2 /*return*/];
             }
         });
@@ -1224,7 +1263,7 @@ g.NEAREST_BANK = NEAREST_BANK;
 function NEAREST_BANK_DIST(latitude_or_address, longitude) {
     if (longitude === void 0) { longitude = false; }
     return __awaiter(this, void 0, void 0, function () {
-        var coords, url, token, apiResponse, responseJSON, err_22;
+        var coords, url, token, apiResponse, responseJSON, err_23;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1248,8 +1287,8 @@ function NEAREST_BANK_DIST(latitude_or_address, longitude) {
                     }
                     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(responseJSON.message));
                 case 4:
-                    err_22 = _a.sent();
-                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_22));
+                    err_23 = _a.sent();
+                    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(err_23));
                 case 5: return [2 /*return*/];
             }
         });
