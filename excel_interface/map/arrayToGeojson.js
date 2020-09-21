@@ -468,15 +468,6 @@ System.register(["./whatfreewords.js", "./pluscodes.js"], function (exports_1, c
         }
         return bounds;
     }
-    function isWithinRange(src, target) {
-        var srcRange = getRange(src);
-        var targetRange = getRange(target);
-        var srcBounds = getBounds(srcRange);
-        var targetBounds = getBounds(targetRange);
-        if ((srcBounds[1] && srcBounds[3])) {
-            //
-        }
-    }
     // TODO:
     // isWithinRange
     // isOverlapsRange

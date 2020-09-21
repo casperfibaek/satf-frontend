@@ -1044,12 +1044,15 @@ function GET_BANKS(name, target) {
                 case 2:
                     responseJSON = _a.sent();
                     if (apiResponse.ok) {
+                        if (responseJSON.message.length === 0) {
+                            return [2 /*return*/, null];
+                        }
                         cell = [];
                         for (i = 0; i < responseJSON.message.length; i += 1) {
                             cell.push([
                                 responseJSON.message[i].name,
                                 Number(responseJSON.message[i].lat),
-                                (responseJSON.message[i].lng),
+                                Number(responseJSON.message[i].lng),
                             ]);
                         }
                         return [2 /*return*/, cell];

@@ -35,7 +35,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-Office.onReady(function () { });
 function getGlobal() {
     if (typeof self !== 'undefined') {
         return self;
@@ -171,8 +170,14 @@ function toggleProtection(event) {
 }
 var dialog;
 function messageHandler(arg) {
-    dialog.close();
+    var messageFromDialog = JSON.parse(arg.message);
     console.log(arg.message);
+    dialog.messageChild(JSON.stringify({
+        message: 'Send from parent.',
+    }));
+    if (messageFromDialog.messageType === 'dialogClosed') {
+        dialog.close();
+    }
 }
 function eventHandler(arg) {
     // In addition to general system errors, there are 2 specific errors

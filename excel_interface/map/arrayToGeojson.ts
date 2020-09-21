@@ -584,20 +584,6 @@ function getBounds(range) {
   return bounds;
 }
 
-function isWithinRange(src, target) {
-  const srcRange = getRange(src);
-  const targetRange = getRange(target);
-
-  const srcBounds = getBounds(srcRange);
-  const targetBounds = getBounds(targetRange);
-
-  if (
-    (srcBounds[1] && srcBounds[3])
-  ) {
-    //
-  }
-}
-
 // TODO:
 
 // isWithinRange

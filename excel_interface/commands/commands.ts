@@ -1,5 +1,3 @@
-Office.onReady(() => {});
-
 function getGlobal() {
   if (typeof self !== 'undefined') {
     return self;
@@ -88,8 +86,16 @@ function toggleProtection(event) {
 let dialog;
 
 function messageHandler(arg) {
-  dialog.close();
+  const messageFromDialog = JSON.parse(arg.message);
   console.log(arg.message);
+
+  dialog.messageChild(JSON.stringify({
+    message: 'Send from parent.',
+  }));
+
+  if (messageFromDialog.messageType === 'dialogClosed') {
+    dialog.close();
+  }
 }
 
 function eventHandler(arg) {
@@ -132,6 +138,7 @@ function dialogCallback(asyncResult, event) {
     }
   } else {
     dialog = asyncResult.value;
+
     /* Messages are sent by developers programatically from the dialog using office.context.ui.messageParent(...) */
     dialog.addEventHandler(Office.EventType.DialogMessageReceived, messageHandler);
 
