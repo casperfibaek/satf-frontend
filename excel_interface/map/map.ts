@@ -73,6 +73,10 @@ L.control.layers(basemaps, overlaymaps, { collapsed: false }).addTo(map);
 // OpacityControl https://github.com/dayjournal/Leaflet.Control.Opacity
 L.control.opacity(overlaymaps, { collapsed: true }).addTo(map);
 
+function sendToParent(event, data) {
+  Office.context.ui.messageParent(JSON.stringify({ event, data }));
+}
+
 function onMessageFromParent(event) {
   const messageFromParent = JSON.parse(event.message);
   console.log(messageFromParent);
@@ -80,13 +84,13 @@ function onMessageFromParent(event) {
 
 function addMarker(e) {
   L.marker(e.latlng).addTo(map);
-  Office.context.ui.messageParent({ event: 'createdMarker', message: e.latlng });
+  sendToParent('createdMarker', e.latlng);
 }
 map.on('click', addMarker);
 
 Office.onReady().then(() => {
   Office.context.ui.addHandlerAsync(Office.EventType.DialogParentMessageReceived, onMessageFromParent);
-  Office.context.ui.messageParent({ event: 'ready', message: 'Object' );
+  sendToParent('ready', 'string');
 });
 
 console.log('Loaded: map.js');
