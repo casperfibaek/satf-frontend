@@ -1,4 +1,5 @@
 "use strict";
+/* eslint-disable max-len */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -168,117 +169,49 @@ function toggleProtection(event) {
     });
     event.completed();
 }
-var dialog;
+var dialog = {};
+g.dialog = dialog;
 function onMessageFromDialog(arg) {
-    var messageFromDialog = JSON.parse(arg.message);
-    console.log(arg.message);
+    console.log(arg);
     dialog.messageChild(JSON.stringify({
-        message: 'Send from parent.',
+        message: 'Parent recieved message you send before.',
     }));
-    if (messageFromDialog.messageType === 'dialogClosed') {
-        dialog.close();
+}
+function onEventFromDialog(arg) {
+    switch (arg.error) {
+        case 12002:
+            console.log('The dialog box has been directed to a page that it cannot find or load, or the URL syntax is invalid.');
+            break;
+        case 12003:
+            console.log('The dialog box has been directed to a URL with the HTTP protocol. HTTPS is required.');
+            break;
+        case 12006:
+            console.log('Dialog closed.');
+            break;
+        default:
+            console.log('Unknown error in dialog box.');
+            break;
     }
 }
-// function eventHandler(arg) {
-//   // In addition to general system errors, there are 2 specific errors
-//   // and one event that you can handle individually.
-//   switch (arg.error) {
-//     case 12002:
-//       console.log('Cannot load URL, no such page or bad URL syntax.');
-//       break;
-//     case 12003:
-//       console.log('HTTPS is required.');
-//       break;
-//     case 12006:
-//       // The dialog was closed, typically because the user the pressed X button.
-//       console.log('Dialog closed by user');
-//       break;
-//     default:
-//       console.log('Undefined error in dialog window');
-//       break;
-//   }
-// }
-// function dialogCallback(asyncResult, event) {
-//   if (asyncResult.status === 'failed') {
-//     // In addition to general system errors, there are 3 specific errors for
-//     // displayDialogAsync that you can handle individually.
-//     switch (asyncResult.error.code) {
-//       case 12004:
-//         console.log('Domain is not trusted');
-//         break;
-//       case 12005:
-//         console.log('HTTPS is required');
-//         break;
-//       case 12007:
-//         console.log('A dialog is already opened.');
-//         break;
-//       default:
-//         console.log(asyncResult.error.message);
-//         break;
-//     }
-//   } else {
-//     dialog = asyncResult.value;
-//     /* Messages are sent by developers programatically from the dialog using office.context.ui.messageParent(...) */
-//     dialog.addEventHandler(Office.EventType.DialogMessageReceived, messageHandler);
-//     /* Events are sent by the platform in response to user actions or errors. For example, the dialog is closed via the 'x' button */
-//     dialog.addEventHandler(Office.EventType.DialogEventReceived, eventHandler);
-//   }
-//   event.completed();
-// }
-function openDialogWindow(link, event, iframe, height, width, prompt) {
-    if (iframe === void 0) { iframe = false; }
-    if (height === void 0) { height = 40; }
-    if (width === void 0) { width = 30; }
-    if (prompt === void 0) { prompt = false; }
-    Office.context.ui.displayDialogAsync(link, {
-        height: height,
-        width: width,
-        promptBeforeOpen: prompt,
-        displayInIframe: iframe,
-    }, function (asyncResult) {
-        dialog = asyncResult.value;
-        dialog.addEventHandler(Office.EventType.DialogMessageReceived, onMessageFromDialog);
-        // dialogCallback(asyncResult, event);
+function openDialog(url) {
+    Office.context.ui.displayDialogAsync(url, { height: 40, width: 30 }, function (asyncResult) {
+        if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+            console.log('Failed to open window and attach listeners..');
+            console.log(asyncResult);
+        }
+        else {
+            dialog = asyncResult.value;
+            dialog.addEventHandler(Office.EventType.DialogMessageReceived, onMessageFromDialog);
+            dialog.addEventHandler(Office.EventType.DialogEventReceived, onEventFromDialog);
+        }
     });
 }
-function openDialogNIRAS(event) {
-    openDialogWindow('https://satf.azurewebsites.net/excel_interface/commands/niras.html', event);
-}
-function openDialogOPM(event) {
-    openDialogWindow('https://satf.azurewebsites.net/excel_interface/commands/opm.html', event);
-}
-function openDialogSATF(event) {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            openDialogWindow('https://satf.azurewebsites.net/excel_interface/commands/satf.html', event);
-            return [2 /*return*/];
-        });
-    });
-}
-function openDialogSUPPORT(event) {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            openDialogWindow('https://satf.azurewebsites.net/excel_interface/support/support.html', event);
-            return [2 /*return*/];
-        });
-    });
-}
-function openDialogDOCUMENTATION(event) {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            openDialogWindow('https://satf.azurewebsites.net/excel_interface/documentation/documentation.html', event);
-            return [2 /*return*/];
-        });
-    });
-}
-function openDialogMAP(event) {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            openDialogWindow('https://satf.azurewebsites.net/excel_interface/map/map.html', event);
-            return [2 /*return*/];
-        });
-    });
-}
+function openDialogMAP() { openDialog('https://satf.azurewebsites.net/excel_interface/map/map.html'); }
+function openDialogNIRAS() { openDialog('https://satf.azurewebsites.net/excel_interface/commands/niras.html'); }
+function openDialogOPM() { openDialog('https://satf.azurewebsites.net/excel_interface/commands/opm.html'); }
+function openDialogSATF() { openDialog('https://satf.azurewebsites.net/excel_interface/commands/satf.html'); }
+function openDialogSUPPORT() { openDialog('https://satf.azurewebsites.net/excel_interface/support/support.html'); }
+function openDialogDOCUMENTATION() { openDialog('https://satf.azurewebsites.net/excel_interface/documentation/documentation.html'); }
 Office.onReady().then(function () {
     // the add-in command functions need to be available in global scope
     console.log('Office ready in parent.');

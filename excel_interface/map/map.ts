@@ -81,7 +81,12 @@ function onMessageFromParent(event) {
 Office.onReady().then(() => {
   console.log('Office ready in child.');
   Office.context.ui.addHandlerAsync(Office.EventType.DialogParentMessageReceived, onMessageFromParent);
-  Office.context.ui.messageParent(JSON.stringify({ message: 'Send message from map' }));
+  Office.context.ui.messageParent(true);
 });
+function addMarker(e) {
+  L.marker(e.latlng).addTo(map);
+  Office.context.ui.messageParent(JSON.stringify(e.latlng));
+}
+map.on('click', addMarker);
 
 console.log('Loaded: map.js');
