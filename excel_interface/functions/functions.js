@@ -1025,7 +1025,13 @@ function GET_BANKS(name, target) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    target_test = (target === 0) ? 0.4 : target;
+                    target_test = 0.4;
+                    if (!isNaN(Number(target))) {
+                        target_test = target;
+                    }
+                    if (target === null) {
+                        target_test = 0.4;
+                    }
                     url = "../../api/get_banks?name=" + String(name).replace(/\s/g, '+') + "&target=" + target_test;
                     token = g.localStorage.getItem('satf_token');
                     return [4 /*yield*/, fetch(url, { headers: { Authorization: token } })];

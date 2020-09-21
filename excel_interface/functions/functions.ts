@@ -714,7 +714,10 @@ g.ADMIN_LEVEL2_FUZZY_TRI = ADMIN_LEVEL2_FUZZY_TRI;
  */
 async function GET_BANKS(name, target = 0.4) {
   try {
-    const target_test = (target === 0) ? 0.4 : target;
+    let target_test = 0.4;
+    if (!isNaN(Number(target))) { target_test = target; }
+    if (target === null) { target_test = 0.4; }
+
     const url = `../../api/get_banks?name=${String(name).replace(/\s/g, '+')}&target=${target_test}`;
     const token = g.localStorage.getItem('satf_token');
 
@@ -723,12 +726,13 @@ async function GET_BANKS(name, target = 0.4) {
 
     const responseJSON = await apiResponse.json();
     if (apiResponse.ok) {
+      if (responseJSON.message.length === 0) { return null; }
       const cell = [];
       for (let i = 0; i < responseJSON.message.length; i += 1) {
         cell.push([
           responseJSON.message[i].name,
           Number(responseJSON.message[i].lat),
-          (responseJSON.message[i].lng),
+          Number(responseJSON.message[i].lng),
         ]);
       }
       return cell;
