@@ -711,7 +711,7 @@ function POPDENS_BUFFER_CAR(minutes, latitude_or_address, longitude) {
 }
 g.POPDENS_BUFFER_CAR = POPDENS_BUFFER_CAR;
 /**
- * Calculates the amount of people within a walkable timeframe of the point. Traverses the road network.
+ * Calculates the amount of people within a walkable timeframe of the point. Traverses the road network creating isocrones.
  * @customfunction POPDENS_ISO_WALK
  * @param {number} minutes
  * @param {any} latitude_or_address
@@ -757,7 +757,7 @@ function POPDENS_ISO_WALK(minutes, latitude_or_address, longitude) {
 }
 g.POPDENS_ISO_WALK = POPDENS_ISO_WALK;
 /**
- * Calculates the amount of people within a bikeable timeframe of the point. Traverses the road network.
+ * Calculates the amount of people within a bikeable timeframe of the point. Traverses the road network creating isocrones.
  * @customfunction POPDENS_ISO_BIKE
  * @param {number} minutes
  * @param {any} latitude_or_address
@@ -803,7 +803,7 @@ function POPDENS_ISO_BIKE(minutes, latitude_or_address, longitude) {
 }
 g.POPDENS_ISO_BIKE = POPDENS_ISO_BIKE;
 /**
- * Calculates the amount of people within a drivable timeframe of the point. Traverses the road network.
+ * Calculates the amount of people within a drivable timeframe of the point. Traverses the road network creating isocrones.
  * @customfunction POPDENS_ISO_CAR
  * @param {number} minutes
  * @param {any} latitude_or_address

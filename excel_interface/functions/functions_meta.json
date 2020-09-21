@@ -224,7 +224,7 @@
             }
         },
         {
-            "description": "Calculates the amount of people within a walkable timeframe of the point. Traverses the road network.",
+            "description": "Calculates the amount of people within a walkable timeframe of the point. Traverses the road network creating isocrones.",
             "id": "POPDENS_ISO_WALK",
             "name": "POPDENS_ISO_WALK",
             "parameters": [
@@ -247,7 +247,7 @@
             }
         },
         {
-            "description": "Calculates the amount of people within a bikeable timeframe of the point. Traverses the road network.",
+            "description": "Calculates the amount of people within a bikeable timeframe of the point. Traverses the road network creating isocrones.",
             "id": "POPDENS_ISO_BIKE",
             "name": "POPDENS_ISO_BIKE",
             "parameters": [
@@ -270,7 +270,7 @@
             }
         },
         {
-            "description": "Calculates the amount of people within a drivable timeframe of the point. Traverses the road network.",
+            "description": "Calculates the amount of people within a drivable timeframe of the point. Traverses the road network creating isocrones.",
             "id": "POPDENS_ISO_CAR",
             "name": "POPDENS_ISO_CAR",
             "parameters": [

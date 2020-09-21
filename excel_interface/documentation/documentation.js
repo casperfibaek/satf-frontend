@@ -87,7 +87,7 @@ System.register(["../functions/functions_meta.json"], function (exports_1, conte
                             React.createElement("div", { id: "documentation_header" },
                                 React.createElement("div", { className: "documentation_intro_text" },
                                     React.createElement(FluentUIReact.Icon, { iconName: "TextDocument" }),
-                                    React.createElement(FluentUIReact.Text, { variant: "xLarge", block: true }, "Search the documentation")),
+                                    React.createElement(FluentUIReact.Text, { variant: "xLarge" }, "Search the documentation")),
                                 React.createElement(FluentUIReact.SearchBox, { className: "function_search", placeholder: "Search", onChanged: function (newValue) { return _this.fuzzySearch(newValue); } }))),
                         React.createElement("div", { id: "card_holder" }, listItems)));
                 };
