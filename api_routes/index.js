@@ -8,6 +8,7 @@ const cache = require('./cache');
 const auth = require('./auth');
 const credentials = require('./credentials');
 const utils = require('./utils');
+const validators = require('./validators');
 // const gpgps = require('./gpgps');
 const Wfw = require('./assets/whatfreewords');
 const Pluscodes = require('./assets/pluscodes');
@@ -17,100 +18,68 @@ const router = express.Router();
 
 const pool = new pg.Pool(credentials);
 
-async function latlng_to_whatfreewords(req, res) {
+async function latlng_to_what3words(req, res) {
   if (!req.query.lat || !req.query.lng) {
     return res.status(400).json({
       status: 'Failure',
       message: 'Request missing lat or lng',
-      function: 'latlng_to_whatfreewords',
+      function: 'latlng_to_what3words',
     });
   }
+
+  if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng)) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Invalid input',
+      function: 'latlng_to_what3words',
+    });
+  }
+
   try {
     return res.status(200).json({
       status: 'success',
       message: Wfw.latlon2words(Number(req.query.lat), Number(req.query.lng)),
-      function: 'latlng_to_whatfreewords',
+      function: 'latlng_to_what3words',
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
       status: 'Failure',
       message: 'Error encountered on server',
-      function: 'latlng_to_whatfreewords',
+      function: 'latlng_to_what3words',
     });
   }
 }
 
-// async function gpgps_to_latlng(req, res) {
-//   if (!req.query.gpgps) {
-//     return res.status(400).json({
-//       status: 'Failure',
-//       message: 'Request missing gpgps',
-//       function: 'gpgps_to_latlng',
-//     });
-//   }
-//   try {
-//     const latlng = await gpgps.gpgps_to_latlng(req.query.gpgps);
-//     return res.status(200).json({
-//       status: 'success',
-//       message: latlng,
-//       function: 'gpgps_to_latlng',
-//     });
-//   } catch (err) {
-//     console.log(err);
-//     return res.status(500).json({
-//       status: 'Failure',
-//       message: 'Error encountered on server',
-//       function: 'gpgps_to_latlng',
-//     });
-//   }
-// }
-
-// async function latlng_to_gpgps(req, res) {
-//   if (!req.query.lat || !req.query.lng) {
-//     return res.status(400).json({
-//       status: 'Failure',
-//       message: 'Request missing lat or lng',
-//       function: 'latlng_to_gpgps',
-//     });
-//   }
-//   try {
-//     const GhanaPostalGPS = await gpgps.latlng_to_gpgps(req.query.lat, req.query.lng);
-//     return res.status(200).json({
-//       status: 'success',
-//       message: GhanaPostalGPS,
-//       function: 'latlng_to_gpgps',
-//     });
-//   } catch (err) {
-//     console.log(err);
-//     return res.status(500).json({
-//       status: 'Failure',
-//       message: 'Error encountered on server',
-//       function: 'latlng_to_gpgps',
-//     });
-//   }
-// }
-
-async function whatfreewords_to_latlng(req, res) {
+async function what3words_to_latlng(req, res) {
   if (!req.query.words) {
     return res.status(400).json({
       status: 'Failure',
       message: 'Request missing words',
-      function: 'whatfreewords_to_latlng',
+      function: 'what3words_to_latlng',
     });
   }
+
+  if (!validators.isValidWhatFreeWords(req.query.words)) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Invalid what3words input',
+      function: 'what3words_to_latlng',
+    });
+  }
+
   try {
     return res.status(200).json({
       status: 'success',
       message: Wfw.words2latlon(req.query.words),
-      function: 'whatfreewords_to_latlng',
+      function: 'what3words_to_latlng',
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
       status: 'Failure',
       message: 'Error encountered on server',
-      function: 'whatfreewords_to_latlng',
+      function: 'what3words_to_latlng',
     });
   }
 }
@@ -123,6 +92,15 @@ async function latlng_to_pluscode(req, res) {
       function: 'latlng_to_pluscode',
     });
   }
+
+  if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng)) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Invalid input',
+      function: 'latlng_to_pluscode',
+    });
+  }
+
   try {
     const pluscode = openLocationCode.encode(Number(req.query.lat), Number(req.query.lng), 10);
     return res.status(200).json({
@@ -148,8 +126,19 @@ async function pluscode_to_latlng(req, res) {
       function: 'pluscode_to_latlng',
     });
   }
+
+  const pluscode = String(req.query.code).replace(' ', '+');
+
+  if (!validators.isValidPluscode(pluscode)) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Invalid pluscode input',
+      function: 'pluscode_to_latlng',
+    });
+  }
+
   try {
-    const code = openLocationCode.decode(String(req.query.code).replace(' ', '+'));
+    const code = openLocationCode.decode(pluscode);
     return res.status(200).json({
       status: 'success',
       message: [code.latitudeCenter, code.longitudeCenter],
@@ -170,6 +159,14 @@ async function admin_level_1(req, res) {
     return res.status(400).json({
       status: 'Failure',
       message: 'Request missing lat or lng',
+      function: 'admin_level_1',
+    });
+  }
+
+  if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng)) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Invalid input',
       function: 'admin_level_1',
     });
   }
@@ -211,6 +208,14 @@ async function admin_level_2(req, res) {
     return res.status(400).json({
       status: 'Failure',
       message: 'Request missing lat or lng',
+      function: 'admin_level_2',
+    });
+  }
+
+  if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng)) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Invalid input',
       function: 'admin_level_2',
     });
   }
@@ -344,6 +349,14 @@ async function urban_status(req, res) {
     });
   }
 
+  if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng)) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Invalid input',
+      function: 'urban_status',
+    });
+  }
+
   const dbQuery = `
     SELECT ensemble
     FROM public.urban_rural_classification_vect
@@ -384,6 +397,14 @@ async function urban_status_simple(req, res) {
     });
   }
 
+  if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng)) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Invalid input',
+      function: 'urban_status_simple',
+    });
+  }
+
   const dbQuery = `
     SELECT ensemble
     FROM public.urban_rural_classification_vect
@@ -420,6 +441,14 @@ async function population_density_buffer(req, res) {
     return res.status(400).json({
       status: 'Failure',
       message: 'Request missing lat, lng or buffer',
+      function: 'population_density_buffer',
+    });
+  }
+
+  if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng || isNaN(req.query.buffer))) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Invalid input',
       function: 'population_density_buffer',
     });
   }
@@ -472,6 +501,14 @@ async function population_density_walk(req, res) {
     });
   }
 
+  if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng || isNaN(req.query.minutes))) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Invalid input',
+      function: 'population_density_walk',
+    });
+  }
+
   const dbQuery = `
     WITH const (pp_geom) AS (
         values (ST_Buffer(ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography, '${(Number(req.query.minutes) * 55) + 10}')::geometry)
@@ -516,6 +553,14 @@ async function population_density_bike(req, res) {
     return res.status(400).json({
       status: 'Failure',
       message: 'Request missing lat, lng or minutes',
+      function: 'population_density_bike',
+    });
+  }
+
+  if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng || isNaN(req.query.minutes))) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Invalid input',
       function: 'population_density_bike',
     });
   }
@@ -568,6 +613,14 @@ async function population_density_car(req, res) {
     });
   }
 
+  if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng || isNaN(req.query.minutes))) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Invalid input',
+      function: 'population_density_car',
+    });
+  }
+
   const dbQuery = `
     WITH const (pp_geom) AS (
         values (ST_Buffer(ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography, '${(Number(req.query.minutes) * 444) + 10}')::geometry)
@@ -615,9 +668,18 @@ async function pop_density_isochrone_walk(req, res) {
       function: 'pop_density_isochrone_walk',
     });
   }
+
+  if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng || isNaN(req.query.minutes))) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Invalid input',
+      function: 'pop_density_isochrone_walk',
+    });
+  }
+
   // function collecting all values from raster ghana_pop_dens inside the isochrone of walking distance
   const dbQuery = `
-    SELECT popDensWalk('${req.query.lng}', '${req.query.lat}', '${Number(req.query.minutes)}') as pop_dense_iso_walk;
+    SELECT popDensWalk('${req.query.lng}', '${req.query.lat}', '${req.query.minutes}') as pop_dense_iso_walk;
   `;
 
   try {
@@ -652,9 +714,18 @@ async function pop_density_isochrone_bike(req, res) {
       function: 'pop_density_isochrone_bike',
     });
   }
+
+  if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng || isNaN(req.query.minutes))) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Invalid input',
+      function: 'pop_density_isochrone_bike',
+    });
+  }
+
   // function collecting all values from raster ghana_pop_dens inside the isochrone of biking distance
   const dbQuery = `
-    SELECT popDensBike('${req.query.lng}', '${req.query.lat}', '${Number(req.query.minutes)}') as pop_dense_iso_bike;
+    SELECT popDensBike('${req.query.lng}', '${req.query.lat}', '${req.query.minutes}') as pop_dense_iso_bike;
   `;
 
   try {
@@ -689,9 +760,18 @@ async function pop_density_isochrone_car(req, res) {
       function: 'pop_density_isochrone_car',
     });
   }
+
+  if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng || isNaN(req.query.minutes))) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Invalid input',
+      function: 'pop_density_isochrone_car',
+    });
+  }
+
   // function collecting all values from raster ghana_pop_dens inside the isochrone of driving distance
   const dbQuery = `
-    SELECT popDensCar('${req.query.lng}', '${req.query.lat}', '${Number(req.query.minutes)}') as pop_dense_iso_car;
+    SELECT popDensCar('${req.query.lng}', '${req.query.lat}', '${req.query.minutes}') as pop_dense_iso_car;
   `;
 
   try {
@@ -723,6 +803,14 @@ async function nearest_placename(req, res) {
     return res.status(400).json({
       status: 'Failure',
       message: 'Request missing lat or lng',
+      function: 'nearest_placename',
+    });
+  }
+
+  if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng)) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Invalid input',
       function: 'nearest_placename',
     });
   }
@@ -766,6 +854,14 @@ async function nearest_poi(req, res) {
     });
   }
 
+  if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng)) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Invalid input',
+      function: 'nearest_poi',
+    });
+  }
+
   const dbQuery = `
     SELECT fclass, name FROM ghana_poi
     ORDER BY geom <-> ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)
@@ -801,6 +897,14 @@ async function nearest_bank(req, res) {
     return res.status(400).json({
       status: 'Failure',
       message: 'Request missing lat or lng',
+      function: 'nearest_bank',
+    });
+  }
+
+  if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng)) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Invalid input',
       function: 'nearest_bank',
     });
   }
@@ -846,6 +950,14 @@ async function nearest_bank_distance(req, res) {
     });
   }
 
+  if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng)) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Invalid input',
+      function: 'nearest_bank_distance',
+    });
+  }
+
   const dbQuery = `
     SELECT ST_Distance(ghana_poi."geom"::geography, ST_SetSRID(ST_Point('${req.query.lng}', '${req.query.lat}'), 4326)::geography)::int AS "distance"
     FROM public.ghana_poi WHERE fclass='bank'
@@ -886,9 +998,18 @@ async function isochrone_walk(req, res) {
       function: 'isochrone_walk',
     });
   }
+
+  if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng || isNaN(req.query.minutes))) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Invalid input',
+      function: 'isochrone_walk',
+    });
+  }
+
   // function creating an isochrone of walking distance
   const dbQuery = `
-    SELECT ST_AsGeoJSON(pgr_isochroneWalk('${req.query.lng}', '${req.query.lat}', '${Number(req.query.minutes)}'), 6) as geom;
+    SELECT ST_AsGeoJSON(pgr_isochroneWalk('${req.query.lng}', '${req.query.lat}', '${req.query.minutes}'), 6) as geom;
   `;
 
   try {
@@ -923,9 +1044,18 @@ async function isochrone_bike(req, res) {
       function: 'isochrone_bike',
     });
   }
+
+  if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng || isNaN(req.query.minutes))) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Invalid input',
+      function: 'isochrone_bike',
+    });
+  }
+
   // function creating an isochrone of biking distance
   const dbQuery = `
-    SELECT ST_AsGeoJSON(pgr_isochroneBike('${req.query.lng}', '${req.query.lat}', '${Number(req.query.minutes)}'), 6) as geom;
+    SELECT ST_AsGeoJSON(pgr_isochroneBike('${req.query.lng}', '${req.query.lat}', '${req.query.minutes}'), 6) as geom;
   `;
 
   try {
@@ -960,6 +1090,15 @@ async function isochrone_car(req, res) {
       function: 'isochrone_car',
     });
   }
+
+  if (!validators.isValidLatitude(req.query.lat) || !validators.isValidLatitude(req.query.lng || isNaN(req.query.minutes))) {
+    return res.status(400).json({
+      status: 'Failure',
+      message: 'Invalid input',
+      function: 'isochrone_car',
+    });
+  }
+
   // function creating an isochrone of driving distance
   const dbQuery = `
     SELECT ST_AsGeoJSON(pgr_isochroneCar('${req.query.lng}', '${req.query.lat}', '${Number(req.query.minutes)}'), 6) as geom;
@@ -1319,31 +1458,31 @@ async function delete_user(req, res) {
 
 router.route('/').get((req, res) => res.send('home/api'));
 
-router.route('/hello_world').get(auth, hello_world);
-router.route('/latlng_to_whatfreewords').get(auth, cache, latlng_to_whatfreewords);
-router.route('/whatfreewords_to_latlng').get(auth, cache, whatfreewords_to_latlng);
-router.route('/latlng_to_pluscode').get(auth, cache, latlng_to_pluscode);
-router.route('/pluscode_to_latlng').get(auth, cache, pluscode_to_latlng);
+router.route('/hello_world').get(hello_world);
+router.route('/latlng_to_what3words').get(latlng_to_what3words);
+router.route('/what3words_to_latlng').get(what3words_to_latlng);
+router.route('/latlng_to_pluscode').get(latlng_to_pluscode);
+router.route('/pluscode_to_latlng').get(pluscode_to_latlng);
 router.route('/population_density_walk').get(population_density_walk);
 router.route('/population_density_bike').get(population_density_bike);
 router.route('/population_density_car').get(population_density_car);
-router.route('/pop_density_isochrone_walk').get(auth, cache, pop_density_isochrone_walk);
-router.route('/pop_density_isochrone_bike').get(auth, cache, pop_density_isochrone_bike);
-router.route('/pop_density_isochrone_car').get(auth, cache, pop_density_isochrone_car);
-router.route('/isochrone_walk').get(auth, cache, isochrone_walk);
-router.route('/isochrone_bike').get(auth, cache, isochrone_bike);
-router.route('/isochrone_car').get(auth, cache, isochrone_car);
-router.route('/population_density_buffer').get(auth, cache, population_density_buffer);
-router.route('/urban_status').get(auth, cache, urban_status);
-router.route('/urban_status_simple').get(auth, cache, urban_status_simple);
-router.route('/admin_level_1').get(auth, cache, admin_level_1);
-router.route('/admin_level_2').get(auth, cache, admin_level_2);
-router.route('/admin_level_2_fuzzy_tri').get(auth, cache, admin_level_2_fuzzy_tri);
-router.route('/admin_level_2_fuzzy_lev').get(auth, cache, admin_level_2_fuzzy_lev);
-router.route('/nearest_placename').get(auth, cache, nearest_placename);
-router.route('/nearest_poi').get(auth, cache, nearest_poi);
-router.route('/nearest_bank').get(auth, cache, nearest_bank);
-router.route('/nearest_bank_distance').get(auth, cache, nearest_bank_distance);
+router.route('/pop_density_isochrone_walk').get(pop_density_isochrone_walk);
+router.route('/pop_density_isochrone_bike').get(pop_density_isochrone_bike);
+router.route('/pop_density_isochrone_car').get(pop_density_isochrone_car);
+router.route('/isochrone_walk').get(isochrone_walk);
+router.route('/isochrone_bike').get(isochrone_bike);
+router.route('/isochrone_car').get(isochrone_car);
+router.route('/population_density_buffer').get(population_density_buffer);
+router.route('/urban_status').get(urban_status);
+router.route('/urban_status_simple').get(urban_status_simple);
+router.route('/admin_level_1').get(admin_level_1);
+router.route('/admin_level_2').get(admin_level_2);
+router.route('/admin_level_2_fuzzy_tri').get(admin_level_2_fuzzy_tri);
+router.route('/admin_level_2_fuzzy_lev').get(admin_level_2_fuzzy_lev);
+router.route('/nearest_placename').get(nearest_placename);
+router.route('/nearest_poi').get(nearest_poi);
+router.route('/nearest_bank').get(nearest_bank);
+router.route('/nearest_bank_distance').get(nearest_bank_distance);
 router.route('/create_user').post(create_user);
 router.route('/login_user').post(login_user);
 router.route('/delete_user').post(delete_user);
