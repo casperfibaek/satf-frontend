@@ -69,15 +69,14 @@ function onMessageFromParent(event) {
     var messageFromParent = JSON.parse(event.message);
     console.log(messageFromParent);
 }
-Office.onReady().then(function () {
-    console.log('Office ready in child.');
-    Office.context.ui.addHandlerAsync(Office.EventType.DialogParentMessageReceived, onMessageFromParent);
-    Office.context.ui.messageParent(true);
-});
 function addMarker(e) {
     L.marker(e.latlng).addTo(map);
-    Office.context.ui.messageParent(JSON.stringify(e.latlng));
+    Office.context.ui.messageParent({ event: 'createdMarker', message: e.latlng });
 }
 map.on('click', addMarker);
+Office.onReady().then(function () {
+    Office.context.ui.addHandlerAsync(Office.EventType.DialogParentMessageReceived, onMessageFromParent);
+    Office.context.ui.messageParent({ event: 'ready', message: 'Object' });
+});
 console.log('Loaded: map.js');
 //# sourceMappingURL=map.js.map

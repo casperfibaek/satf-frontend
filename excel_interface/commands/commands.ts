@@ -88,12 +88,37 @@ function toggleProtection(event) {
 let dialog = {};
 g.dialog = dialog;
 
-function onMessageFromDialog(arg) {
-  console.log(arg);
+function eventDispatcher(event, data) {
+  console.log(event);
+  console.log(data);
+  switch (event) {
+    case 'ready':
+      console.log('Map is ready for input');
+      break;
 
-  dialog.messageChild(JSON.stringify({
-    message: 'Parent recieved message you send before.',
-  }));
+    case 'requestData':
+      console.log('Map is requesting data');
+      break;
+
+    case 'createdMarker':
+      console.log('Map created marker');
+      break;
+
+    default:
+      console.log('Did not understand event');
+      break;
+  }
+}
+
+function onMessageFromDialog(arg) {
+  try {
+    const message = JSON.parse(arg);
+    const { data, event } = message;
+
+    eventDispatcher(event, data);
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 function onEventFromDialog(arg) {
@@ -136,7 +161,6 @@ function openDialogDOCUMENTATION() { openDialog('https://satf.azurewebsites.net/
 
 Office.onReady().then(() => {
   // the add-in command functions need to be available in global scope
-  console.log('Office ready in parent.');
   g.toggleProtection = toggleProtection;
   g.openDialogNIRAS = openDialogNIRAS;
   g.openDialogOPM = openDialogOPM;

@@ -171,11 +171,33 @@ function toggleProtection(event) {
 }
 var dialog = {};
 g.dialog = dialog;
+function eventDispatcher(event, data) {
+    console.log(event);
+    console.log(data);
+    switch (event) {
+        case 'ready':
+            console.log('Map is ready for input');
+            break;
+        case 'requestData':
+            console.log('Map is requesting data');
+            break;
+        case 'createdMarker':
+            console.log('Map created marker');
+            break;
+        default:
+            console.log('Did not understand event');
+            break;
+    }
+}
 function onMessageFromDialog(arg) {
-    console.log(arg);
-    dialog.messageChild(JSON.stringify({
-        message: 'Parent recieved message you send before.',
-    }));
+    try {
+        var message = JSON.parse(arg);
+        var data = message.data, event_1 = message.event;
+        eventDispatcher(event_1, data);
+    }
+    catch (err) {
+        console.log(err);
+    }
 }
 function onEventFromDialog(arg) {
     switch (arg.error) {
@@ -217,7 +239,6 @@ function openDialogSUPPORT() { openDialog('https://satf.azurewebsites.net/excel_
 function openDialogDOCUMENTATION() { openDialog('https://satf.azurewebsites.net/excel_interface/documentation/documentation.html', false); }
 Office.onReady().then(function () {
     // the add-in command functions need to be available in global scope
-    console.log('Office ready in parent.');
     g.toggleProtection = toggleProtection;
     g.openDialogNIRAS = openDialogNIRAS;
     g.openDialogOPM = openDialogOPM;
