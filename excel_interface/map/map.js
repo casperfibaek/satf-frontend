@@ -2,6 +2,24 @@ System.register(["./arrayToGeojson.js"], function (exports_1, context_1) {
     "use strict";
     var arrayToGeojson_js_1, map, osm, esri, southWest, northEast, mybounds, lyr_2020, lyr_2019, lyr_grd, lyr_coh, lyr_ndvi, lyr_nl, lyr_cxb, lyr_terrain, lyr_slope, lyr_urban_status, lyr_urban_status_simple, overlaymaps, basemaps, markerLayers, buttonRequest, buttonClear;
     var __moduleName = context_1 && context_1.id;
+    function htmlTable(obj) {
+        var table = '<table class=""><tbody>';
+        if (obj._data) {
+            for (var i = 0; i < obj._data.length; i += 1) {
+                table += "<tr><td>" + obj._data[i] + "</td></tr>";
+            }
+        }
+        else {
+            var keys = Object.keys(obj);
+            for (var i = 0; i < keys.length; i += 1) {
+                var key = keys[i];
+                var val = obj[key];
+                table += "<tr><td>" + key + "</td><td>" + val + "</td></tr>";
+            }
+        }
+        table += '</tbody></table>';
+        return table;
+    }
     function eventDispatcher(event, data) {
         console.log(event);
         console.log(data);
@@ -9,8 +27,10 @@ System.register(["./arrayToGeojson.js"], function (exports_1, context_1) {
             if (event === 'selectedCells') {
                 var geojson = arrayToGeojson_js_1.default(data);
                 var geojsonLayer = L.geoJSON(geojson, {
-                    onEachFeature: function (f, l) {
-                        l.bindPopup("<pre>" + JSON.stringify(f.properties, null, ' ').replace(/[\{\}"]/g, '') + "</pre>");
+                    onEachFeature: function (feature, layer) {
+                        if (feature.properties) {
+                            layer.bindPopup(htmlTable(feature.properties));
+                        }
                     },
                 });
                 markerLayers.addLayer(geojsonLayer);
