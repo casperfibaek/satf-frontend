@@ -507,7 +507,7 @@ function HELLO_WORLD() {
                 case 1:
                     apiResponse = _a.sent();
                     if (apiResponse.status === 401) {
-                        return [2 /*return*/, 'Unauthorised'];
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
                     }
                     return [4 /*yield*/, apiResponse.json()];
                 case 2:
@@ -554,7 +554,7 @@ function POPDENS_BUFFER(bufferMeters, latitude_or_address, longitude) {
                 case 2:
                     apiResponse = _a.sent();
                     if (apiResponse.status === 401) {
-                        return [2 /*return*/, 'Unauthorised'];
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
                     }
                     return [4 /*yield*/, apiResponse.json()];
                 case 3:
@@ -600,7 +600,7 @@ function POPDENS_BUFFER_WALK(minutes, latitude_or_address, longitude) {
                 case 2:
                     apiResponse = _a.sent();
                     if (apiResponse.status === 401) {
-                        return [2 /*return*/, 'Unauthorised'];
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
                     }
                     return [4 /*yield*/, apiResponse.json()];
                 case 3:
@@ -646,7 +646,7 @@ function POPDENS_BUFFER_BIKE(minutes, latitude_or_address, longitude) {
                 case 2:
                     apiResponse = _a.sent();
                     if (apiResponse.status === 401) {
-                        return [2 /*return*/, 'Unauthorised'];
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
                     }
                     return [4 /*yield*/, apiResponse.json()];
                 case 3:
@@ -692,7 +692,7 @@ function POPDENS_BUFFER_CAR(minutes, latitude_or_address, longitude) {
                 case 2:
                     apiResponse = _a.sent();
                     if (apiResponse.status === 401) {
-                        return [2 /*return*/, 'Unauthorised'];
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
                     }
                     return [4 /*yield*/, apiResponse.json()];
                 case 3:
@@ -738,7 +738,7 @@ function POPDENS_ISO_WALK(minutes, latitude_or_address, longitude) {
                 case 2:
                     apiResponse = _a.sent();
                     if (apiResponse.status === 401) {
-                        return [2 /*return*/, 'Unauthorised'];
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
                     }
                     return [4 /*yield*/, apiResponse.json()];
                 case 3:
@@ -784,7 +784,7 @@ function POPDENS_ISO_BIKE(minutes, latitude_or_address, longitude) {
                 case 2:
                     apiResponse = _a.sent();
                     if (apiResponse.status === 401) {
-                        return [2 /*return*/, 'Unauthorised'];
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
                     }
                     return [4 /*yield*/, apiResponse.json()];
                 case 3:
@@ -830,7 +830,7 @@ function POPDENS_ISO_CAR(minutes, latitude_or_address, longitude) {
                 case 2:
                     apiResponse = _a.sent();
                     if (apiResponse.status === 401) {
-                        return [2 /*return*/, 'Unauthorised'];
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
                     }
                     return [4 /*yield*/, apiResponse.json()];
                 case 3:
@@ -873,7 +873,7 @@ function ADMIN_LEVEL1(latitude_or_address, longitude) {
                 case 2:
                     apiResponse = _a.sent();
                     if (apiResponse.status === 401) {
-                        return [2 /*return*/, 'Unauthorised'];
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
                     }
                     return [4 /*yield*/, apiResponse.json()];
                 case 3:
@@ -916,7 +916,7 @@ function ADMIN_LEVEL2(latitude_or_address, longitude) {
                 case 2:
                     apiResponse = _a.sent();
                     if (apiResponse.status === 401) {
-                        return [2 /*return*/, 'Unauthorised'];
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
                     }
                     return [4 /*yield*/, apiResponse.json()];
                 case 3:
@@ -954,7 +954,7 @@ function ADMIN_LEVEL2_FUZZY_LEV(str) {
                 case 1:
                     apiResponse = _a.sent();
                     if (apiResponse.status === 401) {
-                        return [2 /*return*/, 'Unauthorised'];
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
                     }
                     return [4 /*yield*/, apiResponse.json()];
                 case 2:
@@ -992,7 +992,7 @@ function ADMIN_LEVEL2_FUZZY_TRI(str) {
                 case 1:
                     apiResponse = _a.sent();
                     if (apiResponse.status === 401) {
-                        return [2 /*return*/, 'Unauthorised'];
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
                     }
                     return [4 /*yield*/, apiResponse.json()];
                 case 2:
@@ -1038,7 +1038,7 @@ function GET_BANKS(name, target) {
                 case 1:
                     apiResponse = _a.sent();
                     if (apiResponse.status === 401) {
-                        return [2 /*return*/, 'Unauthorised'];
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
                     }
                     return [4 /*yield*/, apiResponse.json()];
                 case 2:
@@ -1090,7 +1090,7 @@ function URBAN_STATUS(latitude_or_address, longitude) {
                 case 2:
                     apiResponse = _a.sent();
                     if (apiResponse.status === 401) {
-                        return [2 /*return*/, 'Unauthorised'];
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
                     }
                     return [4 /*yield*/, apiResponse.json()];
                 case 3:
@@ -1131,7 +1131,7 @@ function URBAN_STATUS_SIMPLE(latitude_or_address, longitude) {
                 case 2:
                     apiResponse = _a.sent();
                     if (apiResponse.status === 401) {
-                        return [2 /*return*/, 'Unauthorised'];
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
                     }
                     return [4 /*yield*/, apiResponse.json()];
                 case 3:
@@ -1172,7 +1172,7 @@ function NEAREST_PLACE(latitude_or_address, longitude) {
                 case 2:
                     apiResponse = _a.sent();
                     if (apiResponse.status === 401) {
-                        return [2 /*return*/, 'Unauthorised'];
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
                     }
                     return [4 /*yield*/, apiResponse.json()];
                 case 3:
@@ -1213,7 +1213,7 @@ function NEAREST_POI(latitude_or_address, longitude) {
                 case 2:
                     apiResponse = _a.sent();
                     if (apiResponse.status === 401) {
-                        return [2 /*return*/, 'Unauthorised'];
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
                     }
                     return [4 /*yield*/, apiResponse.json()];
                 case 3:
@@ -1254,7 +1254,7 @@ function NEAREST_BANK(latitude_or_address, longitude) {
                 case 2:
                     apiResponse = _a.sent();
                     if (apiResponse.status === 401) {
-                        return [2 /*return*/, 'Unauthorised'];
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
                     }
                     return [4 /*yield*/, apiResponse.json()];
                 case 3:
@@ -1295,7 +1295,7 @@ function NEAREST_BANK_DIST(latitude_or_address, longitude) {
                 case 2:
                     apiResponse = _a.sent();
                     if (apiResponse.status === 401) {
-                        return [2 /*return*/, 'Unauthorised'];
+                        throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
                     }
                     return [4 /*yield*/, apiResponse.json()];
                 case 3:

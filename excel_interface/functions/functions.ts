@@ -371,7 +371,9 @@ async function HELLO_WORLD() {
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
 
-    if (apiResponse.status === 401) { return 'Unauthorised'; }
+    if (apiResponse.status === 401) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+    }
 
     const responseJSON = await apiResponse.json();
     if (apiResponse.ok) { return responseJSON.message; }
@@ -403,7 +405,9 @@ async function POPDENS_BUFFER(bufferMeters, latitude_or_address, longitude = fal
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
 
-    if (apiResponse.status === 401) { return 'Unauthorised'; }
+    if (apiResponse.status === 401) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+    }
 
     const responseJSON = await apiResponse.json();
     if (apiResponse.ok) { return responseJSON.message; }
@@ -434,7 +438,9 @@ async function POPDENS_BUFFER_WALK(minutes, latitude_or_address, longitude = fal
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
 
-    if (apiResponse.status === 401) { return 'Unauthorised'; }
+    if (apiResponse.status === 401) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+    }
 
     const responseJSON = await apiResponse.json();
     if (apiResponse.ok) { return responseJSON.message; }
@@ -465,7 +471,9 @@ async function POPDENS_BUFFER_BIKE(minutes, latitude_or_address, longitude = fal
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
 
-    if (apiResponse.status === 401) { return 'Unauthorised'; }
+    if (apiResponse.status === 401) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+    }
 
     const responseJSON = await apiResponse.json();
     if (apiResponse.ok) { return responseJSON.message; }
@@ -496,7 +504,9 @@ async function POPDENS_BUFFER_CAR(minutes, latitude_or_address, longitude = fals
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
 
-    if (apiResponse.status === 401) { return 'Unauthorised'; }
+    if (apiResponse.status === 401) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+    }
 
     const responseJSON = await apiResponse.json();
     if (apiResponse.ok) { return responseJSON.message; }
@@ -527,7 +537,9 @@ async function POPDENS_ISO_WALK(minutes, latitude_or_address, longitude = false)
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
 
-    if (apiResponse.status === 401) { return 'Unauthorised'; }
+    if (apiResponse.status === 401) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+    }
 
     const responseJSON = await apiResponse.json();
     if (apiResponse.ok) { return responseJSON.message; }
@@ -558,7 +570,9 @@ async function POPDENS_ISO_BIKE(minutes, latitude_or_address, longitude = false)
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
 
-    if (apiResponse.status === 401) { return 'Unauthorised'; }
+    if (apiResponse.status === 401) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+    }
 
     const responseJSON = await apiResponse.json();
     if (apiResponse.ok) { return responseJSON.message; }
@@ -589,7 +603,9 @@ async function POPDENS_ISO_CAR(minutes, latitude_or_address, longitude = false) 
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
 
-    if (apiResponse.status === 401) { return 'Unauthorised'; }
+    if (apiResponse.status === 401) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+    }
 
     const responseJSON = await apiResponse.json();
     if (apiResponse.ok) { return responseJSON.message; }
@@ -616,7 +632,10 @@ async function ADMIN_LEVEL1(latitude_or_address, longitude = false) {
     const token = g.localStorage.getItem('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
-    if (apiResponse.status === 401) { return 'Unauthorised'; }
+
+    if (apiResponse.status === 401) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+    }
 
     const responseJSON = await apiResponse.json();
     if (apiResponse.ok) { return responseJSON.message; }
@@ -643,7 +662,10 @@ async function ADMIN_LEVEL2(latitude_or_address, longitude = false) {
     const token = g.localStorage.getItem('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
-    if (apiResponse.status === 401) { return 'Unauthorised'; }
+
+    if (apiResponse.status === 401) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+    }
 
     const responseJSON = await apiResponse.json();
     if (apiResponse.ok) { return responseJSON.message; }
@@ -668,7 +690,10 @@ async function ADMIN_LEVEL2_FUZZY_LEV(str) {
     const token = g.localStorage.getItem('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
-    if (apiResponse.status === 401) { return 'Unauthorised'; }
+
+    if (apiResponse.status === 401) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+    }
 
     const responseJSON = await apiResponse.json();
     if (apiResponse.ok) { return responseJSON.message; }
@@ -693,7 +718,10 @@ async function ADMIN_LEVEL2_FUZZY_TRI(str) {
     const token = g.localStorage.getItem('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
-    if (apiResponse.status === 401) { return 'Unauthorised'; }
+
+    if (apiResponse.status === 401) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+    }
 
     const responseJSON = await apiResponse.json();
     if (apiResponse.ok) { return responseJSON.message; }
@@ -722,7 +750,10 @@ async function GET_BANKS(name, target = 0.4) {
     const token = g.localStorage.getItem('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
-    if (apiResponse.status === 401) { return 'Unauthorised'; }
+
+    if (apiResponse.status === 401) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+    }
 
     const responseJSON = await apiResponse.json();
     if (apiResponse.ok) {
@@ -758,7 +789,10 @@ async function URBAN_STATUS(latitude_or_address, longitude = false) {
     const token = g.localStorage.getItem('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
-    if (apiResponse.status === 401) { return 'Unauthorised'; }
+
+    if (apiResponse.status === 401) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+    }
 
     const responseJSON = await apiResponse.json();
     if (apiResponse.ok) { return responseJSON.message; }
@@ -783,8 +817,10 @@ async function URBAN_STATUS_SIMPLE(latitude_or_address, longitude = false) {
     const token = g.localStorage.getItem('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
-    if (apiResponse.status === 401) { return 'Unauthorised'; }
 
+    if (apiResponse.status === 401) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+    }
     const responseJSON = await apiResponse.json();
     if (apiResponse.ok) { return responseJSON.message; }
 
@@ -808,7 +844,10 @@ async function NEAREST_PLACE(latitude_or_address, longitude = false) {
     const token = g.localStorage.getItem('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
-    if (apiResponse.status === 401) { return 'Unauthorised'; }
+
+    if (apiResponse.status === 401) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+    }
 
     const responseJSON = await apiResponse.json();
     if (apiResponse.ok) { return responseJSON.message; }
@@ -833,7 +872,10 @@ async function NEAREST_POI(latitude_or_address, longitude = false) {
     const token = g.localStorage.getItem('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
-    if (apiResponse.status === 401) { return 'Unauthorised'; }
+
+    if (apiResponse.status === 401) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+    }
 
     const responseJSON = await apiResponse.json();
     if (apiResponse.ok) { return responseJSON.message; }
@@ -858,8 +900,10 @@ async function NEAREST_BANK(latitude_or_address, longitude = false) {
     const token = g.localStorage.getItem('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
-    if (apiResponse.status === 401) { return 'Unauthorised'; }
 
+    if (apiResponse.status === 401) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+    }
     const responseJSON = await apiResponse.json();
     if (apiResponse.ok) { return responseJSON.message; }
 
@@ -883,8 +927,10 @@ async function NEAREST_BANK_DIST(latitude_or_address, longitude = false) {
     const token = g.localStorage.getItem('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
-    if (apiResponse.status === 401) { return 'Unauthorised'; }
 
+    if (apiResponse.status === 401) {
+      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String('Unauthorised user'));
+    }
     const responseJSON = await apiResponse.json();
     if (apiResponse.ok) { return responseJSON.message; }
 

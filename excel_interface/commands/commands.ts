@@ -91,7 +91,6 @@ function onEventFromDialog(arg) {
       console.log('The dialog box has been directed to a URL with the HTTP protocol. HTTPS is required.'); break;
     case 12006:
       console.log('Dialog closed.');
-      dialog.close();
       break;
     default:
       console.log('Unknown error in dialog box.');
