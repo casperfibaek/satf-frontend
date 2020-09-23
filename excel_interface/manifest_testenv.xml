@@ -4,7 +4,7 @@
   <Version>1.0.2.3</Version>
   <ProviderName>NIRAS</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="TEST_ENV - Savings at the Frontier (v. 0.2.3)"/>
+  <DisplayName DefaultValue="TEST_ENV - SatF (v. 0.2.3)"/>
   <Description DefaultValue="Investigate Financial Inclusion"/>
   <IconUrl DefaultValue="https://satf-test.azurewebsites.net/excel_interface/assets/icons/icon-80.png"/>
   <HighResolutionIconUrl DefaultValue="https://satf-test.azurewebsites.net/excel_interface/assets/icons/icon-80.png"/>

@@ -1,3 +1,4 @@
+/* eslint-disable */
 /* This is the WhatFreeWords javascript library.
  *
  * Includes https://github.com/peterolson/BigInteger.js

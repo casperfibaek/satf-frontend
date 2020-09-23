@@ -16,8 +16,9 @@ module.exports = {
     'no-console': 0,
     'no-restricted-globals': 0,
     'no-underscore-dangle': 0,
-    'max-len': ['error', { code: 120 }],
+    // 'max-len': ['error', { code: 120 }],
     'import/extensions': 0,
+    'max-len': 0,
     camelcase: 0,
   },
   globals: {
@@ -26,9 +27,10 @@ module.exports = {
     CustomFunctions: 'readonly',
     OfficeExtension: 'readonly',
     L: 'readonly', // Leaflet,
-    mapboxgl: 'readonly', // mapbox
+    mapboxgl: 'readonly',
     FluentUIReact: 'readonly',
     ReactDOM: 'readonly',
     React: 'readonly',
+    globalThis: 'writable',
   },
 };

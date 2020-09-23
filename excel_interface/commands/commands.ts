@@ -1,32 +1,3 @@
-/* eslint-disable max-len */
-
-const isTestEnvironment = () => {
-  const host = window.location.hostname;
-  switch (host) {
-    case 'localhost': return true;
-    case 'satf-test.azurewebsites.net': return true;
-    case 'satf.azurewebsites.net': return false;
-    default:
-      if (host.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/)) {
-        return true;
-      }
-      return false;
-  }
-};
-
-function getGlobal() {
-  if (typeof self !== 'undefined') {
-    return self;
-  } if (typeof window !== 'undefined') {
-    return window;
-  } if (typeof global !== 'undefined') {
-    return global;
-  }
-  throw new Error('Unable to get global namespace.');
-}
-
-const g = getGlobal() as any;
-
 let dialog = null;
 
 function sendToDialog(event, data) {
@@ -139,12 +110,12 @@ function openDialogDOCUMENTATION(openEvent) { openDialog(`${baseUrl}/documentati
 
 Office.onReady().then(() => {
   // the add-in command functions need to be available in global scope
-  g.openDialogNIRAS = openDialogNIRAS;
-  g.openDialogOPM = openDialogOPM;
-  g.openDialogSATF = openDialogSATF;
-  g.openDialogMAP = openDialogMAP;
-  g.openDialogSUPPORT = openDialogSUPPORT;
-  g.openDialogDOCUMENTATION = openDialogDOCUMENTATION;
+  globalThis.openDialogNIRAS = openDialogNIRAS;
+  globalThis.openDialogOPM = openDialogOPM;
+  globalThis.openDialogSATF = openDialogSATF;
+  globalThis.openDialogMAP = openDialogMAP;
+  globalThis.openDialogSUPPORT = openDialogSUPPORT;
+  globalThis.openDialogDOCUMENTATION = openDialogDOCUMENTATION;
 });
 
 console.log('Loaded: commands.js');
