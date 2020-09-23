@@ -1,4 +1,19 @@
 /* eslint-disable max-len */
+
+const isTestEnvironment = () => {
+  const host = window.location.hostname;
+  switch (host) {
+    case 'localhost': return true;
+    case 'satf-test.azurewebsites.net': return true;
+    case 'satf.azurewebsites.net': return false;
+    default:
+      if (host.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/)) {
+        return true;
+      }
+      return false;
+  }
+};
+
 function getGlobal() {
   if (typeof self !== 'undefined') {
     return self;
@@ -113,12 +128,14 @@ function openDialog(url, openEvent, ask = true, listen = false) {
   });
 }
 
-function openDialogMAP(openEvent) { openDialog('https://satf.azurewebsites.net/excel_interface/map/map.html', openEvent, true, true); }
-function openDialogNIRAS(openEvent) { openDialog('https://satf.azurewebsites.net/excel_interface/commands/niras.html', openEvent, false); }
-function openDialogOPM(openEvent) { openDialog('https://satf.azurewebsites.net/excel_interface/commands/opm.html', openEvent, false); }
-function openDialogSATF(openEvent) { openDialog('https://satf.azurewebsites.net/excel_interface/commands/satf.html', openEvent, false); }
-function openDialogSUPPORT(openEvent) { openDialog('https://satf.azurewebsites.net/excel_interface/support/support.html', openEvent, false); }
-function openDialogDOCUMENTATION(openEvent) { openDialog('https://satf.azurewebsites.net/excel_interface/documentation/documentation.html', openEvent, false); }
+const baseUrl = `https://${window.location.hostname}/excel_interface`;
+
+function openDialogMAP(openEvent) { openDialog(`${baseUrl}/map/map.html`, openEvent, true, true); }
+function openDialogNIRAS(openEvent) { openDialog(`${baseUrl}/commands/niras.html`, openEvent, false); }
+function openDialogOPM(openEvent) { openDialog(`${baseUrl}/commands/opm.html`, openEvent, false); }
+function openDialogSATF(openEvent) { openDialog(`${baseUrl}/commands/satf.html`, openEvent, false); }
+function openDialogSUPPORT(openEvent) { openDialog(`${baseUrl}/support/support.html`, openEvent, false); }
+function openDialogDOCUMENTATION(openEvent) { openDialog(`${baseUrl}/documentation/documentation.html`, openEvent, false); }
 
 Office.onReady().then(() => {
   // the add-in command functions need to be available in global scope

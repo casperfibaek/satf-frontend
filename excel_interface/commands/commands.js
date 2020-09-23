@@ -1,4 +1,5 @@
 "use strict";
+/* eslint-disable max-len */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,7 +36,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-/* eslint-disable max-len */
+var isTestEnvironment = function () {
+    var host = window.location.hostname;
+    switch (host) {
+        case 'localhost': return true;
+        case 'satf-test.azurewebsites.net': return true;
+        case 'satf.azurewebsites.net': return false;
+        default:
+            if (host.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/)) {
+                return true;
+            }
+            return false;
+    }
+};
 function getGlobal() {
     if (typeof self !== 'undefined') {
         return self;
@@ -206,12 +219,13 @@ function openDialog(url, openEvent, ask, listen) {
         openEvent.completed();
     });
 }
-function openDialogMAP(openEvent) { openDialog('https://satf.azurewebsites.net/excel_interface/map/map.html', openEvent, true, true); }
-function openDialogNIRAS(openEvent) { openDialog('https://satf.azurewebsites.net/excel_interface/commands/niras.html', openEvent, false); }
-function openDialogOPM(openEvent) { openDialog('https://satf.azurewebsites.net/excel_interface/commands/opm.html', openEvent, false); }
-function openDialogSATF(openEvent) { openDialog('https://satf.azurewebsites.net/excel_interface/commands/satf.html', openEvent, false); }
-function openDialogSUPPORT(openEvent) { openDialog('https://satf.azurewebsites.net/excel_interface/support/support.html', openEvent, false); }
-function openDialogDOCUMENTATION(openEvent) { openDialog('https://satf.azurewebsites.net/excel_interface/documentation/documentation.html', openEvent, false); }
+var baseUrl = "https://" + window.location.hostname + "/excel_interface";
+function openDialogMAP(openEvent) { openDialog(baseUrl + "/map/map.html", openEvent, true, true); }
+function openDialogNIRAS(openEvent) { openDialog(baseUrl + "/commands/niras.html", openEvent, false); }
+function openDialogOPM(openEvent) { openDialog(baseUrl + "/commands/opm.html", openEvent, false); }
+function openDialogSATF(openEvent) { openDialog(baseUrl + "/commands/satf.html", openEvent, false); }
+function openDialogSUPPORT(openEvent) { openDialog(baseUrl + "/support/support.html", openEvent, false); }
+function openDialogDOCUMENTATION(openEvent) { openDialog(baseUrl + "/documentation/documentation.html", openEvent, false); }
 Office.onReady().then(function () {
     // the add-in command functions need to be available in global scope
     g.openDialogNIRAS = openDialogNIRAS;
