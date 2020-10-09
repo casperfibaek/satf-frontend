@@ -81,8 +81,8 @@ export default function Styler(props:any) {
   }
 
   useEffect(() => {
-    if (props.styles.length !== 0) {
-      const style = props.styles.filter((e:any) => (e.key === props.selectedLayer))[0];
+    if (window.mapLayers.length !== 0) {
+      const { style } = window.mapLayers.filter((e:any) => (e.key === props.selectedLayer))[0];
       if (style) { setSelectedStyle(style); }
 
       setSliderValueRadius(selectedStyle.radius);
@@ -103,7 +103,7 @@ export default function Styler(props:any) {
     <div id="modal-styler">
       <TextField
         label="Name"
-        defaultValue={(props.layers.length !== 0 && props.layers.filter((e:any) => e.key === props.selectedLayer)[0]) ? props.layers.filter((e:any) => e.key === props.selectedLayer)[0].name : 'layername'}
+        defaultValue={(window.mapLayers.length !== 0 && window.mapLayers.filter((e:any) => e.key === props.selectedLayer)[0]) ? window.mapLayers.filter((e:any) => e.key === props.selectedLayer)[0].name : 'layername'}
         onChange={(event, value) => { setLayerName(value); }}
       />
       {!colorPicker.hidden && <Callout

@@ -12,11 +12,6 @@ import BottomBar from './map_bottom_bar';
 import arrayToGeojson from './array_to_geojson';
 import Properties from './map_properties';
 
-interface MapLayer{
-  key: number,
-  name: string,
-}
-
 interface Style {
   key: number,
   fillColor: string,
@@ -154,20 +149,22 @@ function Map() {
   let mapContainer:any;
 
   const [panel, setPanel] = useState({ hidden: SVGComponentTransferFunctionElement });
-  const [layers, setLayers] = useState([]);
-  const [styles, setStyles] = useState([]);
   const [layerKey, setLayerKey] = useState(1);
+  const [addToLayer, setAddToLayer] = useState(1);
+  const [mapSelectedLayer, setMapSelectedLayer] = useState(1);
   const [mapClick, setMapClick] = useState({ hidden: true, position: {}, latlng: [] });
-  const [mapSelectedLayer, setMapSelectedLayer] = useState(-1);
   const [createDialog, setCreateDialog] = useState({ hidden: true, name: '' });
   const [receiveDialog, setReceiveDialog] = useState({ hidden: true });
-  const [addToLayer, setAddToLayer] = useState(-1);
   const [addData, setAddData] = useState({});
-  const [propertiesDialog, setPropertiesDialog] = useState({ hidden: true, position: {}, clicked: null });
+
+  const [propertiesDialog, setPropertiesDialog] = useState({
+    hidden: true, position: {}, clicked: null, group: null,
+  });
 
   function getLayerKey():number {
-    setLayerKey(layerKey + 1);
-    return layerKey - 1;
+    const currentKey = layerKey;
+    setLayerKey(currentKey + 1);
+    return currentKey;
   }
 
   function generateRandomStyle(key:number):Style {
@@ -202,30 +199,31 @@ function Map() {
     }
   }
 
-  function addLayer(layer:MapLayer):void {
-    const style = generateRandomStyle(layer.key);
-    setStyles(styles.concat(style));
-    setLayers(layers.concat(layer));
+  function addLayer(name:string):void {
+    const key = getLayerKey();
+    const style = generateRandomStyle(key);
 
     for (let i = 0; i < window.mapLayers.length; i += 1) {
       window.map.removeLayer(window.mapLayers[i].group);
     }
 
-    const group = L.featureGroup().on('click', (event:LeafletEvent) => {
-      setPropertiesDialog({ hidden: false, position: event.originalEvent, clicked: event.layer });
+    const group = L.featureGroup().on('click', (event:any) => {
+      setPropertiesDialog({
+        hidden: false, position: event.originalEvent, clicked: event.layer, group,
+      });
       L.DomEvent.preventDefault(event);
       L.DomEvent.stopPropagation(event);
     });
 
-    window.mapLayers = window.mapLayers.concat({ key: layer.key, group, visible: true });
+    window.mapLayers = window.mapLayers.concat({
+      name, key, group, style, visible: true,
+    });
 
     renderLayers();
   }
 
   function removeLayer(key:number):void {
-    setLayers(layers.filter((e) => e.key !== key));
-    setStyles(styles.filter((e) => e.key !== key));
-    if (layers.length === 0) { setMapSelectedLayer(-1); }
+    if (window.mapLayers.length === 0) { setMapSelectedLayer(-1); }
 
     for (let i = 0; i < window.mapLayers.length; i += 1) {
       window.map.removeLayer(window.mapLayers[i].group);
@@ -246,30 +244,29 @@ function Map() {
   }
 
   function changeLayername(key:number, name:string):void {
-    const otherLayers = layers.filter((e) => e.key !== key);
-    const thisLayer = layers.filter((e) => e.key === key)[0];
+    const otherLayers = window.mapLayers.filter((e) => e.key !== key);
+    const thisLayer = window.mapLayers.filter((e) => e.key === key)[0];
     thisLayer.name = name;
     otherLayers.push(thisLayer);
-    setLayers(otherLayers);
+    window.mapLayers = otherLayers;
   }
 
   function clearLayers():void {
-    setLayers([]);
-    setStyles([]);
-    setMapSelectedLayer(-1);
     for (let i = 0; i < window.mapLayers.length; i += 1) {
       window.map.removeLayer(window.mapLayers[i].group);
     }
     window.mapLayers = [];
+    setMapSelectedLayer(-1);
   }
 
   function updateStyle(style:Style):void{
-    const s = styles.filter((e) => e.key !== style.key);
-    s.push(style);
-    setStyles(s);
+    const otherLayers = window.mapLayers.filter((e) => e.key !== style.key);
+    const thisLayer = window.mapLayers.filter((e) => e.key === style.key)[0];
+    thisLayer.style = style;
+    otherLayers.push(thisLayer);
+    window.mapLayers = otherLayers;
 
-    const { group } = window.mapLayers.filter((e) => e.key === style.key)[0];
-    group.setStyle({
+    thisLayer.group.setStyle({
       color: style.edgeColor,
       weight: style.weight,
       opacity: style.edgeOpacity,
@@ -280,21 +277,51 @@ function Map() {
   }
 
   function addMarkerToLayer() {
-    if (mapSelectedLayer === -1 || layers.length === 0) {
+    if (mapSelectedLayer === -1 || window.mapLayers.length === 0) {
       openCreateDialog();
     } else {
-      const style = styles.filter((e) => e.key === mapSelectedLayer)[0];
-      const { group } = window.mapLayers.filter((e) => e.key === mapSelectedLayer)[0];
-      window.map.addLayer(group);
+      let layer;
+      let group;
+      for (let i = 0; i < window.mapLayers.length; i += 1) {
+        if (window.mapLayers[i].key === mapSelectedLayer) {
+          layer = window.mapLayers[i];
+          group = window.mapLayers[i].group;
+          break;
+        }
+      }
 
-      const newLayer = L.circleMarker(mapClick.latlng, {
-        color: style.edgeColor,
-        weight: style.weight,
-        opacity: style.edgeOpacity,
-        fillOpacity: style.fillOpacity,
-        fillColor: style.fillColor,
-        radius: style.radius,
-        properties: {},
+      const allProperties:any[] = [];
+      group.eachLayer((l:any) => {
+        const layerProperties = Object.keys(l.options.properties);
+        for (let i = 0; i < layerProperties.length; i += 1) {
+          let unique = true;
+          for (let j = 0; j < allProperties.length; j += 1) {
+            if (layerProperties[i] === allProperties[j]) {
+              unique = false;
+              break;
+            }
+          }
+          if (unique) {
+            allProperties.push(layerProperties[i]);
+          }
+        }
+      });
+
+      const properties:any = {};
+      for (let k = 0; k < allProperties.length; k += 1) {
+        properties[allProperties[k]] = null;
+      }
+
+      const latLng = (mapClick.latlng && mapClick.latlng[0] && mapClick.latlng[1]) ? mapClick.latlng : window.mapClicked.latlng;
+
+      const newLayer = L.circleMarker(latLng, {
+        color: layer.style.edgeColor,
+        weight: layer.style.weight,
+        opacity: layer.style.edgeOpacity,
+        fillOpacity: layer.style.fillOpacity,
+        fillColor: layer.style.fillColor,
+        radius: layer.style.radius,
+        properties,
       });
 
       group.addLayer(newLayer);
@@ -313,21 +340,26 @@ function Map() {
   }
 
   function onAdd() {
-    const { group } = window.mapLayers.filter((e) => e.key === addToLayer)[0];
-    const style = styles.filter((e) => e.key === addToLayer)[0];
+    let layer:any;
+    for (let i = 0; i < window.mapLayers.length; i += 1) {
+      if (window.mapLayers[i].key === addToLayer) {
+        layer = window.mapLayers[i];
+        break;
+      }
+    }
 
     for (let i = 0; i < addData.features.length; i += 1) {
       const feature = addData.features[i];
-      group.addLayer(
+      layer.group.addLayer(
         L.geoJSON(feature, {
           pointToLayer(_feature, latlng) {
             const newlayer = L.circleMarker(latlng, {
-              color: style.edgeColor,
-              weight: style.weight,
-              opacity: style.edgeOpacity,
-              fillOpacity: style.fillOpacity,
-              fillColor: style.fillColor,
-              radius: style.radius,
+              color: layer.style.edgeColor,
+              weight: layer.style.weight,
+              opacity: layer.style.edgeOpacity,
+              fillOpacity: layer.style.fillOpacity,
+              fillColor: layer.style.fillColor,
+              radius: layer.style.radius,
               properties: feature.properties,
             });
             return newlayer;
@@ -342,15 +374,22 @@ function Map() {
     window.map = initialiseMap(mapContainer); // eslint-disable-line
 
     window.map.on('click', (event:LeafletMouseEvent) => {
-      setMapClick({ hidden: false, position: event.originalEvent, latlng: [event.latlng.lat, event.latlng.lng] });
+      window.mapClicked = { position: event.originalEvent, latlng: [event.latlng.lat, event.latlng.lng] };
+      setMapClick({ hidden: true, position: event.originalEvent, latlng: [event.latlng.lat, event.latlng.lng] });
+      if (window.mapLayers.length === 0) { addLayer('Default'); }
+      if (window.mapLayers.length === 1) {
+        addMarkerToLayer();
+      } else {
+        setMapClick({ hidden: false, position: event.originalEvent, latlng: [event.latlng.lat, event.latlng.lng] });
+        window.map.on('movestart', () => {
+          setMapClick({ hidden: true, position: {}, latlng: [0, 0] });
+          setPropertiesDialog({
+            hidden: true, position: {}, clicked: null, group: null,
+          });
+          window.map.off('movestart');
+        });
+      }
     });
-
-    window.map.on('movestart', () => {
-      setMapClick({ hidden: true, position: {}, latlng: [0, 0] });
-      setPropertiesDialog({ hidden: true, position: {}, clicked: null });
-    });
-
-    addLayer({ key: getLayerKey(), name: 'Default' });
   }, [mapContainer]); // eslint-disable-line
 
   if (!initialised) {
@@ -365,7 +404,7 @@ function Map() {
   }
 
   addEvent('selectedCells', async (data:any) => {
-    if (layers.length === 0) {
+    if (window.mapLayers.length === 0) {
       openCreateDialog();
     } else {
       try {
@@ -380,14 +419,10 @@ function Map() {
 
   return (
     <div id="map-wrapper">
-      {/* <TopBar sendToParent={sendToParent} markerLayers={markerLayers} /> */}
       <CreateLayer
+        addLayer={addLayer}
         createDialog={createDialog}
         setCreateDialog={setCreateDialog}
-        getLayerKey={getLayerKey}
-        addLayer={addLayer}
-        layers={layers}
-        notifyOnReselect
       />
       <Properties
         setPropertiesDialog={setPropertiesDialog}
@@ -400,7 +435,7 @@ function Map() {
       >
         <Dropdown
           label="Send selected layer to Excel."
-          options={layers.length === 0 ? [{ text: '', key: -1 }] : layers.map((e:any) => ({ text: e.name, key: e.key }))}
+          options={window.mapLayers.length === 0 ? [{ text: '', key: 0 }] : window.mapLayers.map((e:any) => ({ text: e.name, key: e.key }))}
           onChange={(event:React.FormEvent, value:any) => { setAddToLayer(value.key); }}
           required
         />
@@ -421,35 +456,29 @@ function Map() {
         <Dropdown
           placeholder="Create new layer"
           label="Add point to layer"
-          defaultSelectedKey={layers.length === 0 ? -1 : mapSelectedLayer}
-          options={layers.map((e) => ({ text: e.name, key: e.key }))}
+          defaultSelectedKey={window.mapLayers.length === 0 ? -1 : mapSelectedLayer}
+          options={window.mapLayers.map((e) => ({ text: e.name, key: e.key }))}
           onChange={(event, value) => { setMapSelectedLayer(value.key); }}
           required
         />
-        <PrimaryButton className="add-point-to-layer" onClick={() => { addMarkerToLayer(); }} text={(layers.length === 0 || mapSelectedLayer === -1) ? 'Create' : 'Add'} />
+        <PrimaryButton className="add-point-to-layer" onClick={() => { addMarkerToLayer(); }} text={(window.mapLayers.length === 0 || mapSelectedLayer === -1) ? 'Create' : 'Add'} />
       </Callout>
       <MapPanel
         panel={panel}
         setPanel={setPanel}
-        styles={styles}
-        toggleLayer={toggleLayer}
-        setStyles={setStyles}
-        updateStyle={updateStyle}
-        getLayerKey={getLayerKey}
+        createDialog={createDialog}
+        setCreateDialog={setCreateDialog}
         addLayer={addLayer}
+        toggleLayer={toggleLayer}
+        updateStyle={updateStyle}
         removeLayer={removeLayer}
         clearLayers={clearLayers}
         changeLayername={changeLayername}
-        layers={layers}
       />
       <BottomBar
         createDialog={createDialog}
         setCreateDialog={setCreateDialog}
-        getLayerKey={getLayerKey}
-        addLayer={addLayer}
         sendToParent={sendToParent}
-        layers={layers}
-        notifyOnReselect
       />
       <div id="map" ref={(el) => { mapContainer = el; }}></div>
     </div>

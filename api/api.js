@@ -27,7 +27,7 @@ app.use(nocache());
 app.use(compression());
 
 // Serve
-app.get('/', (req, res) => { res.send('home'); });
+app.get('/', (req, res) => { res.redirect('/interface/?page=home'); });
 app.use('/interface', express.static(`${__dirname}/../interface/`));
 app.use('/api', routesApi);
 

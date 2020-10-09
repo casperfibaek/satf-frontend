@@ -14,16 +14,15 @@ export default function CreateLayer(props:any) {
 
   function onCreateLayer() {
     let unique = true;
-    for (let i = 0; i < props.layers.length; i += 1) {
-      if (props.createDialog.name === props.layers[i].name) {
+    for (let i = 0; i < window.mapLayers.length; i += 1) {
+      if (props.createDialog.name === window.mapLayers[i].name) {
         unique = false;
         break;
       }
     }
 
     if (props.createDialog.name.length >= 3 && props.createDialog.name.length <= 20 && unique) {
-      const key = props.getLayerKey();
-      props.addLayer({ key, name: props.createDialog.name });
+      props.addLayer(props.createDialog.name);
       dismissCreateDialog();
     }
   }

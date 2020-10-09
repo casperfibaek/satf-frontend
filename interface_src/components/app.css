@@ -22,7 +22,8 @@ body{
 
 #taskpane_body,
 #support_body,
-#documentation_body{
+#documentation_body
+#home_body{
   font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   max-width: 350px;
@@ -83,7 +84,43 @@ body{
 #taskpane_body > .form_holder > div > form > div.messagebar-placeholder {
   margin-top: 0px;
   height: 36px;
-} 
+}
+
+#home_body{
+  height: 400px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 60px;
+  box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,.132), 0 0.3px 0.9px 0 rgba(0,0,0,.108);
+  border-radius: 2px;
+  background: #ececec;
+}
+
+#home_body > .home_text{
+  margin-top: 20px;
+  text-align: center;
+}
+
+#home_body > .home_text_base {
+  margin-left: 20px;
+  margin-right: 20px;
+  text-align: left;
+}
+
+#home_body > .guide > .guide_text {
+  margin-bottom: 10px;
+}
+
+#home_body > .guide > .guide_text_body {
+  margin-left: 40px;
+  margin-right: 20px;
+  text-align: left;
+}
+
+#home_body > .guide{
+  margin: 20px;
+}
 
 #support_body{
   text-align: center;

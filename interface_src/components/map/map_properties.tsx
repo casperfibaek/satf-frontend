@@ -19,13 +19,19 @@ export default function Properties(props:any) {
   }
 
   function onDeleteProp(key:string) {
-    const layer = props.propertiesDialog.clicked;
-    delete layer.options.properties[key];
+    const { group } = props.propertiesDialog;
+    group.eachLayer((l:any) => {
+      delete l.options.properties[key];
+    });
     refreshState({}); // Force refresh component
   }
 
   function addNewProperty() {
+    const { group } = props.propertiesDialog;
     const layer = props.propertiesDialog.clicked;
+    group.eachLayer((l:any) => {
+      l.options.properties[newKey] = null;
+    });
     layer.options.properties[newKey] = newValue;
     setNewKey('');
     setNewValue('');

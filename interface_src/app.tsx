@@ -1,4 +1,7 @@
 import 'react-app-polyfill/ie11'; import 'react-app-polyfill/stable';
+import 'core-js/features/url';
+import 'core-js/features/url-search-params';
+
 import React from 'react'; // eslint-disable-line
 import {
   MemoryRouter as Router, Switch, Route, Redirect,
@@ -11,9 +14,9 @@ import Documentation from './components/documentation';
 import Map from './components/map/map';
 import GettingStarted from './components/getting_started';
 import Taskpane from './components/taskpane';
+import Home from './components/home';
+
 import utils from './utils';
-import 'core-js/features/url';
-import 'core-js/features/url-search-params';
 
 function Error404Page(): any { return <h2>404: Page not found. You should not end up here.</h2>; }
 
@@ -24,6 +27,7 @@ function StartPage(): string {
 
   switch (page) {
     case 'map': return '/map';
+    case 'home': return '/home';
     case 'support': return '/support';
     case 'documentation': return '/documentation';
     case 'getting_started': return '/getting_started';
@@ -41,6 +45,7 @@ function App() {
         <Switch>
           <Route exact path='/' render={() => (<Redirect to={startPage}/>)}/>
 
+          <Route exact path='/home' render={() => (<Home />)} />
           <Route exact path='/map' render={() => (<Map />)} />
           <Route exact path='/support' render={() => (<Support />)} />
           <Route exact path='/documentation' render={() => (<Documentation />)} />

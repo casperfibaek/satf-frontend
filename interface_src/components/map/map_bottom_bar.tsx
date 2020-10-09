@@ -23,14 +23,13 @@ export default function BottomBar(props:any) {
 
   function openSendDialog() {
     setInitialised(true);
-    if (props.layers.length !== 0) {
+    if (window.mapLayers.length !== 0) {
       setSendDialog({ hidden: false });
     }
   }
 
   function onSend(event:React.MouseEvent<HTMLButtonElement>):void {
-    const layername = props.layers.filter((e:any) => e.key === selectedLayer)[0].name;
-    const { group } = window.mapLayers.filter((e:any) => e.key === selectedLayer)[0];
+    const { group, name } = window.mapLayers.filter((e:any) => e.key === selectedLayer)[0];
 
     const featureCollection = {
       type: 'FeatureCollection',
@@ -57,7 +56,7 @@ export default function BottomBar(props:any) {
       }
     });
 
-    const cells = geojsonToArray(featureCollection, layername);
+    const cells = geojsonToArray(featureCollection, name);
 
     props.sendToParent('dataFromMap', cells);
     closeSendDialog();
@@ -71,17 +70,17 @@ export default function BottomBar(props:any) {
 
   return (
     <div id="map-bottom-bar">
-      {props.layers.length === 0 && initialised && (
+      {window.mapLayers.length === 0 && initialised && (
         <CreateLayer
           createDialog={createDialog}
           setCreateDialog={setCreateDialog}
           getLayerKey={props.getLayerKey}
           addLayer={props.addLayer}
-          layers={props.layers}
+          layers={window.mapLayers}
           notifyOnReselect
         />
       )}
-      {props.layers.length !== 0 && (
+      {window.mapLayers.length !== 0 && (
         <Dialog
           title={'Send layer to Excel.'}
           hidden={sendDialog.hidden}
@@ -89,7 +88,7 @@ export default function BottomBar(props:any) {
         >
           <Dropdown
             label="Send selected layer to Excel."
-            options={props.layers.length === 0 ? [{ text: '', key: -1 }] : props.layers.map((e:any) => ({ text: e.name, key: e.key }))}
+            options={window.mapLayers.length === 0 ? [{ text: '', key: -1 }] : window.mapLayers.map((e:any) => ({ text: e.name, key: e.key }))}
             onChange={(event:React.FormEvent, value:any) => { setSelectedLayer(value.key); }}
             required
           />
