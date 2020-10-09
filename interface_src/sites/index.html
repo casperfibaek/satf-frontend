@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Taskpane</title>
+    
+    <!-- Metatags -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <!-- Icons -->
+    <link rel="shortcut icon" href="./assets/icons/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="./assets/icons/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="./assets/icons/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="./assets/icons/favicon-16x16.png" sizes="16x16">
+    
+    <!-- CCS Stylesheets -->
+    <link rel="stylesheet" href="app.css">
+    
+    <!-- Javascript -->
+    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    <script type="text/javascript" src="./custom_functions.js"></script>
+
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      Office.initialize = function init() {
+          if (!Office.context.requirements.isSetSupported('ExcelApi', '1.7')) {
+              console.log('Sorry. The add-in uses Excel.js APIs that are not available in your version of Office.');
+          }
+      };
+    </script>
+    <script type="text/javascript" src="./app.js"></script>
+  </body>
+</html>

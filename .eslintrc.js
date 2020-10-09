@@ -1,25 +1,28 @@
 module.exports = {
   env: {
     browser: true,
-    commonjs: true,
     es2015: true,
   },
   extends: [
     'airbnb-base',
+    'plugin:react-hooks/recommended',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 11,
   },
   rules: {
+    'no-continue': 0,
     'linebreak-style': 0,
     'no-console': 0,
-    'no-restricted-globals': 0,
-    'no-underscore-dangle': 0,
-    // 'max-len': ['error', { code: 120 }],
     'import/extensions': 0,
     'max-len': 0,
-    camelcase: 0,
+    'import/no-unresolved': 'error',
+    'no-underscore-dangle': 0,
+    'jsx/uses-factory': [1, { pragma: 'JSX' }],
+    'jsx/factory-in-scope': [0, { pragma: 'JSX' }],
+    'jsx/mark-used-vars': 1,
+    'jsx/no-undef': 0,
   },
   globals: {
     Office: 'readonly',
@@ -31,6 +34,15 @@ module.exports = {
     FluentUIReact: 'readonly',
     ReactDOM: 'readonly',
     React: 'readonly',
+    OfficeRuntime: 'readonly',
     globalThis: 'writable',
+  },
+  plugins: ['import', 'jsx'],
+  settings: {
+    'import/resolver': {
+      typescript: {
+        alwaysTryTypes: true,
+      },
+    },
   },
 };

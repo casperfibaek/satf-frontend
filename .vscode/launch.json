@@ -26,7 +26,7 @@
             "trace": true,
             "preLaunchTask": "Debug",
             "postDebugTask": "Stop Debug",
-            "outFiles": [ "${workspaceFolder}/excel_interface/**/*.js" ]
+            "outFiles": [ "${workspaceFolder}/interface/**/*.js" ]
         },
     ]
 }
