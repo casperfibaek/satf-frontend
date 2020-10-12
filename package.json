@@ -1,6 +1,6 @@
 {
   "name": "satf",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "private": true,
   "scripts": {
     "start": "node ./api/api.js",

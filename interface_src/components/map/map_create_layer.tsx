@@ -1,29 +1,26 @@
 import React, { useState } from 'react'; // eslint-disable-line
+import L from 'leaflet';
 import {
   PrimaryButton, DefaultButton, Dialog, DialogFooter, TextField,
 } from '@fluentui/react';
+import { isLayernameUnique, createNewMapLayer } from './map_layer_control';
 
 export default function CreateLayer(props:any) {
-  function dismissCreateDialog() {
-    props.setCreateDialog({ name: '', hidden: true });
-  }
-
-  function updateName(value:string) {
-    props.setCreateDialog({ hidden: false, name: value });
-  }
+  const [newLayername, setNewLayername] = useState('Default');
 
   function onCreateLayer() {
-    let unique = true;
-    for (let i = 0; i < window.mapLayers.length; i += 1) {
-      if (props.createDialog.name === window.mapLayers[i].name) {
-        unique = false;
-        break;
-      }
-    }
+    if (newLayername.length >= 3 && newLayername.length <= 20 && isLayernameUnique(newLayername)) {
+      const mapLayer = createNewMapLayer(newLayername);
 
-    if (props.createDialog.name.length >= 3 && props.createDialog.name.length <= 20 && unique) {
-      props.addLayer(props.createDialog.name);
-      dismissCreateDialog();
+      mapLayer.featureGroup.on('click', (event:any) => {
+        props.statusDialogProperties.open({
+          hidden: false, position: event.originalEvent, clicked: event.layer, featureGroup: mapLayer,
+        });
+        L.DomEvent.preventDefault(event);
+        L.DomEvent.stopPropagation(event);
+      });
+
+      props.statusDialogCreate.close();
     }
   }
 
@@ -35,18 +32,18 @@ export default function CreateLayer(props:any) {
     <Dialog
       title={'Create New Layer'}
       hidden={props.createDialog.hidden}
-      onDismiss={() => { dismissCreateDialog(); }}
+      onDismiss={() => { props.statusDialogCreate.close(); }}
     >
       <TextField
         label="Name: "
         required
-        onChange={ (event, value) => { updateName(value); } }
+        onChange={ (event, value) => { setNewLayername(value); } }
         defaultValue={''}
         placeholder={''}
         onKeyPress={onEnter}
       />
       <DialogFooter>
-        <DefaultButton onClick={() => { dismissCreateDialog(); }}>Close</DefaultButton>
+        <DefaultButton onClick={() => { props.statusDialogCreate.close(); }}>Close</DefaultButton>
         <PrimaryButton onClick={() => { onCreateLayer(); }} text="Create Layer" />
       </DialogFooter>
     </Dialog>

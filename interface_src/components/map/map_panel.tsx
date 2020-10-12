@@ -2,34 +2,21 @@ import React, { useState } from 'react'; // eslint-disable-line
 import {
   PrimaryButton, Panel, DefaultButton, FontIcon, PanelType, DialogFooter, Dialog, DialogType,
 } from '@fluentui/react';
-import CreateLayer from './map_create_layer';
-import Styler from './map_styler';
 import LayerList from './map_panel_list';
+import { clearLayers, getFirstLayerKey } from './map_layer_control';
 
 export default function MapPanel(props:any) {
-  const [styleDialog, setStyleDialog] = useState({ hidden: true });
   const [deleteAlert, setDeleteAlert] = useState({ hidden: true });
-  const [selectedLayer, setSelectedLayer] = useState(0);
 
-  function openPanel() {
-    props.setPanel({ ...props.panel, hidden: false });
-  }
-
-  function dismissPanel() {
-    props.setPanel({ ...props.panel, hidden: true });
-  }
-
-  function openCreateDialog() {
-    props.setCreateDialog({ ...props.createDialog, hidden: false });
-  }
-
-  function onDeleteAll() {
-    setDeleteAlert({ hidden: false });
-  }
+  const statusDeleteAlert = {
+    open: () => setDeleteAlert({ hidden: false }),
+    close: () => setDeleteAlert({ hidden: true }),
+  };
 
   function deletelayers() {
-    props.clearLayers();
-    setDeleteAlert({ hidden: true });
+    clearLayers();
+    props.setSelectedLayer(getFirstLayerKey);
+    statusDeleteAlert.close();
   }
 
   return (
@@ -45,49 +32,32 @@ export default function MapPanel(props:any) {
         }}
       >
         <DialogFooter>
-          <DefaultButton onClick={() => { setDeleteAlert({ hidden: true }); }} text="Back" />
+          <DefaultButton onClick={() => { statusDeleteAlert.close(); }} text="Back" />
           <PrimaryButton onClick={() => { deletelayers(); }} text="Delete" />
         </DialogFooter>
       </Dialog>
-      <Styler
-        styleDialog={styleDialog}
-        setStyleDialog={setStyleDialog}
-        selectedLayer={selectedLayer}
-        setSelectedLayer={setSelectedLayer}
-        updateStyle={props.updateStyle}
-        changeLayername={props.changeLayername}
-      />
-      <CreateLayer
-        createDialog={props.createDialog}
-        setCreateDialog={props.setCreateDialog}
-        addLayer={props.addLayer}
-      />
       <Panel
         headerText="Layer control"
         isBlocking={false}
-        onDismiss={() => { dismissPanel(); } }
+        onDismiss={() => { props.statusPanel.close(); } }
         type={PanelType.customNear}
         customWidth='320px'
         closeButtonAriaLabel="Close"
         isFooterAtBottom={true}
-        isOpen={!props.panel.hidden}
+        isOpen={!props.statusPanel.current.hidden}
       >
         <LayerList
           className="layer-list"
-          styleDialog={styleDialog}
-          setStyleDialog={setStyleDialog}
-          selectedLayer={selectedLayer}
-          setSelectedLayer={setSelectedLayer}
-          toggleLayer={props.toggleLayer}
-          removeLayer={props.removeLayer}
+          selectedLayer={props.selectedLayer}
+          setSelectedLayer={props.setSelectedLayer}
         />
-          <PrimaryButton text="Create layer" className="createButton" onClick={() => { openCreateDialog(); }} />
+          <PrimaryButton text="Create layer" className="createButton" onClick={() => { props.statusDialogCreate.open(); }} />
         <div className="panel-footer">
-          <DefaultButton onClick={() => { dismissPanel(); }}>Close</DefaultButton>
-          <DefaultButton text="Delete all layers" className="deleteButton" onClick={() => { onDeleteAll(); }} />
+          <DefaultButton onClick={() => { props.statusPanel.close(); }}>Close</DefaultButton>
+          <DefaultButton text="Delete all layers" className="deleteButton" onClick={() => { statusDeleteAlert.open(); }} />
         </div>
       </Panel>
-        <DefaultButton className="navbutton" onClick={() => { openPanel(); }} allowDisabledFocus>
+        <DefaultButton className="navbutton" onClick={() => { props.statusPanel.open(); }} allowDisabledFocus>
           <FontIcon iconName="GlobalNavButton" className="icon"/>
         </DefaultButton>
     </div>

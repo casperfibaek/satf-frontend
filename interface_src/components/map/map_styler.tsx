@@ -1,136 +1,104 @@
 import React, { useState, useEffect } from 'react'; // eslint-disable-line
 import {
-  DefaultButton, PrimaryButton, Text, Slider, ColorPicker, Callout, DirectionalHint, Dialog, DialogFooter, TextField,
+  DefaultButton, PrimaryButton, Text, Slider, Dialog, DialogFooter, TextField,
 } from '@fluentui/react';
+import ColorSelector from './map_styler_color';
+import {
+  getLayer, getLayerCount, updateLayerStyle, updateLayerName,
+} from './map_layer_control';
+import { updateState } from '../utils';
 
-function ColorSelector(props:any) {
-  const [color, setColor] = useState(props.colorPickerStatus.selected === 'fill' ? props.fillColor : props.edgeColor);
+interface WindowState extends Window { state: any; }
+declare let window: WindowState;
 
-  const updateColor = (evt:any, colorObject:any) => {
-    setColor(colorObject.str);
-    if (props.colorPickerStatus.selected === 'fill') {
-      props.setFillColor(color);
-    } else {
-      props.setEdgeColor(color);
-    }
-  };
-
-  if (!props.colorPickerStatus.hidden) {
-    return (
-      <ColorPicker
-        color={color}
-        onChange={updateColor}
-        alphaType={'none'}
-        showPreview={false}
-      />
-    );
-  }
-  return (null);
-}
+const default_style = {
+  fillColor: '#F2E205',
+  edgeColor: '#201f1e',
+  fillOpacity: 1.0,
+  edgeOpacity: 1.0,
+  weight: 1.0,
+  radius: 5,
+  key: 0,
+};
 
 export default function Styler(props:any) {
-  const [selectedStyle, setSelectedStyle] = useState({
-    fillColor: '#F2E205',
-    edgeColor: '#201f1e',
-    fillOpacity: 1.0,
-    edgeOpacity: 1.0,
-    weight: 1.0,
-    radius: 5,
-    key: 0,
-  });
-  const [layerName, setLayerName] = useState('Default');
-  const [sliderValueRadius, setSliderValueRadius] = useState(selectedStyle.radius);
-  const sliderOnChangeRadius = (value: number) => setSliderValueRadius(value);
+  const { state } = window;
 
-  const [sliderValueFillOpacity, setSliderValueFillOpacity] = useState(selectedStyle.fillOpacity);
-  const sliderOnChangeFill = (value: number) => setSliderValueFillOpacity(value);
-
-  const [sliderValueEdgeOpacity, setSliderValueEdgeOpacity] = useState(selectedStyle.edgeOpacity);
-  const sliderOnChangeEdge = (value: number) => setSliderValueEdgeOpacity(value);
-
-  const [sliderValueEdgeWeight, setSliderValueEdgeWeight] = useState(selectedStyle.weight);
-  const sliderOnChangeEdgeWeight = (value: number) => setSliderValueEdgeWeight(value);
-
+  const [selectedStyle, setSelectedStyle] = useState(default_style);
+  const [layerName, setLayerName] = useState(getLayer(props.selectedlayer).name);
   const [colorPicker, setColorPicker] = useState({ hidden: true, selected: 'fill' });
-  const [fillColor, setFillColor] = useState(selectedStyle.fillColor);
-  const [edgeColor, setEdgeColor] = useState(selectedStyle.edgeColor);
+  const [pickers, setPickers] = useState(default_style);
+
+  function updatePickers(obj:any) { setPickers(updateState(pickers, obj)); } // eslint-disable-line
+
+  const statusColorPicker = {
+    open: (selected:string) => setColorPicker({ hidden: false, selected }),
+    close: () => setColorPicker({ hidden: false, selected: colorPicker.selected }),
+    current: colorPicker,
+  };
 
   function onDismiss() {
-    setSliderValueRadius(selectedStyle.radius);
-    sliderOnChangeFill(selectedStyle.fillOpacity);
-    sliderOnChangeEdge(selectedStyle.edgeOpacity);
-    sliderOnChangeEdgeWeight(selectedStyle.weight);
-    setFillColor(selectedStyle.fillColor);
-    setEdgeColor(selectedStyle.edgeColor);
-
-    props.setStyleDialog({ hidden: true });
+    updatePickers(default_style);
+    props.statusDialogStyle.close();
   }
 
   function onUpdateStyle() {
-    props.changeLayername(props.selectedLayer, layerName);
-    props.updateStyle({
-      radius: sliderValueRadius,
-      weight: sliderValueEdgeWeight,
-      fillColor,
-      edgeColor,
-      fillOpacity: sliderValueFillOpacity,
-      edgeOpacity: sliderValueEdgeOpacity,
-      key: props.selectedLayer,
-    });
-    props.setStyleDialog({ hidden: true });
+    updateLayerName(props.selectedLayer, layerName);
+    updateLayerStyle(props.selectedLayer, selectedStyle);
+    props.statusDialogStyle.close();
   }
 
   useEffect(() => {
-    if (window.mapLayers.length !== 0) {
-      const { style } = window.mapLayers.filter((e:any) => (e.key === props.selectedLayer))[0];
-      if (style) { setSelectedStyle(style); }
-
-      setSliderValueRadius(selectedStyle.radius);
-      sliderOnChangeFill(selectedStyle.fillOpacity);
-      sliderOnChangeEdge(selectedStyle.edgeOpacity);
-      sliderOnChangeEdgeWeight(selectedStyle.weight);
-      setFillColor(selectedStyle.fillColor);
-      setEdgeColor(selectedStyle.edgeColor);
+    if (getLayerCount() > 0) {
+      const { style } = getLayer(props.selectedLayer);
+      setSelectedStyle(style);
+      updatePickers(style);
     }
-  }, [props.styles, props.selectedLayer, selectedStyle]);
+  }, [updatePickers, props.selectedLayer]);
 
   return (
-    <Dialog
-    title={'Edit layer'}
-    hidden={props.styleDialog.hidden}
-    onDismiss={() => { onDismiss(); }}
-  >
-    <div id="modal-styler">
-      <TextField
-        label="Name"
-        defaultValue={(window.mapLayers.length !== 0 && window.mapLayers.filter((e:any) => e.key === props.selectedLayer)[0]) ? window.mapLayers.filter((e:any) => e.key === props.selectedLayer)[0].name : 'layername'}
-        onChange={(event, value) => { setLayerName(value); }}
+    <div className="container">
+      <ColorSelector
+        statusColorPicker={statusColorPicker}
+        selectedStyle={selectedStyle}
+        updatePickers={updatePickers}
       />
-      {!colorPicker.hidden && <Callout
-        role="alertdialog"
-        setInitialFocus
-        gapSpace={0}
-        onDismiss={() => { setColorPicker({ hidden: true, selected: 'fill' }); }}
-        target={colorPicker.selected === 'fill' ? '.colorOpen.fill' : '.colorOpen.edge'}
-        directionalHint={DirectionalHint.rightCenter}
-        >
-        <ColorSelector colorPickerStatus={colorPicker} fillColor={fillColor} edgeColor={edgeColor} setFillColor={setFillColor} setEdgeColor={setEdgeColor}/>
-        </Callout>
-      }
-      <div className="sliders">
-        <Slider label="Radius" min={0.5} max={12} step={0.5} value={sliderValueRadius} showValue onChange={sliderOnChangeRadius} />
-        <Slider label="Fill Opacity" min={0} max={1} step={0.01} value={sliderValueFillOpacity} showValue onChange={sliderOnChangeFill} />
-        <Slider label="Edge Opacity" min={0} max={1} step={0.01} value={sliderValueEdgeOpacity} showValue onChange={sliderOnChangeEdge} />
-        <Slider label="Edge Width" min={0} max={2} step={0.1} value={sliderValueEdgeWeight} showValue onChange={sliderOnChangeEdgeWeight} />
-        <Text block variant="medium">Fill Color: </Text><div style={{ background: fillColor }} className="colorOpen fill" onClick={() => { setColorPicker({ hidden: false, selected: 'fill' }); }}></div>
-        <Text block variant="medium">Edge Color: </Text><div style={{ background: edgeColor }} className="colorOpen edge" onClick={() => { setColorPicker({ hidden: false, selected: 'edge' }); }}></div>
-      </div>
-    </div>
-    <DialogFooter>
-      <PrimaryButton onClick={() => { if (layerName.length >= 3 && layerName.length < 25) { onUpdateStyle(); } }} text="Update style" />
-      <DefaultButton onClick={() => { onDismiss(); }} text="Dismiss" />
-    </DialogFooter>
-  </Dialog>
+      <Dialog
+        title={`Edit layer - ${layerName}`}
+        hidden={props.statusDialogStyle.hidden}
+        onDismiss={() => { onDismiss(); }}
+      >
+        <div id="modal-styler">
+          <TextField
+            label="Name"
+            defaultValue={state.layers.length !== 0 ? getLayer(props.selectedlayer).name : 'layername'}
+            onChange={(event, value) => { setLayerName(value); }}
+          />
+          <div className="sliders">
+            <Slider label="Radius" min={0.5} max={12} step={0.5} value={selectedStyle.radius} showValue onChange={(event, value) => {
+              updatePickers({ radius: value });
+            }} />
+            <Slider label="Fill Opacity" min={0} max={1} step={0.01} value={selectedStyle.fillOpacity} showValue onChange={(event, value) => {
+              updatePickers({ fillOpacity: value });
+            }} />
+            <Slider label="Edge Opacity" min={0} max={1} step={0.01} value={selectedStyle.edgeOpacity} showValue onChange={(event, value) => {
+              updatePickers({ edgeOpacity: value });
+            }} />
+            <Slider label="Edge Width" min={0} max={2} step={0.1} value={selectedStyle.weight} showValue onChange={(event, value) => {
+              updatePickers({ weight: value });
+            }} />
 
+            <Text block variant="medium">Fill Color: </Text>
+              <div style={{ background: selectedStyle.fillColor }} className="colorOpen fill" onClick={() => { statusColorPicker.open('fill'); }}></div>
+            <Text block variant="medium">Edge Color: </Text>
+              <div style={{ background: selectedStyle.edgeColor }} className="colorOpen edge" onClick={() => { statusColorPicker.close(); }}></div>
+          </div>
+        </div>
+      <DialogFooter>
+        <PrimaryButton onClick={() => { if (layerName.length >= 3 && layerName.length < 25) { onUpdateStyle(); } }} text="Update style" />
+        <DefaultButton onClick={() => { onDismiss(); }} text="Dismiss" />
+      </DialogFooter>
+    </Dialog>
+    </div>
   );
 }

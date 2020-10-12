@@ -8,49 +8,45 @@ export default function Properties(props:any) {
   const [newValue, setNewValue] = useState('');
   const [, refreshState] = useState();
 
-  function propertiesChanged(key, value) {
-    const layer = props.propertiesDialog.clicked;
-    layer.options.properties[key] = value;
+  function propertiesChanged(key:string, value:any) {
+    const { marker } = props.statusDialogProperties.current;
+    marker.options.properties[key] = value;
     refreshState({}); // Force refresh component
   }
 
-  function closePropertiesDialog() {
-    props.setPropertiesDialog({ hidden: true, position: {}, clicked: null });
-  }
-
   function onDeleteProp(key:string) {
-    const { group } = props.propertiesDialog;
-    group.eachLayer((l:any) => {
-      delete l.options.properties[key];
+    const { featureGroup } = props.statusDialogProperties.current;
+    featureGroup.eachLayer((layer:any) => {
+      delete layer.options.properties[key]; // eslint-disable-line
     });
     refreshState({}); // Force refresh component
   }
 
   function addNewProperty() {
-    const { group } = props.propertiesDialog;
-    const layer = props.propertiesDialog.clicked;
-    group.eachLayer((l:any) => {
-      l.options.properties[newKey] = null;
+    const { featureGroup, marker } = props.statusDialogProperties.current;
+    featureGroup.eachLayer((_marker:any) => {
+      _marker.options.properties[newKey] = null; // eslint-disable-line
     });
-    layer.options.properties[newKey] = newValue;
+    marker.options.properties[newKey] = newValue;
     setNewKey('');
     setNewValue('');
     refreshState({}); // Force refresh component
   }
+
+  // hidden: false, position, layer, featureGroup,
 
   return (
     <Callout
       title={'Properties'}
       role="alertdialog"
       gapSpace={0}
-      hidden={props.propertiesDialog.hidden}
-      target={props.propertiesDialog.position}
+      hidden={props.statusDialogProperties.current.hidden}
+      target={props.statusDialogProperties.current.position}
       directionalHint={DirectionalHint.bottomCenter}
-      onDismiss={() => { closePropertiesDialog(); } }
+      onDismiss={() => { props.statusDialogProperties.close(); } }
     >
-      {
       <table className="properties-table">
-        {props.propertiesDialog.clicked && Object.entries(props.propertiesDialog.clicked.options.properties).map((e) => (
+        {props.statusDialogProperties.current.layer && Object.entries(props.statusDialogProperties.current.layer.options.properties).map((e) => (
           <tr>
             <Text variant="medium">{e[0]}</Text>
             <TextField defaultValue={e[1]} onChange={(event, value) => { propertiesChanged(e[0], value); }} />
@@ -63,9 +59,8 @@ export default function Properties(props:any) {
           <div className="layer-prop-add" onClick={() => { addNewProperty(); }}><FontIcon className="layer-add-property" iconName="Add" /></div>
         </tr>
       </table>
-      }
       <div className="prop-footer">
-      <DefaultButton onClick={() => { closePropertiesDialog(); } } text="Close" />
+        <DefaultButton onClick={() => { props.statusDialogProperties.close(); } } text="Close" />
       </div>
     </Callout>
   );

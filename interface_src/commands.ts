@@ -261,7 +261,7 @@ async function eventDispatcher(event:string, data:any):Promise<void> {
     console.log('Map is ready for input');
   } else if (event === 'requestData') {
     const cells = await getSelectedCells();
-    sendToDialog('selectedCells', cells);
+    sendToDialog('dataFromExcel', cells);
   } else if (event === 'createdMarker') {
     handleCoords(data);
   } else if (event === 'dataFromMap') {

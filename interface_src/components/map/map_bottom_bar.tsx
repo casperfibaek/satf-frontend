@@ -2,36 +2,27 @@ import React, { useState } from 'react'; // eslint-disable-line
 import {
   PrimaryButton, DefaultButton, DialogFooter, Dialog, Dropdown,
 } from '@fluentui/react';
-import CreateLayer from './map_create_layer';
 import geojsonToArray from './geojson_to_array';
-
-interface MyMap extends Window {
-  map: any;
-  mapLayers: any[];
-}
+import { getLayer, getLayerCount } from './map_layer_control';
+import { GeoJsonFeatureCollection } from '../../types';
 
 export default function BottomBar(props:any) {
-  const [initialised, setInitialised] = useState(false);
   const [sendDialog, setSendDialog] = useState({ hidden: true });
-  const [selectedLayer, setSelectedLayer] = useState(null);
-  const [createDialog, setCreateDialog] = useState({ hidden: false, name: '' });
 
   function closeSendDialog() {
     setSendDialog({ hidden: true });
-    setInitialised(false);
   }
 
   function openSendDialog() {
-    setInitialised(true);
-    if (window.mapLayers.length !== 0) {
+    if (getLayerCount() > 0) {
       setSendDialog({ hidden: false });
     }
   }
 
   function onSend(event:React.MouseEvent<HTMLButtonElement>):void {
-    const { group, name } = window.mapLayers.filter((e:any) => e.key === selectedLayer)[0];
+    const { group, name } = getLayer(props.selectedLayer);
 
-    const featureCollection = {
+    const featureCollection:GeoJsonFeatureCollection = {
       type: 'FeatureCollection',
       features: [],
     };
@@ -70,35 +61,22 @@ export default function BottomBar(props:any) {
 
   return (
     <div id="map-bottom-bar">
-      {window.mapLayers.length === 0 && initialised && (
-        <CreateLayer
-          createDialog={createDialog}
-          setCreateDialog={setCreateDialog}
-          getLayerKey={props.getLayerKey}
-          addLayer={props.addLayer}
-          layers={window.mapLayers}
-          notifyOnReselect
+      <Dialog
+        title={'Send layer to Excel.'}
+        hidden={sendDialog.hidden}
+        onDismiss={() => { closeSendDialog(); } }
+      >
+        <Dropdown
+          label="Send selected layer to Excel."
+          options={getLayerCount() === 0 ? [{ text: '', key: -1 }] : window.state.layers.map((e:any) => ({ text: e.name, key: e.key }))}
+          onChange={(event:React.FormEvent, value:any) => { props.setSelectedLayer(value.key); }}
+          required
         />
-      )}
-      {window.mapLayers.length !== 0 && (
-        <Dialog
-          title={'Send layer to Excel.'}
-          hidden={sendDialog.hidden}
-          onDismiss={() => { closeSendDialog(); } }
-        >
-          <Dropdown
-            label="Send selected layer to Excel."
-            options={window.mapLayers.length === 0 ? [{ text: '', key: -1 }] : window.mapLayers.map((e:any) => ({ text: e.name, key: e.key }))}
-            onChange={(event:React.FormEvent, value:any) => { setSelectedLayer(value.key); }}
-            required
-          />
-          <DialogFooter>
-            <PrimaryButton onClick={onSend} text="Send" />
-            <DefaultButton onClick={() => { closeSendDialog(); } } text="Don't send" />
-          </DialogFooter>
-        </Dialog>
-      )}
-
+        <DialogFooter>
+          <PrimaryButton onClick={onSend} text="Send" />
+          <DefaultButton onClick={() => { closeSendDialog(); } } text="Don't send" />
+        </DialogFooter>
+      </Dialog>
       <PrimaryButton text="Request Excel Data" onClick={onRequest} />
       <DefaultButton text="Send Data to Excel" onClick={() => { openSendDialog(); }} />
     </div>

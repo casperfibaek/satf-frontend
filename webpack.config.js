@@ -47,7 +47,7 @@ module.exports = {
     ],
   },
   plugins: [
-    new ForkTsCheckerWebpackPlugin({ memoryLimit: 4098 }),
+    new ForkTsCheckerWebpackPlugin({ typescript: { memoryLimit: 4098 } }),
     new CleanWebpackPlugin(),
     new CopyPlugin({
       patterns: [

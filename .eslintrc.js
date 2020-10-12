@@ -23,6 +23,7 @@ module.exports = {
     'jsx/factory-in-scope': [0, { pragma: 'JSX' }],
     'jsx/mark-used-vars': 1,
     'jsx/no-undef': 0,
+    camelcase: 0,
   },
   globals: {
     Office: 'readonly',
