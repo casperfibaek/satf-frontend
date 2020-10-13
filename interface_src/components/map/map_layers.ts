@@ -1,4 +1,4 @@
-import L, { FeatureGroup } from 'leaflet';
+import L, { CircleMarker, FeatureGroup } from 'leaflet';
 import { Style, MapLayer, WindowState } from '../../types';
 
 declare let window: WindowState;
@@ -108,9 +108,13 @@ export function updateLayerName(key:number, name:string):void {
   layer.name = name;
 }
 
-export function clearLayers():void {
-  for (let i = 0; i < window.state.layers; i += 1) {
-    window.state.map.removeLayer(window.state.layers[i].featureGroup);
+export function clearLayers() {
+  for (let i = 0; i < window.state.layers.length; i += 1) {
+    const { featureGroup } = window.state.layers[i];
+    featureGroup.eachLayer((l:CircleMarker) => {
+      featureGroup.removeLayer(l);
+      l.remove();
+    });
   }
   window.state.layers = [];
 }

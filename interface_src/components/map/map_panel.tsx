@@ -3,7 +3,7 @@ import {
   PrimaryButton, Panel, DefaultButton, FontIcon, PanelType, DialogFooter, Dialog, DialogType,
 } from '@fluentui/react';
 import LayerList from './map_panel_list';
-import { clearLayers, getFirstLayerKey } from './map_layers';
+import { clearLayers } from './map_layers';
 
 export default function MapPanel(props:any) {
   const [deleteAlert, setDeleteAlert] = useState({ hidden: true });
@@ -15,7 +15,7 @@ export default function MapPanel(props:any) {
 
   function deletelayers() {
     clearLayers();
-    props.setSelectedLayer(getFirstLayerKey);
+    props.setSelectedLayer(-1);
     statusDeleteAlert.close();
   }
 
