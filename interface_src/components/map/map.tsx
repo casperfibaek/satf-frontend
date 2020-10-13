@@ -11,7 +11,7 @@ import SelectLayer from './map_select_layer';
 import BottomBar from './map_bottom_bar';
 
 // Functions
-import { onMessageFromParent, sendToParent, addEvent } from './communication';
+import { sendToParent, addEvent } from './communication';
 import arrayToGeojson from './array_to_geojson';
 import {
   addMarkerToLayer, createNewMapLayer, getFirstLayerKey, getLayerCount, addDataToLayer,
@@ -25,20 +25,6 @@ import { WindowState } from '../../types';
 
 declare let window: WindowState;
 
-window.state = (window.state === undefined || window.state === null || window.state === {}) ? {} : window.state;
-window.state = ({
-  ...window.state,
-  ...{
-    initialise: {
-      office: false,
-      map: false,
-    },
-    map: {},
-    layers: [],
-    click: {},
-    warningTimer: 0,
-  },
-});
 const { state } = window;
 
 function initialiseMap(mapContainer:any) {
@@ -273,17 +259,6 @@ function Map() {
 
     state.map.on('click', (event:LeafletMouseEvent) => { onMapMouseClick(event); });
   }, [mapContainer]); // eslint-disable-line
-
-  if (!state.initialise.office) {
-    Office.onReady().then(() => {
-      try {
-        Office.context.ui.addHandlerAsync(Office.EventType.DialogParentMessageReceived, onMessageFromParent);
-        state.initialise = ({ ...state.initialise, ...{ office: true } });
-      } catch {
-        console.log('Unable to initialise OfficeJS, is this running inside office?');
-      }
-    });
-  }
 
   return (
     <div id="map-wrapper">

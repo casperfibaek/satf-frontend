@@ -1,3 +1,7 @@
+import { WindowState } from './types';
+
+declare let window: WindowState;
+
 export function getGlobal() {
   if (typeof self !== 'undefined') { return self; } // eslint-disable-line
   if (typeof window !== 'undefined') { return window; }
@@ -21,9 +25,24 @@ export function removeValueForKey(key: string):void {
   g.window.localStorage.removeItem(key);
 }
 
-const isNumber = (value:any):boolean => !Number.isNaN(Number(value));
+export const isNumber = (value:any):boolean => !Number.isNaN(Number(value));
 
-async function what3wordsToLatLng(what3words:string): Promise<[number, number]> {
+export function createStateIfDoesntExists() {
+  if (window.state === undefined || window.state === null || window.state === {}) {
+    window.state = {
+      initialise: {
+        office: false,
+        map: false,
+      },
+      map: {},
+      layers: [],
+      click: {},
+      warningTimer: 0,
+    };
+  }
+}
+
+export async function what3wordsToLatLng(what3words:string): Promise<[number, number]> {
   try {
     const url = `../api/what3words_to_latlng?words=${what3words}`;
     const token = getValueForKey('satf_token');
@@ -41,7 +60,7 @@ async function what3wordsToLatLng(what3words:string): Promise<[number, number]> 
   }
 }
 
-async function pluscodeToLatLng(pluscode:string): Promise<[number, number]> {
+export async function pluscodeToLatLng(pluscode:string): Promise<[number, number]> {
   try {
     const url = `../api/pluscode_to_latlng?code=${pluscode}`;
     const token = getValueForKey('satf_token');
@@ -59,7 +78,7 @@ async function pluscodeToLatLng(pluscode:string): Promise<[number, number]> {
   }
 }
 
-function isValidWhatFreeWords(str:any):Boolean {
+export function isValidWhatFreeWords(str:any):Boolean {
   if (typeof str !== 'string') { return false; }
   if (str.split('.').length !== 3) { return false; }
   if (/^[a-zA-Z.]+$/.test(str) === false) { return false; }
@@ -67,7 +86,7 @@ function isValidWhatFreeWords(str:any):Boolean {
   return true;
 }
 
-function isValidPluscode(code:any):Boolean {
+export function isValidPluscode(code:any):Boolean {
   const seperator = '+';
   const seperatorPosition = 8;
   const paddingCharacter = '0';
@@ -98,7 +117,7 @@ function isValidPluscode(code:any):Boolean {
   return true;
 }
 
-function isValidGhanaPostalGPS(str:String):Boolean {
+export function isValidGhanaPostalGPS(str:String):Boolean {
   if (typeof str !== 'string') { return false; }
   const arr = str.split('-');
 
@@ -114,7 +133,7 @@ function isValidGhanaPostalGPS(str:String):Boolean {
   return true;
 }
 
-function isValidLatitude(lat:any):Boolean {
+export function isValidLatitude(lat:any):Boolean {
   try {
     if (isNumber(lat)) {
       const number = Number(lat);
@@ -127,7 +146,7 @@ function isValidLatitude(lat:any):Boolean {
   }
 }
 
-function isValidLongitude(lng:any):Boolean {
+export function isValidLongitude(lng:any):Boolean {
   try {
     if (isNumber(lng)) {
       const number = Number(lng);
@@ -140,7 +159,7 @@ function isValidLongitude(lng:any):Boolean {
   }
 }
 
-function isValidArray(arr:any) {
+export function isValidArray(arr:any) {
   // Is it an array?
   if (!Array.isArray(arr)) { return false; }
 
@@ -156,7 +175,7 @@ function isValidArray(arr:any) {
   return true;
 }
 
-function createCoordinateArray(arr:any): number[] | false {
+export function createCoordinateArray(arr:any): number[] | false {
   if (!Array.isArray(arr)) { return false; }
   if (arr.length === 0 || arr.length > 2) { return false; }
   if (arr.length === 1) {
@@ -177,7 +196,7 @@ function createCoordinateArray(arr:any): number[] | false {
   return false;
 }
 
-const excelTheme = {
+export const excelTheme = {
   palette: {
     themePrimary: '#217346',
     themeLighterAlt: '#f2f9f5',
@@ -204,24 +223,5 @@ const excelTheme = {
   },
 };
 
-const errInvalidValue = (msg:string) => new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(msg));
-const errNotAvailable = (msg:string) => new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String(msg));
-
-export default {
-  excelTheme,
-  getGlobal,
-  isValidWhatFreeWords,
-  isValidPluscode,
-  isValidGhanaPostalGPS,
-  isValidLatitude,
-  isValidLongitude,
-  isValidArray,
-  createCoordinateArray,
-  errInvalidValue,
-  errNotAvailable,
-  setValueForKey,
-  getValueForKey,
-  removeValueForKey,
-  pluscodeToLatLng,
-  what3wordsToLatLng,
-};
+export const errInvalidValue = (msg:string) => new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(msg));
+export const errNotAvailable = (msg:string) => new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String(msg));

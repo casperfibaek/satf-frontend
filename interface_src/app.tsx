@@ -15,10 +15,29 @@ import Map from './components/map/map';
 import GettingStarted from './components/getting_started';
 import Taskpane from './components/taskpane';
 import Home from './components/home';
+import './commands';
 
-import utils from './utils';
+import { excelTheme, createStateIfDoesntExists } from './utils';
+import { onMessageFromParent } from './components/map/communication';
+
+import { WindowState } from './types';
+
+declare let window: WindowState;
+
+createStateIfDoesntExists();
+if (!window.state.initialise.office) {
+  Office.onReady().then(() => {
+    try {
+      Office.context.ui.addHandlerAsync(Office.EventType.DialogParentMessageReceived, onMessageFromParent);
+      window.state.initialise = ({ ...window.state.initialise, ...{ office: true } });
+    } catch {
+      console.log('Unable to initialise OfficeJS, is this running inside office?');
+    }
+  });
+}
 
 function Error404Page(): any { return <h2>404: Page not found. You should not end up here.</h2>; }
+function Commands():any { return (<h2>Loading Commands...</h2>); }
 
 function StartPage(): string {
   const queryString = window.location.search;
@@ -29,6 +48,7 @@ function StartPage(): string {
     case 'map': return '/map';
     case 'home': return '/home';
     case 'support': return '/support';
+    case 'commands': return '/commands';
     case 'documentation': return '/documentation';
     case 'getting_started': return '/getting_started';
     case 'taskpane': return '/taskpane';
@@ -48,6 +68,7 @@ function App() {
           <Route exact path='/home' render={() => (<Home />)} />
           <Route exact path='/map' render={() => (<Map />)} />
           <Route exact path='/support' render={() => (<Support />)} />
+          <Route exact path='/commands' render={() => (<Commands />)} />
           <Route exact path='/documentation' render={() => (<Documentation />)} />
           <Route exact path='/getting_started' render={() => (<GettingStarted />)} />
           <Route exact path='/taskpane' render={() => (<Taskpane />)} />
@@ -59,7 +80,7 @@ function App() {
   );
 }
 
-loadTheme(utils.excelTheme);
+loadTheme(excelTheme);
 
 ReactDOM.render(
   <React.StrictMode>

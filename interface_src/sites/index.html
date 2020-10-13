@@ -24,17 +24,10 @@
     <!-- Javascript -->
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
     <script type="text/javascript" src="./custom_functions.js"></script>
-
+    <script type="text/javascript" src="./commands.js"></script>
   </head>
   <body>
     <div id="root"></div>
-    <script>
-      Office.initialize = function init() {
-          if (!Office.context.requirements.isSetSupported('ExcelApi', '1.7')) {
-              console.log('Sorry. The add-in uses Excel.js APIs that are not available in your version of Office.');
-          }
-      };
-    </script>
     <script type="text/javascript" src="./app.js"></script>
   </body>
 </html>

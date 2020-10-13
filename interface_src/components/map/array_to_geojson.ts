@@ -1,4 +1,6 @@
-import utils from '../../utils';
+import {
+  isValidArray, isValidLatitude, isValidLongitude, isValidPluscode, isValidWhatFreeWords, pluscodeToLatLng, what3wordsToLatLng,
+} from '../../utils';
 import { GeoJsonGeometry, GeoJsonFeature, GeoJsonFeatureCollection } from '../../types';
 
 // Find references to geodata
@@ -155,7 +157,7 @@ function generateGeojson(geometryArray:number[][], propertiesArray:any[]): GeoJs
 
 async function arrayToGeojson(excelCells:any[][]) {
   // Validate array
-  if (!utils.isValidArray(excelCells)) { return false; }
+  if (!isValidArray(excelCells)) { return false; }
 
   // Remove all empty rows and columns
   const arr = removeInvalidRowsAndCols(excelCells);
@@ -210,10 +212,10 @@ async function arrayToGeojson(excelCells:any[][]) {
       for (let row = 0; row < arr.length; row += 1) {
         const val = arr[row][col];
 
-        if (utils.isValidLatitude(val)) { found[col].latitude += 1; }
-        if (utils.isValidLongitude(val)) { found[col].longitude += 1; }
-        if (utils.isValidPluscode(val)) { found[col].pluscodes += 1; }
-        if (utils.isValidWhatFreeWords(val)) { found[col].what3words += 1; }
+        if (isValidLatitude(val)) { found[col].latitude += 1; }
+        if (isValidLongitude(val)) { found[col].longitude += 1; }
+        if (isValidPluscode(val)) { found[col].pluscodes += 1; }
+        if (isValidWhatFreeWords(val)) { found[col].what3words += 1; }
       }
     }
 
@@ -290,11 +292,11 @@ async function arrayToGeojson(excelCells:any[][]) {
       for (let row = 0; row < arr.length; row += 1) {
         const val = arr[row][col];
         if (col === selected.col[0]) {
-          if (utils.isValidLatitude(val)) {
+          if (isValidLatitude(val)) {
             validLatitudes[row] = true;
           }
         } else if (col === selected.col[1]) {
-          if (utils.isValidLongitude(val)) {
+          if (isValidLongitude(val)) {
             validLongitudes[row] = true;
           }
         }
@@ -331,11 +333,11 @@ async function arrayToGeojson(excelCells:any[][]) {
       if (col !== selected.col) { continue; }
       for (let row = 0; row < arr.length; row += 1) {
         const val = arr[row][col];
-        if (utils.isValidPluscode(val)) {
+        if (isValidPluscode(val)) {
           validatedRows.push(arr[row]);
 
           try {
-            geometry.push(utils.pluscodeToLatLng(val));
+            geometry.push(pluscodeToLatLng(val));
           } catch (err) {
             throw new Error('Unable to convert pluscodes to latlng');
           }
@@ -361,11 +363,11 @@ async function arrayToGeojson(excelCells:any[][]) {
       if (col !== selected.col) { continue; }
       for (let row = 0; row < arr.length; row += 1) {
         const val = arr[row][col];
-        if (utils.isValidWhatFreeWords(val)) {
+        if (isValidWhatFreeWords(val)) {
           validatedRows.push(arr[row]);
 
           try {
-            geometry.push(utils.what3wordsToLatLng(val));
+            geometry.push(what3wordsToLatLng(val));
           } catch (err) {
             throw new Error('Unable to convert what3words to latLng.');
           }

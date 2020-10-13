@@ -321,7 +321,7 @@
         <bt:Url id="Functions.Script.Url" DefaultValue="https://satf-test.azurewebsites.net/interface/custom_functions.js"/>
         <bt:Url id="Functions.Metadata.Url" DefaultValue="https://satf-test.azurewebsites.net/interface/custom_functions_meta.json"/>
         <bt:Url id="Functions.Page.Url" DefaultValue="https://satf-test.azurewebsites.net/interface/custom_functions.html"/>
-        <bt:Url id="Commands.Url" DefaultValue="https://satf-test.azurewebsites.net/interface/commands.html"/>
+        <bt:Url id="Commands.Url" DefaultValue="https://satf-test.azurewebsites.net/interface?page=commands"/>
         <bt:Url id="Taskpane.Url" DefaultValue="https://satf-test.azurewebsites.net/interface?page=taskpane"/>
       </bt:Urls>
       <bt:ShortStrings>

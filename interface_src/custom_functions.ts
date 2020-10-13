@@ -1,16 +1,23 @@
-import utils from './utils';
+import {
+  isValidWhatFreeWords, isValidPluscode, createCoordinateArray, isValidLatitude, isValidLongitude, getGlobal, errNotAvailable, errInvalidValue, getValueForKey, createStateIfDoesntExists,
+} from './utils';
+import { WindowState } from './types';
 
-Office.onReady(() => { console.log('Office ready from custom_functions.js'); });
+declare let window: WindowState;
+
+createStateIfDoesntExists();
+if (!window.state.initialise.office) {
+  Office.onReady(() => {
+    console.log('Office ready from custom_functions.js');
+    window.state.initialise = ({ ...window.state.initialise, ...{ office: true } });
+  });
+}
 
 interface ApiReply {
   status: string;
   message: any;
   function: string;
 }
-
-const {
-  isValidWhatFreeWords, isValidPluscode, createCoordinateArray, isValidLatitude, isValidLongitude, getGlobal, errNotAvailable, errInvalidValue, getValueForKey,
-} = utils;
 
 const g:any = getGlobal();
 

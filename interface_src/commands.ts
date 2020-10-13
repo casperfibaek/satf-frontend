@@ -1,4 +1,15 @@
-import { getGlobal } from './utils';
+import { getGlobal, createStateIfDoesntExists } from './utils';
+import { WindowState } from './types';
+
+declare let window: WindowState;
+
+createStateIfDoesntExists();
+if (!window.state.initialise.office) {
+  Office.onReady(() => {
+    console.log('Office ready from commands.js');
+    window.state.initialise = ({ ...window.state.initialise, ...{ office: true } });
+  });
+}
 
 let dialog:any = null;
 const g:any = getGlobal();
@@ -17,126 +28,7 @@ function oneDown(adr:string):string {
   return `${sheet + xn}:${yn}`;
 }
 
-// function lettersToNumber(letters:string):number {
-//   const base = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-//   let result = 0;
-//   let j = letters.length - 1;
-
-//   for (let i = 0; i < letters.length; i += 1, j -= 1) {
-//     result += (base.length ** j) * (base.indexOf(letters[i]) + 1);
-//   }
-
-//   return result;
-// }
-
-// function numberToLetters(index:number):string { // eslint-disable-line
-//   let dividend = index;
-//   let name = '';
-//   let modulo;
-//   while (dividend > 0) {
-//     modulo = (dividend - 1) % 26;
-//     name = String.fromCharCode(65 + modulo) + name;
-//     dividend = Math.round((dividend - modulo) / 26);
-//   }
-//   return name;
-// }
-
-// function getRange(str:string):string[] {
-//   return str.split('!')[1].split(':');
-// }
-
-// function getNumbers(str:string):number {
-//   return Number(str.replace(/[^0-9]/g, ''));
-// }
-
-// function getText(str:string):string {
-//   return str.replace(/[0-9]/g, '');
-// }
-
-// function isUnboundedRange(range:any):boolean {
-//   if (Number(range[0]) && Number(range[1])) {
-//     return true;
-//   } if (getText(range.join('')) === range.join('')) {
-//     return true;
-//   }
-
-//   return false;
-// }
-
-// function isUnboundedRangeRowOrCol(range:any):string {
-//   if (Number(range[0]) && Number(range[1])) {
-//     return 'row';
-//   }
-//   return 'col';
-// }
-
-// function getBounds(range:any):any[] { // eslint-disable-line
-//   const bounds:any[] = [null, null, null, null]; // minLetter, minNumber, maxLetter, maxNumber
-
-//   if (isUnboundedRange(range)) {
-//     const type = isUnboundedRangeRowOrCol(range);
-//     if (type === 'row') {
-//       bounds[1] = getNumbers(range[0]);
-//       bounds[3] = getNumbers(range[1]);
-//     } else {
-//       bounds[0] = lettersToNumber(getText(range[0]));
-//       bounds[2] = lettersToNumber(getText(range[1]));
-//     }
-//   } else {
-//     bounds[0] = lettersToNumber(getText(range[0]));
-//     bounds[1] = getNumbers(range[0]);
-//     bounds[2] = lettersToNumber(getText(range[1]));
-//     bounds[3] = getNumbers(range[1]);
-//   }
-
-//   return bounds;
-// }
-
-// function isWithinRangeOld(str:string, targetStr:string):boolean { // eslint-disable-line
-//   const targetRange = getRange(targetStr);
-//   const min = targetRange[0];
-//   const max = targetRange[1];
-
-//   const selectedRange = getRange(str);
-
-//   const minLetter = lettersToNumber(getText(min));
-//   const minNumber = getNumbers(min);
-//   const maxLetter = lettersToNumber(getText(max));
-//   const maxNumber = getNumbers(max);
-
-//   if (isUnboundedRange(selectedRange)) {
-//     const type = isUnboundedRangeRowOrCol(selectedRange);
-//     if (type === 'row') {
-//       if ((getNumbers(selectedRange[0]) >= minNumber) && (getNumbers(selectedRange[1]) <= maxNumber)) {
-//         return true;
-//       }
-//       return false;
-//     }
-//     if ((lettersToNumber(getText(selectedRange[0])) >= minLetter) && (lettersToNumber(getText(selectedRange[1])) <= maxLetter)) {
-//       return true;
-//     }
-//     return false;
-//   }
-//   const boundedMin = selectedRange[0];
-//   const boundedMax = selectedRange[1];
-
-//   const boundedMinLetter = lettersToNumber(getText(boundedMin));
-//   const boundedMinNumber = getNumbers(boundedMin);
-//   const boundedMaxLetter = lettersToNumber(getText(boundedMax));
-//   const boundedMaxNumber = getNumbers(boundedMax);
-
-//   if (
-//     (boundedMinNumber >= minNumber)
-//       && (boundedMaxNumber <= maxNumber)
-//       && (boundedMinLetter >= minLetter)
-//       && (boundedMaxLetter <= maxLetter)) {
-//     return true;
-//   }
-
-//   return false;
-// }
-
-function lettersToNumber(letters:any) {
+function lettersToNumber(letters:string) {
   const chrs = ' ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const mode = chrs.length - 1;
   let number = 0;
@@ -146,20 +38,21 @@ function lettersToNumber(letters:any) {
   return number;
 }
 
-function numberToCol(num:any) {
+function numberToCol(num:number) {
   let str = '';
   let q;
   let r;
-  while (num > 0) {
-    q = (num - 1) / 26;
-    r = (num - 1) % 26;
-    num = Math.floor(q);
+  let _num = num;
+  while (_num > 0) {
+    q = (_num - 1) / 26;
+    r = (_num - 1) % 26;
+    _num = Math.floor(q);
     str = String.fromCharCode(65 + r) + str;
   }
   return str;
 }
 
-function fitTo(adress, data) {
+function fitTo(adress:string, data:any[]) {
   const sheet = adress.split('!')[0];
   const adr = adress.split('!')[1];
   const row = Number(adr.replace(/^\D+/g, ''));
@@ -300,8 +193,10 @@ function onEventFromDialog(arg:any):void {
   }
 }
 
-function openDialog(url:string, openEvent:Office.AddinCommands.Event, ask:boolean = true, listen:boolean = false):void {
-  Office.context.ui.displayDialogAsync(url, { height: 40, width: 30, promptBeforeOpen: ask }, (asyncResult) => {
+function openDialog(url:string, openEvent:Office.AddinCommands.Event, ask:boolean = true, listen:boolean = false, iFrame = false, callback = (result:any) => { }):void { // eslint-disable-line
+  Office.context.ui.displayDialogAsync(url, {
+    height: 40, width: 30, promptBeforeOpen: ask, displayInIframe: iFrame,
+  }, (asyncResult) => {
     if (asyncResult.status === Office.AsyncResultStatus.Failed) {
       console.log('Failed to open window and attach listeners..');
       console.log(asyncResult);
@@ -312,6 +207,7 @@ function openDialog(url:string, openEvent:Office.AddinCommands.Event, ask:boolea
       dialog.addEventHandler(Office.EventType.DialogEventReceived, onEventFromDialog);
     }
     openEvent.completed();
+    callback(asyncResult);
   });
 }
 
@@ -330,7 +226,14 @@ function openDialogSATF(openEvent:Office.AddinCommands.Event):void {
 }
 
 function openDialogMAP(openEvent:Office.AddinCommands.Event):void {
-  openDialog(`${baseUrl}?page=map`, openEvent, true, true);
+  // The map is relying on interaction between the sheet and the map:
+  //   If we are not allowed, for security reasons, to open a popup, we
+  //   open an iframe instead.
+  openDialog(`${baseUrl}?page=map`, openEvent, true, true, false, (asyncResult) => {
+    if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+      openDialog(`${baseUrl}?page=map`, openEvent, true, true, true);
+    }
+  });
 }
 
 function openDialogSUPPORT(openEvent:Office.AddinCommands.Event):void {
@@ -347,3 +250,10 @@ g.openDialogSATF = openDialogSATF;
 g.openDialogMAP = openDialogMAP;
 g.openDialogSUPPORT = openDialogSUPPORT;
 g.openDialogDOCUMENTATION = openDialogDOCUMENTATION;
+
+window.openDialogNIRAS = openDialogNIRAS;
+window.openDialogOPM = openDialogOPM;
+window.openDialogSATF = openDialogSATF;
+window.openDialogMAP = openDialogMAP;
+window.openDialogSUPPORT = openDialogSUPPORT;
+window.openDialogDOCUMENTATION = openDialogDOCUMENTATION;

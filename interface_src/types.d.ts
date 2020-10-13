@@ -1,7 +1,14 @@
 import { FeatureGroup } from 'leaflet';
 
 export interface WindowState extends Window {
-  state: any; map: any
+  state: any;
+  map: any;
+  openDialogNIRAS: Function,
+  openDialogOPM: Function,
+  openDialogSATF: Function,
+  openDialogMAP: Function,
+  openDialogSUPPORT: Function,
+  openDialogDOCUMENTATION: Function,
 }
 
 export interface GeoJsonGeometry {
