@@ -1360,7 +1360,6 @@ async function create_user(req, res) {
 }
 
 async function login_user(req, res) {
-  console.log(req.body.username);
   if (!req.body.username || !req.body.password) {
     return res.status(400).json({
       status: 'failure',

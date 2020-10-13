@@ -4,10 +4,10 @@
 */
 
 module.exports = {
-  user: 'niras',
-  host: '87.116.40.43',
-  database: 'satf_v2',
-  password: 'goldfish',
+  user: 'niras@satf-db',
+  host: 'satf-db.postgres.database.azure.com',
+  database: 'satf',
+  password: 'G0ldf1sh',
   port: 5432,
   admin_key: 'HPGKJDwlpWqZPIIH0RYanC3l80uVLTgnBLlNxeiIsQg=',
 };
