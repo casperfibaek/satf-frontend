@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'; // eslint-disable-line
 import {
   Text, Stack, Separator, Link,
 } from '@fluentui/react';
@@ -13,10 +13,7 @@ function Home(): any {
       </Text>
       <Separator />
       <Text variant="mediumPlus" block className="home_text_base">
-          Download the SatF tool here: {<Link download href="https://satf.azurewebsites.net/interface/satf_production.xml">Production</Link>}
-      </Text>
-      <Text variant="mediumPlus" block className="home_text_base">
-        Download the SatF tool here: {<Link download href="https://satf-test.azurewebsites.net/interface/satf_development.xml">Development</Link>}
+          Download the SatF tool here: {<Link download href="https://satf.azurewebsites.net/interface/satf_production.xml">Production</Link>} | {<Link download href="https://satf-test.azurewebsites.net/interface/satf_development.xml">Development</Link>}
       </Text>
       <div className="guide">
         <Text variant="mediumPlus" block className="guide_text">Installation Guide:</Text>
