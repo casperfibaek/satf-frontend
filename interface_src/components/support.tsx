@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'; // eslint-disable-line
 import { Text } from '@fluentui/react';
 
 function Support(): any {

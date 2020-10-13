@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; // eslint-disable-line
 import {
   Text, Icon, SearchBox, initializeIcons,
 } from '@fluentui/react';

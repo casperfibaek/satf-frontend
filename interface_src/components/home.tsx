@@ -21,13 +21,16 @@ function Home(): any {
             1. Go to <Link href="https://excel.office.com/">excel.office.com</Link> and log into your Microsoft account.
         </Text>
         <Text variant="medium" block className="guide_text_body">
-            2. Open a workbook or createa new empty one.
+            2. Open a workbook or create a new empty one.
         </Text>
         <Text variant="medium" block className="guide_text_body">
             3. In excel, go to Insert, go to "Get Add Ins", at the top go to “Upload my add in”, upload the downloaded xml file from the downloads folder.
         </Text>
         <Text variant="medium" block className="guide_text_body">
         4. Now you have the SATF ribbon to test out and play around with
+        </Text>
+        <Text variant="medium" block className="guide_text_body">
+        5. In case Windows is giving you security warnings: Open Internet Options {'-->'} Security {'-->'} Trusted Sites and add "https://*.satf.azurewebsites.net" {'&'} "https://*.satf-test.azurewebsites.net".
         </Text>
       </div>
     </Stack>

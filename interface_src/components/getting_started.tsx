@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'; // eslint-disable-line
 import { Text, Stack } from '@fluentui/react';
 
 function GettingStarted(): any {
