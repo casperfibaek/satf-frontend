@@ -1,5 +1,9 @@
 import { FeatureGroup } from 'leaflet';
 
+export interface WindowState extends Window {
+  state: any; map: any
+}
+
 export interface GeoJsonGeometry {
   type: string,
   coordinates: number[],
@@ -17,7 +21,6 @@ export interface GeoJsonFeatureCollection {
 }
 
 export interface Style {
-  key: number,
   fillColor: string,
   edgeColor: string,
   fillOpacity: number,

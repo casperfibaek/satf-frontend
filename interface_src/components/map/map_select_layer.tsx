@@ -2,16 +2,20 @@ import React from 'react'; // eslint-disable-line
 import {
   PrimaryButton, Callout, DirectionalHint, Dropdown, DefaultButton,
 } from '@fluentui/react';
-import { getLayerCount, addMarkerToLayer } from './map_layers';
+import { getLayerCount, addMarkerToLayer, addDataToLayer } from './map_layers';
+import { WindowState } from '../../types';
 
-interface WindowState extends Window { state: any; }
 declare let window: WindowState;
 
 export default function SelectLayer(props:any) {
   const { state } = window;
 
   function onAdd() {
-    addMarkerToLayer(props.selectedLayer);
+    if (props.statusCalloutSelect.current.data !== null) {
+      addDataToLayer(props.selectedLayer, props.statusCalloutSelect.current.data);
+    } else {
+      addMarkerToLayer(props.selectedLayer);
+    }
     props.statusCalloutSelect.close();
   }
 
@@ -27,7 +31,7 @@ export default function SelectLayer(props:any) {
     >
       <Dropdown
         placeholder="Create new layer"
-        label="Add point to layer"
+        label="Add point(s) to layer"
         defaultSelectedKey={state.layers.length === 0 ? -1 : props.selectedLayer}
         options={state.layers.map((e:any) => ({ text: e.name, key: e.key }))}
         onChange={(event, value) => { props.setSelectedLayer(value.key); }}

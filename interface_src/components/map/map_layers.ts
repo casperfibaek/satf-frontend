@@ -1,24 +1,7 @@
 import L, { FeatureGroup } from 'leaflet';
+import { Style, MapLayer, WindowState } from '../../types';
 
-interface WindowState extends Window { state: any; map: any }
 declare let window: WindowState;
-
-interface Style {
-  fillColor: string,
-  edgeColor: string,
-  fillOpacity: number,
-  edgeOpacity: number,
-  weight: number,
-  radius: number,
-}
-
-interface MapLayer {
-  name: string,
-  key: number,
-  featureGroup: FeatureGroup,
-  hidden: boolean,
-  style: Style,
-}
 
 let layerKey = 0;
 
@@ -66,7 +49,8 @@ export function getLayer(key:number):MapLayer {
       return window.state.layers[i];
     }
   }
-  throw new Error('Unable to find layer in state. Layer reference might be corrupted.');
+  const errorMessage = 'Unable to find layer in state. Layer reference might be corrupted.';
+  throw new Error(errorMessage);
 }
 
 export function renderLayers() {
@@ -170,6 +154,34 @@ export function updateLayerStyle(key:number, style:Style):void{
     fillColor: style.fillColor,
     radius: style.radius,
   });
+}
+
+export function addDataToLayer(key:number, data:any) {
+  const mapLayer = getLayer(key);
+
+  try {
+    for (let i = 0; i < data.features.length; i += 1) {
+      const feature = data.features[i];
+      L.geoJSON(feature, {
+        pointToLayer(_feature, latlng) {
+          const newLayer = L.circleMarker(latlng, {
+            color: mapLayer.style.edgeColor,
+            weight: mapLayer.style.weight,
+            opacity: mapLayer.style.edgeOpacity,
+            fillOpacity: mapLayer.style.fillOpacity,
+            fillColor: mapLayer.style.fillColor,
+            radius: mapLayer.style.radius,
+            properties: feature.properties,
+          });
+          mapLayer.featureGroup.addLayer(newLayer);
+          return newLayer;
+        },
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    throw new Error('Unable to parse data received from Excel. Malformed?');
+  }
 }
 
 export function addMarkerToLayer(key:number) {

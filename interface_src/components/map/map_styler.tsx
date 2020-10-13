@@ -6,15 +6,7 @@ import ColorSelector from './map_styler_color';
 import {
   getLayer, getLayerCount, updateLayerStyle, updateLayerName,
 } from './map_layers';
-
-interface Style {
-  fillColor: string,
-  edgeColor: string,
-  fillOpacity: number,
-  edgeOpacity: number,
-  weight: number,
-  radius: number,
-}
+import { Style } from '../../types';
 
 const defaultStyle:Style = {
   fillColor: '#F2E205',

@@ -7,7 +7,8 @@ import {
   toggleLayer, getFirstLayerKey, removeLayer, getLayer, getLayerCount,
 } from './map_layers';
 
-interface WindowState extends Window { state: any; }
+import { WindowState } from '../../types';
+
 declare let window: WindowState;
 
 export default function LayerList(props:any) {

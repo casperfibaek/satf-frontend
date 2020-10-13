@@ -23,6 +23,9 @@ export default function Properties(props:any) {
   }
 
   function addNewProperty() {
+    if (newKey === 'Key' || newKey.length === 0) {
+      return;
+    }
     const { featureGroup, marker } = props.statusDialogProperties.current;
     featureGroup.eachLayer((_marker:any) => {
       _marker.options.properties[newKey] = null; // eslint-disable-line

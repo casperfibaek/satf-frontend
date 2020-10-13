@@ -1,11 +1,12 @@
+// Libraries
 import React, { useEffect, useState } from 'react'; // eslint-disable-line
 import L, { FeatureGroup, LeafletMouseEvent, CircleMarker } from 'leaflet';
+import { Text, MessageBar, MessageBarType } from '@fluentui/react';
 
 // Components
 import MapPanel from './map_panel';
 import CreateLayer from './map_create_layer';
 import Properties from './map_properties';
-import ReceiveDialog, { addDataToLayer } from './map_receive_send';
 import SelectLayer from './map_select_layer';
 import BottomBar from './map_bottom_bar';
 
@@ -13,11 +14,15 @@ import BottomBar from './map_bottom_bar';
 import { onMessageFromParent, sendToParent, addEvent } from './communication';
 import arrayToGeojson from './array_to_geojson';
 import {
-  addMarkerToLayer, createNewMapLayer, getFirstLayerKey, getLayerCount,
+  addMarkerToLayer, createNewMapLayer, getFirstLayerKey, getLayerCount, addDataToLayer,
 } from './map_layers';
+
+// CSS
 import '../../assets/leaflet.css';
 
-interface WindowState extends Window { state: any; }
+// Types
+import { WindowState } from '../../types';
+
 declare let window: WindowState;
 
 window.state = (window.state === undefined || window.state === null || window.state === {}) ? {} : window.state;
@@ -31,6 +36,7 @@ window.state = ({
     map: {},
     layers: [],
     click: {},
+    warningTimer: 0,
   },
 });
 const { state } = window;
@@ -151,9 +157,9 @@ function Map() {
 
   // Surfaces
   const [panelLayers, setPanelLayers] = useState({ hidden: true });
-  const [calloutSelect, setCalloutSelect] = useState({ hidden: true });
+  const [calloutSelect, setCalloutSelect] = useState({ hidden: true, data: null });
   const [dialogCreate, setDialogCreate] = useState({ hidden: true, name: '' });
-  const [dialogReceive, setDialogReceive] = useState({ hidden: true, data: {} });
+  const [errorbar, setErrorbar] = useState({ hidden: true, text: 'Default message', type: MessageBarType.warning });
   const [dialogProperties, setDialogProperties] = useState({
     hidden: true, position: {}, marker: null, featureGroup: null,
   });
@@ -166,8 +172,8 @@ function Map() {
   };
 
   const statusCalloutSelect = {
-    open: () => setCalloutSelect({ hidden: false }),
-    close: () => setCalloutSelect({ hidden: true }),
+    open: (data:any = null) => setCalloutSelect({ hidden: false, data }),
+    close: () => setCalloutSelect({ hidden: true, data: null }),
     current: calloutSelect,
   };
 
@@ -175,12 +181,6 @@ function Map() {
     open: () => setDialogCreate({ name: '', hidden: false }),
     close: () => setDialogCreate({ name: '', hidden: true }),
     current: dialogCreate,
-  };
-
-  const statusDialogReceive = {
-    open: (data:any) => setDialogReceive({ hidden: false, data }),
-    close: () => setDialogReceive({ hidden: true, data: {} }),
-    current: dialogReceive,
   };
 
   const statusDialogProperties = {
@@ -191,6 +191,17 @@ function Map() {
       hidden: true, position: {}, marker: null, featureGroup: null,
     }),
     current: dialogProperties,
+  };
+
+  const statusErrorbar = {
+    open: (text:string, type:number) => {
+      clearTimeout(state.warningTimer);
+      setErrorbar({ hidden: false, text, type });
+      state.warningTimer = setTimeout(() => {
+        setErrorbar({ hidden: true, text: 'Default message', type: MessageBarType.info });
+      }, 6000);
+    },
+    close: () => setErrorbar({ hidden: true, text: 'Default message', type: MessageBarType.info }),
   };
 
   function autoCreateNewLayer() {
@@ -231,27 +242,27 @@ function Map() {
 
   // This adds an event that listens to data coming from Excel.
   addEvent('dataFromExcel', async (data:any) => {
-    if (state.layers.length === 0) {
-      statusDialogCreate.open();
+    let geojson;
+    try {
+      geojson = await arrayToGeojson(data);
+    } catch (err) {
+      const errorMessage = 'Unable to parse geojson from Excel';
+      statusErrorbar.open(errorMessage, MessageBarType.error);
+      throw new Error(err);
+    }
+
+    let key = -1;
+    const layerCount = getLayerCount();
+    if (layerCount === 0) {
+      autoCreateNewLayer();
+    }
+
+    if (layerCount <= 1) {
+      key = getFirstLayerKey();
+      setSelectedLayer(key);
+      addDataToLayer(key, geojson);
     } else {
-      try {
-        const geojson = await arrayToGeojson(data);
-
-        const layerCount = getLayerCount();
-
-        if (layerCount === 0) {
-          autoCreateNewLayer();
-        }
-
-        if (layerCount === 1) {
-          setSelectedLayer(getFirstLayerKey());
-          addDataToLayer(selectedLayer, geojson);
-        } else {
-          statusDialogReceive.open(geojson);
-        }
-      } catch (err) {
-        console.error(err);
-      }
+      statusCalloutSelect.open(geojson);
     }
   });
 
@@ -276,6 +287,16 @@ function Map() {
 
   return (
     <div id="map-wrapper">
+      {!errorbar.hidden && <MessageBar
+            messageBarType={errorbar.type}
+            className="message-bar"
+            dismissButtonAriaLabel="Close"
+            truncated={true}
+            onDismiss={() => { setErrorbar({ hidden: true, text: 'Default Message', type: MessageBarType.info }); }}
+          >
+            <Text>{errorbar.text}</Text>
+          </MessageBar>
+      }
       <CreateLayer
         statusDialogCreate={statusDialogCreate}
         statusDialogProperties={statusDialogProperties}
@@ -285,11 +306,6 @@ function Map() {
         selectedLayer={selectedLayer}
         setSelectedLayer={setSelectedLayer}
         statusCalloutSelect={statusCalloutSelect}
-      />
-      <ReceiveDialog
-        selectedLayer={selectedLayer}
-        setSelectedLayer={setSelectedLayer}
-        statusDialogReceive={statusDialogReceive}
       />
       <Properties
         statusDialogProperties={statusDialogProperties}
@@ -305,6 +321,7 @@ function Map() {
         setSelectedLayer={setSelectedLayer}
         statusDialogCreate={statusDialogCreate}
         sendToParent={sendToParent}
+        statusErrorbar={statusErrorbar}
       />
       <div id="map" ref={(el) => { mapContainer = el; }}></div>
     </div>

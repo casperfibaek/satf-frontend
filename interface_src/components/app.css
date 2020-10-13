@@ -478,6 +478,16 @@ table.properties-table > tr > div.layer-prop-add{
   margin-left: 10px;
 }
 
+.message-bar{
+  z-index: 1000;
+  position: absolute;
+  left: 0;
+  right: 0;
+  max-width: 500px;
+  margin: 0 auto;
+  margin-top: 10px;
+}
+
 @media (max-height: 640px) {
   #taskpane_body > .ms-Image{
     display: none;

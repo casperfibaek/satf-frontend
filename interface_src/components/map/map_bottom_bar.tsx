@@ -1,10 +1,12 @@
 import React, { useState } from 'react'; // eslint-disable-line
 import {
-  PrimaryButton, DefaultButton, DialogFooter, Dialog, Dropdown,
+  PrimaryButton, DefaultButton, DialogFooter, Dialog, Dropdown, MessageBarType,
 } from '@fluentui/react';
 import geojsonToArray from './geojson_to_array';
 import { getLayer, getLayerCount } from './map_layers';
-import { GeoJsonFeatureCollection } from '../../types';
+import { GeoJsonFeatureCollection, WindowState } from '../../types';
+
+declare let window: WindowState;
 
 export default function BottomBar(props:any) {
   const [sendDialog, setSendDialog] = useState({ hidden: true });
@@ -13,21 +15,15 @@ export default function BottomBar(props:any) {
     setSendDialog({ hidden: true });
   }
 
-  function openSendDialog() {
-    if (getLayerCount() > 0) {
-      setSendDialog({ hidden: false });
-    }
-  }
-
-  function onSend(event:React.MouseEvent<HTMLButtonElement>):void {
-    const { group, name } = getLayer(props.selectedLayer);
+  function sendData():void {
+    const { featureGroup, name } = getLayer(props.selectedLayer);
 
     const featureCollection:GeoJsonFeatureCollection = {
       type: 'FeatureCollection',
       features: [],
     };
 
-    group.eachLayer((layer:any) => {
+    featureGroup.eachLayer((layer:any) => {
       const properties = layer.options.properties || {};
       const layerGeoJSON = layer.toGeoJSON();
 
@@ -51,6 +47,19 @@ export default function BottomBar(props:any) {
 
     props.sendToParent('dataFromMap', cells);
     closeSendDialog();
+  }
+
+  function onSend(event:React.MouseEvent<HTMLButtonElement>):void {
+    const layerCount = getLayerCount();
+    if (layerCount === 0) {
+      const errorMessage = 'No layers to send to excel';
+      props.statusErrorbar.open(errorMessage, MessageBarType.error);
+      throw new Error(errorMessage);
+    } else if (layerCount === 1) {
+      sendData();
+    } else {
+      setSendDialog({ hidden: false });
+    }
     event.preventDefault();
   }
 
@@ -73,12 +82,12 @@ export default function BottomBar(props:any) {
           required
         />
         <DialogFooter>
-          <PrimaryButton onClick={onSend} text="Send" />
+          <PrimaryButton onClick={sendData} text="Send" />
           <DefaultButton onClick={() => { closeSendDialog(); } } text="Don't send" />
         </DialogFooter>
       </Dialog>
       <PrimaryButton text="Request Excel Data" onClick={onRequest} />
-      <DefaultButton text="Send Data to Excel" onClick={() => { openSendDialog(); }} />
+      <DefaultButton text="Send Data to Excel" onClick={onSend} />
     </div>
   );
 }
