@@ -3,7 +3,7 @@ import L from 'leaflet';
 import {
   PrimaryButton, DefaultButton, Dialog, DialogFooter, TextField,
 } from '@fluentui/react';
-import { isLayernameUnique, createNewMapLayer } from './map_layer_control';
+import { isLayernameUnique, createNewMapLayer } from './map_layers';
 
 export default function CreateLayer(props:any) {
   const [newLayername, setNewLayername] = useState('Default');
@@ -11,11 +11,10 @@ export default function CreateLayer(props:any) {
   function onCreateLayer() {
     if (newLayername.length >= 3 && newLayername.length <= 20 && isLayernameUnique(newLayername)) {
       const mapLayer = createNewMapLayer(newLayername);
+      props.setSelectedLayer(mapLayer.key);
 
       mapLayer.featureGroup.on('click', (event:any) => {
-        props.statusDialogProperties.open({
-          hidden: false, position: event.originalEvent, clicked: event.layer, featureGroup: mapLayer,
-        });
+        props.statusDialogProperties.open(event.originalEvent, event.layer, mapLayer.featureGroup);
         L.DomEvent.preventDefault(event);
         L.DomEvent.stopPropagation(event);
       });
@@ -31,7 +30,7 @@ export default function CreateLayer(props:any) {
   return (
     <Dialog
       title={'Create New Layer'}
-      hidden={props.createDialog.hidden}
+      hidden={props.statusDialogCreate.current.hidden}
       onDismiss={() => { props.statusDialogCreate.close(); }}
     >
       <TextField

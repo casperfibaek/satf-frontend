@@ -5,28 +5,33 @@ import L, { FeatureGroup, LeafletMouseEvent, CircleMarker } from 'leaflet';
 import MapPanel from './map_panel';
 import CreateLayer from './map_create_layer';
 import Properties from './map_properties';
-import ReceiveDialog from './map_receive_send';
+import ReceiveDialog, { addDataToLayer } from './map_receive_send';
 import SelectLayer from './map_select_layer';
 import BottomBar from './map_bottom_bar';
 
 // Functions
 import { onMessageFromParent, sendToParent, addEvent } from './communication';
 import arrayToGeojson from './array_to_geojson';
-import { updateState } from '../utils';
-import { mapOnClick } from './map_layer_control';
+import {
+  addMarkerToLayer, createNewMapLayer, getFirstLayerKey, getLayerCount,
+} from './map_layers';
 import '../../assets/leaflet.css';
 
 interface WindowState extends Window { state: any; }
 declare let window: WindowState;
 
-window.state = updateState(window.state, {
-  initialise: {
-    office: false,
-    map: false,
+window.state = (window.state === undefined || window.state === null || window.state === {}) ? {} : window.state;
+window.state = ({
+  ...window.state,
+  ...{
+    initialise: {
+      office: false,
+      map: false,
+    },
+    map: {},
+    layers: [],
+    click: {},
   },
-  map: {},
-  layer: {},
-  click: {},
 });
 const { state } = window;
 
@@ -120,7 +125,7 @@ function initialiseMap(mapContainer:any) {
 
   // https://github.com/Leaflet/Leaflet/issues/3575
   (function fixTileGap() {
-    const originalInitTile = L.GridLayer.prototype._initTile;
+    const originalInitTile:any = L.GridLayer.prototype._initTile;
     L.GridLayer.include({
       _initTile(tile:any) {
         originalInitTile.call(this, tile);
@@ -142,7 +147,7 @@ function Map() {
   let mapContainer:any;
 
   // Variables
-  const [selectedLayer, setSelectedLayer] = useState(1);
+  const [selectedLayer, setSelectedLayer] = useState(-1);
 
   // Surfaces
   const [panelLayers, setPanelLayers] = useState({ hidden: true });
@@ -161,8 +166,8 @@ function Map() {
   };
 
   const statusCalloutSelect = {
-    open: () => setCalloutSelect({ hidden: true }),
-    close: () => setCalloutSelect({ hidden: false }),
+    open: () => setCalloutSelect({ hidden: false }),
+    close: () => setCalloutSelect({ hidden: true }),
     current: calloutSelect,
   };
 
@@ -188,13 +193,40 @@ function Map() {
     current: dialogProperties,
   };
 
+  function autoCreateNewLayer() {
+    const mapLayer = createNewMapLayer('Default');
+    setSelectedLayer(mapLayer.key);
+
+    mapLayer.featureGroup.on('click', (event:any) => {
+      statusDialogProperties.open(event.originalEvent, event.layer, mapLayer.featureGroup);
+      L.DomEvent.preventDefault(event);
+      L.DomEvent.stopPropagation(event);
+    });
+  }
+
   // Events
   function onMapMouseClick(event:LeafletMouseEvent) {
-    state.click = updateState(state.click, {
-      position: event.originalEvent,
-      latlng: [event.latlng.lat, event.latlng.lng],
+    state.click = ({
+      ...state.click,
+      ...{
+        position: event.originalEvent,
+        latlng: [event.latlng.lat, event.latlng.lng],
+      },
     });
-    mapOnClick(selectedLayer);
+
+    let key = -1;
+    const layerCount = getLayerCount();
+    if (layerCount === 0) {
+      autoCreateNewLayer();
+    }
+
+    if (layerCount <= 1) {
+      key = getFirstLayerKey();
+      setSelectedLayer(key);
+      addMarkerToLayer(key);
+    } else {
+      statusCalloutSelect.open();
+    }
   }
 
   // This adds an event that listens to data coming from Excel.
@@ -204,7 +236,19 @@ function Map() {
     } else {
       try {
         const geojson = await arrayToGeojson(data);
-        statusDialogReceive.open(geojson);
+
+        const layerCount = getLayerCount();
+
+        if (layerCount === 0) {
+          autoCreateNewLayer();
+        }
+
+        if (layerCount === 1) {
+          setSelectedLayer(getFirstLayerKey());
+          addDataToLayer(selectedLayer, geojson);
+        } else {
+          statusDialogReceive.open(geojson);
+        }
       } catch (err) {
         console.error(err);
       }
@@ -214,7 +258,7 @@ function Map() {
   // Run on startup
   useEffect(() => {
     state.map = initialiseMap(mapContainer);
-    state.initialise = updateState(state.initialise, { map: true });
+    state.initialise = ({ ...state.initialise, ...{ map: true } });
 
     state.map.on('click', (event:LeafletMouseEvent) => { onMapMouseClick(event); });
   }, [mapContainer]); // eslint-disable-line
@@ -223,7 +267,7 @@ function Map() {
     Office.onReady().then(() => {
       try {
         Office.context.ui.addHandlerAsync(Office.EventType.DialogParentMessageReceived, onMessageFromParent);
-        updateState(state.initialise, { office: true });
+        state.initialise = ({ ...state.initialise, ...{ office: true } });
       } catch {
         console.log('Unable to initialise OfficeJS, is this running inside office?');
       }
@@ -235,6 +279,7 @@ function Map() {
       <CreateLayer
         statusDialogCreate={statusDialogCreate}
         statusDialogProperties={statusDialogProperties}
+        setSelectedLayer={setSelectedLayer}
       />
       <SelectLayer
         selectedLayer={selectedLayer}
@@ -242,6 +287,8 @@ function Map() {
         statusCalloutSelect={statusCalloutSelect}
       />
       <ReceiveDialog
+        selectedLayer={selectedLayer}
+        setSelectedLayer={setSelectedLayer}
         statusDialogReceive={statusDialogReceive}
       />
       <Properties

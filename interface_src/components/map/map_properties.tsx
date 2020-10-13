@@ -1,6 +1,6 @@
 import React, { useState } from 'react'; // eslint-disable-line
 import {
-  Callout, DefaultButton, Text, TextField, DirectionalHint, FontIcon,
+  Callout, DefaultButton, Text, TextField, DirectionalHint, FontIcon, PrimaryButton,
 } from '@fluentui/react';
 
 export default function Properties(props:any) {
@@ -33,7 +33,12 @@ export default function Properties(props:any) {
     refreshState({}); // Force refresh component
   }
 
-  // hidden: false, position, layer, featureGroup,
+  function onDeleteMarker() {
+    const { featureGroup, marker } = props.statusDialogProperties.current;
+    marker.removeFrom(featureGroup);
+    marker.remove();
+    props.statusDialogProperties.close();
+  }
 
   return (
     <Callout
@@ -46,7 +51,7 @@ export default function Properties(props:any) {
       onDismiss={() => { props.statusDialogProperties.close(); } }
     >
       <table className="properties-table">
-        {props.statusDialogProperties.current.layer && Object.entries(props.statusDialogProperties.current.layer.options.properties).map((e) => (
+        {props.statusDialogProperties.current.marker && Object.entries(props.statusDialogProperties.current.marker.options.properties).map((e) => (
           <tr>
             <Text variant="medium">{e[0]}</Text>
             <TextField defaultValue={e[1]} onChange={(event, value) => { propertiesChanged(e[0], value); }} />
@@ -60,7 +65,10 @@ export default function Properties(props:any) {
         </tr>
       </table>
       <div className="prop-footer">
-        <DefaultButton onClick={() => { props.statusDialogProperties.close(); } } text="Close" />
+        <DefaultButton onClick={() => { onDeleteMarker(); } }>
+          <span>Delete Point  <FontIcon iconName="Delete" /></span>
+        </DefaultButton>
+        <PrimaryButton onClick={() => { props.statusDialogProperties.close(); } } text="Close" />
       </div>
     </Callout>
   );

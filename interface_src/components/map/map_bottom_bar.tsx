@@ -3,7 +3,7 @@ import {
   PrimaryButton, DefaultButton, DialogFooter, Dialog, Dropdown,
 } from '@fluentui/react';
 import geojsonToArray from './geojson_to_array';
-import { getLayer, getLayerCount } from './map_layer_control';
+import { getLayer, getLayerCount } from './map_layers';
 import { GeoJsonFeatureCollection } from '../../types';
 
 export default function BottomBar(props:any) {

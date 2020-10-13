@@ -1,46 +1,47 @@
-import React, { useState, useEffect } from 'react'; // eslint-disable-line
+import React, { useState, useEffect, FormEvent } from 'react'; // eslint-disable-line
 import {
   DefaultButton, PrimaryButton, Text, Slider, Dialog, DialogFooter, TextField,
 } from '@fluentui/react';
 import ColorSelector from './map_styler_color';
 import {
   getLayer, getLayerCount, updateLayerStyle, updateLayerName,
-} from './map_layer_control';
-import { updateState } from '../utils';
+} from './map_layers';
 
-interface WindowState extends Window { state: any; }
-declare let window: WindowState;
+interface Style {
+  fillColor: string,
+  edgeColor: string,
+  fillOpacity: number,
+  edgeOpacity: number,
+  weight: number,
+  radius: number,
+}
 
-const default_style = {
+const defaultStyle:Style = {
   fillColor: '#F2E205',
   edgeColor: '#201f1e',
   fillOpacity: 1.0,
   edgeOpacity: 1.0,
   weight: 1.0,
   radius: 5,
-  key: 0,
 };
 
 export default function Styler(props:any) {
-  const { state } = window;
-
-  const [selectedStyle, setSelectedStyle] = useState(default_style);
-  const [layerName, setLayerName] = useState(getLayer(props.selectedlayer).name);
+  const [selectedStyle, setSelectedStyle] = useState(defaultStyle);
+  const [layerName, setLayerName] = useState('Default');
   const [colorPicker, setColorPicker] = useState({ hidden: true, selected: 'fill' });
-  const [pickers, setPickers] = useState(default_style);
 
-  function updatePickers(obj:any) { setPickers(updateState(pickers, obj)); } // eslint-disable-line
+  function updatePickers(value:object) {
+    setSelectedStyle({
+      ...selectedStyle,
+      ...value,
+    });
+  }
 
   const statusColorPicker = {
     open: (selected:string) => setColorPicker({ hidden: false, selected }),
-    close: () => setColorPicker({ hidden: false, selected: colorPicker.selected }),
+    close: () => setColorPicker({ hidden: true, selected: colorPicker.selected }),
     current: colorPicker,
   };
-
-  function onDismiss() {
-    updatePickers(default_style);
-    props.statusDialogStyle.close();
-  }
 
   function onUpdateStyle() {
     updateLayerName(props.selectedLayer, layerName);
@@ -48,55 +49,61 @@ export default function Styler(props:any) {
     props.statusDialogStyle.close();
   }
 
+  function onEnter(event: React.KeyboardEvent): void {
+    if (event.key === 'Enter') { onUpdateStyle(); }
+  }
+
   useEffect(() => {
     if (getLayerCount() > 0) {
-      const { style } = getLayer(props.selectedLayer);
+      const { style, name } = getLayer(props.selectedLayer);
       setSelectedStyle(style);
-      updatePickers(style);
+      setLayerName(name);
     }
-  }, [updatePickers, props.selectedLayer]);
+  }, [props.selectedLayer]);
 
   return (
     <div className="container">
-      <ColorSelector
-        statusColorPicker={statusColorPicker}
-        selectedStyle={selectedStyle}
-        updatePickers={updatePickers}
-      />
       <Dialog
-        title={`Edit layer - ${layerName}`}
-        hidden={props.statusDialogStyle.hidden}
-        onDismiss={() => { onDismiss(); }}
+        title={`Edit layer - ${getLayerCount() > 0 ? getLayer(props.selectedLayer).name : 'layername'}`}
+        hidden={props.statusDialogStyle.current.hidden}
+        onDismiss={() => { props.statusDialogStyle.close(); }}
       >
-        <div id="modal-styler">
+        <div id="modal-styler"
+          onClick={() => { if (!statusColorPicker.current.hidden) { statusColorPicker.close(); } }}
+          onKeyPress={onEnter}
+        >
           <TextField
             label="Name"
-            defaultValue={state.layers.length !== 0 ? getLayer(props.selectedlayer).name : 'layername'}
+            defaultValue={getLayerCount() > 0 ? getLayer(props.selectedLayer).name : 'layername'}
             onChange={(event, value) => { setLayerName(value); }}
           />
-          <div className="sliders">
-            <Slider label="Radius" min={0.5} max={12} step={0.5} value={selectedStyle.radius} showValue onChange={(event, value) => {
+          <div className="sliders" onKeyPress={onEnter}>
+            <Slider label="Radius" min={0.5} max={12} step={0.5} value={selectedStyle.radius} showValue onChange={(value:number) => {
               updatePickers({ radius: value });
             }} />
-            <Slider label="Fill Opacity" min={0} max={1} step={0.01} value={selectedStyle.fillOpacity} showValue onChange={(event, value) => {
+            <Slider label="Fill Opacity" min={0} max={1} step={0.01} value={selectedStyle.fillOpacity} showValue onChange={(value:number) => {
               updatePickers({ fillOpacity: value });
             }} />
-            <Slider label="Edge Opacity" min={0} max={1} step={0.01} value={selectedStyle.edgeOpacity} showValue onChange={(event, value) => {
+            <Slider label="Edge Opacity" min={0} max={1} step={0.01} value={selectedStyle.edgeOpacity} showValue onChange={(value:number) => {
               updatePickers({ edgeOpacity: value });
             }} />
-            <Slider label="Edge Width" min={0} max={2} step={0.1} value={selectedStyle.weight} showValue onChange={(event, value) => {
+            <Slider label="Edge Width" min={0} max={2} step={0.1} value={selectedStyle.weight} showValue onChange={(value:number) => {
               updatePickers({ weight: value });
             }} />
-
+            <ColorSelector
+              statusColorPicker={statusColorPicker}
+              selectedStyle={selectedStyle}
+              updatePickers={updatePickers}
+            />
             <Text block variant="medium">Fill Color: </Text>
               <div style={{ background: selectedStyle.fillColor }} className="colorOpen fill" onClick={() => { statusColorPicker.open('fill'); }}></div>
             <Text block variant="medium">Edge Color: </Text>
-              <div style={{ background: selectedStyle.edgeColor }} className="colorOpen edge" onClick={() => { statusColorPicker.close(); }}></div>
+              <div style={{ background: selectedStyle.edgeColor }} className="colorOpen edge" onClick={() => { statusColorPicker.open('edge'); }}></div>
           </div>
         </div>
       <DialogFooter>
         <PrimaryButton onClick={() => { if (layerName.length >= 3 && layerName.length < 25) { onUpdateStyle(); } }} text="Update style" />
-        <DefaultButton onClick={() => { onDismiss(); }} text="Dismiss" />
+        <DefaultButton onClick={() => { props.statusDialogStyle.close(); }} text="Dismiss" />
       </DialogFooter>
     </Dialog>
     </div>

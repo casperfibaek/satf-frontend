@@ -326,6 +326,14 @@ tr > td:nth-child(2) {
   right: 0;
   background: #333;
   margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.colorOpen:hover{
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  border: 1px solid #323130;
 }
 
 .createButton{
@@ -413,9 +421,13 @@ tr > td:nth-child(2) {
   margin-top: 8px;
 }
 
-.add-point-to-layer{
+.add-point-to-layer,
+.add-point-to-layer-back{
   float: right;
   margin-top: 10px;
+}
+.add-point-to-layer {
+  margin-left: 10px;
 }
 
 .ms-Callout-main{

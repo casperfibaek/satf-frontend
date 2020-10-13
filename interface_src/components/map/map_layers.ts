@@ -1,10 +1,9 @@
-import { L, FeatureGroup } from 'leaflet';
+import L, { FeatureGroup } from 'leaflet';
 
 interface WindowState extends Window { state: any; map: any }
 declare let window: WindowState;
 
 interface Style {
-  key: number,
   fillColor: string,
   edgeColor: string,
   fillOpacity: number,
@@ -48,7 +47,7 @@ function getUniqueProperties(featureGroup:FeatureGroup):any[] {
   return allProperties;
 }
 
-export function generateRandomStyle(key:number):Style {
+export function generateRandomStyle():Style {
   const getRandom = (list:any[]) => list[Math.floor(Math.random() * list.length)];
 
   return {
@@ -58,7 +57,6 @@ export function generateRandomStyle(key:number):Style {
     edgeOpacity: getRandom([0.5, 0.7, 0.9, 1.0]),
     weight: getRandom([0.5, 0.75, 1.0, 1.25]),
     radius: getRandom([8, 9, 10, 11, 12]),
-    key,
   };
 }
 
@@ -74,19 +72,19 @@ export function getLayer(key:number):MapLayer {
 export function renderLayers() {
   for (let i = 0; i < window.state.layers.length; i += 1) {
     if (window.state.layers[i].hidden) {
-      window.map.removeLayer(window.state.layers[i].featureGroup);
+      window.state.map.removeLayer(window.state.layers[i].featureGroup);
     } else {
-      window.map.addLayer(window.state.layers[i].featureGroup);
+      window.state.map.addLayer(window.state.layers[i].featureGroup);
     }
   }
 }
 
 export function createNewMapLayer(name:string):MapLayer {
   const key = getLayerKey();
-  const style = generateRandomStyle(key);
+  const style = generateRandomStyle();
 
   for (let i = 0; i < window.state.layers.length; i += 1) {
-    window.map.removeLayer(window.state.layers[i].featureGroup);
+    window.state.map.removeLayer(window.state.layers[i].featureGroup);
   }
 
   const featureGroup = L.featureGroup();
@@ -104,7 +102,7 @@ export function createNewMapLayer(name:string):MapLayer {
 
 export function removeLayer(key:number):void {
   for (let i = 0; i < window.state.layers.length; i += 1) {
-    window.map.removeLayer(window.state.layers[i].featureGroup);
+    window.state.map.removeLayer(window.state.layers[i].featureGroup);
   }
 
   window.state.layers = window.state.layers.filter((e:any) => e.key !== key);
@@ -128,16 +126,9 @@ export function updateLayerName(key:number, name:string):void {
 
 export function clearLayers():void {
   for (let i = 0; i < window.state.layers; i += 1) {
-    window.map.removeLayer(window.state.layers[i].featureGroup);
+    window.state.map.removeLayer(window.state.layers[i].featureGroup);
   }
   window.state.layers = [];
-}
-
-export function oneActiveLayer():boolean {
-  if (window.state.layers.length === 1) {
-    return true;
-  }
-  return false;
 }
 
 export function isLayernameUnique(name:string):boolean {
@@ -169,6 +160,7 @@ export function getFirstLayerKey():number {
 
 export function updateLayerStyle(key:number, style:Style):void{
   const layer = getLayer(key);
+  layer.style = style;
 
   layer.featureGroup.setStyle({
     color: style.edgeColor,
@@ -205,18 +197,4 @@ export function addMarkerToLayer(key:number) {
   });
 
   featureGroup.addLayer(marker);
-}
-
-export function mapOnClick(key:number) {
-  const layerCount = getLayerCount();
-
-  if (layerCount === 0) { createNewMapLayer('Default'); }
-  if (layerCount === 1) {
-    addMarkerToLayer(key);
-  } else {
-    window.map.on('movestart', () => {
-      window.state.click({ position: {}, latlng: [null, null] });
-      window.map.off('movestart');
-    });
-  }
 }

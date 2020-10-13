@@ -4,16 +4,14 @@ import {
 } from '@fluentui/react';
 import Styler from './map_styler';
 import {
-  toggleLayer, getFirstLayerKey, removeLayer, getLayer,
-} from './map_layer_control';
+  toggleLayer, getFirstLayerKey, removeLayer, getLayer, getLayerCount,
+} from './map_layers';
 
 interface WindowState extends Window { state: any; }
 declare let window: WindowState;
 
 export default function LayerList(props:any) {
   const { state } = window;
-
-  const [selectedlayer, setSelectedLayer] = useState(getFirstLayerKey());
   const [dialogStyle, setDialogStyle] = useState({ hidden: true });
   const [deleteAlert, setDeleteAlert] = useState({ hidden: true });
 
@@ -30,18 +28,18 @@ export default function LayerList(props:any) {
   };
 
   function onEdit(key:number) {
-    setSelectedLayer(key);
-    props.setStyleDialog({ hidden: false, key });
+    props.setSelectedLayer(key);
+    statusDialogStyle.open();
   }
 
   function onDelete(key:number) {
-    setSelectedLayer(key);
+    props.setSelectedLayer(key);
     statusDeleteAlert.open();
   }
 
   function deleteLayer() {
-    removeLayer(selectedlayer);
-    setSelectedLayer(getFirstLayerKey());
+    removeLayer(props.selectedLayer);
+    props.setSelectedLayer(getFirstLayerKey());
     statusDeleteAlert.close();
   }
 
@@ -66,14 +64,14 @@ export default function LayerList(props:any) {
     <div>
       <Styler
         statusDialogStyle={statusDialogStyle}
-        selectedlayer={selectedlayer}
+        selectedLayer={props.selectedLayer}
       />
       <Dialog
       hidden={statusDeleteAlert.current.hidden}
       onDismiss={() => { statusDeleteAlert.close(); }}
       dialogContentProps={{
         type: DialogType.normal,
-        title: `Delete ${getLayer(selectedlayer).name}?`,
+        title: `Delete ${getLayerCount() > 0 ? getLayer(props.selectedLayer).name : 'layer'}?`,
         closeButtonAriaLabel: 'Close',
         subText: 'Do you really want to delete this layer? The action is irreversible.',
       }}
