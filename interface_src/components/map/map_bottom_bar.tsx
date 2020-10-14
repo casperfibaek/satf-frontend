@@ -5,6 +5,7 @@ import {
 import geojsonToArray from './geojson_to_array';
 import { getLayer, getLayerCount } from './map_layers';
 import { GeoJsonFeatureCollection, WindowState } from '../../types';
+import { logToServer } from '../../utils';
 
 declare let window: WindowState;
 
@@ -44,8 +45,12 @@ export default function BottomBar(props:any) {
     });
 
     const cells = geojsonToArray(featureCollection, name);
-
-    props.sendToParent('dataFromMap', cells);
+    try {
+      props.sendToParent('dataFromMap', cells);
+    } catch (error) {
+      logToServer({ message: 'Unable to send data to Excel', error });
+      console.log(error);
+    }
     closeSendDialog();
   }
 

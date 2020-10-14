@@ -2,6 +2,13 @@ import { FeatureGroup } from 'leaflet';
 
 export interface WindowState extends Window {
   state: any;
+  sharedState: {
+    initialised: {
+      app: boolean,
+      commands: boolean,
+      customFunctions: boolean,
+    }
+  }
   map: any;
   openDialogNIRAS: Function,
   openDialogOPM: Function,

@@ -15,12 +15,18 @@ import Taskpane from './components/taskpane';
 import Home from './components/home';
 import './commands';
 
-import { excelTheme, createStateIfDoesntExists } from './utils';
+import { excelTheme, createStateIfDoesntExists, logToServer } from './utils';
 import { onMessageFromParent } from './communication';
 
 import { WindowState } from './types';
 
 declare let window: WindowState;
+
+if (!window.sharedState.initialised.app) {
+  window.sharedState.initialised.app = true;
+  logToServer({ message: 'sharedState', state: window.sharedState.initialised });
+  // window.sharedState.hello();
+}
 
 createStateIfDoesntExists();
 if (!window.state.initialise.office) {
@@ -28,9 +34,11 @@ if (!window.state.initialise.office) {
     try {
       Office.context.ui.addHandlerAsync(Office.EventType.DialogParentMessageReceived, onMessageFromParent);
       window.state.initialise = ({ ...window.state.initialise, ...{ office: true } });
-    } catch (err) {
-      console.log('Unable to initialise OfficeJS, is this running inside office?');
-      console.log(err);
+    } catch (error) {
+      const message = 'Unable to initialise OfficeJS, is this running inside office?';
+      console.log(message);
+      logToServer({ message, error });
+      console.log(error);
     }
   });
 }

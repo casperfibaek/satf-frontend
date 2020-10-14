@@ -27,15 +27,15 @@
         "preLaunchTask": "Debug: Local"
       },
       {
-          "name": "Excel Desktop",
-          "type": "node",
-          "request": "attach",
-          "port": 9229,
-          "protocol": "inspector",
-          "timeout": 600000,
-          "trace": true,
-          "preLaunchTask": "Debug: Desktop",
-          "postDebugTask": "Stop Debug",
+        "name": "Excel Desktop",
+        "type": "node",
+        "request": "attach",
+        "port": 9229,
+        "protocol": "inspector",
+        "timeout": 600000,
+        "trace": true,
+        "preLaunchTask": "Debug: Desktop",
+        "postDebugTask": "Stop Debug",
       },
     ]
 }

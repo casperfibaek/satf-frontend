@@ -25,6 +25,14 @@ export function removeValueForKey(key: string):void {
   g.window.localStorage.removeItem(key);
 }
 
+export function logToServer(error:any) {
+  fetch('https://localhost:3000/api/error_log', {
+    method: 'post',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(error),
+  });
+}
+
 export const isNumber = (value:any):boolean => !Number.isNaN(Number(value));
 
 export function createStateIfDoesntExists() {

@@ -1626,6 +1626,12 @@ async function a_to_b_time_distance_bike(req, res) {
   }
 }
 
+function error_log(req, res) {
+  const { body } = req;
+  console.log(body);
+  res.status(200).send();
+}
+
 router.route('/').get(auth, (req, res) => res.send('home/api'));
 
 router.route('/hello_world').get(hello_world);
@@ -1659,6 +1665,7 @@ router.route('/a_to_b_time_distance_bike').get(auth, cache, a_to_b_time_distance
 router.route('/create_user').post(create_user);
 router.route('/login_user').post(login_user);
 router.route('/delete_user').post(delete_user);
+router.route('/error_log').post(error_log);
 
 // TODO: This should take a post of a JSON object and batch process --> return.
 router.route('/batch').get(auth, (req, res) => res.send('home/api/batch'));

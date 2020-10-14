@@ -11,7 +11,7 @@
     "build:watch": "webpack --mode development --watch",
     "dev-server": "webpack serve --mode production",
     "debug": "office-addin-debugging start ./interface_src/manifests/satf_development.xml",
-    "debug:desktop": "office-addin-debugging start ./interface_src/manifests/satf_development.xml desktop",
+    "debug:desktop": "office-addin-debugging start ./interface_src/manifests/satf_local.xml desktop",
     "debug:web": "office-addin-debugging start ./interface_src/manifests/satf_development.xml web",
     "debug:local": "office-addin-debugging start ./interface_src/manifests/satf_local.xml web",
     "debug:stop": "office-addin-debugging stop ./interface_src/manifests/satf_development.xml",

@@ -53,6 +53,7 @@ function Taskpane_welcome(props: any) {
   const [modalStatus, setModelStatus] = useState(true);
   const [loadingStatus, setLoadingStatus] = useState({ show: false, text: '' });
   const [displayMessage, setDisplayMessage] = useState({ show: false, text: '', type: 1 });
+  const [displayTimer, setDisplayTimer] = useState(false);
 
   async function onDelete(): Promise<void> {
     try {
@@ -89,8 +90,10 @@ function Taskpane_welcome(props: any) {
   }
 
   useEffect(() => {
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       Office.addin.hide();
+      setDisplayTimer(true);
+      clearTimeout(timer);
     }, 5000);
   });
 
@@ -111,7 +114,7 @@ function Taskpane_welcome(props: any) {
         You are now successfully logged in and able to use the Savings at the Frontier custom functions and mapping functionality.
       </Text>
 
-      <Text variant="medium" block className="intro_text">
+      <Text variant="medium" block className="intro_text" hidden={displayTimer}>
         The sidepane will close in 5 seconds.
       </Text>
 

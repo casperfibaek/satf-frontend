@@ -9,18 +9,33 @@ import {
   getValueForKey,
   createStateIfDoesntExists,
   getGlobal,
+  logToServer,
 } from './utils';
 import { WindowState } from './types';
+import { onMessageFromParent } from './communication';
 
 declare let window: WindowState;
+
+if (!window.sharedState.initialised.commands) {
+  window.sharedState.initialised.commands = true;
+  logToServer({ message: 'sharedState', state: window.sharedState.initialised });
+}
 
 const apiUrl = `${document.location.origin}/api/`;
 
 createStateIfDoesntExists();
 if (!window.state.initialise.office) {
   Office.onReady(() => {
-    console.log('Office ready from custom_functions.js');
-    window.state.initialise = ({ ...window.state.initialise, ...{ office: true } });
+    try {
+      console.log('Office ready from commands.js');
+      window.state.initialise = ({ ...window.state.initialise, ...{ office: true } });
+      Office.context.ui.addHandlerAsync(Office.EventType.DialogParentMessageReceived, onMessageFromParent);
+    } catch (error) {
+      const message = 'Unable to initialise OfficeJS, is this running inside office?';
+      console.log(message);
+      logToServer({ message, error });
+      console.log(error);
+    }
   });
 }
 
