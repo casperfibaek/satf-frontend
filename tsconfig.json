@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "interface_dst",
+    "outDir": "interface",
     "noImplicitAny": true,
     "sourceMap": true,
     "module": "es6",

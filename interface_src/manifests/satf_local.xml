@@ -4,7 +4,7 @@
   <Version>1.0.4.0</Version>
   <ProviderName>NIRAS</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="Alpha - SatF (v. 0.4.0)"/>
+  <DisplayName DefaultValue="Local - SatF (v. 0.4.0)"/>
   <Description DefaultValue="Investigate Financial Inclusion"/>
   <IconUrl DefaultValue="https://localhost:3000/interface/assets/icons/niras_64x64.png"/>
   <HighResolutionIconUrl DefaultValue="https://localhost:3000/interface/assets/icons/niras_80x80.png" />

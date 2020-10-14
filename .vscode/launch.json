@@ -36,7 +36,6 @@
           "trace": true,
           "preLaunchTask": "Debug: Desktop",
           "postDebugTask": "Stop Debug",
-          "outFiles": [ "${workspaceFolder}/interface/**/*.js" ]
       },
     ]
 }

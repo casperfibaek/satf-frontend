@@ -199,6 +199,10 @@ function Map() {
       statusDialogProperties.open(event.originalEvent, event.layer, mapLayer.featureGroup);
       L.DomEvent.preventDefault(event);
       L.DomEvent.stopPropagation(event);
+      state.map.on('movestart', () => {
+        statusDialogProperties.close();
+        state.map.off('movestart');
+      });
     });
   }
 
@@ -224,6 +228,10 @@ function Map() {
       addMarkerToLayer(key);
     } else {
       statusCalloutSelect.open();
+      state.map.on('movestart', () => {
+        statusCalloutSelect.close();
+        state.map.off('movestart');
+      });
     }
   }
 

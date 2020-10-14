@@ -5,6 +5,12 @@ import {
 } from '@fluentui/react';
 import { isLayernameUnique, createNewMapLayer } from './map_layers';
 
+import { WindowState } from '../../types';
+
+declare let window: WindowState;
+
+const { state } = window;
+
 export default function CreateLayer(props:any) {
   const [newLayername, setNewLayername] = useState('Default');
 
@@ -17,6 +23,11 @@ export default function CreateLayer(props:any) {
         props.statusDialogProperties.open(event.originalEvent, event.layer, mapLayer.featureGroup);
         L.DomEvent.preventDefault(event);
         L.DomEvent.stopPropagation(event);
+
+        state.map.on('movestart', () => {
+          props.statusDialogProperties.close();
+          state.map.off('movestart');
+        });
       });
 
       props.statusDialogCreate.close();
