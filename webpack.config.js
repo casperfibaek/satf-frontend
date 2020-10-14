@@ -11,7 +11,7 @@ module.exports = async (env, options) => ({
     commands: ['./interface_src/commands.ts'],
     custom_functions: ['./interface_src/custom_functions.ts'],
   },
-  // devtool: 'source-map',
+  devtool: 'source-map',
   mode: 'production',
   target: ['web', 'es5'],
   module: {
@@ -37,7 +37,7 @@ module.exports = async (env, options) => ({
     ],
   },
   optimization: {
-    minimize: false,
+    minimize: true,
     minimizer: [
       new TerserPlugin({
         extractComments: {

@@ -2,6 +2,7 @@
   "name": "satf",
   "version": "0.4.0",
   "private": true,
+  "browserslist": ["IE 11"],
   "scripts": {
     "start": "node ./api/api.js",
     "start:dev": "nodemon ./api/api.js",
