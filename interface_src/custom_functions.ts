@@ -1,18 +1,20 @@
 import {
-  isValidWhatFreeWords, isValidPluscode, createCoordinateArray, isValidLatitude, isValidLongitude, getGlobal, errNotAvailable, errInvalidValue, getValueForKey, createStateIfDoesntExists,
+  isValidWhatFreeWords,
+  isValidPluscode,
+  createCoordinateArray,
+  isValidLatitude,
+  isValidLongitude,
+  errNotAvailable,
+  errInvalidValue,
+  getValueForKey,
+  createStateIfDoesntExists,
+  getGlobal,
 } from './utils';
 import { WindowState } from './types';
 
 declare let window: WindowState;
 
-const { hostname } = window.location;
-
-let apiUrl = '';
-if (hostname.includes('satf-test.azurewebsites') || hostname.includes('satf.azurewebsites.net')) {
-  apiUrl = `https://${window.location.hostname}/api/`;
-} else {
-  apiUrl = 'https://localhost:3000/api/';
-}
+const apiUrl = `${document.location.origin}/api/`;
 
 createStateIfDoesntExists();
 if (!window.state.initialise.office) {

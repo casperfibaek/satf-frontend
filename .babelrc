@@ -1,6 +1,12 @@
 {
   "presets": [
-    ["@babel/env", { "useBuiltIns": "usage", "corejs": 3, "targets": { "ie": "11" } }],
+    [
+      "@babel/env", {
+        "useBuiltIns": "usage",
+        "corejs": 3,
+        "targets": { "ie": "11" } 
+      }
+    ],
     "@babel/typescript",
     "@babel/preset-react"
   ],

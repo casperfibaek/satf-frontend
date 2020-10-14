@@ -217,14 +217,7 @@ function openDialog(url:string, openEvent:Office.AddinCommands.Event, ask:boolea
   });
 }
 
-const { hostname } = window.location;
-
-let baseUrl = '';
-if (hostname.includes('satf-test.azurewebsites') || hostname.includes('satf.azurewebsites.net')) {
-  baseUrl = `https://${window.location.hostname}/interface/`;
-} else {
-  baseUrl = 'https://localhost:3000/interface/';
-}
+const baseUrl = `${document.location.origin}/interface/`;
 
 function openDialogNIRAS(openEvent:Office.AddinCommands.Event):void {
   openDialog(`${baseUrl}niras.html`, openEvent, false);
