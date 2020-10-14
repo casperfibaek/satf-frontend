@@ -1,3 +1,4 @@
+import 'react-app-polyfill/ie11'; import 'react-app-polyfill/stable';
 import {
   isValidWhatFreeWords,
   isValidPluscode,
@@ -16,16 +17,32 @@ import { onMessageFromParent } from './communication';
 
 declare let window: WindowState;
 
-if (!window.sharedState.initialised.commands) {
-  window.sharedState.initialised.commands = true;
-  logToServer({ message: 'sharedState', state: window.sharedState.initialised });
+if (window.sharedState === undefined) {
+  window.sharedState = {
+    initialised: {
+      customFunctions: false,
+      commands: false,
+      app: false,
+    },
+  };
 }
+
+if (!window.sharedState.initialised.customFunctions) {
+  window.sharedState.initialised.customFunctions = true;
+}
+
+window.sharedState.hello = function hello() {
+  logToServer({ message: 'hello defined in customFunctions, called in app', state: window.sharedState });
+};
+
+logToServer({ message: 'sharedState', state: window.sharedState });
 
 const apiUrl = `${document.location.origin}/api/`;
 
 createStateIfDoesntExists();
 if (!window.state.initialise.office) {
   Office.onReady(() => {
+    console.log(window.sharedState);
     try {
       console.log('Office ready from commands.js');
       window.state.initialise = ({ ...window.state.initialise, ...{ office: true } });

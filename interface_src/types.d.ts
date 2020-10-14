@@ -8,6 +8,7 @@ export interface WindowState extends Window {
       commands: boolean,
       customFunctions: boolean,
     }
+    hello: Function,
   }
   map: any;
   openDialogNIRAS: Function,

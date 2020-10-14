@@ -22,15 +22,30 @@ import { WindowState } from './types';
 
 declare let window: WindowState;
 
+if (window.sharedState === undefined) {
+  window.sharedState = {
+    initialised: {
+      customFunctions: false,
+      commands: false,
+      app: false,
+    },
+  };
+}
+
 if (!window.sharedState.initialised.app) {
   window.sharedState.initialised.app = true;
-  logToServer({ message: 'sharedState', state: window.sharedState.initialised });
-  // window.sharedState.hello();
 }
+
+if (window.sharedState.hello) {
+  window.sharedState.hello();
+}
+
+logToServer({ message: 'sharedState', state: window.sharedState });
 
 createStateIfDoesntExists();
 if (!window.state.initialise.office) {
   Office.onReady().then(() => {
+    console.log(window.sharedState);
     try {
       Office.context.ui.addHandlerAsync(Office.EventType.DialogParentMessageReceived, onMessageFromParent);
       window.state.initialise = ({ ...window.state.initialise, ...{ office: true } });
