@@ -1,6 +1,4 @@
 import 'react-app-polyfill/ie11'; import 'react-app-polyfill/stable';
-import 'core-js/features/url';
-import 'core-js/features/url-search-params';
 
 import React from 'react'; // eslint-disable-line
 import {
