@@ -5,6 +5,15 @@ import { WindowState } from './types';
 
 declare let window: WindowState;
 
+const { hostname } = window.location;
+
+let apiUrl = '';
+if (hostname.includes('satf-test.azurewebsites') || hostname.includes('satf.azurewebsites.net')) {
+  apiUrl = `https://${window.location.hostname}/api/`;
+} else {
+  apiUrl = 'https://localhost:3000/api/';
+}
+
 createStateIfDoesntExists();
 if (!window.state.initialise.office) {
   Office.onReady(() => {
@@ -30,7 +39,7 @@ const g:any = getGlobal();
 async function WHAT3WORDS_TO_LATLNG(what3words:any):Promise<number[][]> {
   if (isValidWhatFreeWords(what3words)) {
     try {
-      const url = `../api/what3words_to_latlng?words=${what3words}`;
+      const url = `${apiUrl}what3words_to_latlng?words=${what3words}`;
       const token = getValueForKey('satf_token');
 
       const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -58,7 +67,7 @@ g.WHAT3WORDS_TO_LATLNG = WHAT3WORDS_TO_LATLNG;
 async function PLUSCODE_TO_LATLNG(pluscode:any):Promise<number[][]> {
   if (isValidPluscode(pluscode)) {
     try {
-      const url = `../api/pluscode_to_latlng?code=${pluscode}`;
+      const url = `${apiUrl}pluscode_to_latlng?code=${pluscode}`;
       const token = getValueForKey('satf_token');
 
       const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -113,7 +122,7 @@ async function parseToLatlng(latitudeOrAddress:any, longitude:any = false):Promi
 async function LATLNG_TO_WHAT3WORDS(latitudeOrAddress:any, longitude:any = false):Promise<string> {
   try {
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `../api/latlng_to_what3words?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `${apiUrl}latlng_to_what3words?lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -142,7 +151,7 @@ g.LATLNG_TO_WHAT3WORDS = LATLNG_TO_WHAT3WORDS;
 async function LATLNG_TO_PLUSCODE(latitudeOrAddress:any, longitude:any = false):Promise<string> {
   try {
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `../api/latlng_to_pluscode?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `${apiUrl}latlng_to_pluscode?lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -168,7 +177,7 @@ g.LATLNG_TO_PLUSCODE = LATLNG_TO_PLUSCODE;
  */
 async function HELLO_WORLD():Promise<string> {
   try {
-    const url = '../api/hello_world';
+    const url = `${apiUrl}hello_world`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -199,7 +208,7 @@ async function POPDENS_BUFFER(bufferMeters:any, latitudeOrAddress:any, longitude
     if (Number.isNaN(bufferMeters)) { throw errInvalidValue('Buffer not a number'); }
 
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `../api/population_density_buffer?buffer=${bufferMeters}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `${apiUrl}population_density_buffer?buffer=${bufferMeters}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -229,7 +238,7 @@ async function POPDENS_BUFFER_WALK(minutes:any, latitudeOrAddress:any, longitude
     if (Number.isNaN(minutes)) { throw errInvalidValue('Minutes not a number'); }
 
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `../api/population_density_walk?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `${apiUrl}population_density_walk?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -259,7 +268,7 @@ async function POPDENS_BUFFER_BIKE(minutes:any, latitudeOrAddress:any, longitude
     if (Number.isNaN(minutes)) { throw errInvalidValue('Minutes not a number'); }
 
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `../api/population_density_bike?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `${apiUrl}population_density_bike?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -289,7 +298,7 @@ async function POPDENS_BUFFER_CAR(minutes:any, latitudeOrAddress:any, longitude:
     if (Number.isNaN(minutes)) { throw errInvalidValue('Minutes not a number'); }
 
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `../api/population_density_car?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `${apiUrl}population_density_car?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -319,7 +328,7 @@ async function POPDENS_ISO_WALK(minutes:any, latitudeOrAddress:any, longitude:an
     if (Number.isNaN(minutes)) { throw errInvalidValue('Minutes not a number'); }
 
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `../api/pop_density_isochrone_walk?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `${apiUrl}pop_density_isochrone_walk?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -349,7 +358,7 @@ async function POPDENS_ISO_BIKE(minutes:any, latitudeOrAddress:any, longitude:an
     if (Number.isNaN(minutes)) { throw errInvalidValue('Minutes not a number'); }
 
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `../api/pop_density_isochrone_bike?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `${apiUrl}pop_density_isochrone_bike?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -379,7 +388,7 @@ async function POPDENS_ISO_CAR(minutes:any, latitudeOrAddress:any, longitude:any
     if (Number.isNaN(minutes)) { throw errInvalidValue('Minutes not a number'); }
 
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `../api/pop_density_isochrone_car?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `${apiUrl}pop_density_isochrone_car?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -407,7 +416,7 @@ g.POPDENS_ISO_CAR = POPDENS_ISO_CAR;
 async function ADMIN_LEVEL1(latitudeOrAddress:any, longitude:any = false):Promise<string> {
   try {
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `../api/admin_level_1?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `${apiUrl}admin_level_1?lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = global.localStorage.getItem('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -435,7 +444,7 @@ g.ADMIN_LEVEL1 = ADMIN_LEVEL1;
 async function ADMIN_LEVEL2(latitudeOrAddress:any, longitude:any = false):Promise<string> {
   try {
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `../api/admin_level_2?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `${apiUrl}admin_level_2?lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -461,7 +470,7 @@ g.ADMIN_LEVEL2 = ADMIN_LEVEL2;
  */
 async function ADMIN_LEVEL2_FUZZY_LEV(str:any):Promise<string> {
   try {
-    const url = `../api/admin_level_2_fuzzy_lev?name=${str}`;
+    const url = `${apiUrl}admin_level_2_fuzzy_lev?name=${str}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -487,7 +496,7 @@ g.ADMIN_LEVEL2_FUZZY_LEV = ADMIN_LEVEL2_FUZZY_LEV;
  */
 async function ADMIN_LEVEL2_FUZZY_TRI(str:any):Promise<string> {
   try {
-    const url = `../api/admin_level_2_fuzzy_tri?name=${str}`;
+    const url = `${apiUrl}admin_level_2_fuzzy_tri?name=${str}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -517,7 +526,7 @@ async function GET_BANKS(name:any, target:any = 0.4):Promise<any[][]> {
     if (!Number.isNaN(Number(target))) { _target = target; }
     if (target === null) { _target = 0.4; }
 
-    const url = `../api/get_banks?name=${String(name).replace(/\s/g, '+')}&target=${_target}`;
+    const url = `${apiUrl}get_banks?name=${String(name).replace(/\s/g, '+')}&target=${_target}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -556,7 +565,7 @@ g.GET_BANKS = GET_BANKS;
 async function URBAN_STATUS(latitudeOrAddress:any, longitude:any = false):Promise<string> {
   try {
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `../api/urban_status?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `${apiUrl}urban_status?lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -583,7 +592,7 @@ g.URBAN_STATUS = URBAN_STATUS;
 async function URBAN_STATUS_SIMPLE(latitudeOrAddress:any, longitude:any = false):Promise<string> {
   try {
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `../api/urban_status_simple?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `${apiUrl}urban_status_simple?lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -609,7 +618,7 @@ g.URBAN_STATUS_SIMPLE = URBAN_STATUS_SIMPLE;
 async function NEAREST_PLACE(latitudeOrAddress:any, longitude:any = false):Promise<string> {
   try {
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `../api/nearest_placename?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `${apiUrl}nearest_placename?lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -636,7 +645,7 @@ g.NEAREST_PLACE = NEAREST_PLACE;
 async function NEAREST_POI(latitudeOrAddress:any, longitude:any = false):Promise<string> {
   try {
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `../api/nearest_poi?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `${apiUrl}nearest_poi?lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -663,7 +672,7 @@ g.NEAREST_POI = NEAREST_POI;
 async function NEAREST_BANK(latitudeOrAddress:any, longitude:any = false):Promise<string> {
   try {
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `../api/nearest_bank?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `${apiUrl}nearest_bank?lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -689,7 +698,7 @@ g.NEAREST_BANK = NEAREST_BANK;
 async function NEAREST_BANK_DIST(latitudeOrAddress:any, longitude:any = false):Promise<number> {
   try {
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `../api/nearest_bank_distance?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `${apiUrl}nearest_bank_distance?lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -720,7 +729,7 @@ async function TIME_DISTANCE_A_TO_B_WALK(lat1:any, lng1:any, lat2:any, lng2:any,
   try {
     const coords1 = await parseToLatlng(lat1, lng1);
     const coords2 = await parseToLatlng(lat2, lng2);
-    const url = `../api/a_to_b_time_distance_walk?lat1=${coords1[0][0]}&lng1=${coords1[0][1]}&lat2=${coords2[0][0]}&lng2=${coords2[0][1]}`;
+    const url = `${apiUrl}a_to_b_time_distance_walk?lat1=${coords1[0][0]}&lng1=${coords1[0][1]}&lat2=${coords2[0][0]}&lng2=${coords2[0][1]}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -757,7 +766,7 @@ async function TIME_DISTANCE_A_TO_B_BIKE(lat1:any, lng1:any, lat2:any, lng2:any,
   try {
     const coords1 = await parseToLatlng(lat1, lng1);
     const coords2 = await parseToLatlng(lat2, lng2);
-    const url = `../api/a_to_b_time_distance_bike?lat1=${coords1[0][0]}&lng1=${coords1[0][1]}&lat2=${coords2[0][0]}&lng2=${coords2[0][1]}`;
+    const url = `${apiUrl}a_to_b_time_distance_bike?lat1=${coords1[0][0]}&lng1=${coords1[0][1]}&lat2=${coords2[0][0]}&lng2=${coords2[0][1]}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });

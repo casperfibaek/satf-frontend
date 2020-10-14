@@ -18,7 +18,7 @@ import Home from './components/home';
 import './commands';
 
 import { excelTheme, createStateIfDoesntExists } from './utils';
-import { onMessageFromParent } from './components/map/communication';
+import { onMessageFromParent } from './communication';
 
 import { WindowState } from './types';
 
@@ -30,8 +30,9 @@ if (!window.state.initialise.office) {
     try {
       Office.context.ui.addHandlerAsync(Office.EventType.DialogParentMessageReceived, onMessageFromParent);
       window.state.initialise = ({ ...window.state.initialise, ...{ office: true } });
-    } catch {
+    } catch (err) {
       console.log('Unable to initialise OfficeJS, is this running inside office?');
+      console.log(err);
     }
   });
 }

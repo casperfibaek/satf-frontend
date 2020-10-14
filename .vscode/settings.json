@@ -4,5 +4,10 @@
     "node_modules{,/**}",
     ".vscode{,/**}"
   ],
-  "appService.deploySubpath": ""
+  "appService.deploySubpath": "",
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript"
+  ]
 }

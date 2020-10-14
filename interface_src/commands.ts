@@ -114,7 +114,13 @@ async function handleDataFromMap(data:any):Promise<boolean> {
       if (empty) {
         newRange.values = data;
       } else {
-        throw new Error('Cells not empty');
+        const message = 'Cells not empty';
+        sendToDialog('error', message);
+
+        newRange.select();
+
+        await context.sync();
+        throw new Error(message);
       }
 
       await context.sync();
@@ -211,18 +217,25 @@ function openDialog(url:string, openEvent:Office.AddinCommands.Event, ask:boolea
   });
 }
 
-const baseUrl = `https://${window.location.hostname}/interface`;
+const { hostname } = window.location;
+
+let baseUrl = '';
+if (hostname.includes('satf-test.azurewebsites') || hostname.includes('satf.azurewebsites.net')) {
+  baseUrl = `https://${window.location.hostname}/interface/`;
+} else {
+  baseUrl = 'https://localhost:3000/interface/';
+}
 
 function openDialogNIRAS(openEvent:Office.AddinCommands.Event):void {
-  openDialog(`${baseUrl}/niras.html`, openEvent, false);
+  openDialog(`${baseUrl}niras.html`, openEvent, false);
 }
 
 function openDialogOPM(openEvent:Office.AddinCommands.Event):void {
-  openDialog(`${baseUrl}/opm.html`, openEvent, false);
+  openDialog(`${baseUrl}opm.html`, openEvent, false);
 }
 
 function openDialogSATF(openEvent:Office.AddinCommands.Event):void {
-  openDialog(`${baseUrl}/satf.html`, openEvent, false);
+  openDialog(`${baseUrl}satf.html`, openEvent, false);
 }
 
 function openDialogMAP(openEvent:Office.AddinCommands.Event):void {
@@ -250,10 +263,3 @@ g.openDialogSATF = openDialogSATF;
 g.openDialogMAP = openDialogMAP;
 g.openDialogSUPPORT = openDialogSUPPORT;
 g.openDialogDOCUMENTATION = openDialogDOCUMENTATION;
-
-window.openDialogNIRAS = openDialogNIRAS;
-window.openDialogOPM = openDialogOPM;
-window.openDialogSATF = openDialogSATF;
-window.openDialogMAP = openDialogMAP;
-window.openDialogSUPPORT = openDialogSUPPORT;
-window.openDialogDOCUMENTATION = openDialogDOCUMENTATION;

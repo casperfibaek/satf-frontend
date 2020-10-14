@@ -21,12 +21,16 @@ module.exports = (req, res, next) => {
       if (userId === decodedToken.userId) {
         next();
       } else {
-        throw Error('Invalid user ID');
+        res.status(401).json({
+          status: 'Error',
+          message: 'User Unauthorised.',
+        });
       }
     }
   } catch {
     res.status(401).json({
-      error: new Error('Invalid request!'),
+      status: 'Error',
+      message: 'User unauthorised or unable to read token.',
     });
   }
 };

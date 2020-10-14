@@ -12,7 +12,7 @@ const routesApi = require('./routes');
 // Variables
 const defaults = {
   cache: 72000000, // 2 hours,
-  http_port: process.env.PORT || 3000,
+  http_port: process.env.PORT || 8080,
 };
 
 // Define app

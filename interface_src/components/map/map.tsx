@@ -11,7 +11,7 @@ import SelectLayer from './map_select_layer';
 import BottomBar from './map_bottom_bar';
 
 // Functions
-import { sendToParent, addEvent } from './communication';
+import { sendToParent, addEvent } from '../../communication';
 import arrayToGeojson from './array_to_geojson';
 import {
   addMarkerToLayer, createNewMapLayer, getFirstLayerKey, getLayerCount, addDataToLayer,
@@ -117,6 +117,7 @@ function initialiseMap(mapContainer:any) {
 
   // https://github.com/Leaflet/Leaflet/issues/3575
   (function fixTileGap() {
+    // @ts-ignore-line
     const originalInitTile:any = L.GridLayer.prototype._initTile;
     L.GridLayer.include({
       _initTile(tile:any) {
@@ -250,6 +251,10 @@ function Map() {
     } else {
       statusCalloutSelect.open(geojson);
     }
+  });
+
+  addEvent('error', (message:string) => {
+    statusErrorbar.open(message, MessageBarType.error);
   });
 
   // Run on startup

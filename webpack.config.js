@@ -3,8 +3,9 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const devCerts = require('office-addin-dev-certs'); // eslint-disable-line
 
-module.exports = {
+module.exports = async (env, options) => ({
   entry: {
     app: ['./interface_src/app.tsx'],
     commands: ['./interface_src/commands.ts'],
@@ -66,8 +67,18 @@ module.exports = {
     path: path.resolve(__dirname, './interface'),
   },
   devServer: {
-    contentBase: path.join(__dirname, './interface'),
-    compress: true,
-    port: 9000,
+    publicPath: '/interface',
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
+    https: (options.https !== undefined) ? options.https : await devCerts.getHttpsServerOptions(),
+    port: process.env.npm_package_config_dev_server_port || 3000,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080/api',
+        secure: false,
+        pathRewrite: { '^/api': '' },
+      },
+    },
   },
-};
+});

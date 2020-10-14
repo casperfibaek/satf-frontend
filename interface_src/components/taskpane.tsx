@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; // eslint-disable-line
+import React, { useEffect, useState } from 'react'; // eslint-disable-line
 import {
   Text, TextField, Stack, DefaultButton, PrimaryButton, MessageBar, Spinner, Dialog, DialogType, DialogFooter, Persona, PersonaSize,
 } from '@fluentui/react';
@@ -88,6 +88,12 @@ function Taskpane_welcome(props: any) {
     }
   }
 
+  useEffect(() => {
+    setTimeout(() => {
+      Office.addin.hide();
+    }, 5000);
+  });
+
   function onLogout(): void {
     props.setUserInfo({ username: '', password: '' });
     removeValueForKey('satf_token');
@@ -103,6 +109,10 @@ function Taskpane_welcome(props: any) {
 
       <Text variant="medium" block className="intro_text">
         You are now successfully logged in and able to use the Savings at the Frontier custom functions and mapping functionality.
+      </Text>
+
+      <Text variant="medium" block className="intro_text">
+        The sidepane will close in 5 seconds.
       </Text>
 
       <MessageBarComp className="messagebar"
