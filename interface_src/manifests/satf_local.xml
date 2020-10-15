@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0" xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="TaskPaneApp">
-  <Id>1a3b85bb-5dfc-5684-87a6-ed7ccb48c920</Id>
-  <Version>1.0.4.0</Version>
+  <Id>1a3b85bb-5dfc-5684-87a6-ed7ccb48c932</Id>
+  <Version>1.0.4.1</Version>
   <ProviderName>NIRAS</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="Local - SatF (v. 0.4.0)"/>
@@ -50,7 +50,8 @@
             <Description resid="GetStarted.Description"/>
             <LearnMoreUrl resid="GetStarted.LearnMoreUrl"/>
           </GetStarted>
-          <FunctionFile resid="Commands.Url"/>
+          <!-- <FunctionFile resid="Commands.Url"/> -->
+          <FunctionFile resid="Taskpane.Url"/>
           <ExtensionPoint xsi:type="PrimaryCommandSurface">
             <CustomTab id="SatfTab">
               <Group id="AuthGroup">
@@ -320,8 +321,6 @@
         <bt:Url id="AboutNiras.Url" DefaultValue="https://www.niras.com/"/>
         <bt:Url id="Functions.Script.Url" DefaultValue="https://localhost:3000/interface/custom_functions.js"/>
         <bt:Url id="Functions.Metadata.Url" DefaultValue="https://localhost:3000/interface/custom_functions_meta.json"/>
-        <bt:Url id="Functions.Page.Url" DefaultValue="https://localhost:3000/interface/custom_functions.html"/>
-        <bt:Url id="Commands.Url" DefaultValue="https://localhost:3000/interface/?page=commands"/>
         <bt:Url id="Taskpane.Url" DefaultValue="https://localhost:3000/interface/?page=taskpane"/>
       </bt:Urls>
       <bt:ShortStrings>

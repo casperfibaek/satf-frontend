@@ -13,6 +13,7 @@ declare let window: WindowState;
 
 export default function LayerList(props:any) {
   const { state } = window;
+
   const [dialogStyle, setDialogStyle] = useState({ hidden: true });
   const [deleteAlert, setDeleteAlert] = useState({ hidden: true });
 

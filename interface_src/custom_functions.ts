@@ -8,61 +8,41 @@ import {
   errNotAvailable,
   errInvalidValue,
   getValueForKey,
-  createStateIfDoesntExists,
   getGlobal,
-  logToServer,
 } from './utils';
-import { WindowState } from './types';
-import { onMessageFromParent } from './communication';
+import { ApiReply } from './types';
 
-declare let window: WindowState;
+window.carlson = { message: () => 'empty' };
 
-if (window.sharedState === undefined) {
-  window.sharedState = {
-    initialised: {
-      customFunctions: false,
-      commands: false,
-      app: false,
-    },
-  };
-}
-
-if (!window.sharedState.initialised.customFunctions) {
-  window.sharedState.initialised.customFunctions = true;
-}
-
-window.sharedState.hello = function hello() {
-  logToServer({ message: 'hello defined in customFunctions, called in app', state: window.sharedState });
-};
-
-logToServer({ message: 'sharedState', state: window.sharedState });
+Office.onReady(() => {
+  console.log('Office ready from custom_functions.js');
+});
 
 const apiUrl = `${document.location.origin}/api/`;
 
-createStateIfDoesntExists();
-if (!window.state.initialise.office) {
-  Office.onReady(() => {
-    console.log(window.sharedState);
-    try {
-      console.log('Office ready from commands.js');
-      window.state.initialise = ({ ...window.state.initialise, ...{ office: true } });
-      Office.context.ui.addHandlerAsync(Office.EventType.DialogParentMessageReceived, onMessageFromParent);
-    } catch (error) {
-      const message = 'Unable to initialise OfficeJS, is this running inside office?';
-      console.log(message);
-      logToServer({ message, error });
-      console.log(error);
-    }
-  });
-}
-
-interface ApiReply {
-  status: string;
-  message: any;
-  function: string;
-}
-
 const g:any = getGlobal();
+
+/**
+ * Saves a string value to shared state with the task pane
+ * @customfunction STOREVALUE
+ * @param {string} value String to write to shared state with task pane.
+ * @return {string} A success value
+ */
+function STOREVALUE(sharedValue) {
+  window.carlson.message = () => sharedValue;
+  return 'value stored';
+}
+g.STOREVALUE = STOREVALUE;
+
+/**
+ * Gets a string value from shared state with the task pane
+ * @customfunction GETVALUE
+ * @returns {string} String value of the shared state with task pane.
+ */
+function GETVALUE() {
+  return window.carlson.message();
+}
+g.GETVALUE = GETVALUE;
 
 /**
  * Converts What3Words to two adjacent cells containing Latitude and Longitude.

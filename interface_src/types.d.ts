@@ -1,22 +1,9 @@
-import { FeatureGroup } from 'leaflet';
+import { FeatureGroup, Map } from 'leaflet';
 
-export interface WindowState extends Window {
-  state: any;
-  sharedState: {
-    initialised: {
-      app: boolean,
-      commands: boolean,
-      customFunctions: boolean,
-    }
-    hello: Function,
-  }
-  map: any;
-  openDialogNIRAS: Function,
-  openDialogOPM: Function,
-  openDialogSATF: Function,
-  openDialogMAP: Function,
-  openDialogSUPPORT: Function,
-  openDialogDOCUMENTATION: Function,
+export interface ApiReply {
+  status: string;
+  message: any;
+  function: string;
 }
 
 export interface GeoJsonGeometry {
@@ -50,4 +37,19 @@ export interface MapLayer {
   featureGroup: FeatureGroup,
   hidden: boolean,
   style: Style,
+}
+
+export interface WindowState extends Window {
+  state: {
+    layers: MapLayer[],
+    click: { position: MouseEvent, latlng: [number, number]},
+    warningTimer: number,
+    leafletMap: Map,
+  }
+  openDialogNIRAS: Function,
+  openDialogOPM: Function,
+  openDialogSATF: Function,
+  openDialogMAP: Function,
+  openDialogSUPPORT: Function,
+  openDialogDOCUMENTATION: Function,
 }

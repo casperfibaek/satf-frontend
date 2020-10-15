@@ -1,4 +1,3 @@
-// const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
@@ -13,7 +12,7 @@ module.exports = async (env, options) => ({
   },
   devtool: 'source-map',
   mode: 'production',
-  target: ['web', 'es5'],
+  target: 'web',
   module: {
     rules: [
       {
@@ -49,7 +48,6 @@ module.exports = async (env, options) => ({
     ],
   },
   plugins: [
-    // new ForkTsCheckerWebpackPlugin({ typescript: { memoryLimit: 4098 } }),
     new CleanWebpackPlugin(),
     new CopyPlugin({
       patterns: [
@@ -68,7 +66,6 @@ module.exports = async (env, options) => ({
     path: path.resolve(__dirname, './interface'),
   },
   devServer: {
-    contentBase: path.join(__dirname, '/interface'),
     publicPath: '/interface',
     headers: {
       'Access-Control-Allow-Origin': '*',

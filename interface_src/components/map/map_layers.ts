@@ -1,7 +1,8 @@
 import L, { CircleMarker, FeatureGroup } from 'leaflet';
 import { Style, MapLayer, WindowState } from '../../types';
 
-declare let window: WindowState;
+declare const window: WindowState;
+const { state } = window;
 
 let layerKey = 0;
 
@@ -44,9 +45,9 @@ export function generateRandomStyle():Style {
 }
 
 export function getLayer(key:number):MapLayer {
-  for (let i = 0; i < window.state.layers.length; i += 1) {
-    if (window.state.layers[i].key === key) {
-      return window.state.layers[i];
+  for (let i = 0; i < state.layers.length; i += 1) {
+    if (state.layers[i].key === key) {
+      return state.layers[i];
     }
   }
   const errorMessage = 'Unable to find layer in state. Layer reference might be corrupted.';
@@ -54,11 +55,11 @@ export function getLayer(key:number):MapLayer {
 }
 
 export function renderLayers() {
-  for (let i = 0; i < window.state.layers.length; i += 1) {
-    if (window.state.layers[i].hidden) {
-      window.state.map.removeLayer(window.state.layers[i].featureGroup);
+  for (let i = 0; i < state.layers.length; i += 1) {
+    if (state.layers[i].hidden) {
+      state.leafletMap.removeLayer(state.layers[i].featureGroup);
     } else {
-      window.state.map.addLayer(window.state.layers[i].featureGroup);
+      state.leafletMap.addLayer(state.layers[i].featureGroup);
     }
   }
 }
@@ -67,8 +68,8 @@ export function createNewMapLayer(name:string):MapLayer {
   const key = getLayerKey();
   const style = generateRandomStyle();
 
-  for (let i = 0; i < window.state.layers.length; i += 1) {
-    window.state.map.removeLayer(window.state.layers[i].featureGroup);
+  for (let i = 0; i < state.layers.length; i += 1) {
+    state.leafletMap.removeLayer(state.layers[i].featureGroup);
   }
 
   const featureGroup = L.featureGroup();
@@ -77,7 +78,7 @@ export function createNewMapLayer(name:string):MapLayer {
     name, key, featureGroup, style, hidden: false,
   };
 
-  window.state.layers.push(maplayer);
+  state.layers.push(maplayer);
 
   renderLayers();
 
@@ -85,19 +86,19 @@ export function createNewMapLayer(name:string):MapLayer {
 }
 
 export function removeLayer(key:number):void {
-  for (let i = 0; i < window.state.layers.length; i += 1) {
-    window.state.map.removeLayer(window.state.layers[i].featureGroup);
+  for (let i = 0; i < state.layers.length; i += 1) {
+    state.leafletMap.removeLayer(state.layers[i].featureGroup);
   }
 
-  window.state.layers = window.state.layers.filter((e:any) => e.key !== key);
+  state.layers = state.layers.filter((e:any) => e.key !== key);
 
   renderLayers();
 }
 
 export function toggleLayer(key:number):void {
-  for (let i = 0; i < window.state.layers.length; i += 1) {
-    if (window.state.layers[i].key === key) {
-      window.state.layers[i].hidden = !window.state.layers[i].hidden;
+  for (let i = 0; i < state.layers.length; i += 1) {
+    if (state.layers[i].key === key) {
+      state.layers[i].hidden = !state.layers[i].hidden;
     }
   }
   renderLayers();
@@ -109,19 +110,19 @@ export function updateLayerName(key:number, name:string):void {
 }
 
 export function clearLayers() {
-  for (let i = 0; i < window.state.layers.length; i += 1) {
-    const { featureGroup } = window.state.layers[i];
+  for (let i = 0; i < state.layers.length; i += 1) {
+    const { featureGroup } = state.layers[i];
     featureGroup.eachLayer((l:CircleMarker) => {
       featureGroup.removeLayer(l);
       l.remove();
     });
   }
-  window.state.layers = [];
+  state.layers = [];
 }
 
 export function isLayernameUnique(name:string):boolean {
-  for (let i = 0; i < window.state.layers.length; i += 1) {
-    if (name === window.state.layers[i].name) {
+  for (let i = 0; i < state.layers.length; i += 1) {
+    if (name === state.layers[i].name) {
       return false;
     }
   }
@@ -129,21 +130,21 @@ export function isLayernameUnique(name:string):boolean {
 }
 
 export function getLayerCount():number {
-  return window.state.layers.length;
+  return state.layers.length;
 }
 
 export function getFirstLayer():MapLayer {
-  if (window.state.layers.length === 0) {
+  if (state.layers.length === 0) {
     throw new Error('No first layer, layerlist is empty!');
   }
-  return window.state.layers[0];
+  return state.layers[0];
 }
 
 export function getFirstLayerKey():number {
-  if (window.state.layers.length === 0) {
+  if (state.layers.length === 0) {
     return -1;
   }
-  return window.state.layers[0].key;
+  return state.layers[0].key;
 }
 
 export function updateLayerStyle(key:number, style:Style):void{
@@ -200,9 +201,7 @@ export function addMarkerToLayer(key:number) {
     properties[property] = null;
   }
 
-  const { latlng } = window.state.click;
-
-  const marker = L.circleMarker(latlng, {
+  const marker = L.circleMarker(state.click.latlng, {
     color: mapLayer.style.edgeColor,
     weight: mapLayer.style.weight,
     opacity: mapLayer.style.edgeOpacity,

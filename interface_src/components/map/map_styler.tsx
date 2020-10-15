@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FormEvent } from 'react'; // eslint-disable-line
+import React, { useState, useEffect } from 'react'; // eslint-disable-line
 import {
   DefaultButton, PrimaryButton, Text, Slider, Dialog, DialogFooter, TextField,
 } from '@fluentui/react';

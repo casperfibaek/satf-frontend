@@ -11,10 +11,13 @@ import SelectLayer from './map_select_layer';
 import BottomBar from './map_bottom_bar';
 
 // Functions
-import { sendToParent, addEvent } from '../../communication';
-import arrayToGeojson from './array_to_geojson';
+// import arrayToGeojson from './array_to_geojson';
 import {
-  addMarkerToLayer, createNewMapLayer, getFirstLayerKey, getLayerCount, addDataToLayer,
+  addMarkerToLayer,
+  createNewMapLayer,
+  getFirstLayerKey,
+  getLayerCount,
+  // addDataToLayer,
 } from './map_layers';
 
 // CSS
@@ -28,7 +31,7 @@ declare let window: WindowState;
 const { state } = window;
 
 function initialiseMap(mapContainer:any) {
-  const map = L.map(mapContainer, {
+  const leafletMap = L.map(mapContainer, {
     center: [7.955811115092113, -1.0050627119953766],
     zoom: 7,
     minZoom: 6,
@@ -110,10 +113,10 @@ function initialiseMap(mapContainer:any) {
     'Without background': layers.base.empty,
   };
 
-  L.control.scale().addTo(map);
-  L.control.zoom({ position: 'bottomright' }).addTo(map);
-  L.control.layers(basemaps, overlaymaps, { collapsed: true }).addTo(map);
-  layers.base.s2_2020.addTo(map);
+  L.control.scale().addTo(leafletMap);
+  L.control.zoom({ position: 'bottomright' }).addTo(leafletMap);
+  L.control.layers(basemaps, overlaymaps, { collapsed: true }).addTo(leafletMap);
+  layers.base.s2_2020.addTo(leafletMap);
 
   // https://github.com/Leaflet/Leaflet/issues/3575
   (function fixTileGap() {
@@ -131,7 +134,7 @@ function initialiseMap(mapContainer:any) {
     });
   }());
 
-  return map;
+  return leafletMap;
 }
 
 function Map() {
@@ -182,9 +185,9 @@ function Map() {
 
   const statusErrorbar = {
     open: (text:string, type:number) => {
-      clearTimeout(state.warningTimer);
+      window.clearTimeout(state.warningTimer);
       setErrorbar({ hidden: false, text, type });
-      state.warningTimer = setTimeout(() => {
+      state.warningTimer = window.setTimeout(() => {
         setErrorbar({ hidden: true, text: 'Default message', type: MessageBarType.info });
       }, 6000);
     },
@@ -199,9 +202,9 @@ function Map() {
       statusDialogProperties.open(event.originalEvent, event.layer, mapLayer.featureGroup);
       L.DomEvent.preventDefault(event);
       L.DomEvent.stopPropagation(event);
-      state.map.on('movestart', () => {
+      state.leafletMap.on('movestart', () => {
         statusDialogProperties.close();
-        state.map.off('movestart');
+        state.leafletMap.off('movestart');
       });
     });
   }
@@ -228,49 +231,51 @@ function Map() {
       addMarkerToLayer(key);
     } else {
       statusCalloutSelect.open();
-      state.map.on('movestart', () => {
+      state.leafletMap.on('movestart', () => {
         statusCalloutSelect.close();
-        state.map.off('movestart');
+        state.leafletMap.off('movestart');
       });
     }
   }
 
   // This adds an event that listens to data coming from Excel.
-  addEvent('dataFromExcel', async (data:any) => {
-    let geojson;
-    try {
-      geojson = await arrayToGeojson(data);
-    } catch (err) {
-      const errorMessage = 'Unable to parse geojson from Excel';
-      statusErrorbar.open(errorMessage, MessageBarType.error);
-      throw new Error(err);
-    }
+  // window.sharedState.addEvent('app', 'dataFromExcel', async (data:any) => {
+  //   let geojson;
+  //   try {
+  //     geojson = await arrayToGeojson(data);
+  //   } catch (err) {
+  //     const errorMessage = 'Unable to parse geojson from Excel';
+  //     statusErrorbar.open(errorMessage, MessageBarType.error);
+  //     throw new Error(err);
+  //   }
 
-    let key = -1;
-    const layerCount = getLayerCount();
-    if (layerCount === 0) {
-      autoCreateNewLayer();
-    }
+  //   let key = -1;
+  //   const layerCount = getLayerCount();
+  //   if (layerCount === 0) {
+  //     autoCreateNewLayer();
+  //   }
 
-    if (layerCount <= 1) {
-      key = getFirstLayerKey();
-      setSelectedLayer(key);
-      addDataToLayer(key, geojson);
-    } else {
-      statusCalloutSelect.open(geojson);
-    }
-  });
+  //   if (layerCount <= 1) {
+  //     key = getFirstLayerKey();
+  //     setSelectedLayer(key);
+  //     addDataToLayer(key, geojson);
+  //   } else {
+  //     statusCalloutSelect.open(geojson);
+  //   }
+  // });
 
-  addEvent('error', (message:string) => {
-    statusErrorbar.open(message, MessageBarType.error);
-  });
+  // window.sharedState.addEvent('app', 'error', (data:{message:string}) => {
+  //   statusErrorbar.open(data.message, MessageBarType.error);
+  // });
+
+  // window.sharedState.addEvent('app', 'hello', (data:{message:string}) => {
+  //   console.log(data.message);
+  // });
 
   // Run on startup
   useEffect(() => {
-    state.map = initialiseMap(mapContainer);
-    state.initialise = ({ ...state.initialise, ...{ map: true } });
-
-    state.map.on('click', (event:LeafletMouseEvent) => { onMapMouseClick(event); });
+    state.leafletMap = initialiseMap(mapContainer);
+    state.leafletMap.on('click', (event:LeafletMouseEvent) => { onMapMouseClick(event); });
   }, [mapContainer]); // eslint-disable-line
 
   return (
@@ -308,7 +313,6 @@ function Map() {
         selectedLayer={selectedLayer}
         setSelectedLayer={setSelectedLayer}
         statusDialogCreate={statusDialogCreate}
-        sendToParent={sendToParent}
         statusErrorbar={statusErrorbar}
       />
       <div id="map" ref={(el) => { mapContainer = el; }}></div>

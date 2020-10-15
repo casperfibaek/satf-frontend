@@ -13,7 +13,8 @@
         // 2. Sideload your Add-in. https://docs.microsoft.com/en-us/office/dev/add-ins/testing/sideload-office-add-ins-for-testing
         "url": "https://niras-my.sharepoint.com/:x:/g/personal/cfi_niras_dk/EfRCtsBNPkhNiHheyXrd8XEBXEh9_tJ_7B_Puh9sJn5IIg?e=vrtvLY",
         "webRoot": "${workspaceFolder}",
-        "preLaunchTask": "Debug: Local"
+        "preLaunchTask": "Debug: Web",
+        "postDebugTask": "Debug: Stop"
       },
       {
         "name": "Office Online (Chrome)",
@@ -24,7 +25,8 @@
         // 2. Sideload your Add-in. https://docs.microsoft.com/en-us/office/dev/add-ins/testing/sideload-office-add-ins-for-testing
         "url": "https://niras-my.sharepoint.com/:x:/g/personal/cfi_niras_dk/EfRCtsBNPkhNiHheyXrd8XEBXEh9_tJ_7B_Puh9sJn5IIg?e=vrtvLY",
         "webRoot": "${workspaceFolder}",
-        "preLaunchTask": "Debug: Local"
+        "preLaunchTask": "Debug: Web",
+        "postDebugTask": "Debug: Stop"
       },
       {
         "name": "Excel Desktop",
@@ -35,7 +37,7 @@
         "timeout": 600000,
         "trace": true,
         "preLaunchTask": "Debug: Desktop",
-        "postDebugTask": "Stop Debug",
+        "postDebugTask": "Debug: Stop",
       },
     ]
 }

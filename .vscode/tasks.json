@@ -102,9 +102,9 @@
       ]
     },
     {
-      "label": "Stop Debug",
+      "label": "Debug: Stop",
       "type": "npm",
-      "script": "stop",
+      "script": "debug:stop",
       "presentation": {
         "clear": true,
         "panel": "shared",

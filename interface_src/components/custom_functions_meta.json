@@ -1,6 +1,29 @@
 {
     "functions": [
         {
+            "description": "Saves a string value to shared state with the task pane",
+            "id": "STOREVALUE",
+            "name": "STOREVALUE",
+            "parameters": [
+                {
+                    "name": "sharedValue",
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Gets a string value from shared state with the task pane",
+            "id": "GETVALUE",
+            "name": "GETVALUE",
+            "parameters": [],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
             "description": "Converts What3Words to two adjacent cells containing Latitude and Longitude.",
             "id": "WHAT3WORDS_TO_LATLNG",
             "name": "WHAT3WORDS_TO_LATLNG",

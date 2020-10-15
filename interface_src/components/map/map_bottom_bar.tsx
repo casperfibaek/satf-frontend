@@ -2,7 +2,7 @@ import React, { useState } from 'react'; // eslint-disable-line
 import {
   PrimaryButton, DefaultButton, DialogFooter, Dialog, Dropdown, MessageBarType,
 } from '@fluentui/react';
-import geojsonToArray from './geojson_to_array';
+// import geojsonToArray from './geojson_to_array';
 import { getLayer, getLayerCount } from './map_layers';
 import { GeoJsonFeatureCollection, WindowState } from '../../types';
 import { logToServer } from '../../utils';
@@ -10,6 +10,8 @@ import { logToServer } from '../../utils';
 declare let window: WindowState;
 
 export default function BottomBar(props:any) {
+  const { state } = window;
+
   const [sendDialog, setSendDialog] = useState({ hidden: true });
 
   function closeSendDialog() {
@@ -44,9 +46,9 @@ export default function BottomBar(props:any) {
       }
     });
 
-    const cells = geojsonToArray(featureCollection, name);
+    // const cells = geojsonToArray(featureCollection, name);
     try {
-      props.sendToParent('dataFromMap', cells);
+      // sharedState.fireEvent('commands', 'dataFromMap', cells);
     } catch (error) {
       logToServer({ message: 'Unable to send data to Excel', error });
       console.log(error);
@@ -69,7 +71,7 @@ export default function BottomBar(props:any) {
   }
 
   function onRequest(event:React.MouseEvent<HTMLButtonElement>):void {
-    props.sendToParent('requestData');
+    // sharedState.fireEvent('commands', 'requestData', {});
     event.preventDefault();
   }
 
@@ -82,7 +84,7 @@ export default function BottomBar(props:any) {
       >
         <Dropdown
           label="Send selected layer to Excel."
-          options={getLayerCount() === 0 ? [{ text: '', key: -1 }] : window.state.layers.map((e:any) => ({ text: e.name, key: e.key }))}
+          options={getLayerCount() === 0 ? [{ text: '', key: -1 }] : state.layers.map((e:any) => ({ text: e.name, key: e.key }))}
           onChange={(event:React.FormEvent, value:any) => { props.setSelectedLayer(value.key); }}
           required
         />

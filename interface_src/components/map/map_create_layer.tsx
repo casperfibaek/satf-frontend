@@ -4,14 +4,13 @@ import {
   PrimaryButton, DefaultButton, Dialog, DialogFooter, TextField,
 } from '@fluentui/react';
 import { isLayernameUnique, createNewMapLayer } from './map_layers';
-
 import { WindowState } from '../../types';
 
 declare let window: WindowState;
 
-const { state } = window;
-
 export default function CreateLayer(props:any) {
+  const { state } = window;
+
   const [newLayername, setNewLayername] = useState('Default');
 
   function onCreateLayer() {
@@ -24,9 +23,9 @@ export default function CreateLayer(props:any) {
         L.DomEvent.preventDefault(event);
         L.DomEvent.stopPropagation(event);
 
-        state.map.on('movestart', () => {
+        state.leafletMap.on('movestart', () => {
           props.statusDialogProperties.close();
-          state.map.off('movestart');
+          state.leafletMap.off('movestart');
         });
       });
 

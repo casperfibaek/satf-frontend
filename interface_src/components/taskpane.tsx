@@ -3,6 +3,9 @@ import {
   Text, TextField, Stack, DefaultButton, PrimaryButton, MessageBar, Spinner, Dialog, DialogType, DialogFooter, Persona, PersonaSize,
 } from '@fluentui/react';
 import { getValueForKey, setValueForKey, removeValueForKey } from '../utils';
+import { WindowState } from '../types';
+
+declare let window: WindowState;
 
 const capitalize = (str: any) => {
   if (typeof str !== 'string') return '';
@@ -54,6 +57,8 @@ function Taskpane_welcome(props: any) {
   const [loadingStatus, setLoadingStatus] = useState({ show: false, text: '' });
   const [displayMessage, setDisplayMessage] = useState({ show: false, text: '', type: 1 });
   const [displayTimer, setDisplayTimer] = useState(false);
+  const [testText, setTestText] = useState('');
+  const [textValue, setTextValue] = useState('');
 
   async function onDelete(): Promise<void> {
     try {
@@ -89,13 +94,14 @@ function Taskpane_welcome(props: any) {
     }
   }
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      Office.addin.hide();
-      setDisplayTimer(true);
-      clearTimeout(timer);
-    }, 5000);
-  });
+  // useEffect(() => {
+  //   if (window.sharedState.initialised.app) {
+  //     window.setTimeout(() => {
+  //       Office.addin.hide();
+  //       setDisplayTimer(true);
+  //     }, 5000);
+  //   }
+  // });
 
   function onLogout(): void {
     props.setUserInfo({ username: '', password: '' });
@@ -114,9 +120,20 @@ function Taskpane_welcome(props: any) {
         You are now successfully logged in and able to use the Savings at the Frontier custom functions and mapping functionality.
       </Text>
 
-      <Text variant="medium" block className="intro_text" hidden={displayTimer}>
-        The sidepane will close in 5 seconds.
-      </Text>
+      <div style={displayTimer ? { display: 'none' } : { display: 'block' }}>
+        <Text variant="medium" block className="intro_text">
+          The sidepane will close in 5 seconds.
+        </Text>
+      </div>
+
+      <TextField defaultValue={testText} onChange={(event, value) => { setTestText(value); }} />
+      <DefaultButton text="storeSharedValue" onClick={ () => {
+        window.carlson.message = () => testText;
+      } }/>
+      <TextField value={textValue} />
+      <DefaultButton text="getSharedValue" onClick={ () => {
+        setTextValue(window.carlson.message());
+      } }/>
 
       <MessageBarComp className="messagebar"
         displayMessageShow={displayMessage.show}
