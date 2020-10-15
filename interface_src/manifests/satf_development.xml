@@ -4,7 +4,7 @@
   <Version>1.0.4.1</Version>
   <ProviderName>NIRAS</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="Development - SatF (v. 0.4.0)"/>
+  <DisplayName DefaultValue="Development - SatF (v. 0.4.1)"/>
   <Description DefaultValue="Investigate Financial Inclusion"/>
   <IconUrl DefaultValue="https://satf-test.azurewebsites.net/interface/assets/icons/niras_64x64.png"/>
   <HighResolutionIconUrl DefaultValue="https://satf-test.azurewebsites.net/interface/assets/icons/niras_80x80.png" />
