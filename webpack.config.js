@@ -12,7 +12,7 @@ module.exports = async (env, options) => ({
   },
   devtool: 'source-map',
   mode: 'production',
-  target: 'web',
+  target: ['web', 'es5'],
   module: {
     rules: [
       {

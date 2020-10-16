@@ -488,6 +488,37 @@ table.properties-table > tr > div.layer-prop-add{
   margin-top: 10px;
 }
 
+.leaflet-dragging .leaflet-grab,
+.leaflet-dragging .leaflet-grab .leaflet-interactive,
+.leaflet-dragging .leaflet-marker-draggable {
+  cursor: move;
+  cursor: url(assets/icons/grab_closed.cur), move !important;
+	cursor: -webkit-grabbing;
+	cursor: -moz-grabbing;
+	cursor: grabbing;
+}
+
+.leaflet-grab,
+.leaflet-crosshair,
+.leaflet-crosshair .leaflet-interactive {
+  cursor: move;
+  cursor: url(assets/icons/grab_open.cur), move !important;
+	cursor: -webkit-grab;
+	cursor: -moz-grab;
+	cursor: grab;
+}
+
+.leaflet-control-layers-selector,
+.leaflet-control-layers-base > label > div,
+.leaflet-control-layers-overlays > label > div{
+  cursor: pointer;
+}
+
+body{
+  -ms-content-zooming: none;
+  -ms-overflow-y: hidden;
+}
+
 @media (max-height: 640px) {
   #taskpane_body > .ms-Image{
     display: none;

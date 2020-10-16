@@ -50,41 +50,11 @@
             <Description resid="GetStarted.Description"/>
             <LearnMoreUrl resid="GetStarted.LearnMoreUrl"/>
           </GetStarted>
-          <!-- <FunctionFile resid="Commands.Url"/> -->
+
           <FunctionFile resid="Taskpane.Url"/>
           <ExtensionPoint xsi:type="PrimaryCommandSurface">
             <CustomTab id="SatfTab">
-              <Group id="AuthGroup">
-                <Label resid="AuthGroup.Label"/>
-                <Icon>
-                  <bt:Image size="16" resid="Icon.16x16"/>
-                  <bt:Image size="32" resid="Icon.32x32"/>
-                  <bt:Image size="80" resid="Icon.80x80"/>
-                </Icon>
 
-                <Control xsi:type="Button" id="LoginButton">
-                  <Label resid="LoginButton.Label"/>
-                  <Supertip>
-                    <Title resid="LoginButton.Label"/>
-                    <Description resid="LoginButton.Tooltip"/>
-                  </Supertip>
-                  <Icon>
-                    <bt:Image size="16" resid="Icon.Login.16x16"/>
-                    <bt:Image size="20" resid="Icon.Login.20x20"/>
-                    <bt:Image size="24" resid="Icon.Login.24x24"/>
-                    <bt:Image size="32" resid="Icon.Login.32x32"/>
-                    <bt:Image size="40" resid="Icon.Login.40x40"/>
-                    <bt:Image size="48" resid="Icon.Login.48x48"/>
-                    <bt:Image size="64" resid="Icon.Login.64x64"/>
-                    <bt:Image size="80" resid="Icon.Login.80x80"/>
-                  </Icon>
-                  <Action xsi:type="ShowTaskpane">
-                    <TaskpaneId>main_taskpane_01</TaskpaneId>
-                    <SourceLocation resid="Taskpane.Url"/>
-                  </Action>
-                </Control>
-
-              </Group>
               <Group id="MapGroup">
                 <Label resid="MapGroup.Label"/>
                 <Icon>
@@ -109,12 +79,42 @@
                     <bt:Image size="64" resid="Icon.Map.64x64"/>
                     <bt:Image size="80" resid="Icon.Map.80x80"/>
                   </Icon>
-                  <Action xsi:type="ExecuteFunction">
-                    <FunctionName>openDialogMAP</FunctionName>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>main_taskpane_01</TaskpaneId>
+                    <SourceLocation resid="Taskpane.Url"/>
                   </Action>
                 </Control>
-
               </Group>
+
+              <Group id="AuthGroup">
+                <Label resid="AuthGroup.Label"/>
+                <Icon>
+                  <bt:Image size="16" resid="Icon.16x16"/>
+                  <bt:Image size="32" resid="Icon.32x32"/>
+                  <bt:Image size="80" resid="Icon.80x80"/>
+                </Icon>
+                <Control xsi:type="Button" id="LoginButton">
+                  <Label resid="LoginButton.Label"/>
+                  <Supertip>
+                    <Title resid="LoginButton.Label"/>
+                    <Description resid="LoginButton.Tooltip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.Login.16x16"/>
+                    <bt:Image size="20" resid="Icon.Login.20x20"/>
+                    <bt:Image size="24" resid="Icon.Login.24x24"/>
+                    <bt:Image size="32" resid="Icon.Login.32x32"/>
+                    <bt:Image size="40" resid="Icon.Login.40x40"/>
+                    <bt:Image size="48" resid="Icon.Login.48x48"/>
+                    <bt:Image size="64" resid="Icon.Login.64x64"/>
+                    <bt:Image size="80" resid="Icon.Login.80x80"/>
+                  </Icon>
+                  <Action xsi:type="ExecuteFunction">
+                    <FunctionName>openDialogLOGIN</FunctionName>
+                  </Action>
+                </Control>
+              </Group>
+
               <Group id="HelpGroup">
                 <Label resid="HelpGroup.Label"/>
                 <Icon>
@@ -321,7 +321,7 @@
         <bt:Url id="AboutNiras.Url" DefaultValue="https://www.niras.com/"/>
         <bt:Url id="Functions.Script.Url" DefaultValue="https://localhost:3000/interface/custom_functions.js"/>
         <bt:Url id="Functions.Metadata.Url" DefaultValue="https://localhost:3000/interface/custom_functions_meta.json"/>
-        <bt:Url id="Taskpane.Url" DefaultValue="https://localhost:3000/interface/?page=taskpane"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://localhost:3000/interface/?page=map"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="Functions.Namespace" DefaultValue="SATF"/>

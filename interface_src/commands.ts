@@ -169,17 +169,6 @@ function openDialogSATF(openEvent:Office.AddinCommands.Event):void {
   openDialog(`${baseUrl}satf.html`, openEvent, false);
 }
 
-function openDialogMAP(openEvent:Office.AddinCommands.Event):void {
-  // The map is relying on interaction between the sheet and the map:
-  //   If we are not allowed, for security reasons, to open a popup, we
-  //   open an iframe instead.
-  openDialog(`${baseUrl}?page=map`, openEvent, true, true, false, (asyncResult) => {
-    if (asyncResult.status === Office.AsyncResultStatus.Failed) {
-      openDialog(`${baseUrl}?page=map`, openEvent, true, true, true);
-    }
-  });
-}
-
 function openDialogSUPPORT(openEvent:Office.AddinCommands.Event):void {
   openDialog(`${baseUrl}?page=support`, openEvent, false);
   window.carlson.message = () => 'support was opened';
@@ -189,9 +178,13 @@ function openDialogDOCUMENTATION(openEvent:Office.AddinCommands.Event):void {
   openDialog(`${baseUrl}?page=documentation`, openEvent, false);
 }
 
+function openDialogLOGIN(openEvent:Office.AddinCommands.Event):void {
+  openDialog(`${baseUrl}?page=taskpane`, openEvent, false);
+}
+
 g.openDialogNIRAS = openDialogNIRAS;
 g.openDialogOPM = openDialogOPM;
 g.openDialogSATF = openDialogSATF;
-g.openDialogMAP = openDialogMAP;
 g.openDialogSUPPORT = openDialogSUPPORT;
 g.openDialogDOCUMENTATION = openDialogDOCUMENTATION;
+g.openDialogLOGIN = openDialogLOGIN;
