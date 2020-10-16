@@ -32,5 +32,5 @@ app.use('/interface', express.static(`${__dirname}/../interface/`));
 app.use('/api', routesApi);
 
 app.listen(defaults.http_port, () => {
-  console.log(`Server running on port: ${defaults.http_port}`);
+  console.log(`HTTP server running on port: ${defaults.http_port}`);
 });

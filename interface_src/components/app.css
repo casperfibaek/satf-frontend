@@ -517,6 +517,7 @@ table.properties-table > tr > div.layer-prop-add{
 body{
   -ms-content-zooming: none;
   -ms-overflow-y: hidden;
+  overflow-y: hidden;
 }
 
 @media (max-height: 640px) {

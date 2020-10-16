@@ -63,13 +63,14 @@ export default function geojsonToArray(geojson:GeoJsonFeatureCollection|GeoJsonF
   } if (geojson.type === 'Feature') {
     const latlngs = geojson.geometry.coordinates;
     const { properties } = geojson;
+    const geojsonKeys = Object.keys(properties);
 
-    let header:any[];
-    if (validLayername) {
-      header = ['layername', 'latitude', 'longitude'].concat(Object.keys(properties));
-    } else {
-      header = ['latitude', 'longitude'].concat(Object.keys(properties));
-    }
+    const header = [];
+    if (validLayername) { header.push('layername'); }
+    if (!geojsonKeys.includes('latitude')) { header.push('latitude'); }
+    if (!geojsonKeys.includes('longitude')) { header.push('longitude'); }
+    header.concat(geojsonKeys);
+
     cells = [header, latlngs.reverse()];
 
     return cells;
@@ -79,5 +80,5 @@ export default function geojsonToArray(geojson:GeoJsonFeatureCollection|GeoJsonF
     return [['latitude', 'longitude'], [latlngs[1], latlngs[0]]];
   }
 
-  return false;
+  throw new Error('Unable to turn geojson to cells.');
 }

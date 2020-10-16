@@ -1,6 +1,6 @@
 {
   "name": "satf",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "private": true,
   "browserslist": [
     "IE 11"
@@ -12,8 +12,8 @@
     "build:dev": "webpack --mode development",
     "build:watch": "webpack --mode development --watch",
     "dev-server": "webpack serve --mode production",
-    "debug:desktop": "office-addin-debugging start ./interface_src/manifests/satf_local.xml desktop --prod",
-    "debug:web": "office-addin-debugging start ./interface_src/manifests/satf_local.xml web --prod",
+    "debug:desktop": "office-addin-debugging start ./interface_src/manifests/satf_local.xml desktop",
+    "debug:web": "office-addin-debugging start ./interface_src/manifests/satf_local.xml web",
     "debug:stop": "office-addin-debugging stop ./interface_src/manifests/satf_local.xml",
     "install:certs": "office-addin-dev-certs install",
     "validate:all": "office-addin-manifest validate ./interface_src/manifests/manifests/satf_production.xml && office-addin-manifest validate ./interface_src/manifests/satf_development.xml && office-addin-manifest validate ./interface_src/manifests/satf_local.xml",
@@ -51,16 +51,16 @@
     "react-router-dom": "^5.2.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.0",
-    "@babel/plugin-proposal-class-properties": "^7.10.4",
-    "@babel/plugin-proposal-object-rest-spread": "^7.11.0",
-    "@babel/preset-env": "^7.12.0",
-    "@babel/preset-react": "^7.10.4",
-    "@babel/preset-typescript": "^7.12.0",
+    "@babel/core": "^7.12.1",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/plugin-proposal-object-rest-spread": "^7.12.1",
+    "@babel/preset-env": "^7.12.1",
+    "@babel/preset-react": "^7.12.1",
+    "@babel/preset-typescript": "^7.12.1",
     "@types/custom-functions-runtime": "^1.3.2",
     "@types/leaflet": "^1.5.19",
     "@types/node": "^14.11.8",
-    "@types/office-js": "^1.0.142",
+    "@types/office-js": "^1.0.143",
     "@types/react": "^16.9.52",
     "@types/react-dom": "^16.9.8",
     "@types/react-router-dom": "^5.1.6",
@@ -81,6 +81,7 @@
     "eslint-plugin-react-hooks": "^4.1.2",
     "file-loader": "^6.1.1",
     "fork-ts-checker-webpack-plugin": "^5.2.0",
+    "html-webpack-plugin": "^4.5.0",
     "office-addin-cli": "^1.0.13",
     "office-addin-debugging": "^3.0.37",
     "office-addin-dev-certs": "^1.5.7",
@@ -88,7 +89,7 @@
     "style-loader": "^2.0.0",
     "terser-webpack-plugin": "^5.0.0",
     "typescript": "^4.0.3",
-    "webpack": "^5.1.0",
+    "webpack": "^5.1.2",
     "webpack-cli": "^4.0.0",
     "webpack-dev-server": "^3.11.0"
   }

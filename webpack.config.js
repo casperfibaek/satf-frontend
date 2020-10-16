@@ -1,4 +1,5 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
@@ -6,9 +7,9 @@ const devCerts = require('office-addin-dev-certs'); // eslint-disable-line
 
 module.exports = async (env, options) => ({
   entry: {
-    app: ['./interface_src/app.tsx'],
-    commands: ['./interface_src/commands.ts'],
     custom_functions: ['./interface_src/custom_functions.ts'],
+    commands: ['./interface_src/commands.ts'],
+    app: ['./interface_src/app.tsx'],
   },
   devtool: 'source-map',
   mode: 'production',
@@ -58,12 +59,17 @@ module.exports = async (env, options) => ({
         { from: 'interface_src/assets/', to: 'assets' },
       ],
     }),
+    new HtmlWebpackPlugin({
+      title: 'SatF',
+      template: './interface_src/sites/template.html',
+    }),
   ],
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
     path: path.resolve(__dirname, './interface'),
+    filename: '[name].[contenthash].js',
   },
   devServer: {
     publicPath: '/interface',

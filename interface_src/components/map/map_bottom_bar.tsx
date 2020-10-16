@@ -2,10 +2,14 @@ import React, { useState } from 'react'; // eslint-disable-line
 import {
   PrimaryButton, DefaultButton, DialogFooter, Dialog, Dropdown, MessageBarType,
 } from '@fluentui/react';
-// import geojsonToArray from './geojson_to_array';
-import { getLayer, getLayerCount } from './map_layers';
+import geojsonToArray from './geojson_to_array';
+import arrayToGeojson from './array_to_geojson';
+import {
+  getLayer, getLayerCount, getFirstLayerKey, addDataToLayer,
+} from './map_layers';
 import { GeoJsonFeatureCollection, WindowState } from '../../types';
 import { logToServer } from '../../utils';
+import { getSelectedCells, addCellsToSheet } from '../../excel_interaction';
 
 declare let window: WindowState;
 
@@ -18,7 +22,7 @@ export default function BottomBar(props:any) {
     setSendDialog({ hidden: true });
   }
 
-  function sendData():void {
+  async function sendData():Promise<void> {
     const { featureGroup, name } = getLayer(props.selectedLayer);
 
     const featureCollection:GeoJsonFeatureCollection = {
@@ -46,11 +50,11 @@ export default function BottomBar(props:any) {
       }
     });
 
-    // const cells = geojsonToArray(featureCollection, name);
+    const cells = geojsonToArray(featureCollection, name);
     try {
-      // sharedState.fireEvent('commands', 'dataFromMap', cells);
+      await addCellsToSheet(cells);
     } catch (error) {
-      logToServer({ message: 'Unable to send data to Excel', error });
+      props.statusErrorbar.open(String(error.description), MessageBarType.error);
       console.log(error);
     }
     closeSendDialog();
@@ -70,8 +74,29 @@ export default function BottomBar(props:any) {
     event.preventDefault();
   }
 
-  function onRequest(event:React.MouseEvent<HTMLButtonElement>):void {
-    // sharedState.fireEvent('commands', 'requestData', {});
+  async function onRequest(event:React.MouseEvent<HTMLButtonElement>):Promise<void> {
+    let geojson;
+    try {
+      const cells = await getSelectedCells();
+      geojson = await arrayToGeojson(cells);
+    } catch (err) {
+      const errorMessage = 'Unable to parse geojson from Excel';
+      props.statusErrorbar.open(errorMessage, MessageBarType.error);
+      throw new Error(err);
+    }
+
+    const layerCount = getLayerCount();
+    if (layerCount === 0) {
+      props.autoCreateNewLayer();
+    }
+
+    if (layerCount <= 1) {
+      const key = getFirstLayerKey();
+      props.setSelectedLayer(key);
+      addDataToLayer(key, geojson);
+    } else {
+      props.statusCalloutSelect.open(geojson);
+    }
     event.preventDefault();
   }
 

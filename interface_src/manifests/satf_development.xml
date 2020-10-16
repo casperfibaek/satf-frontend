@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0" xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="TaskPaneApp">
-  <Id>1a3b85bb-5dfc-5684-87a6-ed7ccb48c931</Id>
-  <Version>1.0.4.1</Version>
+  <Id>1a3b25b8-5dfc-5684-87a6-ed7ccb48c932</Id>
+  <Version>1.0.4.2</Version>
   <ProviderName>NIRAS</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="Development - SatF (v. 0.4.1)"/>
+  <DisplayName DefaultValue="Development - SatF (v. 0.4.2)"/>
   <Description DefaultValue="Investigate Financial Inclusion"/>
   <IconUrl DefaultValue="https://satf-test.azurewebsites.net/interface/assets/icons/niras_64x64.png"/>
   <HighResolutionIconUrl DefaultValue="https://satf-test.azurewebsites.net/interface/assets/icons/niras_80x80.png" />
@@ -50,40 +50,11 @@
             <Description resid="GetStarted.Description"/>
             <LearnMoreUrl resid="GetStarted.LearnMoreUrl"/>
           </GetStarted>
+
           <FunctionFile resid="Taskpane.Url"/>
           <ExtensionPoint xsi:type="PrimaryCommandSurface">
             <CustomTab id="SatfTab">
-              <Group id="AuthGroup">
-                <Label resid="AuthGroup.Label"/>
-                <Icon>
-                  <bt:Image size="16" resid="Icon.16x16"/>
-                  <bt:Image size="32" resid="Icon.32x32"/>
-                  <bt:Image size="80" resid="Icon.80x80"/>
-                </Icon>
 
-                <Control xsi:type="Button" id="LoginButton">
-                  <Label resid="LoginButton.Label"/>
-                  <Supertip>
-                    <Title resid="LoginButton.Label"/>
-                    <Description resid="LoginButton.Tooltip"/>
-                  </Supertip>
-                  <Icon>
-                    <bt:Image size="16" resid="Icon.Login.16x16"/>
-                    <bt:Image size="20" resid="Icon.Login.20x20"/>
-                    <bt:Image size="24" resid="Icon.Login.24x24"/>
-                    <bt:Image size="32" resid="Icon.Login.32x32"/>
-                    <bt:Image size="40" resid="Icon.Login.40x40"/>
-                    <bt:Image size="48" resid="Icon.Login.48x48"/>
-                    <bt:Image size="64" resid="Icon.Login.64x64"/>
-                    <bt:Image size="80" resid="Icon.Login.80x80"/>
-                  </Icon>
-                  <Action xsi:type="ShowTaskpane">
-                    <TaskpaneId>main_taskpane_01</TaskpaneId>
-                    <SourceLocation resid="Taskpane.Url"/>
-                  </Action>
-                </Control>
-
-              </Group>
               <Group id="MapGroup">
                 <Label resid="MapGroup.Label"/>
                 <Icon>
@@ -108,12 +79,42 @@
                     <bt:Image size="64" resid="Icon.Map.64x64"/>
                     <bt:Image size="80" resid="Icon.Map.80x80"/>
                   </Icon>
-                  <Action xsi:type="ExecuteFunction">
-                    <FunctionName>openDialogMAP</FunctionName>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>main_taskpane_01</TaskpaneId>
+                    <SourceLocation resid="Taskpane.Url"/>
                   </Action>
                 </Control>
-
               </Group>
+
+              <Group id="AuthGroup">
+                <Label resid="AuthGroup.Label"/>
+                <Icon>
+                  <bt:Image size="16" resid="Icon.16x16"/>
+                  <bt:Image size="32" resid="Icon.32x32"/>
+                  <bt:Image size="80" resid="Icon.80x80"/>
+                </Icon>
+                <Control xsi:type="Button" id="LoginButton">
+                  <Label resid="LoginButton.Label"/>
+                  <Supertip>
+                    <Title resid="LoginButton.Label"/>
+                    <Description resid="LoginButton.Tooltip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.Login.16x16"/>
+                    <bt:Image size="20" resid="Icon.Login.20x20"/>
+                    <bt:Image size="24" resid="Icon.Login.24x24"/>
+                    <bt:Image size="32" resid="Icon.Login.32x32"/>
+                    <bt:Image size="40" resid="Icon.Login.40x40"/>
+                    <bt:Image size="48" resid="Icon.Login.48x48"/>
+                    <bt:Image size="64" resid="Icon.Login.64x64"/>
+                    <bt:Image size="80" resid="Icon.Login.80x80"/>
+                  </Icon>
+                  <Action xsi:type="ExecuteFunction">
+                    <FunctionName>openDialogLOGIN</FunctionName>
+                  </Action>
+                </Control>
+              </Group>
+
               <Group id="HelpGroup">
                 <Label resid="HelpGroup.Label"/>
                 <Icon>
@@ -320,7 +321,7 @@
         <bt:Url id="AboutNiras.Url" DefaultValue="https://www.niras.com/"/>
         <bt:Url id="Functions.Script.Url" DefaultValue="https://satf-test.azurewebsites.net/interface/custom_functions.js"/>
         <bt:Url id="Functions.Metadata.Url" DefaultValue="https://satf-test.azurewebsites.net/interface/custom_functions_meta.json"/>
-        <bt:Url id="Taskpane.Url" DefaultValue="https://satf-test.azurewebsites.net/interface/?page=taskpane"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://satf-test.azurewebsites.net/interface/?page=map"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="Functions.Namespace" DefaultValue="SATF"/>

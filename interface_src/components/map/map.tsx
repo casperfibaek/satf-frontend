@@ -11,7 +11,6 @@ import SelectLayer from './map_select_layer';
 import BottomBar from './map_bottom_bar';
 
 // Functions
-// import arrayToGeojson from './array_to_geojson';
 import {
   addMarkerToLayer,
   createNewMapLayer,
@@ -238,40 +237,6 @@ function Map() {
     }
   }
 
-  // This adds an event that listens to data coming from Excel.
-  // window.sharedState.addEvent('app', 'dataFromExcel', async (data:any) => {
-  //   let geojson;
-  //   try {
-  //     geojson = await arrayToGeojson(data);
-  //   } catch (err) {
-  //     const errorMessage = 'Unable to parse geojson from Excel';
-  //     statusErrorbar.open(errorMessage, MessageBarType.error);
-  //     throw new Error(err);
-  //   }
-
-  //   let key = -1;
-  //   const layerCount = getLayerCount();
-  //   if (layerCount === 0) {
-  //     autoCreateNewLayer();
-  //   }
-
-  //   if (layerCount <= 1) {
-  //     key = getFirstLayerKey();
-  //     setSelectedLayer(key);
-  //     addDataToLayer(key, geojson);
-  //   } else {
-  //     statusCalloutSelect.open(geojson);
-  //   }
-  // });
-
-  // window.sharedState.addEvent('app', 'error', (data:{message:string}) => {
-  //   statusErrorbar.open(data.message, MessageBarType.error);
-  // });
-
-  // window.sharedState.addEvent('app', 'hello', (data:{message:string}) => {
-  //   console.log(data.message);
-  // });
-
   // Run on startup
   useEffect(() => {
     state.leafletMap = initialiseMap(mapContainer);
@@ -314,6 +279,8 @@ function Map() {
         setSelectedLayer={setSelectedLayer}
         statusDialogCreate={statusDialogCreate}
         statusErrorbar={statusErrorbar}
+        statusCalloutSelect={statusCalloutSelect}
+        autoCreateNewLayer={autoCreateNewLayer}
       />
       <div id="map" ref={(el) => { mapContainer = el; }}></div>
     </div>

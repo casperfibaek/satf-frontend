@@ -6,6 +6,7 @@ import Styler from './map_styler';
 import {
   toggleLayer, getFirstLayerKey, removeLayer, getLayer, getLayerCount,
 } from './map_layers';
+import packageJson from '../../../package.json';
 
 import { WindowState } from '../../types';
 
@@ -84,6 +85,7 @@ export default function LayerList(props:any) {
       </DialogFooter>
     </Dialog>
       <div className="layer-list">{layers}</div>
+      <div style={{ float: 'right', marginRight: '10px' }}>{`Current Version: ${packageJson.version}`}</div>
     </div>
   );
 }
