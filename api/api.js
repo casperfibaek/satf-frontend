@@ -4,7 +4,6 @@ const bodyParser = require('body-parser');
 const logger = require('morgan');
 const compression = require('compression');
 const cors = require('cors');
-const nocache = require('nocache');
 
 // Custom routes
 const routesApi = require('./routes');
@@ -23,7 +22,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({ allowedHeaders: ['Authorization', 'Accept', 'Content-Type'] }));
-app.use(nocache());
+app.use((req, res, next) => {
+  res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+  res.header('Expires', '-1');
+  res.header('Pragma', 'no-cache');
+  next();
+});
 app.use(compression());
 
 // Serve
