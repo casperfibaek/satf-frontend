@@ -6,7 +6,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const devCerts = require('office-addin-dev-certs');
 const crypto = require('crypto');
-const packageJson = require('./package-lock.json');
+const packageJson = require('./package.json');
 
 module.exports = async (env, options) => {
   const hash = crypto.randomBytes(12).toString('hex');

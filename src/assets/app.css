@@ -232,7 +232,7 @@ tr > td:nth-child(2) {
   height: 100%;
   width: 100%;
   overflow: hidden;
-  position: absolute;
+  position: absolute !important;
   margin: 0;
   padding: 0;
   background: rgb(59, 59, 59);
@@ -491,23 +491,20 @@ table.properties-table > tr > div.layer-prop-add{
 .leaflet-dragging .leaflet-grab,
 .leaflet-dragging .leaflet-grab .leaflet-interactive,
 .leaflet-dragging .leaflet-marker-draggable {
-  cursor: move;
   cursor: url(assets/icons/grab_closed.cur), move !important;
-	cursor: -webkit-grabbing;
-	cursor: -moz-grabbing;
-	cursor: grabbing;
+  cursor: -webkit-grabbing;
+  cursor: -moz-grabbing;
+  cursor: grabbing;
 }
 
 .leaflet-grab,
 .leaflet-crosshair,
 .leaflet-crosshair .leaflet-interactive {
-  cursor: move;
   cursor: url(assets/icons/grab_open.cur), move !important;
-	cursor: -webkit-grab;
-	cursor: -moz-grab;
-	cursor: grab;
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
+  cursor: grab;
 }
-
 .leaflet-control-layers-selector,
 .leaflet-control-layers-base > label > div,
 .leaflet-control-layers-overlays > label > div{

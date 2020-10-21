@@ -219,7 +219,7 @@ export const excelTheme = {
 export const errInvalidValue = (msg:string) => new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(msg));
 export const errNotAvailable = (msg:string) => new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String(msg));
 
-export function apiUrl() {
+export function getApiUrl() {
   // const { origin } = document.location;
   // if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
   //   return 'localhost:8080/api';

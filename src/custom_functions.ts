@@ -9,7 +9,7 @@ import {
   errInvalidValue,
   getValueForKey,
   getGlobal,
-  apiUrl,
+  getApiUrl,
 } from './utils';
 import { ApiReply } from './types';
 
@@ -18,7 +18,7 @@ Office.onReady(() => {
 });
 
 const g:any = getGlobal();
-const _apiUrl = apiUrl();
+const _apiUrl = `${getApiUrl()}/`;
 
 /**
  * Converts What3Words to two adjacent cells containing Latitude and Longitude.

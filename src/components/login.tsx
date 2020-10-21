@@ -3,7 +3,7 @@ import {
   Text, TextField, Stack, DefaultButton, PrimaryButton, MessageBar, Spinner, Dialog, DialogType, DialogFooter, Persona, PersonaSize,
 } from '@fluentui/react';
 import {
-  getValueForKey, setValueForKey, removeValueForKey, apiUrl,
+  getValueForKey, setValueForKey, removeValueForKey, getApiUrl,
 } from '../utils';
 
 const capitalize = (str: any) => {
@@ -63,7 +63,7 @@ function Welcome(props: any) {
 
       const token = getValueForKey('satf_token');
 
-      const response = await fetch(`${apiUrl()}/delete_user`, {
+      const response = await fetch(`${getApiUrl()}/delete_user`, {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token }),
@@ -170,7 +170,7 @@ function Register(props: any) {
       setDisplayMessage({ show: false, text: '', type: 1 });
       setLoadingStatus({ show: true, text: 'Register..' });
 
-      const response = await fetch(`${apiUrl()}/create_user`, {
+      const response = await fetch(`${getApiUrl()}/create_user`, {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password, confirm }),
@@ -283,7 +283,7 @@ function LoginHome(props: any) {
       setDisplayMessage({ show: false, text: '', type: 1 });
       setLoadingStatus({ show: true, text: 'Login..' });
 
-      const response = await fetch(`${apiUrl()}/login_user`, {
+      const response = await fetch(`${getApiUrl()}/login_user`, {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
