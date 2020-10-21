@@ -10,10 +10,8 @@ import { Fabric, loadTheme } from '@fluentui/react';
 import Support from './components/support';
 import Documentation from './components/documentation';
 import Map from './components/map';
-import Taskpane from './components/taskpane';
+import Login from './components/login';
 import Install from './components/install';
-
-import './commands';
 
 import { excelTheme } from './utils';
 import { WindowState } from './types';
@@ -36,7 +34,7 @@ function StartPage(): string {
     case 'install': return '/install';
     case 'support': return '/support';
     case 'documentation': return '/documentation';
-    case 'taskpane': return '/taskpane';
+    case 'login': return '/login';
     default: return '/404';
   }
 }
@@ -53,7 +51,7 @@ function App() {
           <Route exact path='/map' render={() => (<Map />)} />
           <Route exact path='/support' render={() => (<Support />)} />
           <Route exact path='/documentation' render={() => (<Documentation />)} />
-          <Route exact path='/taskpane' render={() => (<Taskpane />)} />
+          <Route exact path='/login' render={() => (<Login />)} />
           <Route exact path='/404' render={() => (<Error404Page />)} />
           <Route exact path='/' render={() => (<Redirect to={startPage}/>)}/>
 

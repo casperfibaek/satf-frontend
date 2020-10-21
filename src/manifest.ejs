@@ -4,7 +4,7 @@
   <Version><%= version %></Version>
   <ProviderName>NIRAS</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="Local - SatF (v. <%= version %>)"/>
+  <DisplayName DefaultValue="<%= type %>SatF (v. <%= version %>)"/>
   <Description DefaultValue="Investigate Financial Inclusion"/>
   <IconUrl DefaultValue="<%= base %>/assets/icons/niras_64x64.png"/>
   <HighResolutionIconUrl DefaultValue="<%= base %>/assets/icons/niras_80x80.png" />
@@ -21,7 +21,7 @@
     </Sets>
   </Requirements>
   <DefaultSettings>
-    <SourceLocation DefaultValue="<%= base %>/map"/>
+    <SourceLocation DefaultValue="<%= base %>/?page=map"/>
   </DefaultSettings>
   <Permissions>ReadWriteDocument</Permissions>
   <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
@@ -321,7 +321,7 @@
         <bt:Url id="AboutNiras.Url" DefaultValue="https://www.niras.com/"/>
         <bt:Url id="Functions.Script.Url" DefaultValue="<%= local_custom_functions %>"/>
         <bt:Url id="Functions.Metadata.Url" DefaultValue="<%= base %>/custom_functions_meta.json"/>
-        <bt:Url id="Taskpane.Url" DefaultValue="<%= base %>/map"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="<%= base %>/?page=map"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="Functions.Namespace" DefaultValue="SATF"/>

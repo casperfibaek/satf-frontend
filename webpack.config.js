@@ -72,6 +72,7 @@ module.exports = async (env, options) => {
             data: {
               base: 'https://localhost:3000',
               version: `${packageJson.version}`,
+              type: 'Local - ',
               local_custom_functions: `https://localhost:3000/custom_functions.${hash}.js`,
             },
           },
@@ -79,8 +80,9 @@ module.exports = async (env, options) => {
             template: path.join('src/manifest.ejs'),
             filename: 'satf_development.xml',
             data: {
-              base: 'https://satf-test.azurewebsites.net',
-              local_custom_functions: `https://satf-test.azurewebsites.net/custom_functions.${hash}.js`,
+              base: 'https://satfstaticdev.z6.web.core.windows.net',
+              local_custom_functions: `https://satfstaticdev.z6.web.core.windows.net/custom_functions.${hash}.js`,
+              type: 'Development - ',
               version: `${packageJson.version}`,
             },
           },
@@ -88,8 +90,9 @@ module.exports = async (env, options) => {
             template: path.join('src/manifest.ejs'),
             filename: 'satf_production.xml',
             data: {
-              base: 'https://satf.azurewebsites.net',
-              local_custom_functions: `https://satf.azurewebsites.net/custom_functions.${hash}.js`,
+              base: 'https://satfstatic.z6.web.core.windows.net',
+              local_custom_functions: `https://satfstatic.z6.web.core.windows.net/custom_functions.${hash}.js`,
+              type: '',
               version: `${packageJson.version}`,
             },
           },
@@ -108,7 +111,6 @@ module.exports = async (env, options) => {
       filename: `[name].${hash}.js`,
     },
     devServer: {
-      publicPath: '/interface',
       headers: {
         'Access-Control-Allow-Origin': '*',
       },

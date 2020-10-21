@@ -43,23 +43,22 @@ function openDialog(url:string, openEvent:Office.AddinCommands.Event, ask:boolea
   });
 }
 
-const baseUrl = `${document.location.origin}/interface/`;
+const baseUrl = `${document.location.origin}`;
 
 function openDialogNIRAS(openEvent:Office.AddinCommands.Event):void {
-  openDialog(`${baseUrl}niras.html`, openEvent, false);
+  openDialog(`${baseUrl}/niras.html`, openEvent, false);
 }
 
 function openDialogOPM(openEvent:Office.AddinCommands.Event):void {
-  openDialog(`${baseUrl}opm.html`, openEvent, false);
+  openDialog(`${baseUrl}/opm.html`, openEvent, false);
 }
 
 function openDialogSATF(openEvent:Office.AddinCommands.Event):void {
-  openDialog(`${baseUrl}satf.html`, openEvent, false);
+  openDialog(`${baseUrl}/satf.html`, openEvent, false);
 }
 
 function openDialogSUPPORT(openEvent:Office.AddinCommands.Event):void {
   openDialog(`${baseUrl}?page=support`, openEvent, false);
-  window.carlson.message = () => 'support was opened';
 }
 
 function openDialogDOCUMENTATION(openEvent:Office.AddinCommands.Event):void {
@@ -67,7 +66,7 @@ function openDialogDOCUMENTATION(openEvent:Office.AddinCommands.Event):void {
 }
 
 function openDialogLOGIN(openEvent:Office.AddinCommands.Event):void {
-  openDialog(`${baseUrl}?page=taskpane`, openEvent, false);
+  openDialog(`${baseUrl}?page=login`, openEvent, false);
 }
 
 g.openDialogNIRAS = openDialogNIRAS;

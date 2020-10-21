@@ -35,21 +35,6 @@ export function logToServer(error:any) {
 
 export const isNumber = (value:any):boolean => !Number.isNaN(Number(value));
 
-export function createStateIfDoesntExists() {
-  if (window.state === undefined || window.state === null || window.state === {}) {
-    window.state = {
-      initialise: {
-        office: false,
-        map: false,
-      },
-      map: {},
-      layers: [],
-      click: {},
-      warningTimer: 0,
-    };
-  }
-}
-
 export async function what3wordsToLatLng(what3words:string): Promise<[number, number]> {
   try {
     const url = `../api/what3words_to_latlng?words=${what3words}`;
@@ -233,3 +218,11 @@ export const excelTheme = {
 
 export const errInvalidValue = (msg:string) => new CustomFunctions.Error(CustomFunctions.ErrorCode.invalidValue, String(msg));
 export const errNotAvailable = (msg:string) => new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String(msg));
+
+export function apiUrl() {
+  // const { origin } = document.location;
+  // if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+  //   return 'localhost:8080/api';
+  // }
+  return 'https://satf-api.azurewebsites.net/api';
+}

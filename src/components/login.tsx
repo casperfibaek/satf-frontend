@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react'; // eslint-disable-line
+import React, { useState } from 'react'; // eslint-disable-line
 import {
   Text, TextField, Stack, DefaultButton, PrimaryButton, MessageBar, Spinner, Dialog, DialogType, DialogFooter, Persona, PersonaSize,
 } from '@fluentui/react';
-import { getValueForKey, setValueForKey, removeValueForKey } from '../utils';
-import { WindowState } from '../types';
-
-declare let window: WindowState;
+import {
+  getValueForKey, setValueForKey, removeValueForKey, apiUrl,
+} from '../utils';
 
 const capitalize = (str: any) => {
   if (typeof str !== 'string') return '';
@@ -52,13 +51,10 @@ function MessageBarComp(props: any) {
   return (<div className="messagebar-placeholder"></div>);
 }
 
-function Taskpane_welcome(props: any) {
+function Welcome(props: any) {
   const [modalStatus, setModelStatus] = useState(true);
   const [loadingStatus, setLoadingStatus] = useState({ show: false, text: '' });
   const [displayMessage, setDisplayMessage] = useState({ show: false, text: '', type: 1 });
-  const [displayTimer, setDisplayTimer] = useState(false);
-  const [testText, setTestText] = useState('');
-  const [textValue, setTextValue] = useState('');
 
   async function onDelete(): Promise<void> {
     try {
@@ -67,7 +63,7 @@ function Taskpane_welcome(props: any) {
 
       const token = getValueForKey('satf_token');
 
-      const response = await fetch(`${document.location.origin}/api/delete_user`, {
+      const response = await fetch(`${apiUrl()}/delete_user`, {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token }),
@@ -94,15 +90,6 @@ function Taskpane_welcome(props: any) {
     }
   }
 
-  // useEffect(() => {
-  //   if (window.sharedState.initialised.app) {
-  //     window.setTimeout(() => {
-  //       Office.addin.hide();
-  //       setDisplayTimer(true);
-  //     }, 5000);
-  //   }
-  // });
-
   function onLogout(): void {
     props.setUserInfo({ username: '', password: '' });
     removeValueForKey('satf_token');
@@ -119,21 +106,6 @@ function Taskpane_welcome(props: any) {
       <Text variant="medium" block className="intro_text">
         You are now successfully logged in and able to use the Savings at the Frontier custom functions and mapping functionality.
       </Text>
-
-      <div style={displayTimer ? { display: 'none' } : { display: 'block' }}>
-        <Text variant="medium" block className="intro_text">
-          The sidepane will close in 5 seconds.
-        </Text>
-      </div>
-
-      <TextField defaultValue={testText} onChange={(event, value) => { setTestText(value); }} />
-      <DefaultButton text="storeSharedValue" onClick={ () => {
-        window.carlson.message = () => testText;
-      } }/>
-      <TextField value={textValue} />
-      <DefaultButton text="getSharedValue" onClick={ () => {
-        setTextValue(window.carlson.message());
-      } }/>
 
       <MessageBarComp className="messagebar"
         displayMessageShow={displayMessage.show}
@@ -173,7 +145,7 @@ function Taskpane_welcome(props: any) {
   );
 }
 
-function Taskpane_register(props: any) {
+function Register(props: any) {
   const [username, setUsername] = useState(props.userInfo.username);
   const [password, setPassword] = useState(props.userInfo.password);
   const [loadingStatus, setLoadingStatus] = useState({ show: false, text: '' });
@@ -198,7 +170,7 @@ function Taskpane_register(props: any) {
       setDisplayMessage({ show: false, text: '', type: 1 });
       setLoadingStatus({ show: true, text: 'Register..' });
 
-      const response = await fetch(`${document.location.origin}/api/create_user`, {
+      const response = await fetch(`${apiUrl()}/create_user`, {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password, confirm }),
@@ -290,7 +262,7 @@ function Taskpane_register(props: any) {
   );
 }
 
-function Taskpane_login(props: any) {
+function LoginHome(props: any) {
   const [username, setUsername] = useState(props.userInfo.username);
   const [password, setPassword] = useState(props.userInfo.password);
   const [loadingStatus, setLoadingStatus] = useState({ show: false, text: '' });
@@ -311,7 +283,7 @@ function Taskpane_login(props: any) {
       setDisplayMessage({ show: false, text: '', type: 1 });
       setLoadingStatus({ show: true, text: 'Login..' });
 
-      const response = await fetch(`${document.location.origin}/api/login_user`, {
+      const response = await fetch(`${apiUrl()}/login_user`, {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -384,27 +356,27 @@ function Taskpane_login(props: any) {
   );
 }
 
-function Taskpane(): any {
-  document.title = 'Taskpane';
+function Login(): any {
+  document.title = 'Login';
 
   const [currentPage, setCurrentPage] = useState({ login: true, register: false, welcome: false });
   const [userInfo, setUserInfo] = useState({ username: '', password: '' });
 
   function renderLogic() {
     if (currentPage.register) {
-      return (<Taskpane_register
+      return (<Register
         userInfo={userInfo}
         setCurrentPage={setCurrentPage}
         setUserInfo={setUserInfo}
       />);
     } if (currentPage.welcome) {
-      return (<Taskpane_welcome
+      return (<Welcome
         userInfo={userInfo}
         setUserInfo={setUserInfo}
         setCurrentPage={setCurrentPage}
       />);
     }
-    return (<Taskpane_login
+    return (<LoginHome
       userInfo={userInfo}
       setCurrentPage={setCurrentPage}
       setUserInfo={setUserInfo}
@@ -423,4 +395,4 @@ function Taskpane(): any {
   );
 }
 
-export default Taskpane;
+export default Login;

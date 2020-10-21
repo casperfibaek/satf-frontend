@@ -8,8 +8,8 @@ import {
   getLayer, getLayerCount, getFirstLayerKey, addDataToLayer,
 } from './map_layers';
 import { GeoJsonFeatureCollection, WindowState } from '../../types';
-import { logToServer } from '../../utils';
 import { getSelectedCells, addCellsToSheet } from '../../excel_interaction';
+// import { logToServer } from '../../utils';
 
 declare let window: WindowState;
 
