@@ -1,0 +1,527 @@
+html{
+  margin-left: calc(100vw - 100%);
+  margin-right: 0;
+}
+
+body{
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  background: #faf9f8;
+  overflow-x: hidden;
+}
+
+#app{
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#taskpane_body,
+#support_body,
+#documentation_body
+#home_body{
+  font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  max-width: 350px;
+  margin-left: auto;
+  margin-right: auto;
+  background: #fff;
+  box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,.132), 0 0.3px 0.9px 0 rgba(0,0,0,.108);
+  padding: 20px;
+}
+
+#taskpane_body > .form_holder {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+#taskpane_body > .pseudo_image{
+  height: 160px;
+  width: 100%;
+  background: rgb(33, 115, 70);
+  color: white;
+  text-align: center;
+}
+
+#taskpane_body > .pseudo_image > span{
+  padding-top: 65px;
+}
+
+#taskpane_body > .form_holder > div > .button_holder > .ms-Spinner {
+  float: left;
+  margin-top: 4px;
+}
+
+#taskpane_body > .form_holder > div > .intro_text,
+#taskpane_body > .form_holder > div > .intro_header{
+  margin-top: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+#taskpane_body > .form_holder > div > .button_holder{
+  margin-top: 40px;
+  float: right;
+}
+
+#taskpane_body > .form_holder > div > .button_holder > button{
+  margin-left: 10px;
+}
+
+
+#taskpane_body > .form_holder > div > form > div {
+  margin-top: 20px;
+}
+
+#taskpane_body > div.form_holder > div > form > div.ms-MessageBar {
+  margin-top: 0px;
+}
+
+#taskpane_body > .form_holder > div > form > div.messagebar-placeholder {
+  margin-top: 0px;
+  height: 36px;
+}
+
+#home_body{
+  height: 400px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 60px;
+  box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,.132), 0 0.3px 0.9px 0 rgba(0,0,0,.108);
+  border-radius: 2px;
+  background: #ececec;
+}
+
+#home_body > .home_text{
+  margin-top: 20px;
+  text-align: center;
+}
+
+#home_body > .home_text_base {
+  margin-left: 20px;
+  margin-right: 20px;
+  text-align: left;
+}
+
+#home_body > .guide > .guide_text {
+  margin-bottom: 10px;
+}
+
+#home_body > .guide > .guide_text_body {
+  margin-left: 40px;
+  margin-right: 20px;
+  text-align: left;
+}
+
+#home_body > .guide{
+  margin: 20px;
+}
+
+#support_body{
+  text-align: center;
+}
+
+#support_body > div.logo{
+  margin-top: 20px;
+}
+
+#support_body > div.logo > svg{
+  fill: #ba1223;
+  width: 200px;
+}
+
+#support_body > p{
+  margin-top: 4px;
+  margin-bottom: 6px;
+}
+
+#support_body > .intro_text{
+  margin-bottom: 36px;
+}
+
+#documentation_body > .container{
+  position:fixed;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  margin: 0;
+}
+
+#documentation_body > .container > .header{
+  width: 350px;
+  padding-top: 4px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 20px;
+  margin-left: -20px;
+  box-shadow: 0 4px 5px -5px rgb(0 0 0 / 29%);
+  background: #323130;
+  color: white;
+}
+
+#documentation_body > .container > .header > .function_search {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+#documentation_body > .container > .header > .greet_text{
+  margin: 0 auto;
+  text-align: center;
+  margin: 20px;
+  font-size: 1em;
+}
+
+#documentation_body > .container > .header > .greet_text > i {
+  margin-right: 10px;
+} 
+
+#documentation_body > .card_holder{
+  margin-top: 110px;
+}
+
+#documentation_body > .card_holder > .function_card{
+  margin: 10px;
+  box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,.132), 0 0.3px 0.9px 0 rgba(0,0,0,.108);
+  padding: 20px;
+  background: #f3f2f1;
+}
+
+#documentation_body > .card_holder > .function_card > .text_with_margin{
+  margin-top: 10px;
+}
+
+#documentation_body > .card_holder > .function_card > .function_parameters{
+  list-style-type: none;
+  font-size: 14px;
+}
+
+#documentation_body > .card_holder > .function_card > ul{
+  margin-top: 6px;
+  padding-left: 20px;
+}
+
+.ms-ProgressIndicator {
+  margin-top: 10px !important;
+}
+
+.ms-Dialog-action > .ms-Spinner {
+  float: left;
+  margin-top: 4px;
+}
+
+tr > td:first-child {
+  text-align: right;
+  padding-left: 2px;
+  padding-right: 4px;
+  border: 1px solid black;
+}
+
+tr > td:nth-child(2) {
+  text-align: left;
+  padding-left: 4px;
+  padding-right: 2px;
+  border: 1px solid grey;
+}
+
+#map {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  background: rgb(59, 59, 59);
+}
+
+#map-wrapper{
+  display: flex;
+}
+
+#map-bottom-bar{
+  z-index: 10000;
+  position: absolute;
+  margin-left: 50%;
+  margin-right: 50%;
+  left: -175px;
+  right: 0px;
+  width: 400px;
+  bottom: 10px;
+}
+
+#map-bottom-bar > button{
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+#map-wrapper > div.panel-nav{
+  position: absolute;
+  z-index: 1000000;
+  margin-left: 10px;
+  margin-top: 10px;
+  left: 0;
+}
+
+#map-interface{
+  position: absolute;
+  z-index: 1000000;
+  bottom: 10px;
+  left: 160px;
+}
+
+#map-interface > button{
+  margin-right: 10px;
+}
+
+#map-interface > div.ms-TooltipHost > button.navbutton{
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  height: 28px;
+  width: 10px;
+  z-index: 1000000;
+  font-size: 1.2em;
+  font-weight: 600;
+  margin: 0;
+  padding: 0;
+}
+
+#modal-styler > div.ms-TextField{
+  margin-bottom: 10px;
+}
+
+.ms-ColorPicker-table{
+  display: none;
+}
+
+.ms-ColorPicker-panel{
+  padding: 0;
+  padding-top: 10px;
+}
+
+.icon.boldIcon{
+  font-weight: bolder;
+  font-size: larger;
+}
+
+.leaflet-control-layers-list{
+  overflow: hidden;
+}
+
+.leaflet-control-layers-expanded,
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar{
+  border-radius: 2px !important;
+  color: rgb(50, 49, 48) !important;
+  border: 1px solid rgb(138, 136, 134) !important;
+}
+
+.colorOpen{
+  height: 24px;
+  width: 100%;
+  right: 0;
+  background: #333;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.colorOpen:hover{
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  border: 1px solid #323130;
+}
+
+.createButton{
+  float: right;
+  margin-top: 20px;
+}
+
+.panel-footer{
+  position: absolute;
+  bottom: 10px;
+  margin: 10px;
+}
+
+.panel-footer > button{
+  margin-right: 10px;
+}
+
+.footer{
+  bottom: 10px;
+  float: right;
+}
+
+.layer-list{
+  min-height: 200px;
+  max-height: 600px;
+  background: #edebe9;
+  margin-top: 20px;
+  border-radius: 2px;
+  overflow: auto;
+}
+
+.layer-item{
+  align-items: center;
+  display: flex;
+  padding: 10px;
+  border-bottom: 1px solid #d4d4d4;
+}
+
+.layer-item > .style-box{
+  background-color: red;
+  border: 1px solid #d4d4d4;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+}
+
+.layer-item > .style-box:hover{
+  box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,.132), 0 0.3px 0.9px 0 rgba(0,0,0,.108);
+  cursor: pointer;
+}
+
+.layer-item > div{
+  margin-right: 10px;
+}
+
+.layer-item > div.editables{
+  display: flex;
+  align-items: center;
+}
+
+.layer-item > div.editables > div{
+  margin-left: 10px;
+  padding: 4px;
+}
+
+.layer-item > div.editables > div:hover,
+.layer-delete:hover,
+.layer-prop-add:hover{
+  box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,.132), 0 0.3px 0.9px 0 rgba(0,0,0,.108);
+  background: #e1dfdd;
+  cursor: pointer;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip{
+  box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,.132), 0 0.3px 0.9px 0 rgba(0,0,0,.108) !important;
+  border-radius: 2px !important;
+}
+
+.layer-item > .layer-name{
+  width: 90px;
+}
+
+.layer-item > .ms-Toggle{
+  margin-top: 8px;
+}
+
+.add-point-to-layer,
+.add-point-to-layer-back{
+  float: right;
+  margin-top: 10px;
+}
+.add-point-to-layer {
+  margin-left: 10px;
+}
+
+.ms-Callout-main{
+  padding: 10px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.ms-Label.ms-Slider-value{
+  width: 20px;
+}
+
+.sliders > span{
+  font-weight: 600;
+}
+
+table.properties-table > tr{
+  display: flex;
+  align-items: center;
+}
+
+table.properties-table > tr > span,
+table.properties-table > tr > .layer-prop-key{
+  width: 70px !important;
+  margin-right: 10px;
+  text-align: right;
+}
+
+table.properties-table > tr > div.ms-TextField{
+  width: 100px;
+}
+
+table.properties-table > tr > div.layer-delete,
+table.properties-table > tr > div.layer-prop-add{
+  width: 14px;
+  height: 14px;
+  padding: 10px;
+  margin-left: 10px;
+  text-align: center;
+}
+
+.prop-footer {
+  margin-top: 20px;
+  float: right;
+}
+
+.prop-footer > button{
+  margin-left: 10px;
+}
+
+.message-bar{
+  z-index: 1000;
+  position: absolute;
+  left: 0;
+  right: 0;
+  max-width: 500px;
+  margin: 0 auto;
+  margin-top: 10px;
+}
+
+.leaflet-dragging .leaflet-grab,
+.leaflet-dragging .leaflet-grab .leaflet-interactive,
+.leaflet-dragging .leaflet-marker-draggable {
+  cursor: move;
+  cursor: url(assets/icons/grab_closed.cur), move !important;
+	cursor: -webkit-grabbing;
+	cursor: -moz-grabbing;
+	cursor: grabbing;
+}
+
+.leaflet-grab,
+.leaflet-crosshair,
+.leaflet-crosshair .leaflet-interactive {
+  cursor: move;
+  cursor: url(assets/icons/grab_open.cur), move !important;
+	cursor: -webkit-grab;
+	cursor: -moz-grab;
+	cursor: grab;
+}
+
+.leaflet-control-layers-selector,
+.leaflet-control-layers-base > label > div,
+.leaflet-control-layers-overlays > label > div{
+  cursor: pointer;
+}
+
+body{
+  -ms-content-zooming: none;
+  -ms-overflow-y: hidden;
+  overflow-y: hidden;
+}
+
+@media (max-height: 640px) {
+  #taskpane_body > .ms-Image{
+    display: none;
+  }  
+}
