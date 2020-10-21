@@ -319,7 +319,7 @@
         <bt:Url id="AboutMastercard.Url" DefaultValue="https://www.mastercard.com/"/>
         <bt:Url id="AboutOPM.Url" DefaultValue="https://www.opml.co.uk/"/>
         <bt:Url id="AboutNiras.Url" DefaultValue="https://www.niras.com/"/>
-        <bt:Url id="Functions.Script.Url" DefaultValue="https://satf.azurewebsites.net/custom_functions.60ad6b8283e10ca37f8b532a.js"/>
+        <bt:Url id="Functions.Script.Url" DefaultValue="https://satf.azurewebsites.net/custom_functions.d01d53520a5b59f3aeb41e3d.js"/>
         <bt:Url id="Functions.Metadata.Url" DefaultValue="https://satf.azurewebsites.net/custom_functions_meta.json"/>
         <bt:Url id="Taskpane.Url" DefaultValue="https://satf.azurewebsites.net/map"/>
       </bt:Urls>
