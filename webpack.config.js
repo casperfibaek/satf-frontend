@@ -68,7 +68,7 @@ module.exports = async (env, options) => {
         files: [
           {
             template: path.join('src/manifest.ejs'),
-            filename: 'satf_local.xml',
+            filename: `satf_local.${packageJson.version}.xml`,
             data: {
               base: 'https://localhost:3000',
               appId: 'f8b6c6c3-08a9-470d-8cc2-83fb3cd52c88',
@@ -79,7 +79,7 @@ module.exports = async (env, options) => {
           },
           {
             template: path.join('src/manifest.ejs'),
-            filename: 'satf_development.xml',
+            filename: `satf_development.${packageJson.version}.xml`,
             data: {
               base: 'https://satfstaticdev.z6.web.core.windows.net',
               appId: '594a9feb-ec64-4288-8440-a56b59d3e147',
@@ -90,7 +90,7 @@ module.exports = async (env, options) => {
           },
           {
             template: path.join('src/manifest.ejs'),
-            filename: 'satf_production.xml',
+            filename: `satf_production.${packageJson.version}.xml`,
             data: {
               base: 'https://satfstatic.z6.web.core.windows.net',
               appId: 'b208298e-1e1e-486b-bdc4-fa507d8c248f',
