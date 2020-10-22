@@ -4,7 +4,9 @@
   "author": "Casper Fibaek @ NIRAS",
   "license": "Unlicenced for now",
   "private": true,
-  "browserslist": ["IE 11"],
+  "browserslist": [
+    "IE 11"
+  ],
   "scripts": {
     "build": "custom-functions-metadata generate ./src/custom_functions.ts ./src/custom_functions_meta.json && webpack --mode production",
     "build:dev": "webpack --mode development",
@@ -27,11 +29,10 @@
     "@fluentui/react": "^7.147.1",
     "core-js": "^3.6.5",
     "fuse.js-ie11": "^6.0.0",
-    "jsonwebtoken": "^8.5.1",
     "leaflet": "^1.7.1",
-    "react": "^17.0.0",
+    "react": "^17.0.1",
     "react-app-polyfill": "^1.0.6",
-    "react-dom": "^17.0.0",
+    "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0"
   },
   "devDependencies": {
@@ -52,7 +53,6 @@
     "babel-loader": "^8.1.0",
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^6.2.1",
-    "css-loader": "^5.0.0",
     "custom-functions-metadata": "^1.0.35",
     "eslint": "^7.11.0",
     "eslint-config-airbnb": "^18.2.0",
@@ -62,15 +62,11 @@
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "file-loader": "^6.1.1",
-    "fork-ts-checker-webpack-plugin": "^5.2.0",
     "html-webpack-plugin": "^5.0.0-alpha.6",
     "office-addin-cli": "^1.0.13",
     "office-addin-debugging": "^3.0.37",
     "office-addin-dev-certs": "^1.5.7",
     "office-addin-manifest": "^1.5.9",
-    "style-loader": "^2.0.0",
-    "terser-webpack-plugin": "^5.0.0",
     "typescript": "^4.0.3",
     "webpack": "^5.1.3",
     "webpack-cli": "^4.1.0",

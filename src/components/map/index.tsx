@@ -19,9 +19,6 @@ import {
   // addDataToLayer,
 } from './map_layers';
 
-// CSS
-import '../../assets/leaflet.css';
-
 // Types
 import { WindowState } from '../../types';
 

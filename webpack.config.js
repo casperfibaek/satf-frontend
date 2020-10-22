@@ -1,11 +1,10 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const XMLWebpackPlugin = require('xml-webpack-plugin');
-const path = require('path');
-const TerserPlugin = require('terser-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const devCerts = require('office-addin-dev-certs');
 const crypto = require('crypto');
+const path = require('path');
 const packageJson = require('./package.json');
 
 module.exports = async (env, options) => {
@@ -27,31 +26,6 @@ module.exports = async (env, options) => {
           loader: 'babel-loader',
           exclude: /node_modules/,
         },
-        {
-          test: /\.css$/i,
-          use: ['style-loader', 'css-loader'],
-          exclude: /node_modules/,
-        },
-        {
-          test: /\.(png|jpe?g|gif)$/i,
-          loader: 'file-loader',
-          options: {
-            name: '[name].[ext]',
-          },
-          exclude: /node_modules/,
-        },
-      ],
-    },
-    optimization: {
-      minimize: true,
-      minimizer: [
-        new TerserPlugin({
-          extractComments: {
-            condition: /^\**!|@preserve|@license|@cc_on/i,
-            filename: (fileData) => `${fileData.filename}.LICENSE.txt${fileData.query}`,
-            banner: (licenseFile) => `License information can be found in ${licenseFile}`,
-          },
-        }),
       ],
     },
     plugins: [
@@ -59,7 +33,6 @@ module.exports = async (env, options) => {
       new CopyPlugin({
         patterns: [
           { from: 'src/**/*.html', flatten: true },
-          { from: 'src/**/*.css', flatten: true },
           { from: 'src/**/*.json', flatten: true },
           { from: 'src/assets/', to: 'assets' },
         ],

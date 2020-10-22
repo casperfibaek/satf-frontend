@@ -232,7 +232,7 @@ tr > td:nth-child(2) {
   height: 100%;
   width: 100%;
   overflow: hidden;
-  position: absolute !important;
+  position: absolute;
   margin: 0;
   padding: 0;
   background: rgb(59, 59, 59);
