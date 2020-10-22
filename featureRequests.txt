@@ -1,6 +1,7 @@
 
-    1. Add export functionality to the map
-    2. Enable full desktop support
-    3. A 'You are here' button
-    4. Improve population density estimates
-    5. Create wealth estimates
+    o Add export functionality to the map
+    o A 'You are here' button
+    o Improve population density estimates
+    o Create wealth estimates
+    o Nightlights
+    o NDVI

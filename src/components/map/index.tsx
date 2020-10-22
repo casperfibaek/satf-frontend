@@ -117,22 +117,6 @@ function initialiseMap(mapContainer:any) {
   L.control.layers(basemaps, overlaymaps, { collapsed: true }).addTo(leafletMap);
   layers.base.s2_2020.addTo(leafletMap);
 
-  // https://github.com/Leaflet/Leaflet/issues/3575
-  (function fixTileGap() {
-    // @ts-ignore-line
-    const originalInitTile:any = L.GridLayer.prototype._initTile;
-    L.GridLayer.include({
-      _initTile(tile:any) {
-        originalInitTile.call(this, tile);
-
-        const tileSize = this.getTileSize();
-
-        tile.style.width = `${tileSize.x + 1}px`;  // eslint-disable-line
-        tile.style.height = `${tileSize.y + 1}px`; // eslint-disable-line
-      },
-    });
-  }());
-
   return leafletMap;
 }
 
@@ -146,7 +130,7 @@ function Map() {
 
   // Surfaces
   const [panelLayers, setPanelLayers] = useState({ hidden: true });
-  const [calloutSelect, setCalloutSelect] = useState({ hidden: true, data: null });
+  const [calloutSelect, setCalloutSelect] = useState({ hidden: true, data: null, target: null });
   const [dialogCreate, setDialogCreate] = useState({ hidden: true, name: '' });
   const [errorbar, setErrorbar] = useState({ hidden: true, text: 'Default message', type: MessageBarType.warning });
   const [dialogProperties, setDialogProperties] = useState({
@@ -161,8 +145,8 @@ function Map() {
   };
 
   const statusCalloutSelect = {
-    open: (data:any = null) => setCalloutSelect({ hidden: false, data }),
-    close: () => setCalloutSelect({ hidden: true, data: null }),
+    open: (data:any = null, target:any = null) => setCalloutSelect({ hidden: false, data, target }),
+    close: () => setCalloutSelect({ hidden: true, data: null, target: null }),
     current: calloutSelect,
   };
 
@@ -238,9 +222,9 @@ function Map() {
         setSelectedLayer(key);
         addMarkerToLayer(key);
       } else {
-        setCalloutSelect({ hidden: false, data: null });
+        setCalloutSelect({ hidden: false, data: null, target: null });
         state.leafletMap.on('movestart', () => {
-          setCalloutSelect({ hidden: true, data: null });
+          setCalloutSelect({ hidden: true, data: null, target: null });
           state.leafletMap.off('movestart');
         });
       }

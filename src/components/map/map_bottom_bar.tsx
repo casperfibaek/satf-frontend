@@ -95,7 +95,7 @@ export default function BottomBar(props:any) {
       props.setSelectedLayer(key);
       addDataToLayer(key, geojson);
     } else {
-      props.statusCalloutSelect.open(geojson);
+      props.statusCalloutSelect.open(geojson, '.bottombar_request');
     }
     event.preventDefault();
   }
@@ -118,7 +118,7 @@ export default function BottomBar(props:any) {
           <DefaultButton onClick={() => { closeSendDialog(); } } text="Don't send" />
         </DialogFooter>
       </Dialog>
-      <PrimaryButton text="Request Excel Data" onClick={onRequest} />
+      <PrimaryButton className="bottombar_request" text="Request Excel Data" onClick={onRequest} />
       <DefaultButton text="Send Data to Excel" onClick={onSend} />
     </div>
   );

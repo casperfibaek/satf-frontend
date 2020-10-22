@@ -23,7 +23,7 @@ export default function SelectLayer(props:any) {
     <Callout
       role="alertdialog"
       gapSpace={0}
-      target={state.click.position}
+      target={props.statusCalloutSelect.current.target ? props.statusCalloutSelect.current.target : state.click.position}
       hidden={props.statusCalloutSelect.current.hidden}
       onDismiss={() => { props.statusCalloutSelect.close(); } }
       setInitialFocus
