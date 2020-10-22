@@ -28,7 +28,7 @@ function onEventFromDialog(arg:any):void {
 
 function openDialog(url:string, openEvent:Office.AddinCommands.Event, ask:boolean = true, listen:boolean = false, iFrame = false, callback = (result:any) => { }):void { // eslint-disable-line
   Office.context.ui.displayDialogAsync(url, {
-    height: 40, width: 30, promptBeforeOpen: ask, displayInIframe: iFrame,
+    height: 50, width: 30, promptBeforeOpen: ask, displayInIframe: iFrame,
   }, (asyncResult) => {
     if (asyncResult.status === Office.AsyncResultStatus.Failed) {
       console.log('Failed to open window and attach listeners..');

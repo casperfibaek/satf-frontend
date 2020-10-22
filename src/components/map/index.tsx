@@ -1,5 +1,5 @@
 // Libraries
-import React, { useEffect, useState } from 'react'; // eslint-disable-line
+import React, { useEffect, useState, useCallback } from 'react'; // eslint-disable-line
 import L, { FeatureGroup, LeafletMouseEvent, CircleMarker } from 'leaflet';
 import { Text, MessageBar, MessageBarType } from '@fluentui/react';
 
@@ -193,55 +193,59 @@ function Map() {
     close: () => setErrorbar({ hidden: true, text: 'Default message', type: MessageBarType.info }),
   };
 
-  function autoCreateNewLayer() {
+  const autoCreateNewLayer = useCallback(() => {
     const mapLayer = createNewMapLayer('Default');
     setSelectedLayer(mapLayer.key);
 
     mapLayer.featureGroup.on('click', (event:any) => {
-      statusDialogProperties.open(event.originalEvent, event.layer, mapLayer.featureGroup);
+      setDialogProperties({
+        hidden: false,
+        position: event.originalEvent,
+        marker: event.layer,
+        featureGroup: mapLayer.featureGroup,
+      });
       L.DomEvent.preventDefault(event);
       L.DomEvent.stopPropagation(event);
       state.leafletMap.on('movestart', () => {
-        statusDialogProperties.close();
+        setDialogProperties({
+          hidden: true, position: {}, marker: null, featureGroup: null,
+        });
         state.leafletMap.off('movestart');
       });
     });
-  }
-
-  // Events
-  function onMapMouseClick(event:LeafletMouseEvent) {
-    state.click = ({
-      ...state.click,
-      ...{
-        position: event.originalEvent,
-        latlng: [event.latlng.lat, event.latlng.lng],
-      },
-    });
-
-    let key = -1;
-    const layerCount = getLayerCount();
-    if (layerCount === 0) {
-      autoCreateNewLayer();
-    }
-
-    if (layerCount <= 1) {
-      key = getFirstLayerKey();
-      setSelectedLayer(key);
-      addMarkerToLayer(key);
-    } else {
-      statusCalloutSelect.open();
-      state.leafletMap.on('movestart', () => {
-        statusCalloutSelect.close();
-        state.leafletMap.off('movestart');
-      });
-    }
-  }
+  }, []);
 
   // Run on startup
   useEffect(() => {
     state.leafletMap = initialiseMap(mapContainer);
-    state.leafletMap.on('click', (event:LeafletMouseEvent) => { onMapMouseClick(event); });
-  }, [mapContainer]); // eslint-disable-line
+    state.leafletMap.on('click', (event:LeafletMouseEvent) => {
+      state.click = ({
+        ...state.click,
+        ...{
+          position: event.originalEvent,
+          latlng: [event.latlng.lat, event.latlng.lng],
+        },
+      });
+
+      let key = -1;
+      const layerCount = getLayerCount();
+      if (layerCount === 0) {
+        autoCreateNewLayer();
+      }
+
+      if (layerCount <= 1) {
+        key = getFirstLayerKey();
+        setSelectedLayer(key);
+        addMarkerToLayer(key);
+      } else {
+        setCalloutSelect({ hidden: false, data: null });
+        state.leafletMap.on('movestart', () => {
+          setCalloutSelect({ hidden: true, data: null });
+          state.leafletMap.off('movestart');
+        });
+      }
+    });
+  }, [mapContainer, autoCreateNewLayer]);
 
   return (
     <div id="map-wrapper">

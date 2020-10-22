@@ -52,7 +52,7 @@ function MessageBarComp(props: any) {
 }
 
 function Welcome(props: any) {
-  const [modalStatus, setModelStatus] = useState(true);
+  const [modalStatus, setModalStatus] = useState(true);
   const [loadingStatus, setLoadingStatus] = useState({ show: false, text: '' });
   const [displayMessage, setDisplayMessage] = useState({ show: false, text: '', type: 1 });
 
@@ -85,7 +85,7 @@ function Welcome(props: any) {
       console.log(err);
       setDisplayMessage({ show: true, text: 'Unable to delete user', type: 1 });
     } finally {
-      setModelStatus(true);
+      setModalStatus(true);
       setLoadingStatus({ show: false, text: '' });
     }
   }
@@ -122,7 +122,7 @@ function Welcome(props: any) {
         />
         <PrimaryButton
           text="Delete User"
-          onClick={() => { setModelStatus(false); }}
+          onClick={() => { setModalStatus(false); }}
           allowDisabledFocus
         />
       </div>
@@ -138,7 +138,7 @@ function Welcome(props: any) {
         <DialogFooter>
           <SpinnerComp className="spinner" loading={loadingStatus.show} loadingMessage={loadingStatus.text}/>
           <PrimaryButton text="Yes" onClick={() => { if (!loadingStatus.show) { onDelete(); } }} />
-          <DefaultButton text="No" onClick={() => { if (!loadingStatus.show) { setModelStatus(true); } }} />
+          <DefaultButton text="No" onClick={() => { if (!loadingStatus.show) { setModalStatus(true); } }} />
         </DialogFooter>
       </Dialog>
     </div>
@@ -363,6 +363,17 @@ function Login(): any {
   const [userInfo, setUserInfo] = useState({ username: '', password: '' });
 
   function renderLogic() {
+    const token = getValueForKey('satf_token');
+
+    if (token !== '' && token !== null && token !== undefined && token.split(':').length === 2) {
+      const user = { username: token.split(':')[0], password: '' };
+
+      return (<Welcome
+        userInfo={user}
+        setUserInfo={setUserInfo}
+        setCurrentPage={setCurrentPage}
+      />);
+    }
     if (currentPage.register) {
       return (<Register
         userInfo={userInfo}

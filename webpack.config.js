@@ -71,6 +71,7 @@ module.exports = async (env, options) => {
             filename: 'satf_local.xml',
             data: {
               base: 'https://localhost:3000',
+              appId: 'f8b6c6c3-08a9-470d-8cc2-83fb3cd52c88',
               version: `${packageJson.version}`,
               type: 'Local - ',
               local_custom_functions: `https://localhost:3000/custom_functions.${hash}.js`,
@@ -81,6 +82,7 @@ module.exports = async (env, options) => {
             filename: 'satf_development.xml',
             data: {
               base: 'https://satfstaticdev.z6.web.core.windows.net',
+              appId: '594a9feb-ec64-4288-8440-a56b59d3e147',
               local_custom_functions: `https://satfstaticdev.z6.web.core.windows.net/custom_functions.${hash}.js`,
               type: 'Development - ',
               version: `${packageJson.version}`,
@@ -91,6 +93,7 @@ module.exports = async (env, options) => {
             filename: 'satf_production.xml',
             data: {
               base: 'https://satfstatic.z6.web.core.windows.net',
+              appId: 'b208298e-1e1e-486b-bdc4-fa507d8c248f',
               local_custom_functions: `https://satfstatic.z6.web.core.windows.net/custom_functions.${hash}.js`,
               type: '',
               version: `${packageJson.version}`,
