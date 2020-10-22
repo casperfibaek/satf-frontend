@@ -6,7 +6,6 @@ import Styler from './map_styler';
 import {
   toggleLayer, getFirstLayerKey, removeLayer, getLayer, getLayerCount,
 } from './map_layers';
-import packageJson from '../../../package.json';
 
 import { WindowState } from '../../types';
 
@@ -70,22 +69,21 @@ export default function LayerList(props:any) {
         selectedLayer={props.selectedLayer}
       />
       <Dialog
-      hidden={statusDeleteAlert.current.hidden}
-      onDismiss={() => { statusDeleteAlert.close(); }}
-      dialogContentProps={{
-        type: DialogType.normal,
-        title: `Delete ${getLayerCount() > 0 ? getLayer(props.selectedLayer).name : 'layer'}?`,
-        closeButtonAriaLabel: 'Close',
-        subText: 'Do you really want to delete this layer? The action is irreversible.',
-      }}
-    >
-      <DialogFooter>
-        <DefaultButton onClick={() => { statusDeleteAlert.close(); }} text="Back" />
-        <PrimaryButton onClick={() => { deleteLayer(); }} text="Delete" />
-      </DialogFooter>
-    </Dialog>
+        hidden={statusDeleteAlert.current.hidden}
+        onDismiss={() => { statusDeleteAlert.close(); }}
+        dialogContentProps={{
+          type: DialogType.normal,
+          title: `Delete ${getLayerCount() > 0 ? getLayer(props.selectedLayer).name : 'layer'}?`,
+          closeButtonAriaLabel: 'Close',
+          subText: 'Do you really want to delete this layer? The action is irreversible.',
+        }}
+      >
+        <DialogFooter>
+          <DefaultButton onClick={() => { statusDeleteAlert.close(); }} text="Back" />
+          <PrimaryButton onClick={() => { deleteLayer(); }} text="Delete" />
+        </DialogFooter>
+      </Dialog>
       <div className="layer-list">{layers}</div>
-      <div style={{ float: 'right', marginRight: '10px' }}>{`Current Version: ${packageJson.version}`}</div>
     </div>
   );
 }

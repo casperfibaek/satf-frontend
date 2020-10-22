@@ -183,6 +183,7 @@ export function addDataToLayer(key:number, data:any) {
         },
       });
     }
+    state.leafletMap.fitBounds(L.geoJSON(data).getBounds());
   } catch (err) {
     console.log(err);
     throw new Error('Unable to parse data received from Excel. Malformed?');

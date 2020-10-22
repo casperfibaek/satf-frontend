@@ -3,13 +3,13 @@ import {
   PrimaryButton, Panel, DefaultButton, FontIcon, PanelType, DialogFooter, Dialog, DialogType,
 } from '@fluentui/react';
 import LayerList from './map_panel_list';
-import { clearLayers } from './map_layers';
+import { clearLayers, getLayerCount } from './map_layers';
 
 export default function MapPanel(props:any) {
   const [deleteAlert, setDeleteAlert] = useState({ hidden: true });
 
   const statusDeleteAlert = {
-    open: () => setDeleteAlert({ hidden: false }),
+    open: () => { if (getLayerCount() !== 0) { setDeleteAlert({ hidden: false }); } },
     close: () => setDeleteAlert({ hidden: true }),
   };
 
