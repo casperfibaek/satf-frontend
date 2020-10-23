@@ -1,7 +1,12 @@
-
+Core:
     o Add export functionality to the map
     o A 'You are here' button
-    o Improve population density estimates
-    o Create wealth estimates
+    o Improved user control
+    o Private layers
+    o Installation process
+    
+Data:
     o Nightlights
     o NDVI
+    o Create wealth estimates
+    o Improve population density estimates

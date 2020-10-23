@@ -31,7 +31,6 @@ module.exports = {
     CustomFunctions: 'readonly',
     OfficeExtension: 'readonly',
     L: 'readonly', // Leaflet,
-    mapboxgl: 'readonly',
     FluentUIReact: 'readonly',
     ReactDOM: 'readonly',
     React: 'readonly',
