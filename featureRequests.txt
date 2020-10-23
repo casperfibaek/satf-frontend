@@ -3,6 +3,7 @@ Core:
     o Improved user control
     o Private layers
     o Improve Installation process
+    o Fix documentation page (Remove fuse dependency);
     
 Data:
     o Nightlights
