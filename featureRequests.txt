@@ -1,9 +1,8 @@
 Core:
     o Add export functionality to the map
-    o A 'You are here' button
     o Improved user control
     o Private layers
-    o Installation process
+    o Improve Installation process
     
 Data:
     o Nightlights

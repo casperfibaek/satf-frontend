@@ -491,7 +491,7 @@ table.properties-table > tr > div.layer-prop-add{
 .leaflet-dragging .leaflet-grab,
 .leaflet-dragging .leaflet-grab .leaflet-interactive,
 .leaflet-dragging .leaflet-marker-draggable {
-  cursor: url(assets/icons/grab_closed.cur), move !important;
+  cursor: url(./icons/grab_closed.cur), move;
   cursor: -webkit-grabbing;
   cursor: -moz-grabbing;
   cursor: grabbing;
@@ -500,7 +500,7 @@ table.properties-table > tr > div.layer-prop-add{
 .leaflet-grab,
 .leaflet-crosshair,
 .leaflet-crosshair .leaflet-interactive {
-  cursor: url(assets/icons/grab_open.cur), move !important;
+  cursor: url(./icons/grab_open.cur), move;
   cursor: -webkit-grab;
   cursor: -moz-grab;
   cursor: grab;
@@ -521,4 +521,23 @@ body{
   #taskpane_body > .ms-Image{
     display: none;
   }  
+}
+
+.location-icon {
+  background-image: url(./icons/location.svg);
+  background-size: 20px;
+  height: 24px;
+  width: 24px;
+  margin-left: -10px;
+  margin-top: 5px;
+  position: absolute;
+  padding: 0;
+  background-repeat: no-repeat;
+}
+
+@media all and (-ms-high-contrast:none) { /* IE11 specific rules */
+*::-ms-backdrop, .location-icon { 
+  margin-left: 5px;
+  margin-top: 5px;
+ }
 }

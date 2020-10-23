@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useCallback } from 'react'; // eslint-disable-line
 import L, { FeatureGroup, LeafletMouseEvent, CircleMarker } from 'leaflet';
 import { Text, MessageBar, MessageBarType } from '@fluentui/react';
+import 'leaflet.locatecontrol';
 
 // Components
 import MapPanel from './map_panel';
@@ -111,6 +112,7 @@ function initialiseMap(mapContainer:any) {
 
   L.control.scale().addTo(leafletMap);
   L.control.zoom({ position: 'bottomright' }).addTo(leafletMap);
+  L.control.locate({ position: 'bottomright', icon: 'location-icon' }).addTo(leafletMap);
   L.control.layers(basemaps, overlaymaps, { collapsed: true }).addTo(leafletMap);
   layers.base.s2_2020.addTo(leafletMap);
 
