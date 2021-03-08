@@ -112,6 +112,7 @@ function initialiseMap(mapContainer:any) {
 
   L.control.scale().addTo(leafletMap);
   L.control.zoom({ position: 'bottomright' }).addTo(leafletMap);
+  // @ts-ignore-line
   L.control.locate({ position: 'bottomright', icon: 'location-icon' }).addTo(leafletMap);
   L.control.layers(basemaps, overlaymaps, { collapsed: true }).addTo(leafletMap);
   layers.base.s2_2020.addTo(leafletMap);
