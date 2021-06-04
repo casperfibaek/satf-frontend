@@ -1,6 +1,10 @@
-import { GeoJsonFeature, GeoJsonFeatureCollection, GeoJsonGeometry } from '../../types';
+import {
+  GeoJsonFeature,
+  GeoJsonFeatureCollection,
+  GeoJsonGeometry,
+} from '../../types';
 
-function findUnique(arrOfObjects:any[]):any[] {
+function findUnique(arrOfObjects: any[]): any[] {
   const found = [];
   for (let i = 0; i < arrOfObjects.length; i += 1) {
     const propertyKeys = Object.keys(arrOfObjects[i]);
@@ -20,10 +24,13 @@ function findUnique(arrOfObjects:any[]):any[] {
   return found;
 }
 
-export default function geojsonToArray(geojson:GeoJsonFeatureCollection|GeoJsonFeature|GeoJsonGeometry, layername:boolean|string = false):any[] {
-  let cells:any[] = [];
+export default function geojsonToArray(
+  geojson: GeoJsonFeatureCollection | GeoJsonFeature | GeoJsonGeometry,
+  layername: boolean | string = false,
+): any[] {
+  let cells: any[] = [];
 
-  const validLayername = (typeof layername === 'string' && layername.length !== 0);
+  const validLayername = typeof layername === 'string' && layername.length !== 0;
 
   if (geojson.type === 'FeatureCollection') {
     if (geojson.features.length === 0) {
@@ -31,8 +38,8 @@ export default function geojsonToArray(geojson:GeoJsonFeatureCollection|GeoJsonF
       return;
     }
 
-    const latlngs = geojson.features.map((e:any) => e.geometry.coordinates);
-    const properties = geojson.features.map((e:any) => e.properties);
+    const latlngs = geojson.features.map((e: any) => e.geometry.coordinates);
+    const properties = geojson.features.map((e: any) => e.properties);
 
     const baseHeaders = findUnique(properties);
 
@@ -48,10 +55,12 @@ export default function geojsonToArray(geojson:GeoJsonFeatureCollection|GeoJsonF
       }
       latlngs[i].reverse();
       latlngs[i] = latlngs[i].concat(propertyValues);
-      if (validLayername) { latlngs[i].unshift(layername); }
+      if (validLayername) {
+        latlngs[i].unshift(layername);
+      }
     }
 
-    let header:any[];
+    let header: any[];
     if (validLayername) {
       header = ['layername', 'latitude', 'longitude'].concat(baseHeaders);
     } else {
@@ -60,24 +69,35 @@ export default function geojsonToArray(geojson:GeoJsonFeatureCollection|GeoJsonF
     cells = [header, ...latlngs];
 
     return cells;
-  } if (geojson.type === 'Feature') {
+  }
+  if (geojson.type === 'Feature') {
     const latlngs = geojson.geometry.coordinates;
     const { properties } = geojson;
     const geojsonKeys = Object.keys(properties);
 
     const header = [];
-    if (validLayername) { header.push('layername'); }
-    if (!geojsonKeys.includes('latitude')) { header.push('latitude'); }
-    if (!geojsonKeys.includes('longitude')) { header.push('longitude'); }
+    if (validLayername) {
+      header.push('layername');
+    }
+    if (!geojsonKeys.includes('latitude')) {
+      header.push('latitude');
+    }
+    if (!geojsonKeys.includes('longitude')) {
+      header.push('longitude');
+    }
     header.concat(geojsonKeys);
 
     cells = [header, latlngs.reverse()];
 
     return cells;
-  } if (geojson.type === 'Point') {
+  }
+  if (geojson.type === 'Point') {
     const latlngs = geojson.coordinates;
 
-    return [['latitude', 'longitude'], [latlngs[1], latlngs[0]]];
+    return [
+      ['latitude', 'longitude'],
+      [latlngs[1], latlngs[0]],
+    ];
   }
 
   throw new Error('Unable to turn geojson to cells.');

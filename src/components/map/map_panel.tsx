@@ -52,6 +52,7 @@ export default function MapPanel(props:any) {
           setSelectedLayer={props.setSelectedLayer}
         />
           <PrimaryButton text="Create layer" className="createButton" onClick={() => { props.statusDialogCreate.open(); }} />
+          <div>Current Version: 0.4.5</div>
         <div className="panel-footer">
           <DefaultButton onClick={() => { props.statusPanel.close(); }}>Close</DefaultButton>
           <DefaultButton text="Delete all layers" className="deleteButton" onClick={() => { statusDeleteAlert.open(); }} />

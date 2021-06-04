@@ -1,9 +1,9 @@
-# Savings at the Frontiers - Excel-addin 
+# Savings at the Frontiers - Excel-addin
 
 Serves information from the database to the Excel addin.
 
 Steps for installing:
-    Running at https://satf.azurewebsites.net/
+Running at https://satf.azurewebsites.net/
 
     Web:
         1. Compile using tsc
@@ -25,9 +25,9 @@ Steps for installing:
         %userprofile%\AppData\Local\Packages\Microsoft.Win32WebViewHost_cw5n1h2txyewy\AC\#!123\INetCache\
         %LOCALAPPDATA%\Microsoft\Office\16.0\Wef\
 
-    Loopback exception for local dev: 
-        CheckNetIsolation LoopbackExempt -a -n="microsoft.win32webviewhost_cw5n1h2txyewy" 
-    
+    Loopback exception for local dev:
+        CheckNetIsolation LoopbackExempt -a -n="microsoft.win32webviewhost_cw5n1h2txyewy"
+
     Remeber to install certificate in certs.
         1. Go to {project root}\certs.
         2. Double-click server.crt, and select Install Certificate.
@@ -40,3 +40,12 @@ Steps for installing:
 
 Copyright: NIRAS A/S
 License: Undisclosed
+
+There are two environments
+DEV and PROD
+PROD is at https://satfstatic.z6.web.core.windows.net/?page=map
+DEV is at https://satfstaticdev.z6.web.core.windows.net/?page=map
+
+To build:
+Run npm run build - Do not run tsc
+Right click "dist" folder at upload to satf_static @ azure

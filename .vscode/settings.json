@@ -9,5 +9,6 @@
     "javascript",
     "javascriptreact",
     "typescript"
-  ]
+  ],
+  "appService.showBuildDuringDeployPrompt": false
 }
