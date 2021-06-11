@@ -10,6 +10,7 @@ import {
   getValueForKey,
   getGlobal,
   getApiUrl,
+  haversine,
 } from './utils';
 import { ApiReply } from './types';
 
@@ -162,12 +163,12 @@ g.LATLNG_TO_PLUSCODE = LATLNG_TO_PLUSCODE;
 /**
  * Tests if there is access to the API and the user is logged in.
  * An address can be used instead of Latitude.
- * @customfunction HELLO_WORLD
+ * @customfunction API_VERSION
  * @return {Promise<string>} Cell saying 'Hello world!' or 'Unauthorised'.
  */
-async function HELLO_WORLD():Promise<string> {
+async function API_VERSION():Promise<string> {
   try {
-    const url = `${_apiUrl}hello_world`;
+    const url = `${_apiUrl}api_version`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -182,7 +183,7 @@ async function HELLO_WORLD():Promise<string> {
     throw errInvalidValue(err);
   }
 }
-g.HELLO_WORLD = HELLO_WORLD;
+g.API_VERSION = API_VERSION;
 
 /**
  * Calculates the amount of people within a circular radius of a point.
@@ -214,6 +215,45 @@ async function POPDENS_BUFFER(bufferMeters:any, latitudeOrAddress:any, longitude
   }
 }
 g.POPDENS_BUFFER = POPDENS_BUFFER;
+
+/**
+ * Calculate the average nightnight in an area.
+ * An address can be used instead of Latitude.
+ * @customfunction NIGHTLIGHT
+ * @param {any} bufferMeters
+ * @param {any} latitudeOrAddress
+ * @param {any} [longitude]
+ * @return {Promise<any[][]>} Timeseries of nightlight
+ */
+async function NIGHTLIGHT(bufferMeters:any, latitudeOrAddress:any, longitude:any = false):Promise<any[][]> {
+  try {
+    if (Number.isNaN(bufferMeters)) { throw errInvalidValue('Buffer not a number'); }
+
+    const coords = await parseToLatlng(latitudeOrAddress, longitude);
+    const url = `${_apiUrl}nightlights?buffer=${bufferMeters}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const token = getValueForKey('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+    if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+
+    const responseJSON:ApiReply = await apiResponse.json();
+    if (apiResponse.ok) {
+      if (responseJSON.message.length === 0) { return null; }
+      const cell:any[][] = [[], []];
+      for (let i = 0; i < responseJSON.message.length; i += 1) {
+        cell[0].push(responseJSON.message[i][0]);
+        cell[1].push(responseJSON.message[i][1]);
+      }
+      return cell;
+    }
+
+    throw errInvalidValue(responseJSON.message);
+  } catch (err) {
+    throw errInvalidValue(err);
+  }
+}
+g.NIGHTLIGHT = NIGHTLIGHT;
 
 /**
  * Calculates the amount of people within a walkable timeframe of the point. Circular approximation.
@@ -743,7 +783,7 @@ async function TIME_DISTANCE_A_TO_B_WALK(lat1:any, lng1:any, lat2:any, lng2:any,
 g.TIME_DISTANCE_A_TO_B_WALK = TIME_DISTANCE_A_TO_B_WALK;
 
 /**
- * Calculates the walking time/distance between two points.
+ * Calculates the biking time/distance between two points.
  * @customfunction TIME_DISTANCE_A_TO_B_BIKE
  * @param {any} lat1 Latitude of first point
  * @param {any} lng1 Longitude of first point
@@ -778,3 +818,81 @@ async function TIME_DISTANCE_A_TO_B_BIKE(lat1:any, lng1:any, lat2:any, lng2:any,
   }
 }
 g.TIME_DISTANCE_A_TO_B_BIKE = TIME_DISTANCE_A_TO_B_BIKE;
+
+/**
+ * Calculates the driving time/distance between two points.
+ * @customfunction TIME_DISTANCE_A_TO_B_CAR
+ * @param {any} lat1 Latitude of first point
+ * @param {any} lng1 Longitude of first point
+ * @param {any} lat2 Latitude of second point
+ * @param {any} lng2 Longitude of second point
+ * @param {any} [timeOrDistance] Whether to return time (minutes) or distance (meters). Defaults to time.
+ * @return {Promise<string>} Cell with PlusCode address.
+ */
+async function TIME_DISTANCE_A_TO_B_CAR(lat1:any, lng1:any, lat2:any, lng2:any, timeOrDistance:any = 'time'):Promise<string | number> {
+  try {
+    const coords1 = await parseToLatlng(lat1, lng1);
+    const coords2 = await parseToLatlng(lat2, lng2);
+    const url = `${_apiUrl}a_to_b_time_distance_car?lat1=${coords1[0][0]}&lng1=${coords1[0][1]}&lat2=${coords2[0][0]}&lng2=${coords2[0][1]}`;
+    const token = getValueForKey('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+    if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+
+    const responseJSON:ApiReply = await apiResponse.json();
+
+    if (apiResponse.ok) {
+      if (timeOrDistance === 'time') {
+        return String(responseJSON.message.time);
+      }
+      return Number(responseJSON.message.distance);
+    }
+
+    throw errInvalidValue(responseJSON.message);
+  } catch (err) {
+    throw errInvalidValue(err);
+  }
+}
+g.TIME_DISTANCE_A_TO_B_CAR = TIME_DISTANCE_A_TO_B_CAR;
+
+/**
+ * Calculates the distance between two points
+ * @customfunction DISTANCE_A_B
+ * @param {any} lat1 Latitude of first point
+ * @param {any} lng1 Longitude of first point
+ * @param {any} lat2 Latitude of second point
+ * @param {any} lng2 Longitude of second point
+ * @return {Promise<number>} Cell with PlusCode address.
+ */
+async function DISTANCE_A_B(lat1:any, lng1:any, lat2:any, lng2:any):Promise<string | number> {
+  try {
+    const coords1 = await parseToLatlng(lat1, lng1);
+    const coords2 = await parseToLatlng(lat2, lng2);
+
+    const distance = haversine(coords1[0], coords2[0], { format: "[lat,lon]", unit: "meter" });
+    return distance;
+  } catch (err) {
+    throw errInvalidValue(err);
+  }
+}
+g.DISTANCE_A_B = DISTANCE_A_B;
+
+/**
+ * Finds network COVERAGE
+ * @customfunction COVERAGE
+ * @param {any} lat Latitude
+ * @param {any} lng Longitude
+ * @return {Promise<string>} Technology available
+ */
+async function COVERAGE(lat:any, lng:any):Promise<string> { // eslint-disable-line
+  try {
+    const technology = ['LTE', 'LTE', 'LTE', '3G', '3G', '4G', 'GME', 'GME', 'GME', 'GME'];
+    const techIndex = Math.floor(Math.random() * technology.length);
+
+    return technology[techIndex];
+  } catch (err) {
+    throw errInvalidValue(err);
+  }
+}
+g.COVERAGE = COVERAGE;

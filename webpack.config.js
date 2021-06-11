@@ -32,8 +32,8 @@ module.exports = async (env, options) => {
       new CleanWebpackPlugin(),
       new CopyPlugin({
         patterns: [
-          { from: "src/**/*.html" },
-          { from: "src/**/*.json" },
+          { from: "src/**/*.html", to: "[name][ext]" },
+          { from: "src/**/*.json", to: "[name][ext]" },
           { from: "src/assets/", to: "assets" },
         ],
       }),

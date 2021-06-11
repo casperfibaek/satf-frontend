@@ -90,8 +90,8 @@
         },
         {
             "description": "Tests if there is access to the API and the user is logged in.\nAn address can be used instead of Latitude.",
-            "id": "HELLO_WORLD",
-            "name": "HELLO_WORLD",
+            "id": "API_VERSION",
+            "name": "API_VERSION",
             "parameters": [],
             "result": {
                 "type": "string"
@@ -118,6 +118,29 @@
             ],
             "result": {
                 "type": "number"
+            }
+        },
+        {
+            "description": "Calculate the average nightnight in an area.\nAn address can be used instead of Latitude.",
+            "id": "NIGHTLIGHT",
+            "name": "NIGHTLIGHT",
+            "parameters": [
+                {
+                    "name": "bufferMeters",
+                    "type": "any"
+                },
+                {
+                    "name": "latitudeOrAddress",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix"
             }
         },
         {
@@ -494,7 +517,7 @@
             }
         },
         {
-            "description": "Calculates the walking time/distance between two points.",
+            "description": "Calculates the biking time/distance between two points.",
             "id": "TIME_DISTANCE_A_TO_B_BIKE",
             "name": "TIME_DISTANCE_A_TO_B_BIKE",
             "parameters": [
@@ -522,6 +545,92 @@
                     "description": "Whether to return time (minutes) or distance (meters). Defaults to time.",
                     "name": "timeOrDistance",
                     "optional": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Calculates the driving time/distance between two points.",
+            "id": "TIME_DISTANCE_A_TO_B_CAR",
+            "name": "TIME_DISTANCE_A_TO_B_CAR",
+            "parameters": [
+                {
+                    "description": "Latitude of first point",
+                    "name": "lat1",
+                    "type": "any"
+                },
+                {
+                    "description": "Longitude of first point",
+                    "name": "lng1",
+                    "type": "any"
+                },
+                {
+                    "description": "Latitude of second point",
+                    "name": "lat2",
+                    "type": "any"
+                },
+                {
+                    "description": "Longitude of second point",
+                    "name": "lng2",
+                    "type": "any"
+                },
+                {
+                    "description": "Whether to return time (minutes) or distance (meters). Defaults to time.",
+                    "name": "timeOrDistance",
+                    "optional": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Calculates the distance between two points",
+            "id": "DISTANCE_A_B",
+            "name": "DISTANCE_A_B",
+            "parameters": [
+                {
+                    "description": "Latitude of first point",
+                    "name": "lat1",
+                    "type": "any"
+                },
+                {
+                    "description": "Longitude of first point",
+                    "name": "lng1",
+                    "type": "any"
+                },
+                {
+                    "description": "Latitude of second point",
+                    "name": "lat2",
+                    "type": "any"
+                },
+                {
+                    "description": "Longitude of second point",
+                    "name": "lng2",
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "type": "number"
+            }
+        },
+        {
+            "description": "Finds network COVERAGE",
+            "id": "COVERAGE",
+            "name": "COVERAGE",
+            "parameters": [
+                {
+                    "description": "Latitude",
+                    "name": "lat",
+                    "type": "any"
+                },
+                {
+                    "description": "Longitude",
+                    "name": "lng",
                     "type": "any"
                 }
             ],

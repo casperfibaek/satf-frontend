@@ -1,6 +1,6 @@
 {
   "name": "satf-frontend",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "author": "Casper Fibaek @ NIRAS",
   "license": "Unlicenced for now",
   "private": true,
@@ -29,6 +29,7 @@
     "@fluentui/react": "^8.17.0",
     "core-js": "^3.13.1",
     "fuse.js-ie11": "^6.0.0",
+    "haversine": "^1.1.1",
     "leaflet": "^1.7.1",
     "leaflet.locatecontrol": "^0.73.0",
     "npm_update": "npm:npm-check-updates@^11.6.0",
