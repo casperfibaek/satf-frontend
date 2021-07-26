@@ -144,6 +144,29 @@
             }
         },
         {
+            "description": "Calculate the demography for an area\nAn address can be used instead of Latitude.",
+            "id": "DEMOGRAPHY",
+            "name": "DEMOGRAPHY",
+            "parameters": [
+                {
+                    "name": "bufferMeters",
+                    "type": "any"
+                },
+                {
+                    "name": "latitudeOrAddress",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix"
+            }
+        },
+        {
             "description": "Calculates the amount of people within a walkable timeframe of the point. Circular approximation.",
             "id": "POPDENS_BUFFER_WALK",
             "name": "POPDENS_BUFFER_WALK",

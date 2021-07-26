@@ -1,6 +1,42 @@
 # Savings at the Frontiers - Excel-addin
 
-Serves information from the database to the Excel addin.
+This is the excel interface for the satf-api and database.
+
+The interface is built using Typescript, OfficeJS, React, LeafletJS. It requires a valid
+version of the satf-api running in order to function.
+
+Author: Casper Fibaek
+Copyright: NIRAS A/S
+License: Undisclosed
+
+# File descriptions
+
+## commands.ts
+
+Holds all of the custom command line commands available inside of excel. Controls
+Mainly used to control the button presses in the top pane.
+
+## custom_functions.ts
+
+All of the custom functions available inside of excel such as satf.demography. Most
+of these functions send the request directly to the satf API.
+
+## custom_functions_meta.json
+
+This is the metadata shown inside excel for each function. This needs to map 1-to-1 to
+the custom_functions.ts file. If there is a mismatch it will fail to compile.
+
+## app.tsx
+
+This is the main entrance point for the interface application. It runs react and page
+navigation is handled through the react router.
+
+## manifest.ejs
+
+The template for the manifest files, which are the main entry points from Excel. Load
+the proper manifest file to load the interface into Excel.
+
+# Installation
 
 Steps for installing:
 Running at https://satf.azurewebsites.net/
@@ -38,14 +74,10 @@ Running at https://satf.azurewebsites.net/
 
         chrome://flags/#allow-insecure-localhost
 
-Copyright: NIRAS A/S
-License: Undisclosed
+# Building:
 
-There are two environments
-DEV and PROD
+1. Run npm run build
+2. In VSC: Right click "dist" folder at upload the interface to satf_static @ azure
+
 PROD is at https://satfstatic.z6.web.core.windows.net/?page=map
 DEV is at https://satfstaticdev.z6.web.core.windows.net/?page=map
-
-To build:
-Run npm run build - Do not run tsc
-Right click "dist" folder at upload to satf_static @ azure

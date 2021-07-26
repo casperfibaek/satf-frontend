@@ -256,6 +256,45 @@ async function NIGHTLIGHT(bufferMeters:any, latitudeOrAddress:any, longitude:any
 g.NIGHTLIGHT = NIGHTLIGHT;
 
 /**
+ * Calculate the demography for an area
+ * An address can be used instead of Latitude.
+ * @customfunction DEMOGRAPHY
+ * @param {any} bufferMeters
+ * @param {any} latitudeOrAddress
+ * @param {any} [longitude]
+ * @return {Promise<any[][]>} Timeseries of nightlight
+ */
+async function DEMOGRAPHY(bufferMeters:any, latitudeOrAddress:any, longitude:any = false):Promise<any[][]> {
+  try {
+    if (Number.isNaN(bufferMeters)) { throw errInvalidValue('Buffer not a number'); }
+
+    const coords = await parseToLatlng(latitudeOrAddress, longitude);
+    const url = `${_apiUrl}demography?buffer=${bufferMeters}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const token = getValueForKey('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+    if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+
+    const responseJSON:ApiReply = await apiResponse.json();
+    if (apiResponse.ok) {
+      if (responseJSON.message.length === 0) { return null; }
+      const cell:any[][] = [[], []];
+      for (let i = 0; i < responseJSON.message.length; i += 1) {
+        cell[0].push(responseJSON.message[i][0]);
+        cell[1].push(Math.round(Number(responseJSON.message[i][1])));
+      }
+      return cell;
+    }
+
+    throw errInvalidValue(responseJSON.message);
+  } catch (err) {
+    throw errInvalidValue(err);
+  }
+}
+g.DEMOGRAPHY = DEMOGRAPHY;
+
+/**
  * Calculates the amount of people within a walkable timeframe of the point. Circular approximation.
  * @customfunction POPDENS_BUFFER_WALK
  * @param {any} minutes
