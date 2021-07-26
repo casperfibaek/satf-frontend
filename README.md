@@ -5,40 +5,42 @@ This is the excel interface for the satf-api and database.
 The interface is built using Typescript, OfficeJS, React, LeafletJS. It requires a valid
 version of the satf-api running in order to function.
 
-Author: Casper Fibaek
-Copyright: NIRAS A/S
-License: Undisclosed
+_Author_: **Casper Fibaek**
+
+_Copyright_: **NIRAS A/S and Casper Fibaek**
+
+_License_: **Undisclosed**
 
 # File descriptions
 
-## commands.ts
+### **commands.ts**
 
 Holds all of the custom command line commands available inside of excel. Controls
 Mainly used to control the button presses in the top pane.
 
-## custom_functions.ts
+### **custom_functions.ts**
 
 All of the custom functions available inside of excel such as satf.demography. Most
 of these functions send the request directly to the satf API.
 
-## custom_functions_meta.json
+### **custom_functions_meta.json**
 
 This is the metadata shown inside excel for each function. This needs to map 1-to-1 to
 the custom_functions.ts file. If there is a mismatch it will fail to compile.
 
-## app.tsx
+### **app.tsx**
 
 This is the main entrance point for the interface application. It runs react and page
 navigation is handled through the react router.
 
-## manifest.ejs
+### **manifest.ejs**
 
 The template for the manifest files, which are the main entry points from Excel. Load
 the proper manifest file to load the interface into Excel.
 
 # Installation
 
-Steps for installing:
+Steps for installation:
 Running at https://satf.azurewebsites.net/
 
     Web:
