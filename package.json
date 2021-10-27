@@ -9,10 +9,12 @@
   ],
   "scripts": {
     "build": "custom-functions-metadata generate ./src/custom_functions.ts ./src/custom_functions_meta.json && webpack --mode production",
+
     "build:dev": "webpack --mode development",
     "build:watch": "webpack --mode development --watch",
     "dev-server": "webpack serve --mode production",
-    "debug:desktop": "office-addin-debugging start ./dist/satf_local.0.4.5.xml desktop",
+
+    "debug:desktop": "office-addin-debugging start ./dist/satf_local.0.4.6.xml desktop",
     "debug:web": "office-addin-debugging start ./dist/satf_local.xml web",
     "debug:stop": "office-addin-debugging stop ./dist/satf_local.xml",
     "validate:prod": "office-addin-manifest validate ./dist/satf_production.xml",

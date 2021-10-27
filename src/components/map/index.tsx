@@ -20,6 +20,9 @@ import {
   // addDataToLayer,
 } from './map_layers';
 
+import { getValueForKey, setValueForKey, removeValueForKey, getApiUrl } from '../../utils';
+
+
 // Types
 import { WindowState } from '../../types';
 
@@ -126,6 +129,9 @@ function Map() {
   let mapContainer:any;
 
   // Variables
+
+  const [user, setUser] = useState('')
+
   const [selectedLayer, setSelectedLayer] = useState(-1);
 
   // Surfaces
@@ -177,8 +183,8 @@ function Map() {
     close: () => setErrorbar({ hidden: true, text: 'Default message', type: MessageBarType.info }),
   };
 
-  const autoCreateNewLayer = useCallback(() => {
-    const mapLayer = createNewMapLayer('Default');
+  const autoCreateNewLayer = useCallback((layerName = 'Default', from_db=false, key = null) => {
+    const mapLayer = createNewMapLayer(layerName, from_db, key);
     setSelectedLayer(mapLayer.key);
 
     mapLayer.featureGroup.on('click', (event:any) => {
@@ -198,6 +204,14 @@ function Map() {
       });
     });
   }, []);
+
+
+  useEffect(()=> {
+    setValueForKey('satf_key', '37')
+    console.log('USE EFFECT FIRES')
+    setUser(getValueForKey('satf_key'))
+    console.log(user)
+  }, [user])
 
   // Run on startup
   useEffect(() => {
@@ -269,6 +283,7 @@ function Map() {
         statusErrorbar={statusErrorbar}
         statusCalloutSelect={statusCalloutSelect}
         autoCreateNewLayer={autoCreateNewLayer}
+        user={user}
       />
       <div id="map" ref={(el) => { mapContainer = el; }}></div>
     </div>

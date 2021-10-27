@@ -44,19 +44,20 @@ const startPage = StartPage();
 function App() {
   return (
     <div id="app">
-      <Router>
-        <Switch>
+        <Router>
+          <Switch>
 
-          <Route exact path='/install' render={() => (<Install />)} />
-          <Route exact path='/map' render={() => (<Map />)} />
-          <Route exact path='/support' render={() => (<Support />)} />
-          <Route exact path='/documentation' render={() => (<Documentation />)} />
-          <Route exact path='/login' render={() => (<Login />)} />
-          <Route exact path='/404' render={() => (<Error404Page />)} />
-          <Route exact path='/' render={() => (<Redirect to={startPage}/>)}/>
+            <Route exact path='/install' render={() => (<Install />)} />
+            <Route exact path='/map' render={() => (<Map />)} />
+            <Route exact path='/support' render={() => (<Support />)} />
+            <Route exact path='/documentation' render={() => (<Documentation />)} />
+            <Route exact path='/login' render={() => (<Login />)} />
+            <Route exact path='/404' render={() => (<Error404Page />)} />
+            <Route exact path='/' render={() => (<Redirect to={startPage}/>)}/>
 
-        </Switch>
-      </Router>
+          </Switch>
+        </Router>
+
     </div>
   );
 }
