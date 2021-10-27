@@ -224,7 +224,8 @@ export function getApiUrl() {
   // if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
   //   return 'localhost:8080/api';
   // }
-  return 'https://satf-api.azurewebsites.net/api';
+  // return 'https://satf-api.azurewebsites.net/api';
+  return 'https://satf-api-magi.azurewebsites.net/api/';
 }
 
 export const haversine = (function () {
