@@ -974,22 +974,33 @@ function DISTANCE_A_B(lat1, lng1, lat2, lng2) {
 g.DISTANCE_A_B = DISTANCE_A_B;
 /**
  * Finds network COVERAGE
- * @customfunction COVERAGE
+ * @customfunction NETWORK_COVERAGE
  * @param {any} lat Latitude
  * @param {any} lng Longitude
  * @return {Promise<string>} Technology available
  */
-function COVERAGE(lat, lng) {
+function NETWORK_COVERAGE(latitudeOrAddress, longitude = false) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const technology = ['LTE', 'LTE', 'LTE', '3G', '3G', '4G', 'GME', 'GME', 'GME', 'GME'];
-            const techIndex = Math.floor(Math.random() * technology.length);
-            return technology[techIndex];
+            const coords = yield parseToLatlng(latitudeOrAddress, longitude);
+            const url = `${_apiUrl}network_coverage?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+            // const technology = ['LTE', 'LTE', 'LTE', '3G', '3G', '4G', 'GME', 'GME', 'GME', 'GME'];
+            // const techIndex = Math.floor(Math.random() * technology.length);
+            const token = getValueForKey('satf_token');
+            const apiResponse = yield fetch(url, { headers: { Authorization: token } });
+            if (apiResponse.status === 401) {
+                throw errNotAvailable('401: Unauthorised user');
+            }
+            const responseJSON = yield apiResponse.json();
+            if (apiResponse.ok) {
+                return String(responseJSON.message);
+            }
+            throw errInvalidValue(responseJSON.message);
         }
         catch (err) {
             throw errInvalidValue(err);
         }
     });
 }
-g.COVERAGE = COVERAGE;
+g.NETWORK_COVERAGE = NETWORK_COVERAGE;
 //# sourceMappingURL=custom_functions.js.map

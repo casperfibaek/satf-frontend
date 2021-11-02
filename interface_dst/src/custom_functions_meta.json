@@ -647,13 +647,12 @@
             "name": "COVERAGE",
             "parameters": [
                 {
-                    "description": "Latitude",
-                    "name": "lat",
+                    "name": "latitudeOrAddress",
                     "type": "any"
                 },
                 {
-                    "description": "Longitude",
-                    "name": "lng",
+                    "name": "longitude",
+                    "optional": true,
                     "type": "any"
                 }
             ],

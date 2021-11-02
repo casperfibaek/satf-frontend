@@ -923,22 +923,90 @@ g.DISTANCE_A_B = DISTANCE_A_B;
 
 /**
  * Finds network COVERAGE
- * @customfunction COVERAGE
+ * @customfunction NETWORK_COVERAGE
  * @param {any} lat Latitude
  * @param {any} lng Longitude
  * @return {Promise<string>} Technology available
  */
-async function COVERAGE(lat:any, lng:any):Promise<string> { // eslint-disable-line
+async function NETWORK_COVERAGE(latitudeOrAddress:any, longitude:any = false):Promise<string> { // eslint-disable-line
   try {
-    const technology = ['LTE', 'LTE', 'LTE', '3G', '3G', '4G', 'GME', 'GME', 'GME', 'GME'];
-    const techIndex = Math.floor(Math.random() * technology.length);
+    const coords = await parseToLatlng(latitudeOrAddress, longitude);
+    const url = `${_apiUrl}network_coverage?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    // const technology = ['LTE', 'LTE', 'LTE', '3G', '3G', '4G', 'GME', 'GME', 'GME', 'GME'];
+    // const techIndex = Math.floor(Math.random() * technology.length);
+    const token = getValueForKey('satf_token');
 
-    return technology[techIndex];
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+    if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+
+    const responseJSON:ApiReply = await apiResponse.json();
+    if (apiResponse.ok) { return String(responseJSON.message); }
+
+    throw errInvalidValue(responseJSON.message);
   } catch (err) {
     throw errInvalidValue(err);
   }
 }
-g.COVERAGE = COVERAGE;
+g.NETWORK_COVERAGE = NETWORK_COVERAGE;
+
+
+/**
+ * Finds network COVERAGE from MCE source
+ * @customfunction MCE_COVERAGE
+ * @param {any} lat Latitude
+ * @param {any} lng Longitude
+ * @return {Promise<string>} Technology available
+ */
+async function MCE_COVERAGE(latitudeOrAddress:any, longitude:any = false):Promise<string> { // eslint-disable-line
+  try {
+    const coords = await parseToLatlng(latitudeOrAddress, longitude);
+    const url = `${_apiUrl}mce_coverage?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+
+    const token = getValueForKey('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+    if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+
+    const responseJSON:ApiReply = await apiResponse.json();
+    if (apiResponse.ok) { return String(responseJSON.message); }
+
+    throw errInvalidValue(responseJSON.message);
+  } catch (err) {
+    throw errInvalidValue(err);
+  }
+}
+g.MCE_COVERAGE = MCE_COVERAGE;
+
+/**
+ * Finds network COVERAGE from OCI source
+ * @customfunction OCI_COVERAGE
+ * @param {any} lat Latitude
+ * @param {any} lng Longitude
+ * @return {Promise<string>} Technology available
+ */
+async function OCI_COVERAGE(latitudeOrAddress:any, longitude:any = false):Promise<string> { // eslint-disable-line
+  try {
+    const coords = await parseToLatlng(latitudeOrAddress, longitude);
+    const url = `${_apiUrl}oci_coverage?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+
+    const token = getValueForKey('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+    if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+
+    const responseJSON:ApiReply = await apiResponse.json();
+    if (apiResponse.ok) { return String(responseJSON.message); }
+
+    throw errInvalidValue(responseJSON.message);
+  } catch (err) {
+    throw errInvalidValue(err);
+  }
+}
+
+g.COVERAGE = OCI_COVERAGE;
 
 
 import arrayToGeojson from './components/map/array_to_geojson'

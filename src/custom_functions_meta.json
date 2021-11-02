@@ -643,17 +643,54 @@
         },
         {
             "description": "Finds network COVERAGE",
-            "id": "COVERAGE",
-            "name": "COVERAGE",
+            "id": "NETWORK_COVERAGE",
+            "name": "NETWORK_COVERAGE",
             "parameters": [
                 {
-                    "description": "Latitude",
-                    "name": "lat",
+                    "name": "latitudeOrAddress",
                     "type": "any"
                 },
                 {
-                    "description": "Longitude",
-                    "name": "lng",
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Finds network COVERAGE from MCE source",
+            "id": "MCE_COVERAGE",
+            "name": "MCE_COVERAGE",
+            "parameters": [
+                {
+                    "name": "latitudeOrAddress",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Finds network COVERAGE from OCI source",
+            "id": "OCI_COVERAGE",
+            "name": "OCI_COVERAGE",
+            "parameters": [
+                {
+                    "name": "latitudeOrAddress",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
                     "type": "any"
                 }
             ],
