@@ -1,4 +1,0 @@
-Will the update database button update all layers or just the currently selected?
-    If so, the currently selected layer is hard to establish - toggle doesnt seem intuitive for this purpose, and actually doesnt change
-    the active layer - only clicking on the edit layer button does, which also brings up the colour menu
-

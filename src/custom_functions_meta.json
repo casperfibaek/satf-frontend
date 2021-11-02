@@ -660,6 +660,13 @@
             "result": {
                 "type": "string"
             }
+        },
+        {
+            "description": "Finds network COVERAGE",
+            "id": "SENDGEOMS",
+            "name": "SENDGEOMS",
+            "parameters": [],
+            "result": {}
         }
     ]
 }

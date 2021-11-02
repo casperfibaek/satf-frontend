@@ -12,6 +12,9 @@ import {
   getApiUrl,
   haversine,
 } from './utils';
+
+import { getSelectedCells } from './excel_interaction'
+
 import { ApiReply } from './types';
 
 Office.onReady(() => {
@@ -168,6 +171,7 @@ g.LATLNG_TO_PLUSCODE = LATLNG_TO_PLUSCODE;
  */
 async function API_VERSION():Promise<string> {
   try {
+    console.log('bonjour')
     const url = `${_apiUrl}api_version`;
     const token = getValueForKey('satf_token');
 
@@ -935,3 +939,25 @@ async function COVERAGE(lat:any, lng:any):Promise<string> { // eslint-disable-li
   }
 }
 g.COVERAGE = COVERAGE;
+
+
+import arrayToGeojson from './components/map/array_to_geojson'
+
+/////
+
+
+/**
+ * Finds network COVERAGE
+ * @customfunction SENDGEOMS
+ */
+
+async function SENDGEOMS() { // eslint-disable-line
+  let geojson
+  try {
+    const cells = await getSelectedCells();
+    geojson = await arrayToGeojson(cells);
+  } catch (err) {
+    console.log(err);
+}
+}
+g.SENDGEOMS = SENDGEOMS;
