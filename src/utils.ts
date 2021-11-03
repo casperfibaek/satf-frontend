@@ -221,10 +221,13 @@ export const errNotAvailable = (msg:string) => new CustomFunctions.Error(CustomF
 
 export function getApiUrl() {
   const { origin } = document.location;
-  if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
-    return 'http://localhost:8080/api';
+  console.log(origin)
+  if (origin.includes('localhost') || origin.includes('127.0.0.1') || origin.includes('satfstaticdev')) {
+    // return 'http://localhost:8080/api';
+    // return 'https://satf-api.azurewebsites.net/api';
+    return 'https://satf-api-magi-dev.azurewebsites.net/api/'
   }
-  return 'https://satf-api.azurewebsites.net/api';
+  return 'https://satf-api-magi.azurewebsites.net/api/'
 }
 
 export const haversine = (function () {

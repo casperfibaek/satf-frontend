@@ -69,6 +69,12 @@ function openDialogLOGIN(openEvent:Office.AddinCommands.Event):void {
   openDialog(`${baseUrl}?page=login`, openEvent, false);
 }
 
+function openDialogUserGeoms(openEvent:Office.AddinCommands.Event):void {
+  openDialog(`${baseUrl}?page=get_user_geoms`, openEvent, false);
+}
+
+
+g.openDialogUserGeoms = openDialogUserGeoms
 g.openDialogNIRAS = openDialogNIRAS;
 g.openDialogOPM = openDialogOPM;
 g.openDialogSATF = openDialogSATF;
