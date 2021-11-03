@@ -113,6 +113,27 @@
                     <FunctionName>openDialogLOGIN</FunctionName>
                   </Action>
                 </Control>
+
+                <Control xsi:type="Button" id="UserGeomButton">
+                  <Label resid="UserGeomButton.Label"/>
+                  <Supertip>
+                    <Title resid="UserGeomButton.Label"/>
+                    <Description resid="UserGeomButton.Tooltip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.Login.16x16"/>
+                    <bt:Image size="20" resid="Icon.Login.20x20"/>
+                    <bt:Image size="24" resid="Icon.Login.24x24"/>
+                    <bt:Image size="32" resid="Icon.Login.32x32"/>
+                    <bt:Image size="40" resid="Icon.Login.40x40"/>
+                    <bt:Image size="48" resid="Icon.Login.48x48"/>
+                    <bt:Image size="64" resid="Icon.Login.64x64"/>
+                    <bt:Image size="80" resid="Icon.Login.80x80"/>
+                  </Icon>
+                  <Action xsi:type="ExecuteFunction">
+                    <FunctionName>openDialogUserGeoms</FunctionName>
+                  </Action>
+                </Control>
               </Group>
 
               <Group id="HelpGroup">
@@ -329,6 +350,7 @@
         <bt:String id="SatfTab.Label" DefaultValue="SATF"/>
         <bt:String id="AuthGroup.Label" DefaultValue="Administration"/>
         <bt:String id="LoginButton.Label" DefaultValue="Login"/>
+        <bt:String id="UserGeomButton.Label" DefaultValue="Get User Geoms"/>
         <bt:String id="MapGroup.Label" DefaultValue="Map"/>
         <bt:String id="ShowMapButton.Label" DefaultValue="Map"/>
         <bt:String id="AboutGroup.Label" DefaultValue="About"/>
@@ -343,6 +365,7 @@
         <bt:String id="GetStarted.Description" DefaultValue="The SATF add-in loaded successfully. Navigate to the SATF tab to start analysing!"/>
         <bt:String id="ShowMapButton.Tooltip" DefaultValue="Click to show a map"/>
         <bt:String id="LoginButton.Tooltip" DefaultValue="Click to show the task pane"/>
+        <bt:String id="UserGeomButton.Tooltip" DefaultValue="Click to show the task pane"/>
         <bt:String id="AboutSATFButton.Tooltip" DefaultValue="Information about Savings at the Frontier"/>
         <bt:String id="AboutNIRASButton.Tooltip" DefaultValue="Information about Niras Consulting"/>
         <bt:String id="AboutOPMButton.Tooltip" DefaultValue="Information about Oxford Policy Management"/>

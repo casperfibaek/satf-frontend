@@ -171,7 +171,6 @@ g.LATLNG_TO_PLUSCODE = LATLNG_TO_PLUSCODE;
  */
 async function API_VERSION():Promise<string> {
   try {
-    console.log('bonjour')
     const url = `${_apiUrl}api_version`;
     const token = getValueForKey('satf_token');
 
@@ -180,7 +179,10 @@ async function API_VERSION():Promise<string> {
     if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
 
     const responseJSON:ApiReply = await apiResponse.json();
-    if (apiResponse.ok) { return String(responseJSON.message); }
+    console.log(responseJSON)
+    const message = `version: ${responseJSON.message["version"]}, api_location: ${responseJSON.message["api_environment"]}, client_location: ${responseJSON.message["client_environment"]}`
+    console.log(message)
+    if (apiResponse.ok) { return message; }
 
     throw errInvalidValue(responseJSON.message);
   } catch (err) {
@@ -1015,15 +1017,30 @@ import arrayToGeojson from './components/map/array_to_geojson'
 
 
 /**
- * Finds network COVERAGE
+ * Sends geometries to database
  * @customfunction SENDGEOMS
+ * @return nothing
  */
 
 async function SENDGEOMS() { // eslint-disable-line
+  console.log('send geoms')
   let geojson
   try {
     const cells = await getSelectedCells();
     geojson = await arrayToGeojson(cells);
+    console.log(geojson)
+    const url = `${_apiUrl}send_geoms`;
+    // const token = getValueForKey('satf_token');
+    debugger;
+    const apiResponse = await fetch(url, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: "POST",
+      body: JSON.stringify(geojson)
+  })
+    console.log(apiResponse)
   } catch (err) {
     console.log(err);
 }

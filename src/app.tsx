@@ -35,6 +35,7 @@ function StartPage(): string {
     case 'support': return '/support';
     case 'documentation': return '/documentation';
     case 'login': return '/login';
+    case 'get_user_geoms': return '/get_user_geoms';
     default: return '/404';
   }
 }
@@ -52,6 +53,7 @@ function App() {
             <Route exact path='/support' render={() => (<Support />)} />
             <Route exact path='/documentation' render={() => (<Documentation />)} />
             <Route exact path='/login' render={() => (<Login />)} />
+            <Route exact path='/get_user_geoms' render={() => (<div>Create new page here.</div>)} />
             <Route exact path='/404' render={() => (<Error404Page />)} />
             <Route exact path='/' render={() => (<Redirect to={startPage}/>)}/>
 
