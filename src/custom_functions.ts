@@ -463,7 +463,7 @@ async function POPDENS_ISO_CAR(minutes:any, latitudeOrAddress:any, longitude:any
     if (Number.isNaN(minutes)) { throw errInvalidValue('Minutes not a number'); }
 
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `${_apiUrl}pop_density_isochrone_car?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `${_apiUrl}pop_density_isochrone_car?lat=${coords[0][0]}&lng=${coords[0][1]}&minutes=${minutes}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });

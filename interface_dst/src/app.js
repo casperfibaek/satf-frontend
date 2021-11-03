@@ -24,6 +24,7 @@ function StartPage() {
         case 'support': return '/support';
         case 'documentation': return '/documentation';
         case 'login': return '/login';
+        case 'get_user_geoms': return '/get_user_geoms';
         default: return '/404';
     }
 }
@@ -37,6 +38,7 @@ function App() {
                 React.createElement(Route, { exact: true, path: '/support', render: () => (React.createElement(Support, null)) }),
                 React.createElement(Route, { exact: true, path: '/documentation', render: () => (React.createElement(Documentation, null)) }),
                 React.createElement(Route, { exact: true, path: '/login', render: () => (React.createElement(Login, null)) }),
+                React.createElement(Route, { exact: true, path: '/get_user_geoms', render: () => (React.createElement("div", null, "Create new page here.")) }),
                 React.createElement(Route, { exact: true, path: '/404', render: () => (React.createElement(Error404Page, null)) }),
                 React.createElement(Route, { exact: true, path: '/', render: () => (React.createElement(Redirect, { to: startPage })) })))));
 }

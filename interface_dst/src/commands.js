@@ -57,6 +57,10 @@ function openDialogDOCUMENTATION(openEvent) {
 function openDialogLOGIN(openEvent) {
     openDialog(`${baseUrl}?page=login`, openEvent, false);
 }
+function openDialogUserGeoms(openEvent) {
+    openDialog(`${baseUrl}?page=get_user_geoms`, openEvent, false);
+}
+g.openDialogUserGeoms = openDialogUserGeoms;
 g.openDialogNIRAS = openDialogNIRAS;
 g.openDialogOPM = openDialogOPM;
 g.openDialogSATF = openDialogSATF;
