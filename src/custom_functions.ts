@@ -1006,7 +1006,7 @@ async function OCI_COVERAGE(latitudeOrAddress:any, longitude:any = false):Promis
   }
 }
 
-g.COVERAGE = OCI_COVERAGE;
+g.OCI_COVERAGE = OCI_COVERAGE;
 
 
 import arrayToGeojson from './components/map/array_to_geojson'
