@@ -1026,9 +1026,15 @@ async function SENDGEOMS() { // eslint-disable-line
   console.log('send geoms')
   let geojson
   try {
-    const cells = await getSelectedCells();
+    let cells = await getSelectedCells();
+
+    if (cells[0][0] == '#CALC!') {
+      cells[0][0] == 'layername'
+    }
+
     geojson = await arrayToGeojson(cells);
     console.log(geojson)
+    console.log(JSON.stringify(geojson))
     const url = `${_apiUrl}send_geoms`;
     // const token = getValueForKey('satf_token');
     debugger;
