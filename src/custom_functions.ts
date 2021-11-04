@@ -451,14 +451,15 @@ async function POPDENS_ISO_BIKE(minutes:any, latitudeOrAddress:any, longitude:an
 g.POPDENS_ISO_BIKE = POPDENS_ISO_BIKE;
 
 /**
- * Calculates the amount of people within a drivable timeframe of the point. Traverses the road network creating isocrones.
+ * Calculates the amount of people within a bikeable timeframe of the point. Traverses the road network creating isocrones.
  * @customfunction POPDENS_ISO_CAR
+ * @param {any} minutes
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @param {any} minutes
  * @return {Promise<number>} Cell with the amount of people.
  */
-async function POPDENS_ISO_CAR(latitudeOrAddress:any, longitude:any = false, minutes:any):Promise<number> {
+
+async function POPDENS_ISO_CAR(minutes:any, latitudeOrAddress:any, longitude:any = false):Promise<number> {
   try {
     if (Number.isNaN(minutes)) { throw errInvalidValue('Minutes not a number'); }
 

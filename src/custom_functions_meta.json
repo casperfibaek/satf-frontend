@@ -282,10 +282,14 @@
             }
         },
         {
-            "description": "Calculates the amount of people within a drivable timeframe of the point. Traverses the road network creating isocrones.",
+            "description": "Calculates the amount of people within a bikeable timeframe of the point. Traverses the road network creating isocrones.",
             "id": "POPDENS_ISO_CAR",
             "name": "POPDENS_ISO_CAR",
             "parameters": [
+                {
+                    "name": "minutes",
+                    "type": "any"
+                },
                 {
                     "name": "latitudeOrAddress",
                     "type": "any"
@@ -293,10 +297,6 @@
                 {
                     "name": "longitude",
                     "optional": true,
-                    "type": "any"
-                },
-                {
-                    "name": "minutes",
                     "type": "any"
                 }
             ],
