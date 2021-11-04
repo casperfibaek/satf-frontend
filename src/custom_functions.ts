@@ -458,7 +458,7 @@ g.POPDENS_ISO_BIKE = POPDENS_ISO_BIKE;
  * @param {any} [longitude]
  * @return {Promise<number>} Cell with the amount of people.
  */
-async function POPDENS_ISO_CAR(minutes:any, latitudeOrAddress:any, longitude:any = false):Promise<number> {
+async function POPDENS_ISO_CAR(latitudeOrAddress:any, longitude:any = false, minutes:any):Promise<number> {
   try {
     if (Number.isNaN(minutes)) { throw errInvalidValue('Minutes not a number'); }
 
