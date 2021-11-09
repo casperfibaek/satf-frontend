@@ -52,6 +52,7 @@ export default function BottomBar(props:any) {
     });
 
     const cells = geojsonToArray(featureCollection, name);
+    console.log(cells)
     try {
       await addCellsToSheet(cells);
     } catch (error) {

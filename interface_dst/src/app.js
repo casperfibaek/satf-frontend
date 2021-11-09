@@ -9,6 +9,7 @@ import Documentation from './components/documentation';
 import Map from './components/map';
 import Login from './components/login';
 import Install from './components/install';
+import GetUserGeoms from './components/get_user_geoms';
 import { excelTheme } from './utils';
 Office.onReady().then(() => {
     console.log('Office ready from app.js');
@@ -24,6 +25,7 @@ function StartPage() {
         case 'support': return '/support';
         case 'documentation': return '/documentation';
         case 'login': return '/login';
+        case 'get_user_geoms': return '/get_user_geoms';
         default: return '/404';
     }
 }
@@ -37,6 +39,7 @@ function App() {
                 React.createElement(Route, { exact: true, path: '/support', render: () => (React.createElement(Support, null)) }),
                 React.createElement(Route, { exact: true, path: '/documentation', render: () => (React.createElement(Documentation, null)) }),
                 React.createElement(Route, { exact: true, path: '/login', render: () => (React.createElement(Login, null)) }),
+                React.createElement(Route, { exact: true, path: '/get_user_geoms', render: () => (React.createElement(GetUserGeoms, null)) }),
                 React.createElement(Route, { exact: true, path: '/404', render: () => (React.createElement(Error404Page, null)) }),
                 React.createElement(Route, { exact: true, path: '/', render: () => (React.createElement(Redirect, { to: startPage })) })))));
 }

@@ -46,6 +46,7 @@ export default function BottomBar(props) {
                 }
             });
             const cells = geojsonToArray(featureCollection, name);
+            console.log(cells);
             try {
                 yield addCellsToSheet(cells);
             }

@@ -11,6 +11,7 @@ import {
   getGlobal,
   getApiUrl,
   haversine,
+  setValueForKey,
 } from './utils';
 
 import { getSelectedCells } from './excel_interaction'
@@ -1023,32 +1024,38 @@ import arrayToGeojson from './components/map/array_to_geojson'
  */
 
 async function SENDGEOMS() { // eslint-disable-line
-  console.log('send geoms')
-  let geojson
+
+  setValueForKey('satf_token', 'casper:golden_ticket')
+
   try {
     let cells = await getSelectedCells();
-
+    
     if (cells[0][0] == '#CALC!') {
       cells[0][0] == 'layername'
     }
+    
+    const geojson = await arrayToGeojson(cells);
 
-    geojson = await arrayToGeojson(cells);
     console.log(geojson)
     console.log(JSON.stringify(geojson))
+
     const url = `${_apiUrl}send_geoms`;
-    // const token = getValueForKey('satf_token');
+    const token = getValueForKey('satf_token');
     debugger;
     const apiResponse = await fetch(url, {
       headers: {
+        Authorisation: token,
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
       method: "POST",
-      body: JSON.stringify(geojson)
+      body: JSON.stringify({geojson, token})
   })
-    console.log(apiResponse)
+  const responseJSON = await apiResponse.json()
+  if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+  if (apiResponse.ok) { return String(responseJSON.message); }
   } catch (err) {
-    console.log(err);
+    throw errInvalidValue(err)
 }
 }
 g.SENDGEOMS = SENDGEOMS;

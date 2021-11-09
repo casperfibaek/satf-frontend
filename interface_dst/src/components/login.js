@@ -212,6 +212,7 @@ function LoginHome(props) {
                 if (response.ok) {
                     props.setUserInfo({ username, password });
                     setValueForKey('satf_token', `${responseJSON.username}:${responseJSON.token}`);
+                    console.log(getValueForKey('satf_token'));
                     props.setCurrentPage({ login: false, register: false, welcome: true });
                 }
                 else if (responseJSON.message) {

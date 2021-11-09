@@ -12,6 +12,7 @@ import Documentation from './components/documentation';
 import Map from './components/map';
 import Login from './components/login';
 import Install from './components/install';
+import GetUserGeoms from './components/get_user_geoms';
 
 import { excelTheme } from './utils';
 import { WindowState } from './types';
@@ -53,7 +54,7 @@ function App() {
             <Route exact path='/support' render={() => (<Support />)} />
             <Route exact path='/documentation' render={() => (<Documentation />)} />
             <Route exact path='/login' render={() => (<Login />)} />
-            <Route exact path='/get_user_geoms' render={() => (<div>Create new page here.</div>)} />
+            <Route exact path='/get_user_geoms' render={() => (<GetUserGeoms />)} />
             <Route exact path='/404' render={() => (<Error404Page />)} />
             <Route exact path='/' render={() => (<Redirect to={startPage}/>)}/>
 

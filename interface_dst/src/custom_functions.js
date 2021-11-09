@@ -9,7 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import 'react-app-polyfill/ie11';
 import 'react-app-polyfill/stable';
-import { isValidWhatFreeWords, isValidPluscode, createCoordinateArray, isValidLatitude, isValidLongitude, errNotAvailable, errInvalidValue, getValueForKey, getGlobal, getApiUrl, haversine, } from './utils';
+import { isValidWhatFreeWords, isValidPluscode, createCoordinateArray, isValidLatitude, isValidLongitude, errNotAvailable, errInvalidValue, getValueForKey, getGlobal, getApiUrl, haversine, setValueForKey, } from './utils';
+import { getSelectedCells } from './excel_interaction';
 Office.onReady(() => {
     console.log('Office ready from custom_functions.js');
 });
@@ -178,8 +179,11 @@ function API_VERSION() {
                 throw errNotAvailable('401: Unauthorised user');
             }
             const responseJSON = yield apiResponse.json();
+            console.log(responseJSON);
+            const message = `version: ${responseJSON.message["version"]}, api_location: ${responseJSON.message["api_environment"]}, client_location: ${responseJSON.message["client_environment"]}`;
+            console.log(message);
             if (apiResponse.ok) {
-                return String(responseJSON.message);
+                return message;
             }
             throw errInvalidValue(responseJSON.message);
         }
@@ -1003,4 +1007,106 @@ function NETWORK_COVERAGE(latitudeOrAddress, longitude = false) {
     });
 }
 g.NETWORK_COVERAGE = NETWORK_COVERAGE;
+/**
+ * Finds network COVERAGE from MCE source
+ * @customfunction MCE_COVERAGE
+ * @param {any} lat Latitude
+ * @param {any} lng Longitude
+ * @return {Promise<string>} Technology available
+ */
+function MCE_COVERAGE(latitudeOrAddress, longitude = false) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const coords = yield parseToLatlng(latitudeOrAddress, longitude);
+            const url = `${_apiUrl}mce_coverage?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+            const token = getValueForKey('satf_token');
+            const apiResponse = yield fetch(url, { headers: { Authorization: token } });
+            if (apiResponse.status === 401) {
+                throw errNotAvailable('401: Unauthorised user');
+            }
+            const responseJSON = yield apiResponse.json();
+            if (apiResponse.ok) {
+                return String(responseJSON.message);
+            }
+            throw errInvalidValue(responseJSON.message);
+        }
+        catch (err) {
+            throw errInvalidValue(err);
+        }
+    });
+}
+g.MCE_COVERAGE = MCE_COVERAGE;
+/**
+ * Finds network COVERAGE from OCI source
+ * @customfunction OCI_COVERAGE
+ * @param {any} lat Latitude
+ * @param {any} lng Longitude
+ * @return {Promise<string>} Technology available
+ */
+function OCI_COVERAGE(latitudeOrAddress, longitude = false) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const coords = yield parseToLatlng(latitudeOrAddress, longitude);
+            const url = `${_apiUrl}oci_coverage?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+            const token = getValueForKey('satf_token');
+            const apiResponse = yield fetch(url, { headers: { Authorization: token } });
+            if (apiResponse.status === 401) {
+                throw errNotAvailable('401: Unauthorised user');
+            }
+            const responseJSON = yield apiResponse.json();
+            if (apiResponse.ok) {
+                return String(responseJSON.message);
+            }
+            throw errInvalidValue(responseJSON.message);
+        }
+        catch (err) {
+            throw errInvalidValue(err);
+        }
+    });
+}
+g.COVERAGE = OCI_COVERAGE;
+import arrayToGeojson from './components/map/array_to_geojson';
+/////
+/**
+ * Sends geometries to database
+ * @customfunction SENDGEOMS
+ * @return nothing
+ */
+function SENDGEOMS() {
+    return __awaiter(this, void 0, void 0, function* () {
+        setValueForKey('satf_token', 'casper:golden_ticket');
+        try {
+            let cells = yield getSelectedCells();
+            if (cells[0][0] == '#CALC!') {
+                cells[0][0] == 'layername';
+            }
+            const geojson = yield arrayToGeojson(cells);
+            console.log(geojson);
+            console.log(JSON.stringify(geojson));
+            const url = `${_apiUrl}send_geoms`;
+            const token = getValueForKey('satf_token');
+            debugger;
+            const apiResponse = yield fetch(url, {
+                headers: {
+                    Authorisation: token,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                method: "POST",
+                body: JSON.stringify({ geojson, token })
+            });
+            const responseJSON = yield apiResponse.json();
+            if (apiResponse.status === 401) {
+                throw errNotAvailable('401: Unauthorised user');
+            }
+            if (apiResponse.ok) {
+                return String(responseJSON.message);
+            }
+        }
+        catch (err) {
+            throw errInvalidValue(err);
+        }
+    });
+}
+g.SENDGEOMS = SENDGEOMS;
 //# sourceMappingURL=custom_functions.js.map
