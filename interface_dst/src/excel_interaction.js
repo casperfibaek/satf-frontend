@@ -41,15 +41,22 @@ export function addCellsToSheet(data) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield Excel.run((context) => __awaiter(this, void 0, void 0, function* () {
+                console.log('inside excel run');
                 const sheet = context.workbook.worksheets.getActiveWorksheet();
+                console.log(sheet);
                 const range = context.workbook.getSelectedRange();
+                console.log(range);
+                yield context.sync();
                 range.load('address');
                 yield context.sync();
                 const newRange = sheet.getRange(fitTo(range.address, data).split('!')[1]);
                 newRange.load('values');
+                console.log(newRange);
                 yield context.sync();
                 const rows = newRange.values.length;
                 const cols = newRange.values[0].length;
+                console.log('rows', rows);
+                console.log('cols', cols);
                 let empty = true;
                 for (let row = 0; row < rows; row += 1) {
                     if (!empty) {

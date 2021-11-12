@@ -9,7 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import 'react-app-polyfill/ie11';
 import 'react-app-polyfill/stable';
+<<<<<<< HEAD
 import { isValidWhatFreeWords, isValidPluscode, createCoordinateArray, isValidLatitude, isValidLongitude, errNotAvailable, errInvalidValue, getValueForKey, getGlobal, getApiUrl, haversine, } from './utils';
+=======
+import { isValidWhatFreeWords, isValidPluscode, createCoordinateArray, isValidLatitude, isValidLongitude, errNotAvailable, errInvalidValue, getValueForKey, getGlobal, getApiUrl, haversine, setValueForKey, } from './utils';
+>>>>>>> sendgeoms
 import { getSelectedCells } from './excel_interaction';
 Office.onReady(() => {
     console.log('Office ready from custom_functions.js');
@@ -1064,7 +1068,11 @@ function OCI_COVERAGE(latitudeOrAddress, longitude = false) {
         }
     });
 }
+<<<<<<< HEAD
 g.OCI_COVERAGE = OCI_COVERAGE;
+=======
+g.COVERAGE = OCI_COVERAGE;
+>>>>>>> sendgeoms
 import arrayToGeojson from './components/map/array_to_geojson';
 /////
 /**
@@ -1074,6 +1082,7 @@ import arrayToGeojson from './components/map/array_to_geojson';
  */
 function SENDGEOMS() {
     return __awaiter(this, void 0, void 0, function* () {
+<<<<<<< HEAD
         console.log('send geoms');
         let geojson;
         try {
@@ -1085,16 +1094,48 @@ function SENDGEOMS() {
             debugger;
             const apiResponse = yield fetch(url, {
                 headers: {
+=======
+        setValueForKey('satf_token', 'casper:golden_ticket');
+        try {
+            let cells = yield getSelectedCells();
+            if (cells[0][0] == '#CALC!') {
+                cells[0][0] == 'layername';
+            }
+            const geojson = yield arrayToGeojson(cells);
+            console.log(geojson);
+            console.log(JSON.stringify(geojson));
+            const url = `${_apiUrl}send_geoms`;
+            const token = getValueForKey('satf_token');
+            debugger;
+            const apiResponse = yield fetch(url, {
+                headers: {
+                    Authorisation: token,
+>>>>>>> sendgeoms
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
                 method: "POST",
+<<<<<<< HEAD
                 body: JSON.stringify(geojson)
             });
             console.log(apiResponse);
         }
         catch (err) {
             console.log(err);
+=======
+                body: JSON.stringify({ geojson, token })
+            });
+            const responseJSON = yield apiResponse.json();
+            if (apiResponse.status === 401) {
+                throw errNotAvailable('401: Unauthorised user');
+            }
+            if (apiResponse.ok) {
+                return String(responseJSON.message);
+            }
+        }
+        catch (err) {
+            throw errInvalidValue(err);
+>>>>>>> sendgeoms
         }
     });
 }
