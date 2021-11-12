@@ -9,6 +9,7 @@ import CreateLayer from './map_create_layer';
 import Properties from './map_properties';
 import SelectLayer from './map_select_layer';
 import BottomBar from './map_bottom_bar';
+import NavBar from './nav_bar';
 // Functions
 import { addMarkerToLayer, createNewMapLayer, getFirstLayerKey, getLayerCount,
 // addDataToLayer,
@@ -203,15 +204,17 @@ function Map() {
             }
         });
     }, [mapContainer, autoCreateNewLayer]);
-    return (React.createElement("div", { id: "map-wrapper" },
-        !errorbar.hidden && React.createElement(MessageBar, { messageBarType: errorbar.type, className: "message-bar", dismissButtonAriaLabel: "Close", truncated: true, onDismiss: () => { setErrorbar({ hidden: true, text: 'Default Message', type: MessageBarType.info }); } },
-            React.createElement(Text, null, errorbar.text)),
-        React.createElement(CreateLayer, { statusDialogCreate: statusDialogCreate, statusDialogProperties: statusDialogProperties, setSelectedLayer: setSelectedLayer }),
-        React.createElement(SelectLayer, { selectedLayer: selectedLayer, setSelectedLayer: setSelectedLayer, statusCalloutSelect: statusCalloutSelect }),
-        React.createElement(Properties, { statusDialogProperties: statusDialogProperties }),
-        React.createElement(MapPanel, { selectedLayer: selectedLayer, setSelectedLayer: setSelectedLayer, statusPanel: statusPanel, statusDialogCreate: statusDialogCreate }),
-        React.createElement(BottomBar, { selectedLayer: selectedLayer, setSelectedLayer: setSelectedLayer, statusDialogCreate: statusDialogCreate, statusErrorbar: statusErrorbar, statusCalloutSelect: statusCalloutSelect, autoCreateNewLayer: autoCreateNewLayer, user: user }),
-        React.createElement("div", { id: "map", ref: (el) => { mapContainer = el; } })));
+    return (React.createElement("div", null,
+        React.createElement(NavBar, null),
+        React.createElement("div", { id: "map-wrapper" },
+            !errorbar.hidden && React.createElement(MessageBar, { messageBarType: errorbar.type, className: "message-bar", dismissButtonAriaLabel: "Close", truncated: true, onDismiss: () => { setErrorbar({ hidden: true, text: 'Default Message', type: MessageBarType.info }); } },
+                React.createElement(Text, null, errorbar.text)),
+            React.createElement(CreateLayer, { statusDialogCreate: statusDialogCreate, statusDialogProperties: statusDialogProperties, setSelectedLayer: setSelectedLayer }),
+            React.createElement(SelectLayer, { selectedLayer: selectedLayer, setSelectedLayer: setSelectedLayer, statusCalloutSelect: statusCalloutSelect }),
+            React.createElement(Properties, { statusDialogProperties: statusDialogProperties }),
+            React.createElement(MapPanel, { selectedLayer: selectedLayer, setSelectedLayer: setSelectedLayer, statusPanel: statusPanel, statusDialogCreate: statusDialogCreate }),
+            React.createElement(BottomBar, { selectedLayer: selectedLayer, setSelectedLayer: setSelectedLayer, statusDialogCreate: statusDialogCreate, statusErrorbar: statusErrorbar, statusCalloutSelect: statusCalloutSelect, autoCreateNewLayer: autoCreateNewLayer, user: user }),
+            React.createElement("div", { id: "map", ref: (el) => { mapContainer = el; } }))));
 }
 export default Map;
 //# sourceMappingURL=index.js.map

@@ -704,6 +704,20 @@
             "name": "SENDGEOMS",
             "parameters": [],
             "result": {}
+        },
+        {
+            "description": "Sends geometries to database",
+            "id": "FETCHGEOMS",
+            "name": "FETCHGEOMS",
+            "parameters": [
+                {
+                    "name": "id",
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
         }
     ]
 }

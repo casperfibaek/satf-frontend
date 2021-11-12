@@ -11,10 +11,8 @@ import React, { useState } from 'react'; // eslint-disable-line
 import { PrimaryButton, DefaultButton, DialogFooter, Dialog, Dropdown, MessageBarType, } from '@fluentui/react';
 import geojsonToArray from './geojson_to_array';
 import arrayToGeojson from './array_to_geojson';
-import { getLayer, checkIfLayerExists, getLayerCount, getFirstLayerKey, addDataToLayer, addMarkerToLayerFromDB } from './map_layers';
+import { getLayer, getLayerCount, getFirstLayerKey, addDataToLayer, } from './map_layers';
 import { getSelectedCells, addCellsToSheet } from '../../excel_interaction';
-// import { logToServer } from '../../utils';
-import { getApiUrl } from '../../utils';
 export default function BottomBar(props) {
     const { state } = window;
     const [sendDialog, setSendDialog] = useState({ hidden: true });
@@ -55,72 +53,6 @@ export default function BottomBar(props) {
                 console.log(error);
             }
             closeSendDialog();
-        });
-    }
-    function onFetchFromDB(event) {
-        return __awaiter(this, void 0, void 0, function* () {
-            console.log('fetching geoms frontend...');
-            console.log(`${getApiUrl()}/get_user_geometries/${props.user}`);
-            try {
-                const response = yield fetch(`${getApiUrl()}/get_user_geometries/${props.user}`, {
-                    method: 'get',
-                    headers: { 'Content-Type': 'application/json' },
-                });
-                const { results } = yield response.json();
-                results.forEach(x => {
-                    const { geom_id, geom, layer_id, layer_name } = x;
-                    if (!checkIfLayerExists(layer_id)) {
-                        props.autoCreateNewLayer(layer_name, true, layer_id);
-                    }
-                    const { coordinates } = JSON.parse(geom);
-                    addMarkerToLayerFromDB(layer_id, coordinates.reverse(), geom_id);
-                });
-            }
-            catch (err) {
-                console.log(err);
-            }
-            ///////////////////
-        });
-    }
-    function onSendToDB(event) {
-        return __awaiter(this, void 0, void 0, function* () {
-            console.log(props.selectedLayer);
-            const { featureGroup, name } = getLayer(props.selectedLayer);
-            const featureCollection = {
-                type: 'FeatureCollection',
-                features: [],
-            };
-            featureGroup.eachLayer((layer) => {
-                const properties = layer.options.properties || {};
-                const layerGeoJSON = layer.toGeoJSON();
-                if (layerGeoJSON.type === 'FeatureCollection') {
-                    for (let i = 0; i < layerGeoJSON.features.length; i += 1) {
-                        const feature = layerGeoJSON.features[i];
-                        if ((feature.properties === undefined || feature.properties === {}) && (properties !== {} && properties !== undefined)) {
-                            feature.properties = properties;
-                        }
-                        featureCollection.features.push(feature);
-                    }
-                }
-                else {
-                    layerGeoJSON.properties = properties;
-                    featureCollection.features.push(layerGeoJSON);
-                }
-            });
-            try {
-                const response = yield fetch(`${getApiUrl()}/send_to_DB/${props.user}`, {
-                    method: 'post',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ name, featureCollection })
-                });
-                const data = response.json();
-            }
-            catch (err) {
-                console.log(err);
-            }
         });
     }
     function onSend(event) {

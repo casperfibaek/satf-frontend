@@ -14,8 +14,8 @@ import {
   setValueForKey,
 } from './utils';
 
-import { getSelectedCells } from './excel_interaction'
-
+import { getSelectedCells, addCellsToSheet } from './excel_interaction'
+import geojsonToArray from './components/map/geojson_to_array'
 import { ApiReply } from './types';
 
 Office.onReady(() => {
@@ -1059,3 +1059,44 @@ async function SENDGEOMS() { // eslint-disable-line
 }
 }
 g.SENDGEOMS = SENDGEOMS;
+
+
+
+/**
+ * Sends geometries to database
+ * @customfunction FETCHGEOMS
+ * @param id
+ * @return {Promise<string>} Technology available
+ */
+
+ async function FETCHGEOMS(id) { // eslint-disable-line
+  try {
+    const token = getValueForKey('satf_token')
+    const userName = token.split(':')[0] 
+    const apiResponse = await fetch(`${_apiUrl}get_layer_geoms/${userName}/${id}`, {
+      method: 'get',
+      headers: {
+        //  Authorisation: token, 
+          'Content-Type': 'application/json',
+        },
+      });
+      // if (apiResponse.ok) {
+        // send repsonse to excel
+    const responseJSON = await apiResponse.json()
+    // const cells = ParseGeometries(responseJSON)
+
+    const cells = geojsonToArray(responseJSON.results, 'Hello World');
+    console.log(cells)
+    try {
+      await addCellsToSheet(cells);
+    } catch (error) {
+      console.log(error);
+    }
+      // }      
+  }
+   catch (error) {
+    console.log(error);
+  }
+}
+
+

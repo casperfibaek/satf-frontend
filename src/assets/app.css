@@ -182,7 +182,7 @@ body {
 }
 
 #documentation_body > .card_holder {
-  margin-top: 110px;
+  margin-top: 200px;
 }
 
 #documentation_body > .card_holder > .function_card {
@@ -474,6 +474,10 @@ table.properties-table > tr > div.layer-prop-add {
   text-align: center;
 }
 
+.to_login_button {
+  margin-top: 20px;
+}
+
 .prop-footer {
   margin-top: 20px;
   float: right;
@@ -519,8 +523,8 @@ table.properties-table > tr > div.layer-prop-add {
 
 body {
   -ms-content-zooming: none;
-  -ms-overflow-y: hidden;
-  overflow-y: hidden;
+  /* -ms-overflow-y: hidden; */
+  /* overflow-y: hidden; */
 }
 
 @media (max-height: 640px) {

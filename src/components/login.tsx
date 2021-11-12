@@ -5,6 +5,8 @@ import {
 import {
   getValueForKey, setValueForKey, removeValueForKey, getApiUrl,
 } from '../utils';
+import { useHistory } from "react-router-dom"
+
 
 
 const capitalize = (str: any) => {
@@ -98,6 +100,12 @@ function Welcome(props: any) {
     setDisplayMessage({ show: false, text: '', type: 1 });
   }
 
+  const history = useHistory();
+
+  function handleToGeoms() {
+    history.push("/get_user_geoms");
+  }
+
   return (
     <div>
       <Text variant="xLarge" block className="intro_header">
@@ -124,6 +132,11 @@ function Welcome(props: any) {
         <PrimaryButton
           text="Delete User"
           onClick={() => { setModalStatus(false); }}
+          allowDisabledFocus
+        />
+        <PrimaryButton
+          text="Data"
+          onClick={handleToGeoms}
           allowDisabledFocus
         />
       </div>
@@ -363,6 +376,9 @@ function Login(): any {
 
   const [currentPage, setCurrentPage] = useState({ login: true, register: false, welcome: false });
   const [userInfo, setUserInfo] = useState({ username: '', password: '' });
+
+
+
 
   function renderLogic() {
     const token = getValueForKey('satf_token');
