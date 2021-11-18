@@ -117,7 +117,7 @@
                 }
             ],
             "result": {
-                "type": "number"
+                "dimensionality": "matrix"
             }
         },
         {
