@@ -699,6 +699,25 @@
             }
         },
         {
+            "description": "Shows the weather forecast for the next 7 days on a location\nAn address can be used instead of Latitude.",
+            "id": "GET_FORECAST",
+            "name": "GET_FORECAST",
+            "parameters": [
+                {
+                    "name": "latitudeOrAddress",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
             "description": "Sends geometries to database",
             "id": "SENDGEOMS",
             "name": "SENDGEOMS",
