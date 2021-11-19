@@ -199,22 +199,33 @@ g.API_VERSION = API_VERSION;
  * @param {any} bufferMeters
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<number>} Cell with amount of people.
+ * @return {Promise<any[][]>} Cell with amount of people.
  */
-async function POPDENS_BUFFER(bufferMeters:any, latitudeOrAddress:any, longitude:any = false):Promise<number> {
+async function POPDENS_BUFFER(bufferMeters:any, latitudeOrAddress:any, longitude:any = false):Promise<any[][]> {
   try {
     if (Number.isNaN(bufferMeters)) { throw errInvalidValue('Buffer not a number'); }
 
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `${_apiUrl}population_density_buffer?buffer=${bufferMeters}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `${_apiUrl}population_buffer?buffer=${bufferMeters}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
-
+    
     if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
 
     const responseJSON:ApiReply = await apiResponse.json();
-    if (apiResponse.ok) { return Number(responseJSON.message); }
+    if (apiResponse.ok) { 
+      if (responseJSON.message.length === 0) { return null; }
+      const cell:any[][] = [[],[]];
+      for (let i = 0; i < responseJSON.message.length; i += 1) {
+        cell[0].push(responseJSON.message[i][0]);
+        cell[1].push(Number(responseJSON.message[i][1]));
+      }
+      
+           
+      return cell; 
+    }
 
     throw errInvalidValue(responseJSON.message);
   } catch (err) {
@@ -288,6 +299,7 @@ async function DEMOGRAPHY(bufferMeters:any, latitudeOrAddress:any, longitude:any
       if (responseJSON.message.length === 0) { return null; }
       const cell:any[][] = [[], []];
       for (let i = 0; i < responseJSON.message.length; i += 1) {
+        console.log(responseJSON.message[i])
         cell[0].push(responseJSON.message[i][0]);
         cell[1].push(Math.round(Number(responseJSON.message[i][1])));
       }
@@ -1011,6 +1023,51 @@ async function OCI_COVERAGE(latitudeOrAddress:any, longitude:any = false):Promis
 }
 
 g.OCI_COVERAGE = OCI_COVERAGE;
+
+
+/**
+ * Shows the weather forecast for the next 7 days on a location
+ * An address can be used instead of Latitude.
+ * @customfunction GET_FORECAST
+ * @param {any} latitudeOrAddress
+ * @param {any} [longitude]
+ * @return {Promise<string>} Weather forecast
+ */
+async function GET_FORECAST(latitudeOrAddress:any, longitude:any = false):Promise<string> {
+  try {
+    const coords = await parseToLatlng(latitudeOrAddress, longitude);
+    const url = `${_apiUrl}get_forecast?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const token = getValueForKey('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+    if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+
+    const responseJSON:ApiReply = await apiResponse.json();
+    if (apiResponse.ok) {
+      if (responseJSON.message.length === 0) { return null; }
+      const cell:any[] = []; 
+      // push headers
+      const header = Object.keys(responseJSON.message[0])
+      cell.push(header);
+      for (let i = 0; i < responseJSON.message.length; i += 1) {
+      // push values
+        const values = Object.values(responseJSON.message[i])
+        cell.push(values);
+        
+      }
+      
+      await addCellsToSheet(cell);
+      return ''
+    }
+
+    throw errInvalidValue(responseJSON.message);
+  } catch (err) {
+    throw errInvalidValue(err);
+  }
+}
+
+g.GET_FORECAST = GET_FORECAST;
 
 
 import arrayToGeojson from './components/map/array_to_geojson'

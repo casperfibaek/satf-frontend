@@ -117,7 +117,7 @@
                 }
             ],
             "result": {
-                "type": "number"
+                "dimensionality": "matrix"
             }
         },
         {
@@ -683,6 +683,25 @@
             "description": "Finds network COVERAGE from OCI source",
             "id": "OCI_COVERAGE",
             "name": "OCI_COVERAGE",
+            "parameters": [
+                {
+                    "name": "latitudeOrAddress",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Shows the weather forecast for the next 7 days on a location\nAn address can be used instead of Latitude.",
+            "id": "GET_FORECAST",
+            "name": "GET_FORECAST",
             "parameters": [
                 {
                     "name": "latitudeOrAddress",
