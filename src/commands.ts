@@ -1,9 +1,37 @@
 import 'react-app-polyfill/ie11'; import 'react-app-polyfill/stable';
 
-import { getGlobal } from './utils';
+import { getGlobal, getValueForKey, removeValueForKey, setValueForKey } from './utils';
 
-Office.onReady(() => {
+import { getSelectedCells, addCellsToSheet } from './excel_interaction'
+import geojsontoArray from './components/map/geojson_to_array'
+import { ThemeSettingName } from '@fluentui/style-utilities';
+
+
+Office.onReady(async () => {
   console.log('Office ready from commands.js');
+  const intervalId = setInterval(async ()=>{
+    const layerData = getValueForKey('layerData')
+    if (layerData) {
+      const cells = JSON.parse(layerData)
+      await addCellsToSheet(cells);
+      removeValueForKey('layerData')
+    }
+
+    const dataRequest = getValueForKey('data_request')
+    console.log(dataRequest)
+    if (dataRequest === 'true') {
+      const cells = await getSelectedCells()
+      console.log(cells)
+      setValueForKey('data_to_dialogue', JSON.stringify(cells))
+    }
+    else if (dataRequest === 'error') {
+      /// some kind of intuitive error handling
+      console.log('something went wrong')
+      setValueForKey('data_request', 'false')
+    }
+  }, 1000)
+
+  
 });
 
 let dialog:any = null;

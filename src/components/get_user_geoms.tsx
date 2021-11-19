@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react'; // eslint-disable-line
-import { getValueForKey, getApiUrl } from '../utils';
+import { getValueForKey, getApiUrl, setValueForKey, removeValueForKey } from '../utils';
 import {
     Text, Icon, SearchBox, initializeIcons, PrimaryButton, FontIcon
   } from '@fluentui/react';
 import geojsonToArray from './map/geojson_to_array'
+import arrayToGeojson from './map/array_to_geojson'
 import { addCellsToSheet } from '../excel_interaction'
 import { mergeStyles, mergeStyleSets } from '@fluentui/react/lib/Styling';
 import { useHistory } from "react-router-dom"
   
 function LayerList({props}) {
-  const {layerMetadata, fetchLayerGeometries} = props
+  const {layerMetadata, fetchLayerGeometries, getCellsFromExcel} = props
 
   console.log(props)
   return (
@@ -26,6 +27,7 @@ function LayerList({props}) {
         <Text variant="small" block>created on: {created_on}</Text>
         <Text variant="small" block>last updated: {last_updated}</Text>
         <PrimaryButton className="fetchButton" onClick={() => fetchLayerGeometries(layer_id, name)}>Fetch Geometries</PrimaryButton>
+        <PrimaryButton className="fetchButton" onClick={getCellsFromExcel}>Save Geometries</PrimaryButton>
       </div>
     )
     }
@@ -36,8 +38,6 @@ function LayerList({props}) {
   )}
 
 
-
-
 export default function GetUserGeoms(): any {
   
   // const [geometries, setGeometries] = useState({});
@@ -45,45 +45,77 @@ export default function GetUserGeoms(): any {
   const [layerMetadata, setLayerMetadata] =  useState([])
   const [stateToken, setStateToken] = useState('Login to access data')
 
-  const fetchLayerGeometries = async (layer, layerName) => {
+  const fetchLayerGeometries = async (layerID, layerName) => {
     try {
       const token = getValueForKey('satf_token')
-      const userName = token.split(':')[0] 
-      console.log(userName, layer)
-      const apiResponse = await fetch(`https://satf-api-magi-dev.azurewebsites.net/api/get_layer_geoms/${userName}/${layer}`, {
+      const userName = token.split(':')[0]
+      const url = `${getApiUrl()}get_layer_geoms?user=${userName}?layer_id=${layerID}`
+      const apiResponse = await fetch(url, {
         method: 'get',
         headers: {
           //  Authorisation: token, 
             'Content-Type': 'application/json',
           },
         });
-        // if (apiResponse.ok) {
-          // send repsonse to excel
-      const responseJSON = await apiResponse.json()
-      // const cells = ParseGeometries(responseJSON)
+         if (apiResponse.ok) {
+          const responseJSON = await apiResponse.json()
 
-      const cells = geojsonToArray(responseJSON.results, layerName);
-      console.log(cells)
-      try {
-        await addCellsToSheet(cells);
-      } catch (error) {
-        console.log(error);
-      }
-      
-          ///preserve layer ID as current layer for future reference
-      setCurrentLayerID(layer)
-        // }      
+          const cells = responseJSON.results.features.map(result=>{
+            const { geometry: { coordinates: [ lat, lng ] } , properties: { geom_id } } = result
+
+            return [layerName, geom_id, lat, lng]
+
+          })
+          cells.unshift(['layername', 'geom_id', 'lat', 'lng'])
+          setValueForKey('layerData', JSON.stringify(cells))
+          setCurrentLayerID(layerID)
+         }          
     }
      catch (error) {
       console.log(error);
     }
   }
+
+  const getCellsFromExcel = async () => {
+    setValueForKey('data_request', 'true')
+   
+    const intervalID = setInterval(async ()=>{
+      const layerData = getValueForKey('data_to_dialogue')
+      if (layerData) {
+        const cells = JSON.parse(layerData)
+        clearInterval(intervalID)
+        try {
+          const geoJSON = arrayToGeojson(cells)
+          /// turn cells to geojson
+          console.log(geoJSON)
+          const response = await fetch(`${getApiUrl()}/update_layer_data`, {
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(geoJSON),
+          });
+    
+          const responseJSON = await response.json();
+    
+          if (response.ok) {
+            console.log('values in the database have been updated')
+            removeValueForKey('data_to_dialogue')
+            setValueForKey('data_request', 'false')
+        }
+      }
+      catch (err) {
+          console.log(err)
+          setValueForKey('data_request', 'error')
+        }
+      }
+    },500)
+  }
+
     useEffect(()=>{
       const fetchMetadata = async (token) => {
         try {
             const userName = token.split(':')[0]    
-    
-             const apiResponse = await fetch(`${getApiUrl()}/get_user_layer_metadata/${userName}`, {
+            const url = `${getApiUrl()}get_user_layer_metadata?user=${userName}`
+            const apiResponse = await fetch(url, {
                method: 'get',
                headers: {
                   //  Authorisation: token, 
@@ -150,11 +182,10 @@ export default function GetUserGeoms(): any {
           </div>
         </div>
         <div className="card_holder">
-        {stateToken && <LayerList props={{layerMetadata, fetchLayerGeometries}}/>}
+        {stateToken && <LayerList props={{layerMetadata, fetchLayerGeometries, getCellsFromExcel}}/>}
         </div>
       </div>
     )}
   
   initializeIcons();
-  
   
