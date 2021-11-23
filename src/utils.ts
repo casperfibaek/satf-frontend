@@ -220,14 +220,6 @@ export const errInvalidValue = (msg:string) => new CustomFunctions.Error(CustomF
 export const errNotAvailable = (msg:string) => new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, String(msg));
 
 export function getApiUrl() {
-<<<<<<< HEAD
-  // const { origin } = document.location;
-  // if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
-  //   return 'localhost:8080/api';
-  // }
-  // return 'https://satf-api.azurewebsites.net/api';
-  return 'https://satf-api-magi.azurewebsites.net/api/';
-=======
   const { origin } = document.location;
   console.log(origin)
   if (origin.includes('localhost') || origin.includes('127.0.0.1') || origin.includes('satfstaticdev')) {
@@ -236,7 +228,6 @@ export function getApiUrl() {
     return 'https://satf-api-magi-dev.azurewebsites.net/api/'
   }
   return 'https://satf-api-magi.azurewebsites.net/api/'
->>>>>>> dev
 }
 
 export const haversine = (function () {
