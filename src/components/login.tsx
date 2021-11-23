@@ -138,6 +138,7 @@ function Welcome(props: any) {
           text="Data"
           onClick={handleToGeoms}
           allowDisabledFocus
+          disabled={true}
         />
       </div>
       <Dialog

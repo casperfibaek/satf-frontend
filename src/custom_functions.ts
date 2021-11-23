@@ -1058,7 +1058,8 @@ async function GET_FORECAST(latitudeOrAddress:any, longitude:any = false):Promis
       }
       
       await addCellsToSheet(cell);
-      return ''
+
+      return String('Weather Forecast 7 days')
     }
 
     throw errInvalidValue(responseJSON.message);
@@ -1070,91 +1071,91 @@ async function GET_FORECAST(latitudeOrAddress:any, longitude:any = false):Promis
 g.GET_FORECAST = GET_FORECAST;
 
 
-import arrayToGeojson from './components/map/array_to_geojson'
+// import arrayToGeojson from './components/map/array_to_geojson'
 
-/////
+///// TODO: finalize geometries functions
 
 
-/**
- * Sends geometries to database
- * @customfunction SENDGEOMS
- * @return nothing
- */
+// /**
+//  * Sends geometries to database
+//  * @customfunction SENDGEOMS
+//  * @return nothing
+//  */
 
-async function SENDGEOMS() { // eslint-disable-line
+// async function SENDGEOMS() { // eslint-disable-line
 
-  setValueForKey('satf_token', 'casper:golden_ticket')
+//   setValueForKey('satf_token', 'casper:golden_ticket')
 
-  try {
-    let cells = await getSelectedCells();
+//   try {
+//     let cells = await getSelectedCells();
     
-    if (cells[0][0] == '#CALC!') {
-      cells[0][0] == 'layername'
-    }
+//     if (cells[0][0] == '#CALC!') {
+//       cells[0][0] == 'layername'
+//     }
     
-    const geojson = await arrayToGeojson(cells);
+//     const geojson = await arrayToGeojson(cells);
 
-    console.log(geojson)
-    console.log(JSON.stringify(geojson))
+//     console.log(geojson)
+//     console.log(JSON.stringify(geojson))
 
-    const url = `${_apiUrl}send_geoms`;
-    const token = getValueForKey('satf_token');
-    debugger;
-    const apiResponse = await fetch(url, {
-      headers: {
-        Authorisation: token,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      method: "POST",
-      body: JSON.stringify({geojson, token})
-  })
-  const responseJSON = await apiResponse.json()
-  if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
-  if (apiResponse.ok) { return String(responseJSON.message); }
-  } catch (err) {
-    throw errInvalidValue(err)
-}
-}
-g.SENDGEOMS = SENDGEOMS;
+//     const url = `${_apiUrl}send_geoms`;
+//     const token = getValueForKey('satf_token');
+//     debugger;
+//     const apiResponse = await fetch(url, {
+//       headers: {
+//         Authorisation: token,
+//         'Accept': 'application/json',
+//         'Content-Type': 'application/json'
+//       },
+//       method: "POST",
+//       body: JSON.stringify({geojson, token})
+//   })
+//   const responseJSON = await apiResponse.json()
+//   if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+//   if (apiResponse.ok) { return String(responseJSON.message); }
+//   } catch (err) {
+//     throw errInvalidValue(err)
+// }
+// }
+// g.SENDGEOMS = SENDGEOMS;
 
 
 
-/**
- * Sends geometries to database
- * @customfunction FETCHGEOMS
- * @param id
- * @return {Promise<string>} Technology available
- */
+// /**
+//  * Sends geometries to database
+//  * @customfunction FETCHGEOMS
+//  * @param id
+//  * @return {Promise<string>} Technology available
+//  */
 
- async function FETCHGEOMS(id) { // eslint-disable-line
-  try {
-    const token = getValueForKey('satf_token')
-    const userName = token.split(':')[0] 
-    const apiResponse = await fetch(`${_apiUrl}get_layer_geoms/${userName}/${id}`, {
-      method: 'get',
-      headers: {
-        //  Authorisation: token, 
-          'Content-Type': 'application/json',
-        },
-      });
-      // if (apiResponse.ok) {
-        // send repsonse to excel
-    const responseJSON = await apiResponse.json()
-    // const cells = ParseGeometries(responseJSON)
+//  async function FETCHGEOMS(id) { // eslint-disable-line
+//   try {
+//     const token = getValueForKey('satf_token')
+//     const userName = token.split(':')[0] 
+//     const apiResponse = await fetch(`${_apiUrl}get_layer_geoms/${userName}/${id}`, {
+//       method: 'get',
+//       headers: {
+//         //  Authorisation: token, 
+//           'Content-Type': 'application/json',
+//         },
+//       });
+//       // if (apiResponse.ok) {
+//         // send repsonse to excel
+//     const responseJSON = await apiResponse.json()
+//     // const cells = ParseGeometries(responseJSON)
 
-    const cells = geojsonToArray(responseJSON.results, 'Hello World');
-    console.log(cells)
-    try {
-      await addCellsToSheet(cells);
-    } catch (error) {
-      console.log(error);
-    }
-      // }      
-  }
-   catch (error) {
-    console.log(error);
-  }
-}
+//     const cells = geojsonToArray(responseJSON.results, 'Hello World');
+//     console.log(cells)
+//     try {
+//       await addCellsToSheet(cells);
+//     } catch (error) {
+//       console.log(error);
+//     }
+//       // }      
+//   }
+//    catch (error) {
+//     console.log(error);
+//   }
+// }
 
 
