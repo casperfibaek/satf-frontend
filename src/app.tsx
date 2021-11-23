@@ -12,6 +12,7 @@ import Documentation from './components/documentation';
 import Map from './components/map';
 import Login from './components/login';
 import Install from './components/install';
+import GetUserGeoms from './components/get_user_geoms';
 
 import { excelTheme } from './utils';
 import { WindowState } from './types';
@@ -35,6 +36,7 @@ function StartPage(): string {
     case 'support': return '/support';
     case 'documentation': return '/documentation';
     case 'login': return '/login';
+    case 'get_user_geoms': return '/get_user_geoms';
     default: return '/404';
   }
 }
@@ -44,19 +46,21 @@ const startPage = StartPage();
 function App() {
   return (
     <div id="app">
-      <Router>
-        <Switch>
+        <Router>
+          <Switch>
 
-          <Route exact path='/install' render={() => (<Install />)} />
-          <Route exact path='/map' render={() => (<Map />)} />
-          <Route exact path='/support' render={() => (<Support />)} />
-          <Route exact path='/documentation' render={() => (<Documentation />)} />
-          <Route exact path='/login' render={() => (<Login />)} />
-          <Route exact path='/404' render={() => (<Error404Page />)} />
-          <Route exact path='/' render={() => (<Redirect to={startPage}/>)}/>
+            <Route exact path='/install' render={() => (<Install />)} />
+            <Route exact path='/map' render={() => (<Map />)} />
+            <Route exact path='/support' render={() => (<Support />)} />
+            <Route exact path='/documentation' render={() => (<Documentation />)} />
+            <Route exact path='/login' render={() => (<Login />)} />
+            <Route exact path='/get_user_geoms' render={() => (<GetUserGeoms />)} />
+            <Route exact path='/404' render={() => (<Error404Page />)} />
+            <Route exact path='/' render={() => (<Redirect to={startPage}/>)}/>
 
-        </Switch>
-      </Router>
+          </Switch>
+        </Router>
+
     </div>
   );
 }

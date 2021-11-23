@@ -37,19 +37,28 @@ function fitTo(adress:string, data:any[]) {
 export async function addCellsToSheet(data:any):Promise<boolean> {
   try {
     await Excel.run(async (context) => {
+      console.log('inside excel run')
+      
       const sheet = context.workbook.worksheets.getActiveWorksheet();
+      console.log(sheet)
       const range = context.workbook.getSelectedRange();
+      console.log(range)
+      await context.sync();
+
       range.load('address');
 
       await context.sync();
 
       const newRange = sheet.getRange(fitTo(range.address, data).split('!')[1]);
       newRange.load('values');
-
+      console.log(newRange)
       await context.sync();
 
       const rows = newRange.values.length;
       const cols = newRange.values[0].length;
+      console.log('rows', rows)
+      console.log('cols', cols)
+
 
       let empty = true;
       for (let row = 0; row < rows; row += 1) {

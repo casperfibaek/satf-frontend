@@ -11,7 +11,11 @@ import {
   getGlobal,
   getApiUrl,
   haversine,
+  setValueForKey,
 } from './utils';
+
+import { getSelectedCells, addCellsToSheet } from './excel_interaction'
+import geojsonToArray from './components/map/geojson_to_array'
 import { ApiReply } from './types';
 
 Office.onReady(() => {
@@ -176,7 +180,10 @@ async function API_VERSION():Promise<string> {
     if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
 
     const responseJSON:ApiReply = await apiResponse.json();
-    if (apiResponse.ok) { return String(responseJSON.message); }
+    console.log(responseJSON)
+    const message = `version: ${responseJSON.message["version"]}, api_location: ${responseJSON.message["api_environment"]}, client_location: ${responseJSON.message["client_environment"]}`
+    console.log(message)
+    if (apiResponse.ok) { return message; }
 
     throw errInvalidValue(responseJSON.message);
   } catch (err) {
@@ -192,22 +199,33 @@ g.API_VERSION = API_VERSION;
  * @param {any} bufferMeters
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<number>} Cell with amount of people.
+ * @return {Promise<any[][]>} Cell with amount of people.
  */
-async function POPDENS_BUFFER(bufferMeters:any, latitudeOrAddress:any, longitude:any = false):Promise<number> {
+async function POPDENS_BUFFER(bufferMeters:any, latitudeOrAddress:any, longitude:any = false):Promise<any[][]> {
   try {
     if (Number.isNaN(bufferMeters)) { throw errInvalidValue('Buffer not a number'); }
 
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `${_apiUrl}population_density_buffer?buffer=${bufferMeters}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `${_apiUrl}population_buffer?buffer=${bufferMeters}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
-
+    
     if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
 
     const responseJSON:ApiReply = await apiResponse.json();
-    if (apiResponse.ok) { return Number(responseJSON.message); }
+    if (apiResponse.ok) { 
+      if (responseJSON.message.length === 0) { return null; }
+      const cell:any[][] = [[],[]];
+      for (let i = 0; i < responseJSON.message.length; i += 1) {
+        cell[0].push(responseJSON.message[i][0]);
+        cell[1].push(Number(responseJSON.message[i][1]));
+      }
+      
+           
+      return cell; 
+    }
 
     throw errInvalidValue(responseJSON.message);
   } catch (err) {
@@ -281,6 +299,7 @@ async function DEMOGRAPHY(bufferMeters:any, latitudeOrAddress:any, longitude:any
       if (responseJSON.message.length === 0) { return null; }
       const cell:any[][] = [[], []];
       for (let i = 0; i < responseJSON.message.length; i += 1) {
+        console.log(responseJSON.message[i])
         cell[0].push(responseJSON.message[i][0]);
         cell[1].push(Math.round(Number(responseJSON.message[i][1])));
       }
@@ -445,19 +464,20 @@ async function POPDENS_ISO_BIKE(minutes:any, latitudeOrAddress:any, longitude:an
 g.POPDENS_ISO_BIKE = POPDENS_ISO_BIKE;
 
 /**
- * Calculates the amount of people within a drivable timeframe of the point. Traverses the road network creating isocrones.
+ * Calculates the amount of people within a bikeable timeframe of the point. Traverses the road network creating isocrones.
  * @customfunction POPDENS_ISO_CAR
  * @param {any} minutes
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
  * @return {Promise<number>} Cell with the amount of people.
  */
+
 async function POPDENS_ISO_CAR(minutes:any, latitudeOrAddress:any, longitude:any = false):Promise<number> {
   try {
     if (Number.isNaN(minutes)) { throw errInvalidValue('Minutes not a number'); }
 
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `${_apiUrl}pop_density_isochrone_car?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `${_apiUrl}pop_density_isochrone_car?lat=${coords[0][0]}&lng=${coords[0][1]}&minutes=${minutes}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -919,19 +939,223 @@ g.DISTANCE_A_B = DISTANCE_A_B;
 
 /**
  * Finds network COVERAGE
- * @customfunction COVERAGE
+ * @customfunction NETWORK_COVERAGE
  * @param {any} lat Latitude
  * @param {any} lng Longitude
  * @return {Promise<string>} Technology available
  */
-async function COVERAGE(lat:any, lng:any):Promise<string> { // eslint-disable-line
+async function NETWORK_COVERAGE(latitudeOrAddress:any, longitude:any = false):Promise<string> { // eslint-disable-line
   try {
-    const technology = ['LTE', 'LTE', 'LTE', '3G', '3G', '4G', 'GME', 'GME', 'GME', 'GME'];
-    const techIndex = Math.floor(Math.random() * technology.length);
+    const coords = await parseToLatlng(latitudeOrAddress, longitude);
+    const url = `${_apiUrl}network_coverage?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    // const technology = ['LTE', 'LTE', 'LTE', '3G', '3G', '4G', 'GME', 'GME', 'GME', 'GME'];
+    // const techIndex = Math.floor(Math.random() * technology.length);
+    const token = getValueForKey('satf_token');
 
-    return technology[techIndex];
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+    if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+
+    const responseJSON:ApiReply = await apiResponse.json();
+    if (apiResponse.ok) { return String(responseJSON.message); }
+
+    throw errInvalidValue(responseJSON.message);
   } catch (err) {
     throw errInvalidValue(err);
   }
 }
-g.COVERAGE = COVERAGE;
+g.NETWORK_COVERAGE = NETWORK_COVERAGE;
+
+
+/**
+ * Finds network COVERAGE from MCE source
+ * @customfunction MCE_COVERAGE
+ * @param {any} lat Latitude
+ * @param {any} lng Longitude
+ * @return {Promise<string>} Technology available
+ */
+async function MCE_COVERAGE(latitudeOrAddress:any, longitude:any = false):Promise<string> { // eslint-disable-line
+  try {
+    const coords = await parseToLatlng(latitudeOrAddress, longitude);
+    const url = `${_apiUrl}mce_coverage?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+
+    const token = getValueForKey('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+    if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+
+    const responseJSON:ApiReply = await apiResponse.json();
+    if (apiResponse.ok) { return String(responseJSON.message); }
+
+    throw errInvalidValue(responseJSON.message);
+  } catch (err) {
+    throw errInvalidValue(err);
+  }
+}
+g.MCE_COVERAGE = MCE_COVERAGE;
+
+/**
+ * Finds network COVERAGE from OCI source
+ * @customfunction OCI_COVERAGE
+ * @param {any} lat Latitude
+ * @param {any} lng Longitude
+ * @return {Promise<string>} Technology available
+ */
+async function OCI_COVERAGE(latitudeOrAddress:any, longitude:any = false):Promise<string> { // eslint-disable-line
+  try {
+    const coords = await parseToLatlng(latitudeOrAddress, longitude);
+    const url = `${_apiUrl}oci_coverage?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+
+    const token = getValueForKey('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+    if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+
+    const responseJSON:ApiReply = await apiResponse.json();
+    if (apiResponse.ok) { return String(responseJSON.message); }
+
+    throw errInvalidValue(responseJSON.message);
+  } catch (err) {
+    throw errInvalidValue(err);
+  }
+}
+
+g.OCI_COVERAGE = OCI_COVERAGE;
+
+
+/**
+ * Shows the weather forecast for the next 7 days on a location
+ * An address can be used instead of Latitude.
+ * @customfunction GET_FORECAST
+ * @param {any} latitudeOrAddress
+ * @param {any} [longitude]
+ * @return {Promise<string>} Weather forecast
+ */
+async function GET_FORECAST(latitudeOrAddress:any, longitude:any = false):Promise<string> {
+  try {
+    const coords = await parseToLatlng(latitudeOrAddress, longitude);
+    const url = `${_apiUrl}get_forecast?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const token = getValueForKey('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+    if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+
+    const responseJSON:ApiReply = await apiResponse.json();
+    if (apiResponse.ok) {
+      if (responseJSON.message.length === 0) { return null; }
+      const cell:any[] = []; 
+      // push headers
+      const header = Object.keys(responseJSON.message[0])
+      cell.push(header);
+      for (let i = 0; i < responseJSON.message.length; i += 1) {
+      // push values
+        const values = Object.values(responseJSON.message[i])
+        cell.push(values);
+        
+      }
+      
+      await addCellsToSheet(cell);
+
+      return String('Weather Forecast 7 days')
+    }
+
+    throw errInvalidValue(responseJSON.message);
+  } catch (err) {
+    throw errInvalidValue(err);
+  }
+}
+
+g.GET_FORECAST = GET_FORECAST;
+
+
+// import arrayToGeojson from './components/map/array_to_geojson'
+
+///// TODO: finalize geometries functions
+
+
+// /**
+//  * Sends geometries to database
+//  * @customfunction SENDGEOMS
+//  * @return nothing
+//  */
+
+// async function SENDGEOMS() { // eslint-disable-line
+
+//   setValueForKey('satf_token', 'casper:golden_ticket')
+
+//   try {
+//     let cells = await getSelectedCells();
+    
+//     if (cells[0][0] == '#CALC!') {
+//       cells[0][0] == 'layername'
+//     }
+    
+//     const geojson = await arrayToGeojson(cells);
+
+//     console.log(geojson)
+//     console.log(JSON.stringify(geojson))
+
+//     const url = `${_apiUrl}send_geoms`;
+//     const token = getValueForKey('satf_token');
+//     debugger;
+//     const apiResponse = await fetch(url, {
+//       headers: {
+//         Authorisation: token,
+//         'Accept': 'application/json',
+//         'Content-Type': 'application/json'
+//       },
+//       method: "POST",
+//       body: JSON.stringify({geojson, token})
+//   })
+//   const responseJSON = await apiResponse.json()
+//   if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+//   if (apiResponse.ok) { return String(responseJSON.message); }
+//   } catch (err) {
+//     throw errInvalidValue(err)
+// }
+// }
+// g.SENDGEOMS = SENDGEOMS;
+
+
+
+// /**
+//  * Sends geometries to database
+//  * @customfunction FETCHGEOMS
+//  * @param id
+//  * @return {Promise<string>} Technology available
+//  */
+
+//  async function FETCHGEOMS(id) { // eslint-disable-line
+//   try {
+//     const token = getValueForKey('satf_token')
+//     const userName = token.split(':')[0] 
+//     const apiResponse = await fetch(`${_apiUrl}get_layer_geoms/${userName}/${id}`, {
+//       method: 'get',
+//       headers: {
+//         //  Authorisation: token, 
+//           'Content-Type': 'application/json',
+//         },
+//       });
+//       // if (apiResponse.ok) {
+//         // send repsonse to excel
+//     const responseJSON = await apiResponse.json()
+//     // const cells = ParseGeometries(responseJSON)
+
+//     const cells = geojsonToArray(responseJSON.results, 'Hello World');
+//     console.log(cells)
+//     try {
+//       await addCellsToSheet(cells);
+//     } catch (error) {
+//       console.log(error);
+//     }
+//       // }      
+//   }
+//    catch (error) {
+//     console.log(error);
+//   }
+// }
+
+

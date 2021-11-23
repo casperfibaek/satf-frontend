@@ -117,7 +117,7 @@
                 }
             ],
             "result": {
-                "dimensionality": "matrix"
+                "type": "number"
             }
         },
         {
@@ -282,7 +282,7 @@
             }
         },
         {
-            "description": "Calculates the amount of people within a bikeable timeframe of the point. Traverses the road network creating isocrones.",
+            "description": "Calculates the amount of people within a drivable timeframe of the point. Traverses the road network creating isocrones.",
             "id": "POPDENS_ISO_CAR",
             "name": "POPDENS_ISO_CAR",
             "parameters": [
@@ -699,23 +699,11 @@
             }
         },
         {
-            "description": "Shows the weather forecast for the next 7 days on a location\nAn address can be used instead of Latitude.",
-            "id": "GET_FORECAST",
-            "name": "GET_FORECAST",
-            "parameters": [
-                {
-                    "name": "latitudeOrAddress",
-                    "type": "any"
-                },
-                {
-                    "name": "longitude",
-                    "optional": true,
-                    "type": "any"
-                }
-            ],
-            "result": {
-                "type": "string"
-            }
+            "description": "Sends geometries to database",
+            "id": "SENDGEOMS",
+            "name": "SENDGEOMS",
+            "parameters": [],
+            "result": {}
         }
     ]
 }

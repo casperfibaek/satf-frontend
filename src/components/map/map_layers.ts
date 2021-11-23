@@ -54,6 +54,15 @@ export function getLayer(key:number):MapLayer {
   throw new Error(errorMessage);
 }
 
+export function checkIfLayerExists(key:number):boolean {
+  for (let i = 0; i < state.layers.length; i += 1) {
+    if (state.layers[i].key === key) {
+      return true;
+    }
+  }
+  return false
+}
+
 export function renderLayers() {
   for (let i = 0; i < state.layers.length; i += 1) {
     if (state.layers[i].hidden) {
@@ -64,8 +73,15 @@ export function renderLayers() {
   }
 }
 
-export function createNewMapLayer(name:string):MapLayer {
-  const key = getLayerKey();
+export function createNewMapLayer(name:string, from_db=false, db_key=null):MapLayer {
+  let key
+  if (from_db) {
+    key = db_key
+  }
+  else {
+    key = getLayerKey();
+  }
+  
   const style = generateRandomStyle();
 
   for (let i = 0; i < state.layers.length; i += 1) {
@@ -195,7 +211,7 @@ export function addMarkerToLayer(key:number) {
   const { featureGroup } = mapLayer;
 
   const uniqueProperties = getUniqueProperties(featureGroup);
-
+  console.log(state.click.latlng)
   const properties:any = {};
   for (let i = 0; i < uniqueProperties.length; i += 1) {
     const property = uniqueProperties[i];
@@ -203,6 +219,35 @@ export function addMarkerToLayer(key:number) {
   }
 
   const marker = L.circleMarker(state.click.latlng, {
+    color: mapLayer.style.edgeColor,
+    weight: mapLayer.style.weight,
+    opacity: mapLayer.style.edgeOpacity,
+    fillOpacity: mapLayer.style.fillOpacity,
+    fillColor: mapLayer.style.fillColor,
+    radius: mapLayer.style.radius,
+    properties,
+  });
+
+  featureGroup.addLayer(marker);
+}
+
+export function addMarkerToLayerFromDB(key:number, latlng:any, point_id:any, context_info:any = 'whatever info') {
+  const mapLayer = getLayer(key);
+  const { featureGroup } = mapLayer;
+
+  const uniqueProperties = getUniqueProperties(featureGroup);
+  const properties:any = { };
+  for (let i = 0; i < uniqueProperties.length; i += 1) {
+    const property = uniqueProperties[i];
+    properties[property] = null;
+  }
+  
+  ///// I CHANGED THIS!
+  console.log(point_id, context_info)
+  properties.id = point_id
+  properties.context_info = context_info
+
+  const marker = L.circleMarker(latlng, {
     color: mapLayer.style.edgeColor,
     weight: mapLayer.style.weight,
     opacity: mapLayer.style.edgeOpacity,

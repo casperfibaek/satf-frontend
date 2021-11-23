@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; // eslint-disable-line
+import React, { useState, useEffect } from 'react'; // eslint-disable-line
 import {
   Text, Icon, SearchBox, initializeIcons,
 } from '@fluentui/react';
@@ -20,6 +20,11 @@ const fuzzyIndex = new Fuse(documentationObject.functions, {
 });
 
 function fuzzySearch(str: string): any {
+
+  console.log(str)
+  console.log(fuzzyIndex.search(str).map((e) => e.item))
+
+
   if (str === '') { return documentationObject.functions; }
   return fuzzyIndex.search(str).map((e) => e.item);
 }
@@ -35,6 +40,7 @@ function iterParams(p:FunctionParameters, idx:number) {
 }
 
 function SearchElements(props: any) {
+
   return props.documentationFunctions.map((f:FunctionParameters, idx:number) => (
     <div key={idx} className="function_card">
       <Text variant="large" block>{f.name}</Text>
@@ -49,10 +55,19 @@ function SearchElements(props: any) {
   ));
 }
 
+const greetingStyles = { 
+  root: { 
+    color: '#FFFFFF'
+  }
+} 
+
+
 export default function Documentation(): any {
   document.title = 'Documentation';
 
   const [results, setResults] = useState(documentationObject.functions);
+
+  useEffect(()=>{console.log(documentationObject.functions)},[])
 
   return (
     <div id="documentation_body">
@@ -60,9 +75,9 @@ export default function Documentation(): any {
         <div className="header">
           <div className="greet_text">
             <Icon iconName="TextDocument"/>
-            <Text variant="xLarge">Search the documentation</Text>
+            <Text styles={greetingStyles}variant="xLarge">Search the documentation</Text>
           </div>
-          <SearchBox className="function_search" placeholder="Search" onChanged={(newValue) => { setResults(fuzzySearch(newValue)); }} />
+          <SearchBox className="function_search" placeholder="Search" onChange={(_,newValue) => { setResults(fuzzySearch(newValue)); }} />
         </div>
       </div>
       <div className="card_holder">
