@@ -98,7 +98,7 @@
             }
         },
         {
-            "description": "Calculates the amount of people within a circular radius of a point.\nAn address can be used instead of Latitude.",
+            "description": "Calculates the amount of people within a circular radius of a point, during daytime, nighttime and average.\nAn address can be used instead of Latitude.",
             "id": "POPDENS_BUFFER",
             "name": "POPDENS_BUFFER",
             "parameters": [
@@ -714,7 +714,7 @@
                 }
             ],
             "result": {
-                "type": "string"
+                "dimensionality": "matrix"
             }
         }
     ]

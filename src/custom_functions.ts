@@ -193,13 +193,13 @@ async function API_VERSION():Promise<string> {
 g.API_VERSION = API_VERSION;
 
 /**
- * Calculates the amount of people within a circular radius of a point.
+ * Calculates the amount of people within a circular radius of a point, during daytime, nighttime and average.
  * An address can be used instead of Latitude.
  * @customfunction POPDENS_BUFFER
  * @param {any} bufferMeters
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<any[][]>} Cell with amount of people.
+ * @return {Promise<any[][]>} Cells with amount of people during daytime, nightitme and average.
  */
 async function POPDENS_BUFFER(bufferMeters:any, latitudeOrAddress:any, longitude:any = false):Promise<any[][]> {
   try {
@@ -1031,9 +1031,9 @@ g.OCI_COVERAGE = OCI_COVERAGE;
  * @customfunction GET_FORECAST
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<string>} Weather forecast
+ * @return {Promise<any[][]>} Weather forecast
  */
-async function GET_FORECAST(latitudeOrAddress:any, longitude:any = false):Promise<string> {
+async function GET_FORECAST(latitudeOrAddress:any, longitude:any = false):Promise<any[][]> {
   try {
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
     const url = `${_apiUrl}get_forecast?lat=${coords[0][0]}&lng=${coords[0][1]}`;
@@ -1048,18 +1048,23 @@ async function GET_FORECAST(latitudeOrAddress:any, longitude:any = false):Promis
       if (responseJSON.message.length === 0) { return null; }
       const cell:any[] = []; 
       // push headers
-      const header = Object.keys(responseJSON.message[0])
+      const header = ['Date', 'Description', 'Temp_min', 'Temp_max', 'Humidity', 'Rain', 'Clouds']
       cell.push(header);
       for (let i = 0; i < responseJSON.message.length; i += 1) {
       // push values
         const values = Object.values(responseJSON.message[i])
+        if (values.length < 7) {
+          values.splice(5, 0, 0)
+        }
+
         cell.push(values);
         
       }
-      
-      await addCellsToSheet(cell);
+      console.log(cell)
 
-      return String('Weather Forecast 7 days')
+      // await addCellsToSheet(cell);
+
+      return cell
     }
 
     throw errInvalidValue(responseJSON.message);
