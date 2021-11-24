@@ -223,7 +223,7 @@ async function POPDENS_BUFFER(bufferMeters:any, latitudeOrAddress:any, longitude
         cell[1].push(Number(responseJSON.message[i][1]));
       }
       
-           
+      console.log(cell)     
       return cell; 
     }
 
