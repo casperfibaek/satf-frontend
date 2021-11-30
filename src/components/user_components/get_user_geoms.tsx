@@ -1,55 +1,34 @@
 import React, { useState, useEffect } from 'react'; // eslint-disable-line
-import { getValueForKey, getApiUrl, setValueForKey, removeValueForKey } from '../utils';
+import { getValueForKey, getApiUrl, setValueForKey, removeValueForKey } from '../../utils';
 import {
-    Text, Icon, SearchBox, initializeIcons, PrimaryButton, FontIcon
+    Text, initializeIcons, PrimaryButton, FontIcon,
   } from '@fluentui/react';
-import geojsonToArray from './map/geojson_to_array'
-import arrayToGeojson from './map/array_to_geojson'
-import { addCellsToSheet } from '../excel_interaction'
+import arrayToGeojson from '../map/array_to_geojson'
 import { mergeStyles, mergeStyleSets } from '@fluentui/react/lib/Styling';
 import { useHistory } from "react-router-dom"
-  
-function LayerList({props}) {
-  const {layerMetadata, fetchLayerGeometries, getCellsFromExcel} = props
 
-  console.log(props)
-  return (
-    layerMetadata.length > 0 ?
-    layerMetadata.map((layer, idx ) => {
-
-      const {name, layer_id, count, created_on, last_updated} = layer
-
-      return (
-        <div key={idx} className="function_card">
-          
-        <Text variant="large" block>{name.toUpperCase()} id:{layer_id}</Text>
-        <Text variant="medium" block>Geometry Count: {count}</Text>
-        <Text variant="small" block>created on: {created_on}</Text>
-        <Text variant="small" block>last updated: {last_updated}</Text>
-        <PrimaryButton className="fetchButton" onClick={() => fetchLayerGeometries(layer_id, name)}>Fetch Geometries</PrimaryButton>
-        <PrimaryButton className="fetchButton" onClick={getCellsFromExcel}>Save Geometries</PrimaryButton>
-      </div>
-    )
-    }
-    )
-    :
-      <Text variant="large" block>No layers to display</Text>
-
-  )}
+import LayerList from './layer_list';
+import NewLayerContainer from './new_layer_container';
 
 
 export default function GetUserGeoms(): any {
   
-  // const [geometries, setGeometries] = useState({});
-  const [currentLayerID, setCurrentLayerID] = useState(null);
+  const [updatingGeometries, setUpdatingGeometries] = useState(false)
   const [layerMetadata, setLayerMetadata] =  useState([])
   const [stateToken, setStateToken] = useState('Login to access data')
+ 
+  const history = useHistory();
 
-  const fetchLayerGeometries = async (layerID, layerName) => {
+  function handleToLogin() {
+    history.push("/login");
+  }
+
+
+  const fetchLayerGeometries = async (layerID, layerName: string) => {
     try {
       const token = getValueForKey('satf_token')
       const userName = token.split(':')[0]
-      const url = `${getApiUrl()}get_layer_geoms?user=${userName}?layer_id=${layerID}`
+      const url = `${getApiUrl()}get_layer_geoms?username=${userName}?layer_id=${layerID}`
       const apiResponse = await fetch(url, {
         method: 'get',
         headers: {
@@ -68,7 +47,6 @@ export default function GetUserGeoms(): any {
           })
           cells.unshift(['layername', 'geom_id', 'lat', 'lng'])
           setValueForKey('layerData', JSON.stringify(cells))
-          setCurrentLayerID(layerID)
          }          
     }
      catch (error) {
@@ -76,22 +54,44 @@ export default function GetUserGeoms(): any {
     }
   }
 
-  const getCellsFromExcel = async () => {
+  const fetchMetadata = async (token:string) => {
+    try {
+        const userName = token.split(':')[0]    
+        const url = `${getApiUrl()}get_user_layer_metadata?username=${userName}`
+        const apiResponse = await fetch(url, {
+           method: 'get',
+           headers: {
+              //  Authorisation: token, 
+               'Content-Type': 'application/json',
+             },
+         });
+         const responseJSON = await apiResponse.json()
+         console.log(getApiUrl())
+         console.log(responseJSON)
+         setLayerMetadata(responseJSON.results)
+
+       }
+       catch (err) {
+         console.log(err)
+     }
+    }
+
+  
+
+  const getCellsFromExcel = async (username:string, layerId:string) => {
     setValueForKey('data_request', 'true')
-   
+    setUpdatingGeometries(true)
     const intervalID = setInterval(async ()=>{
       const layerData = getValueForKey('data_to_dialogue')
       if (layerData) {
         const cells = JSON.parse(layerData)
         clearInterval(intervalID)
         try {
-          const geoJSON = arrayToGeojson(cells)
-          /// turn cells to geojson
-          console.log(geoJSON)
-          const response = await fetch(`${getApiUrl()}/update_layer_data`, {
+          const featureCollection = await arrayToGeojson(cells)
+          const response = await fetch(`${getApiUrl()}/update_layer_data?username=${username}&layerId=${layerId}`, {
             method: 'post',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(geoJSON),
+            body: JSON.stringify({featureCollection}),
           });
     
           const responseJSON = await response.json();
@@ -100,6 +100,7 @@ export default function GetUserGeoms(): any {
             console.log('values in the database have been updated')
             removeValueForKey('data_to_dialogue')
             setValueForKey('data_request', 'false')
+
         }
       }
       catch (err) {
@@ -108,34 +109,16 @@ export default function GetUserGeoms(): any {
         }
       }
     },500)
+    setUpdatingGeometries(false)
   }
-
-    useEffect(()=>{
-      const fetchMetadata = async (token) => {
-        try {
-            const userName = token.split(':')[0]    
-            const url = `${getApiUrl()}get_user_layer_metadata?user=${userName}`
-            const apiResponse = await fetch(url, {
-               method: 'get',
-               headers: {
-                  //  Authorisation: token, 
-                   'Content-Type': 'application/json',
-                 },
-             });
-             const responseJSON = await apiResponse.json()
-             setLayerMetadata(responseJSON.results)
-    
-           }
-           catch (err) {
-             console.log(err)
-         }
-        }
-      console.log('rerender')
+  
+  useEffect(()=>{
+      console.log('useEffectFires')
       fetchMetadata(stateToken)
+    },[stateToken, updatingGeometries])
 
-    },[stateToken])
-
-    useEffect(() => {
+  useEffect(() => {
+      console.log('useEffectFires')
         const tokenInterval = setInterval(() => {
         const globalToken = getValueForKey('satf_token')
         if (globalToken !== stateToken) {
@@ -163,13 +146,7 @@ export default function GetUserGeoms(): any {
     const classNames = mergeStyleSets({
       deepSkyBlue: [{ color: 'deepskyblue' }, iconClass],
     });
-    
-    const history = useHistory();
-
-    function handleToLogin() {
-      history.push("/login");
-    }
-
+ 
     return (
       <div id="documentation_body">
         <div className="container">
@@ -178,11 +155,13 @@ export default function GetUserGeoms(): any {
               <FontIcon aria-label="Compass" iconName="CompassNW" className={classNames.deepSkyBlue} />
               <Text block styles={greetingStyles} variant="xLarge">{stateToken.split(':')[0].toUpperCase()}</Text>
               <PrimaryButton className="to_login_button" onClick={handleToLogin}>to Login page</PrimaryButton>
+              <PrimaryButton onClick={()=> fetchMetadata(stateToken)}>Refresh Layers</PrimaryButton>
             </div>
           </div>
         </div>
         <div className="card_holder">
-        {stateToken && <LayerList props={{layerMetadata, fetchLayerGeometries, getCellsFromExcel}}/>}
+        {stateToken && <LayerList props={{updatingGeometries, stateToken, layerMetadata, fetchLayerGeometries, getCellsFromExcel}}/>}
+        <NewLayerContainer props={{fetchMetadata, stateToken}}/>
         </div>
       </div>
     )}

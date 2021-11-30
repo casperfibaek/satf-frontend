@@ -10,9 +10,9 @@ import { Fabric, loadTheme } from '@fluentui/react';
 import Support from './components/support';
 import Documentation from './components/documentation';
 import Map from './components/map';
-import Login from './components/login';
+import Login from './components/user_components/login';
 import Install from './components/install';
-import GetUserGeoms from './components/get_user_geoms';
+import GetUserGeoms from './components/user_components/get_user_geoms';
 
 import { excelTheme } from './utils';
 import { WindowState } from './types';
