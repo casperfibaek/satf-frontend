@@ -193,13 +193,13 @@ async function API_VERSION():Promise<string> {
 g.API_VERSION = API_VERSION;
 
 /**
- * Calculates the amount of people within a circular radius of a point.
+ * Calculates the amount of people within a circular radius of a point, during daytime, nighttime and average.
  * An address can be used instead of Latitude.
  * @customfunction POPDENS_BUFFER
  * @param {any} bufferMeters
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<any[][]>} Cell with amount of people.
+ * @return {Promise<any[][]>} Cells with amount of people during daytime, nightitme and average.
  */
 async function POPDENS_BUFFER(bufferMeters:any, latitudeOrAddress:any, longitude:any = false):Promise<any[][]> {
   try {
@@ -1031,9 +1031,9 @@ g.OCI_COVERAGE = OCI_COVERAGE;
  * @customfunction GET_FORECAST
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<string>} Weather forecast
+ * @return {Promise<any[][]>} Weather forecast
  */
-async function GET_FORECAST(latitudeOrAddress:any, longitude:any = false):Promise<string> {
+async function GET_FORECAST(latitudeOrAddress:any, longitude:any = false):Promise<any[][]> {
   try {
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
     const url = `${_apiUrl}get_forecast?lat=${coords[0][0]}&lng=${coords[0][1]}`;
@@ -1048,17 +1048,23 @@ async function GET_FORECAST(latitudeOrAddress:any, longitude:any = false):Promis
       if (responseJSON.message.length === 0) { return null; }
       const cell:any[] = []; 
       // push headers
-      const header = Object.keys(responseJSON.message[0])
+      const header = ['Date', 'Description', 'Temp_min', 'Temp_max', 'Humidity', 'Rain', 'Clouds']
       cell.push(header);
       for (let i = 0; i < responseJSON.message.length; i += 1) {
       // push values
         const values = Object.values(responseJSON.message[i])
+        if (values.length < 7) {
+          values.splice(5, 0, 0)
+        }
+
         cell.push(values);
         
       }
-      
-      await addCellsToSheet(cell);
-      return ''
+      console.log(cell)
+
+      // await addCellsToSheet(cell);
+
+      return cell
     }
 
     throw errInvalidValue(responseJSON.message);
@@ -1070,91 +1076,91 @@ async function GET_FORECAST(latitudeOrAddress:any, longitude:any = false):Promis
 g.GET_FORECAST = GET_FORECAST;
 
 
-import arrayToGeojson from './components/map/array_to_geojson'
+// import arrayToGeojson from './components/map/array_to_geojson'
 
-/////
+///// TODO: finalize geometries functions
 
 
-/**
- * Sends geometries to database
- * @customfunction SENDGEOMS
- * @return nothing
- */
+// /**
+//  * Sends geometries to database
+//  * @customfunction SENDGEOMS
+//  * @return nothing
+//  */
 
-async function SENDGEOMS() { // eslint-disable-line
+// async function SENDGEOMS() { // eslint-disable-line
 
-  setValueForKey('satf_token', 'casper:golden_ticket')
+//   setValueForKey('satf_token', 'casper:golden_ticket')
 
-  try {
-    let cells = await getSelectedCells();
+//   try {
+//     let cells = await getSelectedCells();
     
-    if (cells[0][0] == '#CALC!') {
-      cells[0][0] == 'layername'
-    }
+//     if (cells[0][0] == '#CALC!') {
+//       cells[0][0] == 'layername'
+//     }
     
-    const geojson = await arrayToGeojson(cells);
+//     const geojson = await arrayToGeojson(cells);
 
-    console.log(geojson)
-    console.log(JSON.stringify(geojson))
+//     console.log(geojson)
+//     console.log(JSON.stringify(geojson))
 
-    const url = `${_apiUrl}send_geoms`;
-    const token = getValueForKey('satf_token');
-    debugger;
-    const apiResponse = await fetch(url, {
-      headers: {
-        Authorisation: token,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      method: "POST",
-      body: JSON.stringify({geojson, token})
-  })
-  const responseJSON = await apiResponse.json()
-  if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
-  if (apiResponse.ok) { return String(responseJSON.message); }
-  } catch (err) {
-    throw errInvalidValue(err)
-}
-}
-g.SENDGEOMS = SENDGEOMS;
+//     const url = `${_apiUrl}send_geoms`;
+//     const token = getValueForKey('satf_token');
+//     debugger;
+//     const apiResponse = await fetch(url, {
+//       headers: {
+//         Authorisation: token,
+//         'Accept': 'application/json',
+//         'Content-Type': 'application/json'
+//       },
+//       method: "POST",
+//       body: JSON.stringify({geojson, token})
+//   })
+//   const responseJSON = await apiResponse.json()
+//   if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+//   if (apiResponse.ok) { return String(responseJSON.message); }
+//   } catch (err) {
+//     throw errInvalidValue(err)
+// }
+// }
+// g.SENDGEOMS = SENDGEOMS;
 
 
 
-/**
- * Sends geometries to database
- * @customfunction FETCHGEOMS
- * @param id
- * @return {Promise<string>} Technology available
- */
+// /**
+//  * Sends geometries to database
+//  * @customfunction FETCHGEOMS
+//  * @param id
+//  * @return {Promise<string>} Technology available
+//  */
 
- async function FETCHGEOMS(id) { // eslint-disable-line
-  try {
-    const token = getValueForKey('satf_token')
-    const userName = token.split(':')[0] 
-    const apiResponse = await fetch(`${_apiUrl}get_layer_geoms/${userName}/${id}`, {
-      method: 'get',
-      headers: {
-        //  Authorisation: token, 
-          'Content-Type': 'application/json',
-        },
-      });
-      // if (apiResponse.ok) {
-        // send repsonse to excel
-    const responseJSON = await apiResponse.json()
-    // const cells = ParseGeometries(responseJSON)
+//  async function FETCHGEOMS(id) { // eslint-disable-line
+//   try {
+//     const token = getValueForKey('satf_token')
+//     const userName = token.split(':')[0] 
+//     const apiResponse = await fetch(`${_apiUrl}get_layer_geoms/${userName}/${id}`, {
+//       method: 'get',
+//       headers: {
+//         //  Authorisation: token, 
+//           'Content-Type': 'application/json',
+//         },
+//       });
+//       // if (apiResponse.ok) {
+//         // send repsonse to excel
+//     const responseJSON = await apiResponse.json()
+//     // const cells = ParseGeometries(responseJSON)
 
-    const cells = geojsonToArray(responseJSON.results, 'Hello World');
-    console.log(cells)
-    try {
-      await addCellsToSheet(cells);
-    } catch (error) {
-      console.log(error);
-    }
-      // }      
-  }
-   catch (error) {
-    console.log(error);
-  }
-}
+//     const cells = geojsonToArray(responseJSON.results, 'Hello World');
+//     console.log(cells)
+//     try {
+//       await addCellsToSheet(cells);
+//     } catch (error) {
+//       console.log(error);
+//     }
+//       // }      
+//   }
+//    catch (error) {
+//     console.log(error);
+//   }
+// }
 
 
