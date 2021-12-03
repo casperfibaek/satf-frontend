@@ -28,7 +28,7 @@ export default function GetUserGeoms(): any {
     try {
       const token = getValueForKey('satf_token')
       const userName = token.split(':')[0]
-      const url = `${getApiUrl()}get_layer_geoms?username=${userName}?layer_id=${layerID}`
+      const url = `${getApiUrl()}get_layer_geoms?username=${userName}&layer_id=${layerID}`
       const apiResponse = await fetch(url, {
         method: 'get',
         headers: {
