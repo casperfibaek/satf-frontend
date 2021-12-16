@@ -38,14 +38,14 @@ export default function GetUserGeoms(): any {
         });
          if (apiResponse.ok) {
           const responseJSON = await apiResponse.json()
+          const cells = [['layername', 'lat', 'lng']]
 
-          const cells = responseJSON.results.features.map(result=>{
+          responseJSON.results.features.forEach(result=>{
             const { geometry: { coordinates: [ lat, lng ] } , properties: { geom_id } } = result
 
-            return [layerName, geom_id, lat, lng]
+            cells.push([layerName, lat, lng])
 
           })
-          cells.unshift(['layername', 'geom_id', 'lat', 'lng'])
           setValueForKey('layerData', JSON.stringify(cells))
          }          
     }
@@ -131,6 +131,10 @@ export default function GetUserGeoms(): any {
       };
     }, [stateToken]);
     
+    const header = {
+      
+    }
+
     const greetingStyles = { 
       root: { 
         color: '#FFFFFF'
@@ -146,7 +150,7 @@ export default function GetUserGeoms(): any {
     const classNames = mergeStyleSets({
       deepSkyBlue: [{ color: 'deepskyblue' }, iconClass],
     });
- 
+
     return (
       <div id="documentation_body">
         <div className="container">

@@ -2,6 +2,7 @@ import 'react-app-polyfill/ie11'; import 'react-app-polyfill/stable';
 import {
   isValidWhatFreeWords,
   isValidPluscode,
+  isValidArray,
   createCoordinateArray,
   isValidLatitude,
   isValidLongitude,
@@ -193,15 +194,45 @@ async function API_VERSION():Promise<string> {
 g.API_VERSION = API_VERSION;
 
 /**
+ * Calculates the amount of people within a circular radius of a point, using population data from WorldPop
+ * @customfunction POPDENS_BUFFER
+ * @param {any} bufferMeters
+ * @param {any} latitudeOrAddress
+ * @param {any} [longitude]
+ * @return {Promise<number>} Cell with the amount of people.
+ */
+async function POPDENS_BUFFER(bufferMeters:any, latitudeOrAddress:any, longitude:any = false):Promise<number> {
+  try {
+    if (Number.isNaN(bufferMeters)) { throw errInvalidValue('Buffer not a number'); }
+
+    const coords = await parseToLatlng(latitudeOrAddress, longitude);
+    const url = `${_apiUrl}population_density_buffer?buffer=${bufferMeters}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const token = getValueForKey('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+    if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+
+    const responseJSON:ApiReply = await apiResponse.json();
+    if (apiResponse.ok) { return Number(responseJSON.message); }
+
+    throw errInvalidValue(responseJSON.message);
+  } catch (err) {
+    throw errInvalidValue(err);
+  }
+}
+g.POPDENS_BUFFER = POPDENS_BUFFER;
+
+/**
  * Calculates the amount of people within a circular radius of a point, during daytime, nighttime and average.
  * An address can be used instead of Latitude.
- * @customfunction POPDENS_BUFFER
+ * @customfunction POP_BUFFER
  * @param {any} bufferMeters
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
  * @return {Promise<any[][]>} Cells with amount of people during daytime, nightitme and average.
  */
-async function POPDENS_BUFFER(bufferMeters:any, latitudeOrAddress:any, longitude:any = false):Promise<any[][]> {
+async function POP_BUFFER(bufferMeters:any, latitudeOrAddress:any, longitude:any = false):Promise<any[][]> {
   try {
     if (Number.isNaN(bufferMeters)) { throw errInvalidValue('Buffer not a number'); }
 
@@ -232,7 +263,7 @@ async function POPDENS_BUFFER(bufferMeters:any, latitudeOrAddress:any, longitude
     throw errInvalidValue(err);
   }
 }
-g.POPDENS_BUFFER = POPDENS_BUFFER;
+g.POP_BUFFER = POP_BUFFER;
 
 /**
  * Calculate the average nightnight in an area.
@@ -604,12 +635,12 @@ g.ADMIN_LEVEL2_FUZZY_TRI = ADMIN_LEVEL2_FUZZY_TRI;
 
 /**
  * Finds all the banks and their addresses matching a naming pattern
- * @customfunction GET_BANKS
+ * @customfunction BANKS
  * @param {any} name
  * @param {any} [target]
  * @return {Promise<any[][]>}
  */
-async function GET_BANKS(name:any, target:any = 0.4):Promise<any[][]> {
+async function BANKS(name:any, target:any = 0.4):Promise<any[][]> {
   try {
     let _target = 0.4;
     if (!Number.isNaN(Number(target))) { _target = target; }
@@ -642,10 +673,10 @@ async function GET_BANKS(name:any, target:any = 0.4):Promise<any[][]> {
     throw errInvalidValue(err);
   }
 }
-g.GET_BANKS = GET_BANKS;
+g.BANKS = BANKS;
 
 /**
- * Finds the urban status of a location. #landcover #landuse #urban_status
+ * Finds the urban status of a location in Ghana. #landcover #landuse #urban_status
  * @customfunction URBAN_STATUS
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
@@ -672,7 +703,7 @@ async function URBAN_STATUS(latitudeOrAddress:any, longitude:any = false):Promis
 g.URBAN_STATUS = URBAN_STATUS;
 
 /**
- * Finds the simplified (1km majority) urban status of a location. #landcover #landuse #urban_status
+ * Finds the simplified (1km majority) urban status of a location in Ghana. #landcover #landuse #urban_status
  * @customfunction URBAN_STATUS_SIMPLE
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
@@ -1028,12 +1059,12 @@ g.OCI_COVERAGE = OCI_COVERAGE;
 /**
  * Shows the weather forecast for the next 7 days on a location
  * An address can be used instead of Latitude.
- * @customfunction GET_FORECAST
+ * @customfunction WEATHER_FORECAST
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
  * @return {Promise<any[][]>} Weather forecast
  */
-async function GET_FORECAST(latitudeOrAddress:any, longitude:any = false):Promise<any[][]> {
+async function WEATHER_FORECAST(latitudeOrAddress:any, longitude:any = false):Promise<any[][]> {
   try {
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
     const url = `${_apiUrl}get_forecast?lat=${coords[0][0]}&lng=${coords[0][1]}`;
@@ -1073,7 +1104,7 @@ async function GET_FORECAST(latitudeOrAddress:any, longitude:any = false):Promis
   }
 }
 
-g.GET_FORECAST = GET_FORECAST;
+g.WEATHER_FORECAST = WEATHER_FORECAST;
 
 
 // import arrayToGeojson from './components/map/array_to_geojson'
