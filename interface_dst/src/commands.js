@@ -1,9 +1,46 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import 'react-app-polyfill/ie11';
 import 'react-app-polyfill/stable';
-import { getGlobal } from './utils';
-Office.onReady(() => {
+import { getGlobal, getValueForKey, removeValueForKey, setValueForKey } from './utils';
+import { getSelectedCells, addCellsToSheet } from './excel_interaction';
+Office.onReady(() => __awaiter(void 0, void 0, void 0, function* () {
     console.log('Office ready from commands.js');
-});
+    const intervalId = setInterval(() => __awaiter(void 0, void 0, void 0, function* () {
+        const layerData = getValueForKey('layerData');
+        if (layerData) {
+            const cells = JSON.parse(layerData);
+            yield addCellsToSheet(cells);
+            removeValueForKey('layerData');
+        }
+        const dataRequest = getValueForKey('data_request');
+        if (dataRequest === 'true') {
+            const cells = yield getSelectedCells();
+            console.log(cells);
+            setValueForKey('data_to_dialogue', JSON.stringify(cells));
+        }
+        else if (dataRequest === 'error') {
+            /// some kind of intuitive error handling
+            console.log('something went wrong');
+            setValueForKey('data_request', 'false');
+        }
+        //// toggled whether or not the login button is disabled
+        const userLoggedIn = getValueForKey('satf_token');
+        if (userLoggedIn) {
+            toggleUserGeom(true);
+        }
+        else {
+            toggleUserGeom(false);
+        }
+    }), 1000);
+}));
 let dialog = null;
 const g = getGlobal();
 function onEventFromDialog(arg) {
@@ -21,6 +58,26 @@ function onEventFromDialog(arg) {
             console.log('Unknown error in dialog box.');
             break;
     }
+}
+function toggleUserGeom(enabledStatus) {
+    Office.ribbon.requestUpdate({
+        tabs: [
+            {
+                id: "SatfTab",
+                groups: [
+                    {
+                        id: "AuthGroup",
+                        controls: [
+                            {
+                                id: "UserGeomButton",
+                                enabled: enabledStatus,
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    });
 }
 function openDialog(url, openEvent, ask = true, listen = false, iFrame = false, callback = (result) => { }) {
     Office.context.ui.displayDialogAsync(url, {

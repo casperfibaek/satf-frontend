@@ -40,7 +40,7 @@ import {
 
 export default function LayerList({props}) {
 
-  const { updatingGeometries, stateToken, layerMetadata, fetchLayerGeometries, getCellsFromExcel } = props
+  const { updatingGeometries, stateToken, layerMetadata, fetchLayerGeometries, getCellsFromExcel, onDeleteLayer } = props
   const items = layerMetadata.map((l) => ({
       'name': l.name,
       'layerId': l.layer_id,
@@ -183,8 +183,10 @@ export default function LayerList({props}) {
           {updatingGeometries ?
               // <SpinnerComp loading={true }loadingMessage={'updating geometries'}/>
             <Text variant="large" block>Loading</Text>
-          :
+          : <div>
             <PrimaryButton className="fetchButton" onClick={() => getCellsFromExcel(stateToken.split(':')[0], selectedItems['layerId'])}>Save Geometries</PrimaryButton>
+            <PrimaryButton className="fetchButton" onClick={() => onDeleteLayer(stateToken, selectedItems['layerId'])}>Delete Geometries</PrimaryButton>
+            </div>
           }
           </div>
         )

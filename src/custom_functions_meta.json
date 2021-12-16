@@ -98,9 +98,32 @@
             }
         },
         {
-            "description": "Calculates the amount of people within a circular radius of a point, during daytime, nighttime and average.\nAn address can be used instead of Latitude.",
+            "description": "Calculates the amount of people within a circular radius of a point, using population data from WorldPop",
             "id": "POPDENS_BUFFER",
             "name": "POPDENS_BUFFER",
+            "parameters": [
+                {
+                    "name": "bufferMeters",
+                    "type": "any"
+                },
+                {
+                    "name": "latitudeOrAddress",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "type": "number"
+            }
+        },
+        {
+            "description": "Calculates the amount of people within a circular radius of a point, during daytime, nighttime and average.\nAn address can be used instead of Latitude.",
+            "id": "POP_BUFFER",
+            "name": "POP_BUFFER",
             "parameters": [
                 {
                     "name": "bufferMeters",
@@ -390,7 +413,7 @@
             }
         },
         {
-            "description": "Finds the urban status of a location. #landcover #landuse #urban_status",
+            "description": "Finds the urban status of a location in Ghana. #landcover #landuse #urban_status",
             "id": "URBAN_STATUS",
             "name": "URBAN_STATUS",
             "parameters": [
@@ -409,7 +432,7 @@
             }
         },
         {
-            "description": "Finds the simplified (1km majority) urban status of a location. #landcover #landuse #urban_status",
+            "description": "Finds the simplified (1km majority) urban status of a location in Ghana. #landcover #landuse #urban_status",
             "id": "URBAN_STATUS_SIMPLE",
             "name": "URBAN_STATUS_SIMPLE",
             "parameters": [

@@ -8,17 +8,18 @@ import { ThemeSettingName } from '@fluentui/style-utilities';
 
 
 Office.onReady(async () => {
+
   console.log('Office ready from commands.js');
   const intervalId = setInterval(async ()=>{
+    
     const layerData = getValueForKey('layerData')
     if (layerData) {
       const cells = JSON.parse(layerData)
       await addCellsToSheet(cells);
       removeValueForKey('layerData')
     }
-
+    
     const dataRequest = getValueForKey('data_request')
-    console.log(dataRequest)
     if (dataRequest === 'true') {
       const cells = await getSelectedCells()
       console.log(cells)
@@ -29,10 +30,24 @@ Office.onReady(async () => {
       console.log('something went wrong')
       setValueForKey('data_request', 'false')
     }
+
+    //// toggled whether or not the login button is disabled
+    const userLoggedIn = getValueForKey('satf_token')
+    if (userLoggedIn) {
+      toggleUserGeom(true)
+    }
+    else {
+      toggleUserGeom(false)
+    }
+
+
   }, 1000)
 
   
 });
+
+
+
 
 let dialog:any = null;
 const g:any = getGlobal();
@@ -53,6 +68,28 @@ function onEventFromDialog(arg:any):void {
       break;
   }
 }
+
+function toggleUserGeom(enabledStatus: boolean): void {
+  Office.ribbon.requestUpdate({
+    tabs: [
+        {
+            id: "SatfTab", 
+            groups: [
+                {
+                  id: "AuthGroup",
+                  controls: [
+                    {
+                        id: "UserGeomButton", 
+                        enabled: enabledStatus,
+                    }
+                  ]
+                }
+            ]
+        }
+    ]
+})
+}
+
 
 function openDialog(url:string, openEvent:Office.AddinCommands.Event, ask:boolean = true, listen:boolean = false, iFrame = false, callback = (result:any) => { }):void { // eslint-disable-line
   Office.context.ui.displayDialogAsync(url, {

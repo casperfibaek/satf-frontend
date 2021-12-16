@@ -76,7 +76,26 @@ export default function GetUserGeoms(): any {
      }
     }
 
-  
+  const onDeleteLayer = async (token, layerId) => {
+    const url = `${getApiUrl()}/delete_layer?layerId=${layerId}`
+    console.log(url)
+    try {
+      const response = await fetch(url, {
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' },
+        //  Authorisation: token, 
+      });
+
+      const responseJSON = await response.json();
+
+      if (response.ok) {
+        console.log('everything ok')
+    }
+  }
+  catch (err) {
+      console.log(err)
+    }
+  }
 
   const getCellsFromExcel = async (username:string, layerId:string) => {
     setValueForKey('data_request', 'true')
@@ -164,7 +183,7 @@ export default function GetUserGeoms(): any {
           </div>
         </div>
         <div className="card_holder">
-        {stateToken && <LayerList props={{updatingGeometries, stateToken, layerMetadata, fetchLayerGeometries, getCellsFromExcel}}/>}
+        {stateToken && <LayerList props={{updatingGeometries, stateToken, layerMetadata, fetchLayerGeometries, getCellsFromExcel, onDeleteLayer}}/>}
         <NewLayerContainer props={{fetchMetadata, stateToken}}/>
         </div>
       </div>

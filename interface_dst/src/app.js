@@ -7,9 +7,9 @@ import { Fabric, loadTheme } from '@fluentui/react';
 import Support from './components/support';
 import Documentation from './components/documentation';
 import Map from './components/map';
-import Login from './components/login';
+import Login from './components/user_components/login';
 import Install from './components/install';
-import GetUserGeoms from './components/get_user_geoms';
+import GetUserGeoms from './components/user_components/get_user_geoms';
 import { excelTheme } from './utils';
 Office.onReady().then(() => {
     console.log('Office ready from app.js');
@@ -39,11 +39,7 @@ function App() {
                 React.createElement(Route, { exact: true, path: '/support', render: () => (React.createElement(Support, null)) }),
                 React.createElement(Route, { exact: true, path: '/documentation', render: () => (React.createElement(Documentation, null)) }),
                 React.createElement(Route, { exact: true, path: '/login', render: () => (React.createElement(Login, null)) }),
-<<<<<<< HEAD
-                React.createElement(Route, { exact: true, path: '/get_user_geoms', render: () => (React.createElement("div", null, "Create new page here.")) }),
-=======
                 React.createElement(Route, { exact: true, path: '/get_user_geoms', render: () => (React.createElement(GetUserGeoms, null)) }),
->>>>>>> sendgeoms
                 React.createElement(Route, { exact: true, path: '/404', render: () => (React.createElement(Error404Page, null)) }),
                 React.createElement(Route, { exact: true, path: '/', render: () => (React.createElement(Redirect, { to: startPage })) })))));
 }
