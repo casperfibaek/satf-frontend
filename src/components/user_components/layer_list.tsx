@@ -169,7 +169,7 @@ export default function LayerList({props}) {
                     compact={false}
                     columns={columns}
                     selection={selection}
-                    selectionMode={SelectionMode.multiple}
+                    selectionMode={SelectionMode.single}
                     selectionPreservedOnEmptyClick={true} 
                     // getKey={this._getKey}
                     setKey="exampleList"
@@ -179,7 +179,7 @@ export default function LayerList({props}) {
                     // onItemInvoked={this._onItemInvoked}
                   />
 
-            <PrimaryButton className="fetchButton" onClick={() => fetchLayerGeometries(selectedItems['layerId'],selectedItems['name'] )}>Fetch Geometries</PrimaryButton>
+            <PrimaryButton className="fetchButton" onClick={() => fetchLayerGeometries(selectedItems['layerId'],selectedItems['name'] )}>Load Geometries</PrimaryButton>
           {updatingGeometries ?
               // <SpinnerComp loading={true }loadingMessage={'updating geometries'}/>
             <Text variant="large" block>Loading</Text>
