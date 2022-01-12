@@ -70,24 +70,29 @@ function onEventFromDialog(arg:any):void {
 }
 
 function toggleUserGeom(enabledStatus: boolean): void {
-  Office.ribbon.requestUpdate({
-    tabs: [
-        {
-            id: "SatfTab", 
-            groups: [
-                {
-                  id: "AuthGroup",
-                  controls: [
-                    {
-                        id: "UserGeomButton", 
-                        enabled: enabledStatus,
-                    }
-                  ]
-                }
-            ]
-        }
-    ]
-})
+  try {
+    Office.ribbon.requestUpdate({
+      tabs: [
+          {
+              id: "SatfTab", 
+              groups: [
+                  {
+                    id: "AuthGroup",
+                    controls: [
+                      {
+                          id: "UserGeomButton", 
+                          enabled: enabledStatus,
+                      }
+                    ]
+                  }
+              ]
+          }
+      ]
+  })
+  }
+  catch (err) {
+    console.log(err)
+  }
 }
 
 

@@ -1131,7 +1131,7 @@ function WEATHER_FORECAST(latitudeOrAddress, longitude = false) {
                 }
                 const cell = [];
                 // push headers
-                const header = ['Date', 'Description', 'Temp_min', 'Temp_max', 'Humidity', 'Rain', 'Clouds'];
+                const header = ['Date', 'Description', 'Temp_min (°C)', 'Temp_max (°C)', 'Humidity (%)', 'Rain (mm)', 'Clouds (%)'];
                 cell.push(header);
                 for (let i = 0; i < responseJSON.message.length; i += 1) {
                     // push values

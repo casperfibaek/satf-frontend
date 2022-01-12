@@ -60,24 +60,29 @@ function onEventFromDialog(arg) {
     }
 }
 function toggleUserGeom(enabledStatus) {
-    Office.ribbon.requestUpdate({
-        tabs: [
-            {
-                id: "SatfTab",
-                groups: [
-                    {
-                        id: "AuthGroup",
-                        controls: [
-                            {
-                                id: "UserGeomButton",
-                                enabled: enabledStatus,
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
-    });
+    try {
+        Office.ribbon.requestUpdate({
+            tabs: [
+                {
+                    id: "SatfTab",
+                    groups: [
+                        {
+                            id: "AuthGroup",
+                            controls: [
+                                {
+                                    id: "UserGeomButton",
+                                    enabled: enabledStatus,
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        });
+    }
+    catch (err) {
+        console.log(err);
+    }
 }
 function openDialog(url, openEvent, ask = true, listen = false, iFrame = false, callback = (result) => { }) {
     Office.context.ui.displayDialogAsync(url, {

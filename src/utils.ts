@@ -221,7 +221,6 @@ export const errNotAvailable = (msg:string) => new CustomFunctions.Error(CustomF
 
 export function getApiUrl() {
   const { origin } = document.location;
-  console.log(origin)
   if (origin.includes('localhost') || origin.includes('127.0.0.1') || origin.includes('satfstaticdev')) {
     // return 'http://localhost:8080/api';
     // return 'https://satf-api.azurewebsites.net/api';
