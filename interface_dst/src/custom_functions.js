@@ -1153,6 +1153,51 @@ function WEATHER_FORECAST(latitudeOrAddress, longitude = false) {
     });
 }
 g.WEATHER_FORECAST = WEATHER_FORECAST;
+/**
+ * Shows the Normalized Difference Vegetation Index (NDVI) statistics over time for a specificed number of days when the data is available on a buffered location
+ * @customfunction AVG_NDVI
+ * @param {any} latitude
+ * @param {any} longitude
+ * @param {any} numberOfDays Number of days for when the data needs to be requested (minimum of 5 days)
+ * @param {any} buffer buffer of the area to be analyzed: 100m, 500m, or 1000m
+ * @return {Promise<any[][]>} NDVI statistics for each day the date is available over a specified amount of time
+ */
+function AVG_NDVI(latitude, longitude, numberOfDays, buffer) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const coords = yield parseToLatlng(latitude, longitude);
+            const url = `${_apiUrl}avg_NDVI?lat=${coords[0][0]}&lng=${coords[0][1]}&number_days=${numberOfDays}&buffer=${buffer}`;
+            const token = getValueForKey('satf_token');
+            const apiResponse = yield fetch(url, { headers: { Authorization: token } });
+            if (apiResponse.status === 401) {
+                throw errNotAvailable('401: Unauthorised user');
+            }
+            const responseJSON = yield apiResponse.json();
+            if (apiResponse.ok) {
+                if (responseJSON.message.length === 0) {
+                    return null;
+                }
+                const cell = [];
+                // push headers
+                const header = ['Dates', 'Min', 'Max', 'Mean', 'stDev'];
+                cell.push(header);
+                for (let i = 0; i < responseJSON.message.length; i += 1) {
+                    // push values
+                    const values = Object.values(responseJSON.message[i]);
+                    cell.push(values);
+                }
+                console.log(cell);
+                // await addCellsToSheet(cell);
+                return cell;
+            }
+            throw errInvalidValue(responseJSON.message);
+        }
+        catch (err) {
+            throw errInvalidValue(err);
+        }
+    });
+}
+g.AVG_NDVI = AVG_NDVI;
 // import arrayToGeojson from './components/map/array_to_geojson'
 ///// TODO: finalize geometries functions
 // /**

@@ -34,14 +34,14 @@ Office.onReady(() => __awaiter(void 0, void 0, void 0, function* () {
         }
         //// toggled whether or not the login button is disabled
         const userLoggedIn = getValueForKey('satf_token');
-        console.log(userLoggedIn, loginState);
-        if (userLoggedIn != loginState)
+        if (userLoggedIn != loginState) {
             loginState = userLoggedIn;
-        if (userLoggedIn) {
-            toggleUserGeom(true);
-        }
-        else {
-            toggleUserGeom(false);
+            if (userLoggedIn) {
+                toggleUserGeom(true);
+            }
+            else {
+                toggleUserGeom(false);
+            }
         }
     }), 1000);
 }));
