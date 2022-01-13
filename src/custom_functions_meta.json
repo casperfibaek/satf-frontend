@@ -739,6 +739,34 @@
             "result": {
                 "dimensionality": "matrix"
             }
+        },
+        {
+            "description": "Shows the Normalized Difference Vegetation Index (NDVI) statistics over time for a specificed number of days when the data is available on a buffered location",
+            "id": "AVG_NDVI",
+            "name": "AVG_NDVI",
+            "parameters": [
+                {
+                    "name": "latitude",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "type": "any"
+                },
+                {
+                    "description": "Number of days for when the data needs to be requested (minimum of 5 days)",
+                    "name": "numberOfDays",
+                    "type": "any"
+                },
+                {
+                    "description": "buffer of the area to be analyzed: 100m, 500m, or 1000m",
+                    "name": "buffer",
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix"
+            }
         }
     ]
 }

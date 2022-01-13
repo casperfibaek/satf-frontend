@@ -10,6 +10,7 @@ import { ThemeSettingName } from '@fluentui/style-utilities';
 Office.onReady(async () => {
 
   console.log('Office ready from commands.js');
+  let loginState = ''
   const intervalId = setInterval(async ()=>{
     
     const layerData = getValueForKey('layerData')
@@ -33,12 +34,16 @@ Office.onReady(async () => {
 
     //// toggled whether or not the login button is disabled
     const userLoggedIn = getValueForKey('satf_token')
-    if (userLoggedIn) {
+
+     if (userLoggedIn != loginState) {
+      loginState = userLoggedIn
+      if (userLoggedIn) {
       toggleUserGeom(true)
     }
     else {
       toggleUserGeom(false)
     }
+  }
 
 
   }, 1000)
