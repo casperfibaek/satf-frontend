@@ -73,18 +73,6 @@ export default function BottomBar(props:any) {
     event.preventDefault();
   }
   
-  function flyToGhana() {
-    state.maplayers.base.s2_2020.addTo(state.leafletMap);
-    state.leafletMap.flyTo([7.955811115092113, -1.0050627119953766], 7)
-    state.maplayers.base.esri.remove(state.leafletMap);
-  }
-
-  function flyToTanzania() {
-    state.maplayers.base.esri.addTo(state.leafletMap);
-    state.leafletMap.flyTo([-6.776012, 39.178326], 6)
-    state.maplayers.base.s2_2020.remove(state.leafletMap);
-  }
-
   async function onRequest(event:React.MouseEvent<HTMLButtonElement>):Promise<void> {
     let geojson;
     try {
@@ -131,10 +119,6 @@ export default function BottomBar(props:any) {
       </Dialog>
       <PrimaryButton className="bottombar_request" text="Request Excel Data" onClick={onRequest} />
       <DefaultButton text="Send Data to Excel" onClick={onSend} />
-      <div id="country-buttons">
-      <DefaultButton text="To Tanzania" onClick={flyToTanzania} />
-      <DefaultButton text="To Ghana" onClick={flyToGhana} />
-      </div>
     </div>
   );
 }

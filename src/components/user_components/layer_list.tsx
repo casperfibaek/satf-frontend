@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from 'react'; // eslint-disable-line
 import SpinnerComp from './spinner_comp';
+import { getApiUrl } from '../../utils';
 import {
-    Text, PrimaryButton, DefaultButton, DetailsList, DetailsListLayoutMode, Selection, SelectionMode, IColumn, MarqueeSelection, Dialog, DialogFooter, DialogType
+    Text, TextField, PrimaryButton, DefaultButton, DetailsList, DetailsListLayoutMode, Selection, SelectionMode, IColumn, MarqueeSelection, Dialog, DialogFooter, DialogType
   } from '@fluentui/react';
   
   
@@ -10,23 +11,23 @@ const columns = [
           key: 'column1',
           name: 'Name',
           fieldName: 'name',
-          minWidth: 90,
-          maxWidth: 100,
+          minWidth: 50,
+          maxWidth: 70,
           isResizable: true,
-          // onColumnClick: this._onColumnClick,
           data: 'string',
           onRender: (item) => {
             return <span>{item.name}</span>;
           },
+          isPadded: true,
+
         },
         {
           key: 'column2',
           name: 'Layer ID',
           fieldName: 'layerId',
-          minWidth: 70,
-          maxWidth: 90,
-          isResizable: true,
-          // onColumnClick: this._onColumnClick,
+          minWidth: 30,
+          maxWidth: 50,
+          isResizable: false,
           data: 'string',
           onRender: (item) => {
             return <span>{item.layerId}</span>;
@@ -35,14 +36,13 @@ const columns = [
         },
         {
           key: 'column3',
-          name: 'Geometry Count',
+          name: '# Geometries',
           fieldName: 'geometryCount',
-          minWidth: 70,
-          maxWidth: 90,
-          isResizable: true,
+          minWidth: 30,
+          maxWidth: 50,
+          isResizable: false,
           isCollapsible: true,
           data: 'string',
-          // onColumnClick: this._onColumnClick,
           onRender: (item) => {
             return <span>{item.geometryCount}</span>;
           },
@@ -57,7 +57,6 @@ const columns = [
           isResizable: true,
           isCollapsible: true,
           data: 'string',
-          // onColumnClick: this._onColumnClick,
           onRender: (item) => {
             return <span>{item.createdOn}</span>;
           },
@@ -72,7 +71,6 @@ const columns = [
           isResizable: true,
           isCollapsible: true,
           data: 'string',
-          // onColumnClick: this._onColumnClick,
           onRender: (item) => {
             return <span>{item.lastUpdated}</span>;
           },
@@ -82,7 +80,8 @@ const columns = [
   
 export default function LayerList({props}) {
 
-  const { loadingStatus, setLoadingStatus, modalStatus, setModalStatus, stateToken, layerMetadata, fetchLayerGeometries, getCellsFromExcel, onDeleteLayer } = props
+  const { defaultModal, fetchMetadata, loadingStatus, setLoadingStatus, modalStatus, setModalStatus, stateToken, layerMetadata, fetchLayerGeometries, getCellsFromExcel, onDeleteLayer } = props
+  const [registerFieldText, setRegisterFieldText] = useState('')
   const [items, setItems] = useState([{
     'name': ' ',
     'layerId': ' ',
@@ -105,13 +104,36 @@ export default function LayerList({props}) {
 
   }, [layerMetadata])
 
-
   const selection = new Selection({ 
     onSelectionChanged: () => {
       setSelectedItems(selection.getSelection()[0])
     } 
   })
 
+
+  async function onRegisterLayer() {
+    try {
+
+      const response = await fetch(`${getApiUrl()}/create_layer?username=${stateToken.split(':')[0]}&layername=${registerFieldText}`, {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      
+      const responseJSON = await response.json();
+      console.log(responseJSON)
+      if (response.ok) {
+        fetchMetadata(stateToken)
+      } 
+    } catch (err) {
+      console.log(err);
+    }
+    finally {
+    setRegisterFieldText('')
+    setModalStatus({hidden: true, title: '', subText: ''})
+
+  }
+}
+  
   const handleFetchLayer = () => {
     if (selectedItems) {
       const { layerId, name } = selectedItems
@@ -131,51 +153,109 @@ export default function LayerList({props}) {
       onDeleteLayer(layerId)
     }
   }
+
+  const handleYes = () => {
+    console.log(modalStatus)
+    switch (modalStatus.title) {
+      case 'Delete Layer':
+        handleDeleteLayer()
+        break;
+      
+      case 'Create Layer':
+        onRegisterLayer()
+        break;
+    }
+    defaultModal(modalStatus)
+
+  }
+
+  const handleNo = () => {
+    defaultModal(modalStatus)
+  }
+
   const dangerStyle = {
     root: {
-      backgroundColor: '#f00',
+      backgroundColor: '#800020',
       color: '#fff',
     }        
   }
+  const registerStyle = {
+    root: {
+      backgroundColor: '#fff',
+      color: '#000',
+    }        
+  }
+
+  
+  
+  const deleteSettings = 
+    {
+      hidden:false, 
+      title: 'Delete Layer',
+      subText: 'Are you sure you want to Delete Layer? This is not reversible'
+    }
+  
+  const createSettings = {
+    
+      hidden:false, 
+      title: 'Create Layer',
+      subText: ''
+    
+  }
 
   return (
-    <div>
+    <div id='layer-list'>
+      <div id='details-list-container'>
         <DetailsList
                 items={items}
-                compact={false}
+                compact={true}
                 columns={columns}
                 selection={selection}
                 selectionMode={SelectionMode.single}
-                selectionPreservedOnEmptyClick={true} 
+                selectionPreservedOnEmptyClick={false} 
                 setKey="exampleList"
                 layoutMode={DetailsListLayoutMode.justified}
                 isHeaderVisible={true}
-                // getKey={this._getKey}
-                // onChange={this.handleChange}
-                // onItemInvoked={this._onItemInvoked}
                 />
-
-        <PrimaryButton className="fetchButton" onClick={handleFetchLayer}>Send to Excel</PrimaryButton>
+      </div>
+      <div id='layer-buttons-container'>
+        <PrimaryButton className="fetchButton" onClick={() => selectedItems.layerId && handleFetchLayer()}>Send to Excel</PrimaryButton>
         <PrimaryButton className="fetchButton" onClick={handleGetFromExcel}>Add Points to Layer</PrimaryButton>
-        <DefaultButton  styles={dangerStyle}className="fetchButton" onClick={() => setModalStatus(false)}>Delete Layer</DefaultButton>
+        <DefaultButton  styles={dangerStyle}className="fetchButton" onClick={() => selectedItems.layerId && setModalStatus(deleteSettings)}>Delete Layer</DefaultButton>
+        <DefaultButton  styles={registerStyle}className="fetchButton" onClick={() => setModalStatus(createSettings)}>Create Layer</DefaultButton>
+      </div>
         <Dialog
-        hidden={modalStatus}
+        hidden={modalStatus.hidden}
         dialogContentProps={{
         type: DialogType.normal,
-        title: 'Delete Layer',
-        subText: 'Are you sure you want to delete this layer? This action cannot be undone.',
+        title: modalStatus.title,
+        subText: modalStatus.subText,
         }}
         modalProps={{ isBlocking: false }}
         >
+          {modalStatus.title == 'Create Layer' && 
+                <TextField
+            label="Layername"
+            htmlFor="layername"
+            type="text"
+            placeholder="Enter Layername"
+            name="layername"
+            autoComplete="layername"
+            value={registerFieldText}
+            onChange={(e) => { setRegisterFieldText((e.target as HTMLTextAreaElement).value); console.log(registerFieldText) }}
+            required
+            ></TextField>
+          
+          }
         <DialogFooter>
-          <SpinnerComp className="spinner" loading={loadingStatus.show} loadingMessage={loadingStatus.text}/>
-          <PrimaryButton text="Yes" onClick={() => { if (!loadingStatus.show) { handleDeleteLayer(); } }} />
-          <DefaultButton text="No" onClick={() => { if (!loadingStatus.show) { setModalStatus(true); } }} />
+          <PrimaryButton text="Yes" onClick={handleYes} />
+          <DefaultButton text="No" onClick={handleNo} />
         </DialogFooter>
         </Dialog>
       </div>
       )
     }
+    
     
     
         

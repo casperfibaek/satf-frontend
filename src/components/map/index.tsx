@@ -10,6 +10,7 @@ import CreateLayer from './map_create_layer';
 import Properties from './map_properties';
 import SelectLayer from './map_select_layer';
 import BottomBar from './map_bottom_bar';
+import TopBar from './map_top_bar';
 
 // Functions
 import {
@@ -132,7 +133,6 @@ function Map() {
 
   // Variables
 
-  const [user, setUser] = useState('')
 
   const [selectedLayer, setSelectedLayer] = useState(-1);
 
@@ -251,6 +251,8 @@ function Map() {
             <Text>{errorbar.text}</Text>
           </MessageBar>
       }
+      <TopBar
+      />
       <CreateLayer
         statusDialogCreate={statusDialogCreate}
         statusDialogProperties={statusDialogProperties}

@@ -69,16 +69,6 @@ export default function BottomBar(props) {
         }
         event.preventDefault();
     }
-    function flyToGhana() {
-        state.maplayers.base.s2_2020.addTo(state.leafletMap);
-        state.leafletMap.flyTo([7.955811115092113, -1.0050627119953766], 7);
-        state.maplayers.base.esri.remove(state.leafletMap);
-    }
-    function flyToTanzania() {
-        state.maplayers.base.esri.addTo(state.leafletMap);
-        state.leafletMap.flyTo([-6.776012, 39.178326], 6);
-        state.maplayers.base.s2_2020.remove(state.leafletMap);
-    }
     function onRequest(event) {
         return __awaiter(this, void 0, void 0, function* () {
             let geojson;
@@ -113,9 +103,6 @@ export default function BottomBar(props) {
                 React.createElement(PrimaryButton, { onClick: sendData, text: "Send" }),
                 React.createElement(DefaultButton, { onClick: () => { closeSendDialog(); }, text: "Don't send" }))),
         React.createElement(PrimaryButton, { className: "bottombar_request", text: "Request Excel Data", onClick: onRequest }),
-        React.createElement(DefaultButton, { text: "Send Data to Excel", onClick: onSend }),
-        React.createElement("div", { id: "country-buttons" },
-            React.createElement(DefaultButton, { text: "To Tanzania", onClick: flyToTanzania }),
-            React.createElement(DefaultButton, { text: "To Ghana", onClick: flyToGhana }))));
+        React.createElement(DefaultButton, { text: "Send Data to Excel", onClick: onSend })));
 }
 //# sourceMappingURL=map_bottom_bar.js.map

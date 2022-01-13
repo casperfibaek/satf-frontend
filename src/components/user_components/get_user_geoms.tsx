@@ -17,7 +17,7 @@ import NewLayerContainer from './new_layer_container';
 export default function GetUserGeoms(): any {
   
   const [layerMetadata, setLayerMetadata] =  useState([])
-  const [modalStatus, setModalStatus] = useState(true);
+  const [modalStatus, setModalStatus] = useState({hidden: true, title: '', subText:''});
   const [loadingStatus, setLoadingStatus] = useState({ show: false, text: '' });
   const [stateToken, setStateToken] = useState('')
  
@@ -27,6 +27,12 @@ export default function GetUserGeoms(): any {
     history.push("/login");
   }
 
+  const defaultModal = (status) => {
+    setModalStatus({...modalStatus, hidden: true })
+     setTimeout(() => {
+       setModalStatus({hidden: true, title: '', subText: ''})
+     }, 700);
+   }
 
   const fetchLayerGeometries = async (layerId, layerName: string) => {
     try {
@@ -100,7 +106,7 @@ export default function GetUserGeoms(): any {
       console.log(err)
     }
   finally {
-    setModalStatus(true);
+    defaultModal(modalStatus)
     setLoadingStatus({ show: false, text: '' });
     await fetchMetadata()
   }
@@ -163,13 +169,13 @@ export default function GetUserGeoms(): any {
   }, [stateToken]);
       
     return (
-      <div>
-        <div>
-        <Persona text={capitalize(stateToken.split(':')[0])} size={PersonaSize.size48} secondaryText='NIRAS A/S' initialsColor="#217346" />
-        <DefaultButton className="to_login_button" onClick={handleToLogin}>to Login page</DefaultButton>
+      <div id='geoms-body'>
+        <div id='geoms-header'>
+          <Persona text={capitalize(stateToken.split(':')[0])} size={PersonaSize.size48} secondaryText='NIRAS A/S' initialsColor="#217346" />
+          <DefaultButton className="to_login_button" onClick={handleToLogin}>to Login page</DefaultButton>
         </div>
-      <LayerList props={{loadingStatus, setLoadingStatus, modalStatus, setModalStatus, stateToken, layerMetadata, fetchLayerGeometries, getCellsFromExcel, onDeleteLayer}}/>
-      <NewLayerContainer props={{fetchMetadata, stateToken}}/>
+        <LayerList props={{defaultModal, fetchMetadata, loadingStatus, setLoadingStatus, modalStatus, setModalStatus, stateToken, layerMetadata, fetchLayerGeometries, getCellsFromExcel, onDeleteLayer}}/>
+        {/* <NewLayerContainer props={{fetchMetadata, stateToken}}/> */}
       </div>
     )}
   

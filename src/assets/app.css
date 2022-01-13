@@ -19,7 +19,6 @@ body {
   margin: 0;
   padding: 0;
 }
-
 #taskpane_body,
 #support_body,
 #documentation_body #home_body {
@@ -207,6 +206,53 @@ body {
   padding-left: 20px;
 }
 
+#geoms-body {
+  font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI",
+    -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  background: #fff;
+  box-shadow: 0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132),
+    0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108);
+  padding: 20px;
+}
+
+#geoms-header {
+  display: flex;
+  margin: 20px;
+  width: 600px;
+}
+
+#geoms-header > button {
+  position: relative;
+  left: 320px;
+  margin-top: 0px;
+  top: 10px;
+}
+
+#layer-list {
+}
+#layer-buttons-container {
+  padding: 20px;
+}
+#layer-buttons-container > button {
+  padding: 10px;
+  margin: 10px;
+}
+#details-list-container {
+  height: 300px;
+  width: 100%;
+}
+#create-new-layer-container {
+  margin: 10px;
+  padding: 20;
+}
+#create-new-layer-container > button {
+  left: 10px;
+}
+
 .ms-ProgressIndicator {
   margin-top: 10px !important;
 }
@@ -256,6 +302,22 @@ tr > td:nth-child(2) {
 }
 
 #map-bottom-bar > button {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+#map-top-bar {
+  z-index: 10000;
+  position: absolute;
+  margin-left: 50%;
+  margin-right: 50%;
+  left: -116px;
+  right: 0px;
+  width: 400px;
+  top: 10px;
+}
+
+#map-top-bar > button {
   margin-left: 5px;
   margin-right: 5px;
 }

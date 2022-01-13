@@ -43,30 +43,31 @@ export default function NewLayerContainer({props}) {
     }
   
     return (
-      creatingNewLayer ? 
-      <div>
-      <TextField
-      label="Layername"
-      htmlFor="layername"
-      type="text"
-      placeholder="Enter Layername"
-      name="layername"
-      autoComplete="layername"
-      value={layerText}
-      onChange={(e) => { setLayerText((e.target as HTMLTextAreaElement).value); console.log(layerText) }}
-      required
-   ></TextField>
-      {/* <DefaultButton text="Register" onClick={() => { if (!loadingStatus.show) { onRegisterPage(); } } } allowDisabledFocus /> */}
-      <DefaultButton text="Register" onClick={onRegisterLayer} allowDisabledFocus>Register Layer</DefaultButton>
-      <DefaultButton text="Cancel" onClick={onCancelLayerCreation} allowDisabledFocus>Cancel</DefaultButton>
-      </div>
-      
-      :
-      <div>
-      <Text variant="small" block></Text>
-      <PrimaryButton className="fetchButton" onClick={onInitiateLayerCreation}>Create New Layer</PrimaryButton>
-      </div>
-  
+      <div id='create-new-layer-container'>
+      { creatingNewLayer ? 
+        <div >
+        <TextField
+        label="Layername"
+        htmlFor="layername"
+        type="text"
+        placeholder="Enter Layername"
+        name="layername"
+        autoComplete="layername"
+        value={layerText}
+        onChange={(e) => { setLayerText((e.target as HTMLTextAreaElement).value); console.log(layerText) }}
+        required
+        ></TextField>
+        {/* <DefaultButton text="Register" onClick={() => { if (!loadingStatus.show) { onRegisterPage(); } } } allowDisabledFocus /> */}
+        <DefaultButton text="Register" onClick={onRegisterLayer} allowDisabledFocus>Register Layer</DefaultButton>
+        <DefaultButton text="Cancel" onClick={onCancelLayerCreation} allowDisabledFocus>Cancel</DefaultButton>
+        </div>
+        
+        :
+        <div>
+        <Text variant="small" block></Text>
+        <PrimaryButton className="fetchButton" onClick={onInitiateLayerCreation}>Create New Layer</PrimaryButton>
+        </div>}
+    </div>
   
     )
     
