@@ -8,7 +8,6 @@ import { ThemeSettingName } from '@fluentui/style-utilities';
 
 
 Office.onReady(async () => {
-
   console.log('Office ready from commands.js');
   const intervalId = setInterval(async ()=>{
     

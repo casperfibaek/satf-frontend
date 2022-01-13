@@ -3,6 +3,9 @@ import React from 'react';
 import { IconButton } from '@fluentui/react/lib/Button';
 import { IButtonStyles , Layer , Text ,FontWeights,Panel, PrimaryButton } from '@fluentui/react';
 
+
+/////////// is this being used for anything?
+
 const NavBar = () => {  
 
   const iconStyles: IButtonStyles = {
@@ -15,22 +18,20 @@ const NavBar = () => {
   };
  
   return(
-      <div>
-    <Layer >
+    <div>
+      <Layer >
       <div style = {{backgroundColor:"whitesmoke"}}>
         <div style={{margin:"0 20px"}}>
-        <PrimaryButton > 
-          Geometries
-        </PrimaryButton>
-        <PrimaryButton > 
-          Map
-        </PrimaryButton>
-        <div style = {{float:"right"}}>
-      </div>
-      </div>
-      </div>
-      
-        
+          <PrimaryButton > 
+            Geometries
+          </PrimaryButton>
+          <PrimaryButton > 
+            Map
+          </PrimaryButton>
+          <div style = {{float:"right"}}>
+          </div>
+        </div>
+      </div>  
     </Layer>
     </div>
     );

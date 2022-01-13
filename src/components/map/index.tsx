@@ -1,7 +1,7 @@
 // Libraries
 import React, { useEffect, useState, useCallback } from 'react'; // eslint-disable-line
 import L, { FeatureGroup, LeafletMouseEvent, CircleMarker } from 'leaflet';
-import { Text, MessageBar, MessageBarType } from '@fluentui/react';
+import { Text, MessageBar, MessageBarType, PrimaryButton } from '@fluentui/react';
 import 'leaflet.locatecontrol';
 
 // Components
@@ -113,6 +113,8 @@ function initialiseMap(mapContainer:any) {
     'Without background': layers.base.empty,
   };
 
+  state.maplayers = layers
+
   L.control.scale().addTo(leafletMap);
   L.control.zoom({ position: 'bottomright' }).addTo(leafletMap);
   // @ts-ignore-line
@@ -205,14 +207,6 @@ function Map() {
     });
   }, []);
 
-
-  useEffect(()=> {
-    setValueForKey('satf_key', '37')
-    console.log('USE EFFECT FIRES')
-    setUser(getValueForKey('satf_key'))
-    console.log(user)
-  }, [user])
-
   // Run on startup
   useEffect(() => {
     state.leafletMap = initialiseMap(mapContainer);
@@ -247,7 +241,7 @@ function Map() {
 
   return (
     <div id="map-wrapper">
-      {!errorbar.hidden && <MessageBar
+      {errorbar.hidden || <MessageBar
             messageBarType={errorbar.type}
             className="message-bar"
             dismissButtonAriaLabel="Close"
@@ -283,7 +277,6 @@ function Map() {
         statusErrorbar={statusErrorbar}
         statusCalloutSelect={statusCalloutSelect}
         autoCreateNewLayer={autoCreateNewLayer}
-        user={user}
       />
       <div id="map" ref={(el) => { mapContainer = el; }}></div>
     </div>
