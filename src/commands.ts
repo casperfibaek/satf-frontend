@@ -51,8 +51,6 @@ Office.onReady(async () => {
 });
 
 
-
-
 let dialog:any = null;
 const g:any = getGlobal();
 

@@ -40,7 +40,7 @@ const columns = [
           fieldName: 'geometryCount',
           minWidth: 30,
           maxWidth: 50,
-          isResizable: false,
+          isResizable: true,
           isCollapsible: true,
           data: 'string',
           onRender: (item) => {
