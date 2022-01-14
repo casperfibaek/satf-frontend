@@ -27,7 +27,7 @@ const columns = [
           fieldName: 'layerId',
           minWidth: 30,
           maxWidth: 50,
-          isResizable: false,
+          isResizable: true,
           data: 'string',
           onRender: (item) => {
             return <span>{item.layerId}</span>;
