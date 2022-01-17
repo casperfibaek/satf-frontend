@@ -269,17 +269,17 @@ g.POP_BUFFER = POP_BUFFER;
  * Calculate the average nightnight in an area.
  * An address can be used instead of Latitude.
  * @customfunction NIGHTLIGHT
- * @param {any} bufferMeters
+ * @param {any} minutes Walking time
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
  * @return {Promise<any[][]>} Timeseries of nightlight
  */
-async function NIGHTLIGHT(bufferMeters:any, latitudeOrAddress:any, longitude:any = false):Promise<any[][]> {
+async function NIGHTLIGHT(minutes:any, latitudeOrAddress:any, longitude:any = false):Promise<any[][]> {
   try {
-    if (Number.isNaN(bufferMeters)) { throw errInvalidValue('Buffer not a number'); }
+    if (Number.isNaN(minutes)) { throw errInvalidValue('Buffer not a number'); }
 
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `${_apiUrl}nightlights?buffer=${bufferMeters}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `${_apiUrl}nightlights?buffer=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -308,17 +308,17 @@ g.NIGHTLIGHT = NIGHTLIGHT;
  * Calculate the demography for an area
  * An address can be used instead of Latitude.
  * @customfunction DEMOGRAPHY
- * @param {any} bufferMeters
+ * @param {any} minutes Walking time 
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<any[][]>} Timeseries of nightlight
+ * @return {Promise<any[][]>} Population by age groups and sex
  */
-async function DEMOGRAPHY(bufferMeters:any, latitudeOrAddress:any, longitude:any = false):Promise<any[][]> {
+async function DEMOGRAPHY(minutes:any, latitudeOrAddress:any, longitude:any = false):Promise<any[][]> {
   try {
-    if (Number.isNaN(bufferMeters)) { throw errInvalidValue('Buffer not a number'); }
+    if (Number.isNaN(minutes)) { throw errInvalidValue('Minutes not a number'); }
 
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `${_apiUrl}demography?buffer=${bufferMeters}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `${_apiUrl}demography?buffer=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });

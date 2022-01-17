@@ -149,7 +149,8 @@
             "name": "NIGHTLIGHT",
             "parameters": [
                 {
-                    "name": "bufferMeters",
+                    "description": "Walking time",
+                    "name": "minutes",
                     "type": "any"
                 },
                 {
@@ -172,7 +173,8 @@
             "name": "DEMOGRAPHY",
             "parameters": [
                 {
-                    "name": "bufferMeters",
+                    "description": "Walking time",
+                    "name": "minutes",
                     "type": "any"
                 },
                 {
