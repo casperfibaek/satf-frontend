@@ -311,10 +311,11 @@ tr > td:nth-child(2) {
   position: absolute;
   margin-left: 50%;
   margin-right: 50%;
-  left: -116px;
+  left: -128px;
   right: 0px;
-  width: 400px;
-  top: 10px;
+  width: 240px;
+  bottom: 53px;
+  /* top: 60px; */
 }
 
 #map-top-bar > button {
