@@ -279,7 +279,7 @@ async function NIGHTLIGHT(minutes:any, latitudeOrAddress:any, longitude:any = fa
     if (Number.isNaN(minutes)) { throw errInvalidValue('Buffer not a number'); }
 
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `${_apiUrl}nightlights?buffer=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `${_apiUrl}nightlights?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -318,7 +318,7 @@ async function DEMOGRAPHY(minutes:any, latitudeOrAddress:any, longitude:any = fa
     if (Number.isNaN(minutes)) { throw errInvalidValue('Minutes not a number'); }
 
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `${_apiUrl}demography?buffer=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `${_apiUrl}demography?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
