@@ -1084,7 +1084,7 @@ async function WEATHER_FORECAST(latitudeOrAddress:any, longitude:any = false):Pr
       for (let i = 0; i < responseJSON.message.length; i += 1) {
       // push values
         const values = Object.values(responseJSON.message[i])
-        if (values.length < 8) {
+        if (values.length < 7) {
           values.splice(5, 0, 0)
         }
 
