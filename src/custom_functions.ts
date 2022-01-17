@@ -1079,7 +1079,7 @@ async function WEATHER_FORECAST(latitudeOrAddress:any, longitude:any = false):Pr
       if (responseJSON.message.length === 0) { return null; }
       const cell:any[] = []; 
       // push headers
-      const header = ['Date', 'Description', 'Temp_min (°C)', 'Temp_max (°C)', 'Humidity (%)', 'Rain (mm)', 'Clouds (%)']
+      const header = ['Date', 'Description', 'Temp_min(°C)', 'Temp_max(°C)', 'Humidity(%)', 'Rain(mm)', 'Clouds(%)', 'Probability of Precipitation(%)', 'Alerts']
       cell.push(header);
       for (let i = 0; i < responseJSON.message.length; i += 1) {
       // push values
@@ -1131,7 +1131,7 @@ async function AVG_NDVI(latitude:any, longitude:any, numberOfDays:any, buffer:an
       if (responseJSON.message.length === 0) { return null; }
       const cell:any[] = []; 
       // push headers
-      const header = ['Dates', 'Min', 'Max', 'Mean', 'stDev']
+      const header = ['Date', 'Min', 'Max', 'Mean', 'stDev']
       cell.push(header);
       for (let i = 0; i < responseJSON.message.length; i += 1) {
       // push values
