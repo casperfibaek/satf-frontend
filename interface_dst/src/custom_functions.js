@@ -1159,10 +1159,10 @@ g.WEATHER_FORECAST = WEATHER_FORECAST;
  * @param {any} latitude
  * @param {any} longitude
  * @param {any} numberOfDays Number of days for when the data needs to be requested (minimum of 5 days)
- * @param {any} buffer buffer of the area to be analyzed: 100m, 500m, or 1000m
+ * @param {any} [buffer] buffer of the area to be analyzed: 100m, 500m, or 1000m. Defaults to 100m.
  * @return {Promise<any[][]>} NDVI statistics for each day the date is available over a specified amount of time
  */
-function AVG_NDVI(latitude, longitude, numberOfDays, buffer) {
+function AVG_NDVI(latitude, longitude, numberOfDays, buffer = false) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const coords = yield parseToLatlng(latitude, longitude);
@@ -1197,7 +1197,54 @@ function AVG_NDVI(latitude, longitude, numberOfDays, buffer) {
         }
     });
 }
-g.AVG_NDVI = AVG_NDVI;
+g.MONTHLY_NDVI = MONTHLY_NDVI;
+/**
+ * Shows the Normalized Difference Vegetation Index (NDVI) statistics over a 30 day period when the data is available on a buffered location
+ * @customfunction MONTHLY_NDVI
+ * @param {any} latitude
+ * @param {any} longitude
+ * @param {any} startMonth month of the year to start the analysis in numeric form (from 1 to 12)
+ * @param {any} endMonth month of the year to end the analysis in numeric form (from 1 to 12)
+ * @param {any} year year in numeric form (starting from 2016)
+ * @param {any} [buffer] buffer of the area to be analyzed: 100m, 500m, or 1000m. Defaults to 100m.
+ * @return {Promise<any[][]>} NDVI statistics for each month and year specified, aggregated over a 30 day period
+ */
+function MONTHLY_NDVI(latitude, longitude, startMonth, endMonth, year, buffer = false) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const coords = yield parseToLatlng(latitude, longitude);
+            const url = `${_apiUrl}maxNDVI_monthly?lat=${coords[0][0]}&lng=${coords[0][1]}&start_month=${startMonth}&end_month=${endMonth}&year=${year}&buffer=${buffer}`;
+            const token = getValueForKey('satf_token');
+            const apiResponse = yield fetch(url, { headers: { Authorization: token } });
+            if (apiResponse.status === 401) {
+                throw errNotAvailable('401: Unauthorised user');
+            }
+            const responseJSON = yield apiResponse.json();
+            if (apiResponse.ok) {
+                if (responseJSON.message.length === 0) {
+                    return null;
+                }
+                const cell = [];
+                // push headers
+                const header = ['Date', 'Min', 'Max', 'Mean', 'stDev'];
+                cell.push(header);
+                for (let i = 0; i < responseJSON.message.length; i += 1) {
+                    // push values
+                    const values = Object.values(responseJSON.message[i]);
+                    cell.push(values);
+                }
+                console.log(cell);
+                // await addCellsToSheet(cell);
+                return cell;
+            }
+            throw errInvalidValue(responseJSON.message);
+        }
+        catch (err) {
+            throw errInvalidValue(err);
+        }
+    });
+}
+g.MONTHLY_NDVI = MONTHLY_NDVI;
 // import arrayToGeojson from './components/map/array_to_geojson'
 ///// TODO: finalize geometries functions
 // /**
