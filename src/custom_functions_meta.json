@@ -168,22 +168,21 @@
             }
         },
         {
-            "description": "Calculate the demography for an area\nAn address can be used instead of Latitude.",
+            "description": "Calculate the demography for an area",
             "id": "DEMOGRAPHY",
             "name": "DEMOGRAPHY",
             "parameters": [
                 {
-                    "description": "Walking time",
-                    "name": "minutes",
-                    "type": "any"
-                },
-                {
-                    "name": "latitudeOrAddress",
+                    "name": "latitude",
                     "type": "any"
                 },
                 {
                     "name": "longitude",
-                    "optional": true,
+                    "type": "any"
+                },
+                {
+                    "description": "Walking time",
+                    "name": "minutes",
                     "type": "any"
                 }
             ],

@@ -306,18 +306,17 @@ g.NIGHTLIGHT = NIGHTLIGHT;
 
 /**
  * Calculate the demography for an area
- * An address can be used instead of Latitude.
  * @customfunction DEMOGRAPHY
- * @param {any} minutes Walking time 
- * @param {any} latitudeOrAddress
- * @param {any} [longitude]
+ * @param {any} latitude
+ * @param {any} longitude
+ * @param {any} minutes Walking time
  * @return {Promise<any[][]>} Population by age groups and sex
  */
-async function DEMOGRAPHY(minutes:any, latitudeOrAddress:any, longitude:any = false):Promise<any[][]> {
+async function DEMOGRAPHY(latitude:any, longitude:any, minutes:any):Promise<any[][]> {
   try {
-    if (Number.isNaN(minutes)) { throw errInvalidValue('Minutes not a number'); }
+    if (Number.isNaN(minutes)) { throw errInvalidValue('Minutes or Meters not a number'); }
 
-    const coords = await parseToLatlng(latitudeOrAddress, longitude);
+    const coords = await parseToLatlng(latitude, longitude);
     const url = `${_apiUrl}demography?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = getValueForKey('satf_token');
 
@@ -1116,7 +1115,7 @@ g.WEATHER_FORECAST = WEATHER_FORECAST;
  * @param {any} [buffer] buffer of the area to be analyzed: 100m, 500m, or 1000m. Defaults to 100m.
  * @return {Promise<any[][]>} NDVI statistics for each day the date is available over a specified amount of time
  */
-async function AVG_NDVI(latitude:any, longitude:any, numberOfDays:any, buffer:any=false):Promise<any[][]> {
+async function AVG_NDVI(latitude:any, longitude:any, numberOfDays:any, buffer:any=100):Promise<any[][]> {
   try {
     const coords = await parseToLatlng(latitude, longitude);
     const url = `${_apiUrl}avg_NDVI?lat=${coords[0][0]}&lng=${coords[0][1]}&number_days=${numberOfDays}&buffer=${buffer}`;
@@ -1153,7 +1152,7 @@ async function AVG_NDVI(latitude:any, longitude:any, numberOfDays:any, buffer:an
   }
 }
 
-g.MONTHLY_NDVI = MONTHLY_NDVI;
+g.AVG_NDVI = AVG_NDVI;
 
 
 /**
@@ -1167,7 +1166,7 @@ g.MONTHLY_NDVI = MONTHLY_NDVI;
  * @param {any} [buffer] buffer of the area to be analyzed: 100m, 500m, or 1000m. Defaults to 100m.
  * @return {Promise<any[][]>} NDVI statistics for each month and year specified, aggregated over a 30 day period
  */
-async function MONTHLY_NDVI(latitude:any, longitude:any, startMonth:any, endMonth:any, year:any, buffer:any=false):Promise<any[][]> {
+async function MONTHLY_NDVI(latitude:any, longitude:any, startMonth:any, endMonth:any, year:any, buffer:any=100):Promise<any[][]> {
   try {
     const coords = await parseToLatlng(latitude, longitude);
     const url = `${_apiUrl}maxNDVI_monthly?lat=${coords[0][0]}&lng=${coords[0][1]}&start_month=${startMonth}&end_month=${endMonth}&year=${year}&buffer=${buffer}`;
