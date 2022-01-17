@@ -1079,12 +1079,12 @@ async function WEATHER_FORECAST(latitudeOrAddress:any, longitude:any = false):Pr
       if (responseJSON.message.length === 0) { return null; }
       const cell:any[] = []; 
       // push headers
-      const header = ['Date', 'Description', 'Temp_min(°C)', 'Temp_max(°C)', 'Humidity(%)', 'Rain(mm)', 'Clouds(%)', 'Probability of Precipitation(%)']
+      const header = ['Date', 'Description', 'Temp_min(°C)', 'Temp_max(°C)', 'Humidity(%)', 'Rain(mm)', 'Clouds(%)', 'Probability of Precipitation(%)', 'Alerts']
       cell.push(header);
       for (let i = 0; i < responseJSON.message.length; i += 1) {
       // push values
         const values = Object.values(responseJSON.message[i])
-        if (values.length < 7) {
+        if (values.length < 9) {
           values.splice(5, 0, 0)
         }
 
