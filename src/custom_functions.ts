@@ -1130,7 +1130,7 @@ async function AVG_NDVI(latitude:any, longitude:any, numberOfDays:any, buffer:an
       if (responseJSON.message.length === 0) { return null; }
       const cell:any[] = []; 
       // push headers
-      const header = ['Date', 'Min', 'Max', 'Mean', 'stDev']
+      const header = ['Date', 'Min', 'Max', 'Mean', 'stDev', 'samples', 'noData']
       cell.push(header);
       for (let i = 0; i < responseJSON.message.length; i += 1) {
       // push values
@@ -1160,16 +1160,15 @@ g.AVG_NDVI = AVG_NDVI;
  * @customfunction MONTHLY_NDVI
  * @param {any} latitude
  * @param {any} longitude
- * @param {any} startMonth month of the year to start the analysis in numeric form (from 1 to 12)
- * @param {any} endMonth month of the year to end the analysis in numeric form (from 1 to 12)
- * @param {any} year year in numeric form (starting from 2016)
+ * @param {any} startDate YYYY-MM-DD format for start date
+ * @param {any} endDate YYYY-MM-DD format for end date
  * @param {any} [buffer] buffer of the area to be analyzed: 100m, 500m, or 1000m. Defaults to 100m.
- * @return {Promise<any[][]>} NDVI statistics for each month and year specified, aggregated over a 30 day period
+ * @return {Promise<any[][]>} NDVI statistics aggregated over a 30 day period
  */
-async function MONTHLY_NDVI(latitude:any, longitude:any, startMonth:any, endMonth:any, year:any, buffer:any=100):Promise<any[][]> {
+async function MONTHLY_NDVI(latitude:any, longitude:any, startDate:any, endDate:any, buffer:any=100):Promise<any[][]> {
   try {
     const coords = await parseToLatlng(latitude, longitude);
-    const url = `${_apiUrl}maxNDVI_monthly?lat=${coords[0][0]}&lng=${coords[0][1]}&start_month=${startMonth}&end_month=${endMonth}&year=${year}&buffer=${buffer}`;
+    const url = `${_apiUrl}maxNDVI_monthly?lat=${coords[0][0]}&lng=${coords[0][1]}&start_month=${startDate}&end_month=${endDate}&buffer=${buffer}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -1181,7 +1180,7 @@ async function MONTHLY_NDVI(latitude:any, longitude:any, startMonth:any, endMont
       if (responseJSON.message.length === 0) { return null; }
       const cell:any[] = []; 
       // push headers
-      const header = ['Date', 'Min', 'Max', 'Mean', 'stDev']
+      const header = ['Date', 'Min', 'Max', 'Mean', 'stDev', 'samples', 'noData']
       cell.push(header);
       for (let i = 0; i < responseJSON.message.length; i += 1) {
       // push values
@@ -1204,6 +1203,40 @@ async function MONTHLY_NDVI(latitude:any, longitude:any, startMonth:any, endMont
 }
 
 g.MONTHLY_NDVI = MONTHLY_NDVI;
+
+/**
+ * Shows the trend of the vegetation growth based on the maximum Normalized Difference Vegetation Index (NDVI) over the last 30 day period, when the data is available on a buffered location 
+ * @customfunction VEGETATION_STATUS
+ * @param {any} latitude
+ * @param {any} longitude
+ * @param {any} [buffer] buffer of the area to be analyzed: 100m, 500m, or 1000m. Defaults to 100m.
+ * @return {Promise<string>} Trend or warning for high values of NDVI
+ */
+async function VEGETATION_STATUS(latitude:any, longitude:any, buffer:any=100):Promise<string> {
+  try {
+    const coords = await parseToLatlng(latitude, longitude);
+    const url = `${_apiUrl}vegetation_monitoring?lat=${coords[0][0]}&lng=${coords[0][1]}&buffer=${buffer}`;
+    const token = getValueForKey('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+    if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+
+    const responseJSON:ApiReply = await apiResponse.json();
+    if (apiResponse.ok) {
+      if (responseJSON.message.length === 0) { return null; }
+    
+      return String(responseJSON.message);
+    }
+
+    throw errInvalidValue(responseJSON.message);
+  } catch (err) {
+    throw errInvalidValue(err);
+  }
+}
+
+g.VEGETATION_STATUS = VEGETATION_STATUS;
+
 
 // import arrayToGeojson from './components/map/array_to_geojson'
 

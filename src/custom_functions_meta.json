@@ -784,18 +784,13 @@
                     "type": "any"
                 },
                 {
-                    "description": "month of the year to start the analysis in numeric form (from 1 to 12)",
-                    "name": "startMonth",
+                    "description": "YYYY-MM-DD format for start date",
+                    "name": "startDate",
                     "type": "any"
                 },
                 {
-                    "description": "month of the year to end the analysis in numeric form (from 1 to 12)",
-                    "name": "endMonth",
-                    "type": "any"
-                },
-                {
-                    "description": "year in numeric form (starting from 2016)",
-                    "name": "year",
+                    "description": "YYYY-MM-DD format for end date",
+                    "name": "endDate",
                     "type": "any"
                 },
                 {
@@ -807,6 +802,30 @@
             ],
             "result": {
                 "dimensionality": "matrix"
+            }
+        },
+        {
+            "description": "Shows the trend of the vegetation growth based on the maximum Normalized Difference Vegetation Index (NDVI) over the last 30 day period, when the data is available on a buffered location",
+            "id": "VEGETATION_STATUS",
+            "name": "VEGETATION_STATUS",
+            "parameters": [
+                {
+                    "name": "latitude",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "type": "any"
+                },
+                {
+                    "description": "buffer of the area to be analyzed: 100m, 500m, or 1000m. Defaults to 100m.",
+                    "name": "buffer",
+                    "optional": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "type": "string"
             }
         }
     ]
