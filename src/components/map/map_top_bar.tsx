@@ -18,7 +18,7 @@ export default function TopBar(props:any) {
   }
   function flyToTanzania() {
     state.maplayers.base.esri.addTo(state.leafletMap);
-    state.leafletMap.flyTo([-6.063, 34.811], 6)
+    state.leafletMap.flyTo([-6.424484, 35.134277], 6)
     state.maplayers.base.s2_2020.remove(state.leafletMap);
   }
   return (

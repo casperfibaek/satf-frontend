@@ -835,7 +835,7 @@ async function NEAREST_BANK_DIST(latitudeOrAddress:any, longitude:any = false):P
 g.NEAREST_BANK_DIST = NEAREST_BANK_DIST;
 
 /**
- * Calculates the walking time/distance between two points.
+ * Calculates the biking time/distance between two points.
  * @customfunction TIME_DISTANCE_A_TO_B_WALK
  * @param {any} lat1 Latitude of first point
  * @param {any} lng1 Longitude of first point
@@ -844,7 +844,7 @@ g.NEAREST_BANK_DIST = NEAREST_BANK_DIST;
  * @param {any} [timeOrDistance] Whether to return time (minutes) or distance (meters). Defaults to time.
  * @return {Promise<string>} Cell with PlusCode address.
  */
-async function TIME_DISTANCE_A_TO_B_WALK(lat1:any, lng1:any, lat2:any, lng2:any, timeOrDistance:any = 'time'):Promise<string | number> {
+async function TIME_DISTANCE_A_TO_B_WALK(lat1:any, lng1:any, lat2:any, lng2:any, timeOrDistance:any = 'time'):Promise<string> {
   try {
     const coords1 = await parseToLatlng(lat1, lng1);
     const coords2 = await parseToLatlng(lat2, lng2);
@@ -856,12 +856,12 @@ async function TIME_DISTANCE_A_TO_B_WALK(lat1:any, lng1:any, lat2:any, lng2:any,
     if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
 
     const responseJSON:ApiReply = await apiResponse.json();
-
+    console.log(responseJSON.message.time)
     if (apiResponse.ok) {
-      if (timeOrDistance === 'time') {
-        return String(responseJSON.message.time);
+      if (timeOrDistance === 'distance') {
+        return String(responseJSON.message.distance);
       }
-      return Number(responseJSON.message.distance);
+      return String(responseJSON.message.time);
     }
 
     throw errInvalidValue(responseJSON.message);
@@ -895,10 +895,10 @@ async function TIME_DISTANCE_A_TO_B_BIKE(lat1:any, lng1:any, lat2:any, lng2:any,
     const responseJSON:ApiReply = await apiResponse.json();
 
     if (apiResponse.ok) {
-      if (timeOrDistance === 'time') {
-        return String(responseJSON.message.time);
+      if (timeOrDistance === 'distance') {
+        return String(responseJSON.message.distancee);
       }
-      return Number(responseJSON.message.distance);
+      return Number(responseJSON.message.time);
     }
 
     throw errInvalidValue(responseJSON.message);
@@ -932,10 +932,10 @@ async function TIME_DISTANCE_A_TO_B_CAR(lat1:any, lng1:any, lat2:any, lng2:any, 
     const responseJSON:ApiReply = await apiResponse.json();
 
     if (apiResponse.ok) {
-      if (timeOrDistance === 'time') {
-        return String(responseJSON.message.time);
+      if (timeOrDistance === 'distance') {
+        return String(responseJSON.message.distance);
       }
-      return Number(responseJSON.message.distance);
+      return Number(responseJSON.message.time);
     }
 
     throw errInvalidValue(responseJSON.message);
@@ -1237,6 +1237,39 @@ async function VEGETATION_STATUS(latitude:any, longitude:any, buffer:any=100):Pr
 
 g.VEGETATION_STATUS = VEGETATION_STATUS;
 
+
+// /**
+//  * Draws an Isochrone of defined minutes in walking distance (outputs a geometry)
+//  * @customfunction ISOCHRONE_WALK
+//  * @param {any} latitude
+//  * @param {any} longitude
+//  * @param {any} minutes time to be defined in minutes (max. 60)
+//  * @return {Promise<any>} geometry 
+//  */
+// async function ISOCHRONE_WALK(latitude:any, longitude:any, minutes:any):Promise<any> {
+//   try {
+//     const coords = await parseToLatlng(latitude, longitude);
+//     const url = `${_apiUrl}isochrone_walk?lat=${coords[0][0]}&lng=${coords[0][1]}&minutes=${minutes}`;
+//     const token = getValueForKey('satf_token');
+
+//     const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+//     if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+
+//     const responseJSON:ApiReply = await apiResponse.json();
+//     if (apiResponse.ok) {
+//       if (responseJSON.message.length === 0) { return null; }
+//       console.log(responseJSON.message)
+//       return geojsonToArray(responseJSON.message);
+//     }
+
+//     throw errInvalidValue(responseJSON.message);
+//   } catch (err) {
+//     throw errInvalidValue(err);
+//   }
+// }
+
+// g.ISOCHRONE_WALK = ISOCHRONE_WALK;
 
 // import arrayToGeojson from './components/map/array_to_geojson'
 

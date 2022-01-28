@@ -45,6 +45,11 @@ function initialiseMap(mapContainer:any) {
   const northEast = L.latLng(11.2178034596280654, 1.2368344424300484);
   const mybounds = L.latLngBounds(southWest, northEast);
 
+  const southWestTza = L.latLng(-11.706, 29.839);
+  const northEastTza = L.latLng(-1.033, 40.737);
+  const tzaBounds = L.latLngBounds(southWestTza, northEastTza);
+
+
   const layers = {
     base: {
       osm: L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
@@ -91,11 +96,25 @@ function initialiseMap(mapContainer:any) {
       urban_status_simple: L.tileLayer('https://{s}.imap.niras.dk/ghana/tiles_classification_simple/{z}/{x}/{y}.png', {
         tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 15, bounds: mybounds,
       }),
+      population_ghana: L.tileLayer('https://{s}.imap.niras.dk/ghana/population_unweighted/{z}/{x}/{y}.png', {
+        tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 13, bounds: mybounds,
+      }),
+      population_tanzania: L.tileLayer('https://{s}.imap.niras.dk/ghana/tza_ppp_2020_UNadj/{z}/{x}/{y}.png', {
+        tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 12, bounds: tzaBounds,
+      }),
+      nightlights_tanzania: L.tileLayer('https://{s}.imap.niras.dk/ghana/nightlights_tza_2020/{z}/{x}/{y}.png', {
+        tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 12, bounds: tzaBounds,
+      }),
     },
   };
 
+  // var populationLayers = L.layerGroup([population_ghana, population_tanzania])
+
   const overlaymaps = {
     'Nighttime Lights (2020)': layers.overlay.s1_nl,
+    'Nightlights Tanzania (2020)': layers.overlay.nightlights_tanzania,
+    'Population Ghana': layers.overlay.population_ghana,
+    'Population Tanzania': layers.overlay.population_tanzania,
     'Normalised Vegetation Index': layers.overlay.ndvi,
     'Interferometric Coherence': layers.overlay.s1_coh,
     'SAR Backscatter': layers.overlay.s1_bs,

@@ -528,7 +528,7 @@
             }
         },
         {
-            "description": "Calculates the walking time/distance between two points.",
+            "description": "Calculates the biking time/distance between two points.",
             "id": "TIME_DISTANCE_A_TO_B_WALK",
             "name": "TIME_DISTANCE_A_TO_B_WALK",
             "parameters": [
