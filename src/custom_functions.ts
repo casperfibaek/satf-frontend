@@ -896,9 +896,9 @@ async function TIME_DISTANCE_A_TO_B_BIKE(lat1:any, lng1:any, lat2:any, lng2:any,
 
     if (apiResponse.ok) {
       if (timeOrDistance === 'distance') {
-        return String(responseJSON.message.distancee);
+        return String(responseJSON.message.distance);
       }
-      return Number(responseJSON.message.time);
+      return String(responseJSON.message.time);
     }
 
     throw errInvalidValue(responseJSON.message);
@@ -935,7 +935,7 @@ async function TIME_DISTANCE_A_TO_B_CAR(lat1:any, lng1:any, lat2:any, lng2:any, 
       if (timeOrDistance === 'distance') {
         return String(responseJSON.message.distance);
       }
-      return Number(responseJSON.message.time);
+      return String(responseJSON.message.time);
     }
 
     throw errInvalidValue(responseJSON.message);
