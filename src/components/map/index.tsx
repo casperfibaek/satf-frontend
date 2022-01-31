@@ -49,6 +49,31 @@ function initialiseMap(mapContainer:any) {
   const northEastTza = L.latLng(-1.033, 40.737);
   const tzaBounds = L.latLngBounds(southWestTza, northEastTza);
 
+  //layers to group layers
+  const population_ghana = L.tileLayer('https://{s}.imap.niras.dk/ghana/population_unweighted/{z}/{x}/{y}.png', {
+        tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 13, bounds: mybounds,
+      });
+
+  const population_tanzania = L.tileLayer('https://{s}.imap.niras.dk/ghana/tza_ppp_2020_UNadj/{z}/{x}/{y}.png', {
+        tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 12, bounds: tzaBounds,
+      });
+  
+  const s1_nl = L.tileLayer('https://{s}.imap.niras.dk/ghana/nightlights/{z}/{x}/{y}.png', {
+        tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 14, bounds: mybounds,
+      });
+  
+  const nightlights_tanzania = L.tileLayer('https://{s}.imap.niras.dk/ghana/nightlights_tza_2020/{z}/{x}/{y}.png', {
+        tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 12, bounds: tzaBounds,
+      });
+
+  const network_coverage_gh = L.tileLayer('https://{s}.imap.niras.dk/ghana/mce_oci_ghana/{z}/{x}/{y}.png', {
+        tms: true, attribution: 'Coverage Data © Collins Bartholomew and GSMA 2021', minZoom: 6, maxZoom: 16, maxNativeZoom: 12, bounds: mybounds, opacity:0.5,
+      });
+
+  const network_coverage_tza = L.tileLayer('https://{s}.imap.niras.dk/ghana/mce_oci_tza/{z}/{x}/{y}.png', {
+        tms: true, attribution: 'Coverage Data © Collins Bartholomew and GSMA 2021', minZoom: 6, maxZoom: 16, maxNativeZoom: 12, bounds: mybounds, opacity:0.5,
+      });
+  
 
   const layers = {
     base: {
@@ -81,9 +106,6 @@ function initialiseMap(mapContainer:any) {
       s1_cxb: L.tileLayer('https://{s}.imap.niras.dk/ghana/cxb/{z}/{x}/{y}.png', {
         tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 14, bounds: mybounds,
       }),
-      s1_nl: L.tileLayer('https://{s}.imap.niras.dk/ghana/nightlights/{z}/{x}/{y}.png', {
-        tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 14, bounds: mybounds,
-      }),
       height: L.tileLayer('https://{s}.imap.niras.dk/ghana/dem/terrain/{z}/{x}/{y}.png', {
         tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 13, bounds: mybounds,
       }),
@@ -96,26 +118,18 @@ function initialiseMap(mapContainer:any) {
       urban_status_simple: L.tileLayer('https://{s}.imap.niras.dk/ghana/tiles_classification_simple/{z}/{x}/{y}.png', {
         tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 15, bounds: mybounds,
       }),
-      population_ghana: L.tileLayer('https://{s}.imap.niras.dk/ghana/population_unweighted/{z}/{x}/{y}.png', {
-        tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 13, bounds: mybounds,
-      }),
-      population_tanzania: L.tileLayer('https://{s}.imap.niras.dk/ghana/tza_ppp_2020_UNadj/{z}/{x}/{y}.png', {
-        tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 12, bounds: tzaBounds,
-      }),
-      nightlights_tanzania: L.tileLayer('https://{s}.imap.niras.dk/ghana/nightlights_tza_2020/{z}/{x}/{y}.png', {
-        tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 12, bounds: tzaBounds,
-      }),
+      population: L.layerGroup([population_ghana, population_tanzania]),
+      nightlights: L.layerGroup([s1_nl, nightlights_tanzania]),
+      network_coverage: L.layerGroup([network_coverage_gh, network_coverage_tza]),
     },
   };
 
-  // var populationLayers = L.layerGroup([population_ghana, population_tanzania])
 
   const overlaymaps = {
-    'Nighttime Lights (2020)': layers.overlay.s1_nl,
-    'Nightlights Tanzania (2020)': layers.overlay.nightlights_tanzania,
-    'Population Ghana': layers.overlay.population_ghana,
-    'Population Tanzania': layers.overlay.population_tanzania,
-    'Normalised Vegetation Index': layers.overlay.ndvi,
+    'Nighttime Lights (2020)': layers.overlay.nightlights,
+    'Population': layers.overlay.population,
+    'Network Coverage 2021': layers.overlay.network_coverage,
+    'Normalised Vegetation Index (Ghana)': layers.overlay.ndvi,
     'Interferometric Coherence': layers.overlay.s1_coh,
     'SAR Backscatter': layers.overlay.s1_bs,
     'Coherence x Backscatter': layers.overlay.s1_cxb,
