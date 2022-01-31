@@ -67,11 +67,11 @@ function initialiseMap(mapContainer:any) {
       });
 
   const network_coverage_gh = L.tileLayer('https://{s}.imap.niras.dk/ghana/mce_oci_ghana/{z}/{x}/{y}.png', {
-        tms: true, attribution: 'Coverage Data © Collins Bartholomew and GSMA 2021', minZoom: 6, maxZoom: 16, maxNativeZoom: 12, bounds: mybounds, opacity:0.5,
+        tms: true, attribution: 'Coverage Data © Collins Bartholomew and GSMA 2021', minZoom: 6, maxZoom: 16, maxNativeZoom: 12, bounds: mybounds, opacity:0.7,
       });
 
   const network_coverage_tza = L.tileLayer('https://{s}.imap.niras.dk/ghana/mce_oci_tza/{z}/{x}/{y}.png', {
-        tms: true, attribution: 'Coverage Data © Collins Bartholomew and GSMA 2021', minZoom: 6, maxZoom: 16, maxNativeZoom: 12, bounds: mybounds, opacity:0.5,
+        tms: true, attribution: 'Coverage Data © Collins Bartholomew and GSMA 2021', minZoom: 6, maxZoom: 16, maxNativeZoom: 12, bounds: tzaBounds, opacity:0.7,
       });
   
 

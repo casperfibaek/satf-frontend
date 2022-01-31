@@ -1168,7 +1168,7 @@ g.AVG_NDVI = AVG_NDVI;
 async function MONTHLY_NDVI(latitude:any, longitude:any, startDate:any, endDate:any, buffer:any=100):Promise<any[][]> {
   try {
     const coords = await parseToLatlng(latitude, longitude);
-    const url = `${_apiUrl}maxNDVI_monthly?lat=${coords[0][0]}&lng=${coords[0][1]}&start_month=${startDate}&end_month=${endDate}&buffer=${buffer}`;
+    const url = `${_apiUrl}NDVI_monthly?lat=${coords[0][0]}&lng=${coords[0][1]}&from_date=${startDate}&to_date=${endDate}&buffer=${buffer}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
