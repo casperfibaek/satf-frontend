@@ -13,7 +13,7 @@ function Install(): any {
       </Text>
       <Separator />
       <Text variant="mediumPlus" block className="home_text_base">
-          Download the SatF tool here: {<Link download href="https://satfstatic.z6.web.core.windows.net/satf_production.0.4.6.xml">Production</Link>} | {<Link download href="https://satfstaticdev.z6.web.core.windows.net/satf_development.0.4.6.xml">Development</Link>}
+          Download the SatF tool here: {<Link download href="https://satfstatic.z6.web.core.windows.net/satf_production.0.8.0.xml">Production</Link>} | {<Link download href="https://satfstaticdev.z6.web.core.windows.net/satf_development.0.8.0.xml">Development</Link>}
       </Text>
       <div className="guide">
         <Text variant="mediumPlus" block className="guide_text">Installation Guide: (WEB)</Text>

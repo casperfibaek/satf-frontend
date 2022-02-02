@@ -679,7 +679,7 @@ g.BANKS = BANKS;
  * @customfunction URBAN_STATUS
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<string>} Name of the administrative zone.
+ * @return {Promise<string>} Urban status class.
  */
 async function URBAN_STATUS(latitudeOrAddress:any, longitude:any = false):Promise<string> {
   try {
@@ -706,7 +706,7 @@ g.URBAN_STATUS = URBAN_STATUS;
  * @customfunction URBAN_STATUS_SIMPLE
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<string>} Name of the administrative zone.
+ * @return {Promise<string>} Urban status class.
  */
 async function URBAN_STATUS_SIMPLE(latitudeOrAddress:any, longitude:any = false):Promise<string> {
   try {
@@ -732,7 +732,7 @@ g.URBAN_STATUS_SIMPLE = URBAN_STATUS_SIMPLE;
  * @customfunction NEAREST_PLACE
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<string>} Name of the administrative zone.
+ * @return {Promise<string>} Name of the nearest place.
  */
 async function NEAREST_PLACE(latitudeOrAddress:any, longitude:any = false):Promise<string> {
   try {
@@ -759,7 +759,7 @@ g.NEAREST_PLACE = NEAREST_PLACE;
  * @customfunction NEAREST_POI
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<string>} Name of the administrative zone.
+ * @return {Promise<string>} Name of the nearest point of interest.
  */
 async function NEAREST_POI(latitudeOrAddress:any, longitude:any = false):Promise<string> {
   try {
@@ -786,7 +786,7 @@ g.NEAREST_POI = NEAREST_POI;
  * @customfunction NEAREST_BANK
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<string>} Name of the administrative zone.
+ * @return {Promise<string>} Name of the nearest bank.
  */
 async function NEAREST_BANK(latitudeOrAddress:any, longitude:any = false):Promise<string> {
   try {
@@ -812,7 +812,7 @@ g.NEAREST_BANK = NEAREST_BANK;
  * @customfunction NEAREST_BANK_DIST
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<number>} Name of the administrative zone.
+ * @return {Promise<number>} Distance from the nearest bank in meters.
  */
 async function NEAREST_BANK_DIST(latitudeOrAddress:any, longitude:any = false):Promise<number> {
   try {
@@ -1250,6 +1250,31 @@ async function VEGETATION_STATUS(latitude:any, longitude:any, buffer:any=100):Pr
 
 g.VEGETATION_STATUS = VEGETATION_STATUS;
 
+/**
+ * Finds the nearest bank to a location.
+ * @customfunction NEAREST_WATERBODY
+ * @param {any} latitudeOrAddress
+ * @param {any} [longitude]
+ * @return {Promise<string>} Distance in meters from the nearest waterbody.
+ */
+async function NEAREST_WATERBODY(latitudeOrAddress:any, longitude:any = false):Promise<string> {
+  try {
+    const coords = await parseToLatlng(latitudeOrAddress, longitude);
+    const url = `${_apiUrl}nearest_waterbody?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const token = getValueForKey('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+    if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+    const responseJSON:ApiReply = await apiResponse.json();
+    if (apiResponse.ok) { return responseJSON.message; }
+
+    throw errInvalidValue(String(responseJSON.message));
+  } catch (err) {
+    throw errInvalidValue(err);
+  }
+}
+g.NEAREST_WATERBODY = NEAREST_WATERBODY;
 
 // /**
 //  * Draws an Isochrone of defined minutes in walking distance (outputs a geometry)

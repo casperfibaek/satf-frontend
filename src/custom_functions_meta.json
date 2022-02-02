@@ -827,6 +827,25 @@
             "result": {
                 "type": "string"
             }
+        },
+        {
+            "description": "Finds the nearest bank to a location.",
+            "id": "NEAREST_WATERBODY",
+            "name": "NEAREST_WATERBODY",
+            "parameters": [
+                {
+                    "name": "latitudeOrAddress",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
         }
     ]
 }
