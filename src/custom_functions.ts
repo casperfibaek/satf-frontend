@@ -856,12 +856,25 @@ async function TIME_DISTANCE_A_TO_B_WALK(lat1:any, lng1:any, lat2:any, lng2:any,
     if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
 
     const responseJSON:ApiReply = await apiResponse.json();
-    console.log(responseJSON.message.time)
+    console.log(responseJSON.message.geometry)
+    // const { state } = window; 
     if (apiResponse.ok) {
       if (timeOrDistance === 'distance') {
-        return String(responseJSON.message.distance);
-      }
+        return String(responseJSON.message.distance)
+      };
+      // const route = responseJSON.message.geometry.coordinates
+      // const geojson = {
+      //   type: 'Feature',
+      //   properties:{},
+      //   geometry: {
+      //     type: 'LineString',
+      //     coordinates: route
+      //   }
+      // }
+      // console.log(geojson.geometry)
       return String(responseJSON.message.time);
+
+  
     }
 
     throw errInvalidValue(responseJSON.message);
