@@ -844,7 +844,7 @@
                 }
             ],
             "result": {
-                "type": "string"
+                "type": "number"
             }
         }
     ]

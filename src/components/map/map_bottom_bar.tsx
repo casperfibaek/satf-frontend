@@ -89,7 +89,7 @@ export default function BottomBar(props:any) {
       props.autoCreateNewLayer();
     }
 
-    if (layerCount >= 1) {
+    if (layerCount <= 1) {
       const key = getFirstLayerKey();
       props.setSelectedLayer(key);
       addDataToLayer(key, geojson);

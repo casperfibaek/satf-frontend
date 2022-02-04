@@ -1255,9 +1255,9 @@ g.VEGETATION_STATUS = VEGETATION_STATUS;
  * @customfunction NEAREST_WATERBODY
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<string>} Distance in meters from the nearest waterbody.
+ * @return {Promise<number>} Distance in meters from the nearest waterbody.
  */
-async function NEAREST_WATERBODY(latitudeOrAddress:any, longitude:any = false):Promise<string> {
+async function NEAREST_WATERBODY(latitudeOrAddress:any, longitude:any = false):Promise<number> {
   try {
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
     const url = `${_apiUrl}nearest_waterbody?lat=${coords[0][0]}&lng=${coords[0][1]}`;
