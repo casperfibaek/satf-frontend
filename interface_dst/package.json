@@ -1,6 +1,6 @@
 {
     "name": "satf-frontend",
-    "version": "0.4.6",
+    "version": "0.8.0",
     "author": "Casper Fibaek @ NIRAS",
     "license": "Unlicenced for now",
     "private": true,
@@ -12,12 +12,12 @@
         "build:dev": "webpack --mode development",
         "build:watch": "webpack --mode development --watch",
         "dev-server": "webpack serve --mode production",
-        "debug:desktop": "office-addin-debugging start ./dist/satf_local.0.4.6.xml desktop",
-        "debug:web": "office-addin-debugging start ./dist/satf_local.0.4.6.xml web",
-        "debug:stop": "office-addin-debugging stop ./dist/satf_local.0.4.6.xml",
-        "validate:prod": "office-addin-manifest validate ./dist/satf_production.0.4.6.xml",
-        "validate:dev": "office-addin-manifest validate ./dist/satf_development.0.4.6.xml",
-        "validate:local": "office-addin-manifest validate ./dist/satf_local.0.4.6.xml",
+        "debug:desktop": "office-addin-debugging start ./dist/satf_local.0.8.0.xml desktop",
+        "debug:web": "office-addin-debugging start ./dist/satf_local.0.8.0.xml web",
+        "debug:stop": "office-addin-debugging stop ./dist/satf_local.0.8.0.xml",
+        "validate:prod": "office-addin-manifest validate ./dist/satf_production.0.8.0.xml",
+        "validate:dev": "office-addin-manifest validate ./dist/satf_development.0.8.0.xml",
+        "validate:local": "office-addin-manifest validate ./dist/satf_local.0.8.0.xml",
         "metadata": "custom-functions-metadata generate ./src/custom_functions.ts ./src/components/custom_functions_meta.json"
     },
     "config": {

@@ -9,12 +9,11 @@ import CreateLayer from './map_create_layer';
 import Properties from './map_properties';
 import SelectLayer from './map_select_layer';
 import BottomBar from './map_bottom_bar';
-import NavBar from './nav_bar';
+import TopBar from './map_top_bar';
 // Functions
 import { addMarkerToLayer, createNewMapLayer, getFirstLayerKey, getLayerCount,
 // addDataToLayer,
  } from './map_layers';
-import { getValueForKey, setValueForKey } from '../../utils';
 const { state } = window;
 function initialiseMap(mapContainer) {
     const leafletMap = L.map(mapContainer, {
@@ -94,6 +93,7 @@ function initialiseMap(mapContainer) {
         '2019 (RGB)': layers.base.s2_2019,
         'Without background': layers.base.empty,
     };
+    state.maplayers = layers;
     L.control.scale().addTo(leafletMap);
     L.control.zoom({ position: 'bottomright' }).addTo(leafletMap);
     // @ts-ignore-line
@@ -106,7 +106,6 @@ function Map() {
     document.title = 'Map';
     let mapContainer;
     // Variables
-    const [user, setUser] = useState('');
     const [selectedLayer, setSelectedLayer] = useState(-1);
     // Surfaces
     const [panelLayers, setPanelLayers] = useState({ hidden: true });
@@ -171,12 +170,6 @@ function Map() {
             });
         });
     }, []);
-    useEffect(() => {
-        setValueForKey('satf_key', '37');
-        console.log('USE EFFECT FIRES');
-        setUser(getValueForKey('satf_key'));
-        console.log(user);
-    }, [user]);
     // Run on startup
     useEffect(() => {
         state.leafletMap = initialiseMap(mapContainer);
@@ -204,17 +197,16 @@ function Map() {
             }
         });
     }, [mapContainer, autoCreateNewLayer]);
-    return (React.createElement("div", null,
-        React.createElement(NavBar, null),
-        React.createElement("div", { id: "map-wrapper" },
-            !errorbar.hidden && React.createElement(MessageBar, { messageBarType: errorbar.type, className: "message-bar", dismissButtonAriaLabel: "Close", truncated: true, onDismiss: () => { setErrorbar({ hidden: true, text: 'Default Message', type: MessageBarType.info }); } },
-                React.createElement(Text, null, errorbar.text)),
-            React.createElement(CreateLayer, { statusDialogCreate: statusDialogCreate, statusDialogProperties: statusDialogProperties, setSelectedLayer: setSelectedLayer }),
-            React.createElement(SelectLayer, { selectedLayer: selectedLayer, setSelectedLayer: setSelectedLayer, statusCalloutSelect: statusCalloutSelect }),
-            React.createElement(Properties, { statusDialogProperties: statusDialogProperties }),
-            React.createElement(MapPanel, { selectedLayer: selectedLayer, setSelectedLayer: setSelectedLayer, statusPanel: statusPanel, statusDialogCreate: statusDialogCreate }),
-            React.createElement(BottomBar, { selectedLayer: selectedLayer, setSelectedLayer: setSelectedLayer, statusDialogCreate: statusDialogCreate, statusErrorbar: statusErrorbar, statusCalloutSelect: statusCalloutSelect, autoCreateNewLayer: autoCreateNewLayer, user: user }),
-            React.createElement("div", { id: "map", ref: (el) => { mapContainer = el; } }))));
+    return (React.createElement("div", { id: "map-wrapper" },
+        errorbar.hidden || React.createElement(MessageBar, { messageBarType: errorbar.type, className: "message-bar", dismissButtonAriaLabel: "Close", truncated: true, onDismiss: () => { setErrorbar({ hidden: true, text: 'Default Message', type: MessageBarType.info }); } },
+            React.createElement(Text, null, errorbar.text)),
+        React.createElement(TopBar, null),
+        React.createElement(CreateLayer, { statusDialogCreate: statusDialogCreate, statusDialogProperties: statusDialogProperties, setSelectedLayer: setSelectedLayer }),
+        React.createElement(SelectLayer, { selectedLayer: selectedLayer, setSelectedLayer: setSelectedLayer, statusCalloutSelect: statusCalloutSelect }),
+        React.createElement(Properties, { statusDialogProperties: statusDialogProperties }),
+        React.createElement(MapPanel, { selectedLayer: selectedLayer, setSelectedLayer: setSelectedLayer, statusPanel: statusPanel, statusDialogCreate: statusDialogCreate }),
+        React.createElement(BottomBar, { selectedLayer: selectedLayer, setSelectedLayer: setSelectedLayer, statusDialogCreate: statusDialogCreate, statusErrorbar: statusErrorbar, statusCalloutSelect: statusCalloutSelect, autoCreateNewLayer: autoCreateNewLayer }),
+        React.createElement("div", { id: "map", ref: (el) => { mapContainer = el; } })));
 }
 export default Map;
 //# sourceMappingURL=index.js.map

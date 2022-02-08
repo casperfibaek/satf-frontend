@@ -98,9 +98,32 @@
             }
         },
         {
-            "description": "Calculates the amount of people within a circular radius of a point, during daytime, nighttime and average.\nAn address can be used instead of Latitude.",
+            "description": "Calculates the amount of people within a circular radius of a point, using population data from WorldPop",
             "id": "POPDENS_BUFFER",
             "name": "POPDENS_BUFFER",
+            "parameters": [
+                {
+                    "name": "bufferMeters",
+                    "type": "any"
+                },
+                {
+                    "name": "latitudeOrAddress",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "type": "number"
+            }
+        },
+        {
+            "description": "Calculates the amount of people within a circular radius of a point, during daytime, nighttime and average.\nAn address can be used instead of Latitude.",
+            "id": "POP_BUFFER",
+            "name": "POP_BUFFER",
             "parameters": [
                 {
                     "name": "bufferMeters",
@@ -126,7 +149,8 @@
             "name": "NIGHTLIGHT",
             "parameters": [
                 {
-                    "name": "bufferMeters",
+                    "description": "Walking time",
+                    "name": "minutes",
                     "type": "any"
                 },
                 {
@@ -144,21 +168,21 @@
             }
         },
         {
-            "description": "Calculate the demography for an area\nAn address can be used instead of Latitude.",
+            "description": "Calculate the demography for an area",
             "id": "DEMOGRAPHY",
             "name": "DEMOGRAPHY",
             "parameters": [
                 {
-                    "name": "bufferMeters",
-                    "type": "any"
-                },
-                {
-                    "name": "latitudeOrAddress",
+                    "name": "latitude",
                     "type": "any"
                 },
                 {
                     "name": "longitude",
-                    "optional": true,
+                    "type": "any"
+                },
+                {
+                    "description": "Walking time",
+                    "name": "minutes",
                     "type": "any"
                 }
             ],
@@ -372,8 +396,8 @@
         },
         {
             "description": "Finds all the banks and their addresses matching a naming pattern",
-            "id": "GET_BANKS",
-            "name": "GET_BANKS",
+            "id": "BANKS",
+            "name": "BANKS",
             "parameters": [
                 {
                     "name": "name",
@@ -390,7 +414,7 @@
             }
         },
         {
-            "description": "Finds the urban status of a location. #landcover #landuse #urban_status",
+            "description": "Finds the urban status of a location in Ghana. #landcover #landuse #urban_status",
             "id": "URBAN_STATUS",
             "name": "URBAN_STATUS",
             "parameters": [
@@ -409,7 +433,7 @@
             }
         },
         {
-            "description": "Finds the simplified (1km majority) urban status of a location. #landcover #landuse #urban_status",
+            "description": "Finds the simplified (1km majority) urban status of a location in Ghana. #landcover #landuse #urban_status",
             "id": "URBAN_STATUS_SIMPLE",
             "name": "URBAN_STATUS_SIMPLE",
             "parameters": [
@@ -504,7 +528,7 @@
             }
         },
         {
-            "description": "Calculates the walking time/distance between two points.",
+            "description": "Calculates the biking time/distance between two points.",
             "id": "TIME_DISTANCE_A_TO_B_WALK",
             "name": "TIME_DISTANCE_A_TO_B_WALK",
             "parameters": [
@@ -700,8 +724,8 @@
         },
         {
             "description": "Shows the weather forecast for the next 7 days on a location\nAn address can be used instead of Latitude.",
-            "id": "GET_FORECAST",
-            "name": "GET_FORECAST",
+            "id": "WEATHER_FORECAST",
+            "name": "WEATHER_FORECAST",
             "parameters": [
                 {
                     "name": "latitudeOrAddress",
@@ -715,6 +739,112 @@
             ],
             "result": {
                 "dimensionality": "matrix"
+            }
+        },
+        {
+            "description": "Shows the Normalized Difference Vegetation Index (NDVI) statistics over time for a specificed number of days when the data is available on a buffered location",
+            "id": "AVG_NDVI",
+            "name": "AVG_NDVI",
+            "parameters": [
+                {
+                    "name": "latitude",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "type": "any"
+                },
+                {
+                    "description": "Number of days for when the data needs to be requested (minimum of 5 days)",
+                    "name": "numberOfDays",
+                    "type": "any"
+                },
+                {
+                    "description": "buffer of the area to be analyzed: 100m, 500m, or 1000m. Defaults to 100m.",
+                    "name": "buffer",
+                    "optional": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix"
+            }
+        },
+        {
+            "description": "Shows the Normalized Difference Vegetation Index (NDVI) statistics over a 30 day period when the data is available on a buffered location",
+            "id": "MONTHLY_NDVI",
+            "name": "MONTHLY_NDVI",
+            "parameters": [
+                {
+                    "name": "latitude",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "type": "any"
+                },
+                {
+                    "description": "YYYY-MM-DD format for start date",
+                    "name": "startDate",
+                    "type": "any"
+                },
+                {
+                    "description": "YYYY-MM-DD format for end date",
+                    "name": "endDate",
+                    "type": "any"
+                },
+                {
+                    "description": "buffer of the area to be analyzed: 100m, 500m, or 1000m. Defaults to 100m.",
+                    "name": "buffer",
+                    "optional": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix"
+            }
+        },
+        {
+            "description": "Shows the trend of the vegetation growth based on the maximum Normalized Difference Vegetation Index (NDVI) over the last 30 day period, when the data is available on a buffered location",
+            "id": "VEGETATION_STATUS",
+            "name": "VEGETATION_STATUS",
+            "parameters": [
+                {
+                    "name": "latitude",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "type": "any"
+                },
+                {
+                    "description": "buffer of the area to be analyzed: 100m, 500m, or 1000m. Defaults to 100m.",
+                    "name": "buffer",
+                    "optional": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Finds the nearest bank to a location.",
+            "id": "NEAREST_WATERBODY",
+            "name": "NEAREST_WATERBODY",
+            "parameters": [
+                {
+                    "name": "latitudeOrAddress",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "type": "number"
             }
         }
     ]

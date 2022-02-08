@@ -13,7 +13,7 @@ function Install(): any {
       </Text>
       <Separator />
       <Text variant="mediumPlus" block className="home_text_base">
-          Download the SatF tool here: {<Link download href="https://satfstatic.z6.web.core.windows.net/satf_production.0.4.6.xml">Production</Link>} | {<Link download href="https://satfstatic.z6.web.core.windows.net/satf_development.0.4.6.xml">Development</Link>}
+          Download the SatF tool here: {<Link download href="https://satfstatic.z6.web.core.windows.net/satf_production.0.8.0.xml">Production</Link>} | {<Link download href="https://satfstaticdev.z6.web.core.windows.net/satf_development.0.8.0.xml">Development</Link>}
       </Text>
       <div className="guide">
         <Text variant="mediumPlus" block className="guide_text">Installation Guide: (WEB)</Text>
@@ -39,13 +39,13 @@ function Install(): any {
             1. Create a new folder on your computer in a place you'll remember.
         </Text>
         <Text variant="medium" block className="guide_text_body">
-            2. Right-click the newly generated folder and choose properties -> sharing -> advanced sharing and share the folder and enable all permissions. Copy the network path
+            2. Right-click the newly generated folder and choose properties {'-->'} sharing {'-->'} advanced sharing and share the folder and enable all permissions. Copy the network path
         </Text>
         <Text variant="medium" block className="guide_text_body">
-            3. Open excel and choose options in the bottom left -> trust center -> trust center settings -> trusted add-in catalogs -> paste the network url from step 2. Enable "show in menu". Click okay and restart excel.
+            3. Open excel and choose options in the bottom left {'-->'} trust center {'-->'} trust center settings {'-->'} trusted add-in catalogs {'-->'} paste the network url from step 2. Enable "show in menu". Click okay and restart excel.
         </Text>
         <Text variant="medium" block className="guide_text_body">
-            4. Reopen excel and choose insert -> my add-ins -> shared folder -> start the satf addin
+            4. Reopen excel and choose insert {'-->'} my add-ins {'-->'} shared folder {'-->'} start the satf addin
         </Text>
         <Text variant="medium" block className="guide_text_body">
             5. Now you have the SATF ribbon ready to analyse data!

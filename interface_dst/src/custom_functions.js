@@ -9,12 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import 'react-app-polyfill/ie11';
 import 'react-app-polyfill/stable';
-<<<<<<< HEAD
 import { isValidWhatFreeWords, isValidPluscode, createCoordinateArray, isValidLatitude, isValidLongitude, errNotAvailable, errInvalidValue, getValueForKey, getGlobal, getApiUrl, haversine, } from './utils';
-=======
-import { isValidWhatFreeWords, isValidPluscode, createCoordinateArray, isValidLatitude, isValidLongitude, errNotAvailable, errInvalidValue, getValueForKey, getGlobal, getApiUrl, haversine, setValueForKey, } from './utils';
->>>>>>> sendgeoms
-import { getSelectedCells } from './excel_interaction';
 Office.onReady(() => {
     console.log('Office ready from custom_functions.js');
 });
@@ -198,13 +193,12 @@ function API_VERSION() {
 }
 g.API_VERSION = API_VERSION;
 /**
- * Calculates the amount of people within a circular radius of a point.
- * An address can be used instead of Latitude.
+ * Calculates the amount of people within a circular radius of a point, using population data from WorldPop
  * @customfunction POPDENS_BUFFER
  * @param {any} bufferMeters
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<number>} Cell with amount of people.
+ * @return {Promise<number>} Cell with the amount of people.
  */
 function POPDENS_BUFFER(bufferMeters, latitudeOrAddress, longitude = false) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -231,6 +225,48 @@ function POPDENS_BUFFER(bufferMeters, latitudeOrAddress, longitude = false) {
     });
 }
 g.POPDENS_BUFFER = POPDENS_BUFFER;
+/**
+ * Calculates the amount of people within a circular radius of a point, during daytime, nighttime and average.
+ * An address can be used instead of Latitude.
+ * @customfunction POP_BUFFER
+ * @param {any} bufferMeters
+ * @param {any} latitudeOrAddress
+ * @param {any} [longitude]
+ * @return {Promise<any[][]>} Cells with amount of people during daytime, nightitme and average.
+ */
+function POP_BUFFER(bufferMeters, latitudeOrAddress, longitude = false) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            if (Number.isNaN(bufferMeters)) {
+                throw errInvalidValue('Buffer not a number');
+            }
+            const coords = yield parseToLatlng(latitudeOrAddress, longitude);
+            const url = `${_apiUrl}population_buffer?buffer=${bufferMeters}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+            const token = getValueForKey('satf_token');
+            const apiResponse = yield fetch(url, { headers: { Authorization: token } });
+            if (apiResponse.status === 401) {
+                throw errNotAvailable('401: Unauthorised user');
+            }
+            const responseJSON = yield apiResponse.json();
+            if (apiResponse.ok) {
+                if (responseJSON.message.length === 0) {
+                    return null;
+                }
+                const cell = [[], []];
+                for (let i = 0; i < responseJSON.message.length; i += 1) {
+                    cell[0].push(responseJSON.message[i][0]);
+                    cell[1].push(Number(responseJSON.message[i][1]));
+                }
+                return cell;
+            }
+            throw errInvalidValue(responseJSON.message);
+        }
+        catch (err) {
+            throw errInvalidValue(err);
+        }
+    });
+}
+g.POP_BUFFER = POP_BUFFER;
 /**
  * Calculate the average nightnight in an area.
  * An address can be used instead of Latitude.
@@ -277,19 +313,19 @@ g.NIGHTLIGHT = NIGHTLIGHT;
  * Calculate the demography for an area
  * An address can be used instead of Latitude.
  * @customfunction DEMOGRAPHY
- * @param {any} bufferMeters
+ * @param {any} minutes Walking time/distance
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<any[][]>} Timeseries of nightlight
+ * @return {Promise<any[][]>} Population by age groups and sex
  */
-function DEMOGRAPHY(bufferMeters, latitudeOrAddress, longitude = false) {
+function DEMOGRAPHY(minutes, latitudeOrAddress, longitude = false) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            if (Number.isNaN(bufferMeters)) {
-                throw errInvalidValue('Buffer not a number');
+            if (Number.isNaN(minutes)) {
+                throw errInvalidValue('Minutes not a number');
             }
             const coords = yield parseToLatlng(latitudeOrAddress, longitude);
-            const url = `${_apiUrl}demography?buffer=${bufferMeters}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+            const url = `${_apiUrl}demography?buffer=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
             const token = getValueForKey('satf_token');
             const apiResponse = yield fetch(url, { headers: { Authorization: token } });
             if (apiResponse.status === 401) {
@@ -302,6 +338,7 @@ function DEMOGRAPHY(bufferMeters, latitudeOrAddress, longitude = false) {
                 }
                 const cell = [[], []];
                 for (let i = 0; i < responseJSON.message.length; i += 1) {
+                    console.log(responseJSON.message[i]);
                     cell[0].push(responseJSON.message[i][0]);
                     cell[1].push(Math.round(Number(responseJSON.message[i][1])));
                 }
@@ -481,7 +518,7 @@ function POPDENS_ISO_BIKE(minutes, latitudeOrAddress, longitude = false) {
 }
 g.POPDENS_ISO_BIKE = POPDENS_ISO_BIKE;
 /**
- * Calculates the amount of people within a drivable timeframe of the point. Traverses the road network creating isocrones.
+ * Calculates the amount of people within a bikeable timeframe of the point. Traverses the road network creating isocrones.
  * @customfunction POPDENS_ISO_CAR
  * @param {any} minutes
  * @param {any} latitudeOrAddress
@@ -631,12 +668,12 @@ function ADMIN_LEVEL2_FUZZY_TRI(str) {
 g.ADMIN_LEVEL2_FUZZY_TRI = ADMIN_LEVEL2_FUZZY_TRI;
 /**
  * Finds all the banks and their addresses matching a naming pattern
- * @customfunction GET_BANKS
+ * @customfunction BANKS
  * @param {any} name
  * @param {any} [target]
  * @return {Promise<any[][]>}
  */
-function GET_BANKS(name, target = 0.4) {
+function BANKS(name, target = 0.4) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             let _target = 0.4;
@@ -674,9 +711,9 @@ function GET_BANKS(name, target = 0.4) {
         }
     });
 }
-g.GET_BANKS = GET_BANKS;
+g.BANKS = BANKS;
 /**
- * Finds the urban status of a location. #landcover #landuse #urban_status
+ * Finds the urban status of a location in Ghana. #landcover #landuse #urban_status
  * @customfunction URBAN_STATUS
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
@@ -705,7 +742,7 @@ function URBAN_STATUS(latitudeOrAddress, longitude = false) {
 }
 g.URBAN_STATUS = URBAN_STATUS;
 /**
- * Finds the simplified (1km majority) urban status of a location. #landcover #landuse #urban_status
+ * Finds the simplified (1km majority) urban status of a location in Ghana. #landcover #landuse #urban_status
  * @customfunction URBAN_STATUS_SIMPLE
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
@@ -1068,76 +1105,215 @@ function OCI_COVERAGE(latitudeOrAddress, longitude = false) {
         }
     });
 }
-<<<<<<< HEAD
 g.OCI_COVERAGE = OCI_COVERAGE;
-=======
-g.COVERAGE = OCI_COVERAGE;
->>>>>>> sendgeoms
-import arrayToGeojson from './components/map/array_to_geojson';
-/////
 /**
- * Sends geometries to database
- * @customfunction SENDGEOMS
- * @return nothing
+ * Shows the weather forecast for the next 7 days on a location
+ * An address can be used instead of Latitude.
+ * @customfunction WEATHER_FORECAST
+ * @param {any} latitudeOrAddress
+ * @param {any} [longitude]
+ * @return {Promise<any[][]>} Weather forecast
  */
-function SENDGEOMS() {
+function WEATHER_FORECAST(latitudeOrAddress, longitude = false) {
     return __awaiter(this, void 0, void 0, function* () {
-<<<<<<< HEAD
-        console.log('send geoms');
-        let geojson;
         try {
-            const cells = yield getSelectedCells();
-            geojson = yield arrayToGeojson(cells);
-            console.log(geojson);
-            const url = `${_apiUrl}send_geoms`;
-            // const token = getValueForKey('satf_token');
-            debugger;
-            const apiResponse = yield fetch(url, {
-                headers: {
-=======
-        setValueForKey('satf_token', 'casper:golden_ticket');
-        try {
-            let cells = yield getSelectedCells();
-            if (cells[0][0] == '#CALC!') {
-                cells[0][0] == 'layername';
-            }
-            const geojson = yield arrayToGeojson(cells);
-            console.log(geojson);
-            console.log(JSON.stringify(geojson));
-            const url = `${_apiUrl}send_geoms`;
+            const coords = yield parseToLatlng(latitudeOrAddress, longitude);
+            const url = `${_apiUrl}get_forecast?lat=${coords[0][0]}&lng=${coords[0][1]}`;
             const token = getValueForKey('satf_token');
-            debugger;
-            const apiResponse = yield fetch(url, {
-                headers: {
-                    Authorisation: token,
->>>>>>> sendgeoms
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                method: "POST",
-<<<<<<< HEAD
-                body: JSON.stringify(geojson)
-            });
-            console.log(apiResponse);
-        }
-        catch (err) {
-            console.log(err);
-=======
-                body: JSON.stringify({ geojson, token })
-            });
-            const responseJSON = yield apiResponse.json();
+            const apiResponse = yield fetch(url, { headers: { Authorization: token } });
             if (apiResponse.status === 401) {
                 throw errNotAvailable('401: Unauthorised user');
             }
+            const responseJSON = yield apiResponse.json();
             if (apiResponse.ok) {
-                return String(responseJSON.message);
+                if (responseJSON.message.length === 0) {
+                    return null;
+                }
+                const cell = [];
+                // push headers
+                const header = ['Date', 'Description', 'Temp_min (°C)', 'Temp_max (°C)', 'Humidity (%)', 'Rain (mm)', 'Clouds (%)'];
+                cell.push(header);
+                for (let i = 0; i < responseJSON.message.length; i += 1) {
+                    // push values
+                    const values = Object.values(responseJSON.message[i]);
+                    if (values.length < 7) {
+                        values.splice(5, 0, 0);
+                    }
+                    cell.push(values);
+                }
+                console.log(cell);
+                // await addCellsToSheet(cell);
+                return cell;
             }
+            throw errInvalidValue(responseJSON.message);
         }
         catch (err) {
             throw errInvalidValue(err);
->>>>>>> sendgeoms
         }
     });
 }
-g.SENDGEOMS = SENDGEOMS;
+g.WEATHER_FORECAST = WEATHER_FORECAST;
+/**
+ * Shows the Normalized Difference Vegetation Index (NDVI) statistics over time for a specificed number of days when the data is available on a buffered location
+ * @customfunction AVG_NDVI
+ * @param {any} latitude
+ * @param {any} longitude
+ * @param {any} numberOfDays Number of days for when the data needs to be requested (minimum of 5 days)
+ * @param {any} [buffer] buffer of the area to be analyzed: 100m, 500m, or 1000m. Defaults to 100m.
+ * @return {Promise<any[][]>} NDVI statistics for each day the date is available over a specified amount of time
+ */
+function AVG_NDVI(latitude, longitude, numberOfDays, buffer = false) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const coords = yield parseToLatlng(latitude, longitude);
+            const url = `${_apiUrl}avg_NDVI?lat=${coords[0][0]}&lng=${coords[0][1]}&number_days=${numberOfDays}&buffer=${buffer}`;
+            const token = getValueForKey('satf_token');
+            const apiResponse = yield fetch(url, { headers: { Authorization: token } });
+            if (apiResponse.status === 401) {
+                throw errNotAvailable('401: Unauthorised user');
+            }
+            const responseJSON = yield apiResponse.json();
+            if (apiResponse.ok) {
+                if (responseJSON.message.length === 0) {
+                    return null;
+                }
+                const cell = [];
+                // push headers
+                const header = ['Dates', 'Min', 'Max', 'Mean', 'stDev'];
+                cell.push(header);
+                for (let i = 0; i < responseJSON.message.length; i += 1) {
+                    // push values
+                    const values = Object.values(responseJSON.message[i]);
+                    cell.push(values);
+                }
+                console.log(cell);
+                // await addCellsToSheet(cell);
+                return cell;
+            }
+            throw errInvalidValue(responseJSON.message);
+        }
+        catch (err) {
+            throw errInvalidValue(err);
+        }
+    });
+}
+g.MONTHLY_NDVI = MONTHLY_NDVI;
+/**
+ * Shows the Normalized Difference Vegetation Index (NDVI) statistics over a 30 day period when the data is available on a buffered location
+ * @customfunction MONTHLY_NDVI
+ * @param {any} latitude
+ * @param {any} longitude
+ * @param {any} startMonth month of the year to start the analysis in numeric form (from 1 to 12)
+ * @param {any} endMonth month of the year to end the analysis in numeric form (from 1 to 12)
+ * @param {any} year year in numeric form (starting from 2016)
+ * @param {any} [buffer] buffer of the area to be analyzed: 100m, 500m, or 1000m. Defaults to 100m.
+ * @return {Promise<any[][]>} NDVI statistics for each month and year specified, aggregated over a 30 day period
+ */
+function MONTHLY_NDVI(latitude, longitude, startMonth, endMonth, year, buffer = false) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const coords = yield parseToLatlng(latitude, longitude);
+            const url = `${_apiUrl}maxNDVI_monthly?lat=${coords[0][0]}&lng=${coords[0][1]}&start_month=${startMonth}&end_month=${endMonth}&year=${year}&buffer=${buffer}`;
+            const token = getValueForKey('satf_token');
+            const apiResponse = yield fetch(url, { headers: { Authorization: token } });
+            if (apiResponse.status === 401) {
+                throw errNotAvailable('401: Unauthorised user');
+            }
+            const responseJSON = yield apiResponse.json();
+            if (apiResponse.ok) {
+                if (responseJSON.message.length === 0) {
+                    return null;
+                }
+                const cell = [];
+                // push headers
+                const header = ['Date', 'Min', 'Max', 'Mean', 'stDev'];
+                cell.push(header);
+                for (let i = 0; i < responseJSON.message.length; i += 1) {
+                    // push values
+                    const values = Object.values(responseJSON.message[i]);
+                    cell.push(values);
+                }
+                console.log(cell);
+                // await addCellsToSheet(cell);
+                return cell;
+            }
+            throw errInvalidValue(responseJSON.message);
+        }
+        catch (err) {
+            throw errInvalidValue(err);
+        }
+    });
+}
+g.MONTHLY_NDVI = MONTHLY_NDVI;
+// import arrayToGeojson from './components/map/array_to_geojson'
+///// TODO: finalize geometries functions
+// /**
+//  * Sends geometries to database
+//  * @customfunction SENDGEOMS
+//  * @return nothing
+//  */
+// async function SENDGEOMS() { // eslint-disable-line
+//   setValueForKey('satf_token', 'casper:golden_ticket')
+//   try {
+//     let cells = await getSelectedCells();
+//     if (cells[0][0] == '#CALC!') {
+//       cells[0][0] == 'layername'
+//     }
+//     const geojson = await arrayToGeojson(cells);
+//     console.log(geojson)
+//     console.log(JSON.stringify(geojson))
+//     const url = `${_apiUrl}send_geoms`;
+//     const token = getValueForKey('satf_token');
+//     debugger;
+//     const apiResponse = await fetch(url, {
+//       headers: {
+//         Authorisation: token,
+//         'Accept': 'application/json',
+//         'Content-Type': 'application/json'
+//       },
+//       method: "POST",
+//       body: JSON.stringify({geojson, token})
+//   })
+//   const responseJSON = await apiResponse.json()
+//   if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+//   if (apiResponse.ok) { return String(responseJSON.message); }
+//   } catch (err) {
+//     throw errInvalidValue(err)
+// }
+// }
+// g.SENDGEOMS = SENDGEOMS;
+// /**
+//  * Sends geometries to database
+//  * @customfunction FETCHGEOMS
+//  * @param id
+//  * @return {Promise<string>} Technology available
+//  */
+//  async function FETCHGEOMS(id) { // eslint-disable-line
+//   try {
+//     const token = getValueForKey('satf_token')
+//     const userName = token.split(':')[0] 
+//     const apiResponse = await fetch(`${_apiUrl}get_layer_geoms/${userName}/${id}`, {
+//       method: 'get',
+//       headers: {
+//         //  Authorisation: token, 
+//           'Content-Type': 'application/json',
+//         },
+//       });
+//       // if (apiResponse.ok) {
+//         // send repsonse to excel
+//     const responseJSON = await apiResponse.json()
+//     // const cells = ParseGeometries(responseJSON)
+//     const cells = geojsonToArray(responseJSON.results, 'Hello World');
+//     console.log(cells)
+//     try {
+//       await addCellsToSheet(cells);
+//     } catch (error) {
+//       console.log(error);
+//     }
+//       // }      
+//   }
+//    catch (error) {
+//     console.log(error);
+//   }
+// }
 //# sourceMappingURL=custom_functions.js.map

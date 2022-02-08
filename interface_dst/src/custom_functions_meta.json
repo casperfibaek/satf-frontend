@@ -98,7 +98,7 @@
             }
         },
         {
-            "description": "Calculates the amount of people within a circular radius of a point.\nAn address can be used instead of Latitude.",
+            "description": "Calculates the amount of people within a circular radius of a point, using population data from WorldPop",
             "id": "POPDENS_BUFFER",
             "name": "POPDENS_BUFFER",
             "parameters": [
@@ -118,6 +118,29 @@
             ],
             "result": {
                 "type": "number"
+            }
+        },
+        {
+            "description": "Calculates the amount of people within a circular radius of a point, during daytime, nighttime and average.\nAn address can be used instead of Latitude.",
+            "id": "POP_BUFFER",
+            "name": "POP_BUFFER",
+            "parameters": [
+                {
+                    "name": "bufferMeters",
+                    "type": "any"
+                },
+                {
+                    "name": "latitudeOrAddress",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix"
             }
         },
         {
@@ -282,7 +305,7 @@
             }
         },
         {
-            "description": "Calculates the amount of people within a drivable timeframe of the point. Traverses the road network creating isocrones.",
+            "description": "Calculates the amount of people within a bikeable timeframe of the point. Traverses the road network creating isocrones.",
             "id": "POPDENS_ISO_CAR",
             "name": "POPDENS_ISO_CAR",
             "parameters": [
@@ -372,8 +395,8 @@
         },
         {
             "description": "Finds all the banks and their addresses matching a naming pattern",
-            "id": "GET_BANKS",
-            "name": "GET_BANKS",
+            "id": "BANKS",
+            "name": "BANKS",
             "parameters": [
                 {
                     "name": "name",
@@ -390,7 +413,7 @@
             }
         },
         {
-            "description": "Finds the urban status of a location. #landcover #landuse #urban_status",
+            "description": "Finds the urban status of a location in Ghana. #landcover #landuse #urban_status",
             "id": "URBAN_STATUS",
             "name": "URBAN_STATUS",
             "parameters": [
@@ -409,7 +432,7 @@
             }
         },
         {
-            "description": "Finds the simplified (1km majority) urban status of a location. #landcover #landuse #urban_status",
+            "description": "Finds the simplified (1km majority) urban status of a location in Ghana. #landcover #landuse #urban_status",
             "id": "URBAN_STATUS_SIMPLE",
             "name": "URBAN_STATUS_SIMPLE",
             "parameters": [
@@ -699,11 +722,91 @@
             }
         },
         {
-            "description": "Sends geometries to database",
-            "id": "SENDGEOMS",
-            "name": "SENDGEOMS",
-            "parameters": [],
-            "result": {}
+            "description": "Shows the weather forecast for the next 7 days on a location\nAn address can be used instead of Latitude.",
+            "id": "WEATHER_FORECAST",
+            "name": "WEATHER_FORECAST",
+            "parameters": [
+                {
+                    "name": "latitudeOrAddress",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "optional": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix"
+            }
+        },
+        {
+            "description": "Shows the Normalized Difference Vegetation Index (NDVI) statistics over time for a specificed number of days when the data is available on a buffered location",
+            "id": "AVG_NDVI",
+            "name": "AVG_NDVI",
+            "parameters": [
+                {
+                    "name": "latitude",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "type": "any"
+                },
+                {
+                    "description": "Number of days for when the data needs to be requested (minimum of 5 days)",
+                    "name": "numberOfDays",
+                    "type": "any"
+                },
+                {
+                    "description": "buffer of the area to be analyzed: 100m, 500m, or 1000m. Defaults to 100m.",
+                    "name": "buffer",
+                    "optional": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix"
+            }
+        },
+        {
+            "description": "Shows the Normalized Difference Vegetation Index (NDVI) statistics over a 30 day period when the data is available on a buffered location",
+            "id": "MONTHLY_NDVI",
+            "name": "MONTHLY_NDVI",
+            "parameters": [
+                {
+                    "name": "latitude",
+                    "type": "any"
+                },
+                {
+                    "name": "longitude",
+                    "type": "any"
+                },
+                {
+                    "description": "month of the year to start the analysis in numeric form (from 1 to 12)",
+                    "name": "startMonth",
+                    "type": "any"
+                },
+                {
+                    "description": "month of the year to end the analysis in numeric form (from 1 to 12)",
+                    "name": "endMonth",
+                    "type": "any"
+                },
+                {
+                    "description": "year in numeric form (starting from 2016)",
+                    "name": "year",
+                    "type": "any"
+                },
+                {
+                    "description": "buffer of the area to be analyzed: 100m, 500m, or 1000m. Defaults to 100m.",
+                    "name": "buffer",
+                    "optional": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix"
+            }
         }
     ]
 }

@@ -2,6 +2,7 @@ import 'react-app-polyfill/ie11'; import 'react-app-polyfill/stable';
 import {
   isValidWhatFreeWords,
   isValidPluscode,
+  isValidArray,
   createCoordinateArray,
   isValidLatitude,
   isValidLongitude,
@@ -193,15 +194,45 @@ async function API_VERSION():Promise<string> {
 g.API_VERSION = API_VERSION;
 
 /**
+ * Calculates the amount of people within a circular radius of a point, using population data from WorldPop
+ * @customfunction POPDENS_BUFFER
+ * @param {any} bufferMeters
+ * @param {any} latitudeOrAddress
+ * @param {any} [longitude]
+ * @return {Promise<number>} Cell with the amount of people.
+ */
+async function POPDENS_BUFFER(bufferMeters:any, latitudeOrAddress:any, longitude:any = false):Promise<number> {
+  try {
+    if (Number.isNaN(bufferMeters)) { throw errInvalidValue('Buffer not a number'); }
+
+    const coords = await parseToLatlng(latitudeOrAddress, longitude);
+    const url = `${_apiUrl}population_density_buffer?buffer=${bufferMeters}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const token = getValueForKey('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+    if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+
+    const responseJSON:ApiReply = await apiResponse.json();
+    if (apiResponse.ok) { return Number(responseJSON.message); }
+
+    throw errInvalidValue(responseJSON.message);
+  } catch (err) {
+    throw errInvalidValue(err);
+  }
+}
+g.POPDENS_BUFFER = POPDENS_BUFFER;
+
+/**
  * Calculates the amount of people within a circular radius of a point, during daytime, nighttime and average.
  * An address can be used instead of Latitude.
- * @customfunction POPDENS_BUFFER
+ * @customfunction POP_BUFFER
  * @param {any} bufferMeters
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
  * @return {Promise<any[][]>} Cells with amount of people during daytime, nightitme and average.
  */
-async function POPDENS_BUFFER(bufferMeters:any, latitudeOrAddress:any, longitude:any = false):Promise<any[][]> {
+async function POP_BUFFER(bufferMeters:any, latitudeOrAddress:any, longitude:any = false):Promise<any[][]> {
   try {
     if (Number.isNaN(bufferMeters)) { throw errInvalidValue('Buffer not a number'); }
 
@@ -232,23 +263,23 @@ async function POPDENS_BUFFER(bufferMeters:any, latitudeOrAddress:any, longitude
     throw errInvalidValue(err);
   }
 }
-g.POPDENS_BUFFER = POPDENS_BUFFER;
+g.POP_BUFFER = POP_BUFFER;
 
 /**
  * Calculate the average nightnight in an area.
  * An address can be used instead of Latitude.
  * @customfunction NIGHTLIGHT
- * @param {any} bufferMeters
+ * @param {any} minutes Walking time
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
  * @return {Promise<any[][]>} Timeseries of nightlight
  */
-async function NIGHTLIGHT(bufferMeters:any, latitudeOrAddress:any, longitude:any = false):Promise<any[][]> {
+async function NIGHTLIGHT(minutes:any, latitudeOrAddress:any, longitude:any = false):Promise<any[][]> {
   try {
-    if (Number.isNaN(bufferMeters)) { throw errInvalidValue('Buffer not a number'); }
+    if (Number.isNaN(minutes)) { throw errInvalidValue('Buffer not a number'); }
 
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `${_apiUrl}nightlights?buffer=${bufferMeters}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const url = `${_apiUrl}nightlights?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -275,19 +306,18 @@ g.NIGHTLIGHT = NIGHTLIGHT;
 
 /**
  * Calculate the demography for an area
- * An address can be used instead of Latitude.
  * @customfunction DEMOGRAPHY
- * @param {any} bufferMeters
- * @param {any} latitudeOrAddress
- * @param {any} [longitude]
- * @return {Promise<any[][]>} Timeseries of nightlight
+ * @param {any} latitude
+ * @param {any} longitude
+ * @param {any} minutes Walking time
+ * @return {Promise<any[][]>} Population by age groups and sex
  */
-async function DEMOGRAPHY(bufferMeters:any, latitudeOrAddress:any, longitude:any = false):Promise<any[][]> {
+async function DEMOGRAPHY(latitude:any, longitude:any, minutes:any):Promise<any[][]> {
   try {
-    if (Number.isNaN(bufferMeters)) { throw errInvalidValue('Buffer not a number'); }
+    if (Number.isNaN(minutes)) { throw errInvalidValue('Minutes or Meters not a number'); }
 
-    const coords = await parseToLatlng(latitudeOrAddress, longitude);
-    const url = `${_apiUrl}demography?buffer=${bufferMeters}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const coords = await parseToLatlng(latitude, longitude);
+    const url = `${_apiUrl}demography?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
     const token = getValueForKey('satf_token');
 
     const apiResponse = await fetch(url, { headers: { Authorization: token } });
@@ -604,12 +634,12 @@ g.ADMIN_LEVEL2_FUZZY_TRI = ADMIN_LEVEL2_FUZZY_TRI;
 
 /**
  * Finds all the banks and their addresses matching a naming pattern
- * @customfunction GET_BANKS
+ * @customfunction BANKS
  * @param {any} name
  * @param {any} [target]
  * @return {Promise<any[][]>}
  */
-async function GET_BANKS(name:any, target:any = 0.4):Promise<any[][]> {
+async function BANKS(name:any, target:any = 0.4):Promise<any[][]> {
   try {
     let _target = 0.4;
     if (!Number.isNaN(Number(target))) { _target = target; }
@@ -642,14 +672,14 @@ async function GET_BANKS(name:any, target:any = 0.4):Promise<any[][]> {
     throw errInvalidValue(err);
   }
 }
-g.GET_BANKS = GET_BANKS;
+g.BANKS = BANKS;
 
 /**
- * Finds the urban status of a location. #landcover #landuse #urban_status
+ * Finds the urban status of a location in Ghana. #landcover #landuse #urban_status
  * @customfunction URBAN_STATUS
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<string>} Name of the administrative zone.
+ * @return {Promise<string>} Urban status class.
  */
 async function URBAN_STATUS(latitudeOrAddress:any, longitude:any = false):Promise<string> {
   try {
@@ -672,11 +702,11 @@ async function URBAN_STATUS(latitudeOrAddress:any, longitude:any = false):Promis
 g.URBAN_STATUS = URBAN_STATUS;
 
 /**
- * Finds the simplified (1km majority) urban status of a location. #landcover #landuse #urban_status
+ * Finds the simplified (1km majority) urban status of a location in Ghana. #landcover #landuse #urban_status
  * @customfunction URBAN_STATUS_SIMPLE
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<string>} Name of the administrative zone.
+ * @return {Promise<string>} Urban status class.
  */
 async function URBAN_STATUS_SIMPLE(latitudeOrAddress:any, longitude:any = false):Promise<string> {
   try {
@@ -702,7 +732,7 @@ g.URBAN_STATUS_SIMPLE = URBAN_STATUS_SIMPLE;
  * @customfunction NEAREST_PLACE
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<string>} Name of the administrative zone.
+ * @return {Promise<string>} Name of the nearest place.
  */
 async function NEAREST_PLACE(latitudeOrAddress:any, longitude:any = false):Promise<string> {
   try {
@@ -729,7 +759,7 @@ g.NEAREST_PLACE = NEAREST_PLACE;
  * @customfunction NEAREST_POI
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<string>} Name of the administrative zone.
+ * @return {Promise<string>} Name of the nearest point of interest.
  */
 async function NEAREST_POI(latitudeOrAddress:any, longitude:any = false):Promise<string> {
   try {
@@ -756,7 +786,7 @@ g.NEAREST_POI = NEAREST_POI;
  * @customfunction NEAREST_BANK
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<string>} Name of the administrative zone.
+ * @return {Promise<string>} Name of the nearest bank.
  */
 async function NEAREST_BANK(latitudeOrAddress:any, longitude:any = false):Promise<string> {
   try {
@@ -782,7 +812,7 @@ g.NEAREST_BANK = NEAREST_BANK;
  * @customfunction NEAREST_BANK_DIST
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<number>} Name of the administrative zone.
+ * @return {Promise<number>} Distance from the nearest bank in meters.
  */
 async function NEAREST_BANK_DIST(latitudeOrAddress:any, longitude:any = false):Promise<number> {
   try {
@@ -805,7 +835,7 @@ async function NEAREST_BANK_DIST(latitudeOrAddress:any, longitude:any = false):P
 g.NEAREST_BANK_DIST = NEAREST_BANK_DIST;
 
 /**
- * Calculates the walking time/distance between two points.
+ * Calculates the biking time/distance between two points.
  * @customfunction TIME_DISTANCE_A_TO_B_WALK
  * @param {any} lat1 Latitude of first point
  * @param {any} lng1 Longitude of first point
@@ -814,7 +844,7 @@ g.NEAREST_BANK_DIST = NEAREST_BANK_DIST;
  * @param {any} [timeOrDistance] Whether to return time (minutes) or distance (meters). Defaults to time.
  * @return {Promise<string>} Cell with PlusCode address.
  */
-async function TIME_DISTANCE_A_TO_B_WALK(lat1:any, lng1:any, lat2:any, lng2:any, timeOrDistance:any = 'time'):Promise<string | number> {
+async function TIME_DISTANCE_A_TO_B_WALK(lat1:any, lng1:any, lat2:any, lng2:any, timeOrDistance:any = 'time'):Promise<string> {
   try {
     const coords1 = await parseToLatlng(lat1, lng1);
     const coords2 = await parseToLatlng(lat2, lng2);
@@ -826,12 +856,25 @@ async function TIME_DISTANCE_A_TO_B_WALK(lat1:any, lng1:any, lat2:any, lng2:any,
     if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
 
     const responseJSON:ApiReply = await apiResponse.json();
-
+    console.log(responseJSON.message.geometry)
+    // const { state } = window; 
     if (apiResponse.ok) {
-      if (timeOrDistance === 'time') {
-        return String(responseJSON.message.time);
-      }
-      return Number(responseJSON.message.distance);
+      if (timeOrDistance === 'distance') {
+        return String(responseJSON.message.distance)
+      };
+      // const route = responseJSON.message.geometry.coordinates
+      // const geojson = {
+      //   type: 'Feature',
+      //   properties:{},
+      //   geometry: {
+      //     type: 'LineString',
+      //     coordinates: route
+      //   }
+      // }
+      // console.log(geojson.geometry)
+      return String(responseJSON.message.time);
+
+  
     }
 
     throw errInvalidValue(responseJSON.message);
@@ -865,10 +908,10 @@ async function TIME_DISTANCE_A_TO_B_BIKE(lat1:any, lng1:any, lat2:any, lng2:any,
     const responseJSON:ApiReply = await apiResponse.json();
 
     if (apiResponse.ok) {
-      if (timeOrDistance === 'time') {
-        return String(responseJSON.message.time);
+      if (timeOrDistance === 'distance') {
+        return String(responseJSON.message.distance);
       }
-      return Number(responseJSON.message.distance);
+      return String(responseJSON.message.time);
     }
 
     throw errInvalidValue(responseJSON.message);
@@ -902,10 +945,10 @@ async function TIME_DISTANCE_A_TO_B_CAR(lat1:any, lng1:any, lat2:any, lng2:any, 
     const responseJSON:ApiReply = await apiResponse.json();
 
     if (apiResponse.ok) {
-      if (timeOrDistance === 'time') {
-        return String(responseJSON.message.time);
+      if (timeOrDistance === 'distance') {
+        return String(responseJSON.message.distance);
       }
-      return Number(responseJSON.message.distance);
+      return String(responseJSON.message.time);
     }
 
     throw errInvalidValue(responseJSON.message);
@@ -1028,12 +1071,12 @@ g.OCI_COVERAGE = OCI_COVERAGE;
 /**
  * Shows the weather forecast for the next 7 days on a location
  * An address can be used instead of Latitude.
- * @customfunction GET_FORECAST
+ * @customfunction WEATHER_FORECAST
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
  * @return {Promise<any[][]>} Weather forecast
  */
-async function GET_FORECAST(latitudeOrAddress:any, longitude:any = false):Promise<any[][]> {
+async function WEATHER_FORECAST(latitudeOrAddress:any, longitude:any = false):Promise<any[][]> {
   try {
     const coords = await parseToLatlng(latitudeOrAddress, longitude);
     const url = `${_apiUrl}get_forecast?lat=${coords[0][0]}&lng=${coords[0][1]}`;
@@ -1048,12 +1091,12 @@ async function GET_FORECAST(latitudeOrAddress:any, longitude:any = false):Promis
       if (responseJSON.message.length === 0) { return null; }
       const cell:any[] = []; 
       // push headers
-      const header = ['Date', 'Description', 'Temp_min', 'Temp_max', 'Humidity', 'Rain', 'Clouds']
+      const header = ['Date', 'Description', 'Temp_min(°C)', 'Temp_max(°C)', 'Humidity(%)', 'Rain(mm)', 'Clouds(%)', 'Probability of Precipitation(%)', 'Alerts']
       cell.push(header);
       for (let i = 0; i < responseJSON.message.length; i += 1) {
       // push values
         const values = Object.values(responseJSON.message[i])
-        if (values.length < 7) {
+        if (values.length < 9) {
           values.splice(5, 0, 0)
         }
 
@@ -1073,8 +1116,198 @@ async function GET_FORECAST(latitudeOrAddress:any, longitude:any = false):Promis
   }
 }
 
-g.GET_FORECAST = GET_FORECAST;
+g.WEATHER_FORECAST = WEATHER_FORECAST;
 
+
+/**
+ * Shows the Normalized Difference Vegetation Index (NDVI) statistics over time for a specificed number of days when the data is available on a buffered location 
+ * @customfunction AVG_NDVI
+ * @param {any} latitude
+ * @param {any} longitude
+ * @param {any} numberOfDays Number of days for when the data needs to be requested (minimum of 5 days)
+ * @param {any} [buffer] buffer of the area to be analyzed: 100m, 500m, or 1000m. Defaults to 100m.
+ * @return {Promise<any[][]>} NDVI statistics for each day the date is available over a specified amount of time
+ */
+async function AVG_NDVI(latitude:any, longitude:any, numberOfDays:any, buffer:any=100):Promise<any[][]> {
+  try {
+    const coords = await parseToLatlng(latitude, longitude);
+    const url = `${_apiUrl}avg_NDVI?lat=${coords[0][0]}&lng=${coords[0][1]}&number_days=${numberOfDays}&buffer=${buffer}`;
+    const token = getValueForKey('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+    if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+
+    const responseJSON:ApiReply = await apiResponse.json();
+    if (apiResponse.ok) {
+      if (responseJSON.message.length === 0) { return null; }
+      const cell:any[] = []; 
+      // push headers
+      const header = ['Date', 'Min', 'Max', 'Mean', 'stDev', 'samples', 'noData']
+      cell.push(header);
+      for (let i = 0; i < responseJSON.message.length; i += 1) {
+      // push values
+        const values = Object.values(responseJSON.message[i])
+
+        cell.push(values);
+        
+      }
+      console.log(cell)
+
+      // await addCellsToSheet(cell);
+
+      return cell
+    }
+
+    throw errInvalidValue(responseJSON.message);
+  } catch (err) {
+    throw errInvalidValue(err);
+  }
+}
+
+g.AVG_NDVI = AVG_NDVI;
+
+
+/**
+ * Shows the Normalized Difference Vegetation Index (NDVI) statistics over a 30 day period when the data is available on a buffered location 
+ * @customfunction MONTHLY_NDVI
+ * @param {any} latitude
+ * @param {any} longitude
+ * @param {any} startDate YYYY-MM-DD format for start date
+ * @param {any} endDate YYYY-MM-DD format for end date
+ * @param {any} [buffer] buffer of the area to be analyzed: 100m, 500m, or 1000m. Defaults to 100m.
+ * @return {Promise<any[][]>} NDVI statistics aggregated over a 30 day period
+ */
+async function MONTHLY_NDVI(latitude:any, longitude:any, startDate:any, endDate:any, buffer:any=100):Promise<any[][]> {
+  try {
+    const coords = await parseToLatlng(latitude, longitude);
+    const url = `${_apiUrl}NDVI_monthly?lat=${coords[0][0]}&lng=${coords[0][1]}&from_date=${startDate}&to_date=${endDate}&buffer=${buffer}`;
+    const token = getValueForKey('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+    if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+
+    const responseJSON:ApiReply = await apiResponse.json();
+    if (apiResponse.ok) {
+      if (responseJSON.message.length === 0) { return null; }
+      const cell:any[] = []; 
+      // push headers
+      const header = ['Date', 'Min', 'Max', 'Mean', 'stDev', 'samples', 'noData']
+      cell.push(header);
+      for (let i = 0; i < responseJSON.message.length; i += 1) {
+      // push values
+        const values = Object.values(responseJSON.message[i])
+
+        cell.push(values);
+        
+      }
+      console.log(cell)
+
+      // await addCellsToSheet(cell);
+
+      return cell
+    }
+
+    throw errInvalidValue(responseJSON.message);
+  } catch (err) {
+    throw errInvalidValue(err);
+  }
+}
+
+g.MONTHLY_NDVI = MONTHLY_NDVI;
+
+/**
+ * Shows the trend of the vegetation growth based on the maximum Normalized Difference Vegetation Index (NDVI) over the last 30 day period, when the data is available on a buffered location 
+ * @customfunction VEGETATION_STATUS
+ * @param {any} latitude
+ * @param {any} longitude
+ * @param {any} [buffer] buffer of the area to be analyzed: 100m, 500m, or 1000m. Defaults to 100m.
+ * @return {Promise<string>} Trend or warning for high values of NDVI
+ */
+async function VEGETATION_STATUS(latitude:any, longitude:any, buffer:any=100):Promise<string> {
+  try {
+    const coords = await parseToLatlng(latitude, longitude);
+    const url = `${_apiUrl}vegetation_monitoring?lat=${coords[0][0]}&lng=${coords[0][1]}&buffer=${buffer}`;
+    const token = getValueForKey('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+    if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+
+    const responseJSON:ApiReply = await apiResponse.json();
+    if (apiResponse.ok) {
+      if (responseJSON.message.length === 0) { return null; }
+    
+      return String(responseJSON.message);
+    }
+
+    throw errInvalidValue(responseJSON.message);
+  } catch (err) {
+    throw errInvalidValue(err);
+  }
+}
+
+g.VEGETATION_STATUS = VEGETATION_STATUS;
+
+/**
+ * Finds the nearest bank to a location.
+ * @customfunction NEAREST_WATERBODY
+ * @param {any} latitudeOrAddress
+ * @param {any} [longitude]
+ * @return {Promise<number>} Distance in meters from the nearest waterbody.
+ */
+async function NEAREST_WATERBODY(latitudeOrAddress:any, longitude:any = false):Promise<number> {
+  try {
+    const coords = await parseToLatlng(latitudeOrAddress, longitude);
+    const url = `${_apiUrl}nearest_waterbody?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+    const token = getValueForKey('satf_token');
+
+    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+    if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+    const responseJSON:ApiReply = await apiResponse.json();
+    if (apiResponse.ok) { return responseJSON.message; }
+
+    throw errInvalidValue(String(responseJSON.message));
+  } catch (err) {
+    throw errInvalidValue(err);
+  }
+}
+g.NEAREST_WATERBODY = NEAREST_WATERBODY;
+
+// /**
+//  * Draws an Isochrone of defined minutes in walking distance (outputs a geometry)
+//  * @customfunction ISOCHRONE_WALK
+//  * @param {any} latitude
+//  * @param {any} longitude
+//  * @param {any} minutes time to be defined in minutes (max. 60)
+//  * @return {Promise<any>} geometry 
+//  */
+// async function ISOCHRONE_WALK(latitude:any, longitude:any, minutes:any):Promise<any> {
+//   try {
+//     const coords = await parseToLatlng(latitude, longitude);
+//     const url = `${_apiUrl}isochrone_walk?lat=${coords[0][0]}&lng=${coords[0][1]}&minutes=${minutes}`;
+//     const token = getValueForKey('satf_token');
+
+//     const apiResponse = await fetch(url, { headers: { Authorization: token } });
+
+//     if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+
+//     const responseJSON:ApiReply = await apiResponse.json();
+//     if (apiResponse.ok) {
+//       if (responseJSON.message.length === 0) { return null; }
+//       console.log(responseJSON.message)
+//       return geojsonToArray(responseJSON.message);
+//     }
+
+//     throw errInvalidValue(responseJSON.message);
+//   } catch (err) {
+//     throw errInvalidValue(err);
+//   }
+// }
+
+// g.ISOCHRONE_WALK = ISOCHRONE_WALK;
 
 // import arrayToGeojson from './components/map/array_to_geojson'
 

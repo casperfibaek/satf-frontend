@@ -15,7 +15,6 @@ declare let window: WindowState;
 
 export default function BottomBar(props:any) {
   const { state } = window;
-
   const [sendDialog, setSendDialog] = useState({ hidden: true });
 
   function closeSendDialog() {
@@ -73,7 +72,7 @@ export default function BottomBar(props:any) {
     }
     event.preventDefault();
   }
-
+  
   async function onRequest(event:React.MouseEvent<HTMLButtonElement>):Promise<void> {
     let geojson;
     try {
