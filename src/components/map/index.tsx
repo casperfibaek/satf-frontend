@@ -130,13 +130,13 @@ function initialiseMap(mapContainer:any) {
     'Population': layers.overlay.population,
     'Network Coverage 2021': layers.overlay.network_coverage,
     'Normalised Vegetation Index (Ghana)': layers.overlay.ndvi,
-    'Interferometric Coherence': layers.overlay.s1_coh,
-    'SAR Backscatter': layers.overlay.s1_bs,
-    'Coherence x Backscatter': layers.overlay.s1_cxb,
-    'Terrain (Slope)': layers.overlay.slope,
-    'Terrain (Height)': layers.overlay.height,
-    'Urban Status': layers.overlay.urban_status,
-    'Urban Status (simple)': layers.overlay.urban_status_simple,
+    // 'Interferometric Coherence': layers.overlay.s1_coh,
+    // 'SAR Backscatter': layers.overlay.s1_bs,
+    // 'Coherence x Backscatter': layers.overlay.s1_cxb,
+    'Terrain (Slope) (Ghana)': layers.overlay.slope,
+    'Terrain (Height) (Ghana)': layers.overlay.height,
+    'Urban Status (Ghana)': layers.overlay.urban_status,
+    'Urban Status (simple) (Ghana)': layers.overlay.urban_status_simple,
   };
 
   const basemaps = {

@@ -28,7 +28,7 @@ export default function MapPanel(props) {
         React.createElement(Panel, { headerText: "Layer control", isBlocking: false, onDismiss: () => { props.statusPanel.close(); }, type: PanelType.customNear, customWidth: '320px', closeButtonAriaLabel: "Close", isFooterAtBottom: true, isOpen: !props.statusPanel.current.hidden },
             React.createElement(LayerList, { className: "layer-list", selectedLayer: props.selectedLayer, setSelectedLayer: props.setSelectedLayer }),
             React.createElement(PrimaryButton, { text: "Create layer", className: "createButton", onClick: () => { props.statusDialogCreate.open(); } }),
-            React.createElement("div", null, "Current Version: 0.4.6"),
+            React.createElement("div", null, "Current Version: 0.8.0"),
             React.createElement("div", { className: "panel-footer" },
                 React.createElement(DefaultButton, { onClick: () => { props.statusPanel.close(); } }, "Close"),
                 React.createElement(DefaultButton, { text: "Delete all layers", className: "deleteButton", onClick: () => { statusDeleteAlert.open(); } }))),

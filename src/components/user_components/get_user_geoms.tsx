@@ -72,7 +72,7 @@ export default function GetUserGeoms(): any {
         const response = await fetch(url, {
            method: 'get',
            headers: {
-              //  Authorisation: token, 
+              //  Authorisation: stateToken, 
                'Content-Type': 'application/json',
              },
          });
@@ -94,8 +94,10 @@ export default function GetUserGeoms(): any {
     try {
       const response = await fetch(url, {
         method: 'get',
-        headers: { 'Content-Type': 'application/json' },
-        //  Authorisation: stateToken, 
+        headers: { 
+          // Authorisation: stateToken, 
+          'Content-Type': 'application/json',
+         },
       });
 
       const responseJSON = await response.json();
