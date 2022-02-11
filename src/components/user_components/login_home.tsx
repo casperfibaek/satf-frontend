@@ -99,7 +99,7 @@ export default function LoginHome(props: any) {
            </form>
            <div className="button_holder">
               <SpinnerComp className="spinner" loading={loadingStatus.show} loadingMessage={loadingStatus.text}/>
-              <DefaultButton disabled={false} text="Register" onClick={() => { if (!loadingStatus.show) { onRegisterPage(); } } } allowDisabledFocus />
+              <DefaultButton disabled={true} text="Register" onClick={() => { if (!loadingStatus.show) { onRegisterPage(); } } } allowDisabledFocus />
               <PrimaryButton text="Login" onClick={() => { onLogin(); } } allowDisabledFocus />
            </div>
         </div >
