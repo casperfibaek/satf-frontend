@@ -107,7 +107,7 @@ export default function BottomBar(props:any) {
         onDismiss={() => { closeSendDialog(); } }
       >
         <Dropdown
-          label="Send selected layer to Excel."
+          label="Send selected layer to Excel!"
           options={getLayerCount() === 0 ? [{ text: '', key: -1 }] : state.layers.map((e:any) => ({ text: e.name, key: e.key }))}
           onChange={(event:React.FormEvent, value:any) => { props.setSelectedLayer(value.key); }}
           required

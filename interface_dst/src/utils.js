@@ -289,7 +289,8 @@ export function getApiUrl() {
         // return 'https://satf-api.azurewebsites.net/api';
         return 'https://satf-api-magi-dev.azurewebsites.net/api/';
     }
-    return 'https://satf-api-magi.azurewebsites.net/api/';
+    // return 'https://satf-api-magi.azurewebsites.net/api/'
+    return 'https://satf-api-magi-dev.azurewebsites.net/api/';
 }
 export const haversine = (function () {
     const RADII = {

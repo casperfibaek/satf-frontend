@@ -45,6 +45,7 @@ function WHAT3WORDS_TO_LATLNG(what3words) {
     });
 }
 g.WHAT3WORDS_TO_LATLNG = WHAT3WORDS_TO_LATLNG;
+CustomFunctions.associate("WHAT3WORDS_TO_LATLNG", WHAT3WORDS_TO_LATLNG);
 /**
  * Converts a Pluscode to two adjacent cells containing Latitude and Longitude.
  * @customfunction PLUSCODE_TO_LATLNG
@@ -75,6 +76,7 @@ function PLUSCODE_TO_LATLNG(pluscode) {
     });
 }
 g.PLUSCODE_TO_LATLNG = PLUSCODE_TO_LATLNG;
+CustomFunctions.associate("PLUSCODE_TO_LATLNG", PLUSCODE_TO_LATLNG);
 /**
  * Parses an unknown input to Latitude and Longitude if possible.
  * @customfunction PARSE_TO_LATLNG
@@ -132,6 +134,7 @@ function LATLNG_TO_WHAT3WORDS(latitudeOrAddress, longitude = false) {
     });
 }
 g.LATLNG_TO_WHAT3WORDS = LATLNG_TO_WHAT3WORDS;
+CustomFunctions.associate("LATLNG_TO_WHAT3WORDS", LATLNG_TO_WHAT3WORDS);
 /**
  * Converts Latitude and Longitude to PlusCodes.
  * An address can be used instead of Latitude.
@@ -162,6 +165,7 @@ function LATLNG_TO_PLUSCODE(latitudeOrAddress, longitude = false) {
     });
 }
 g.LATLNG_TO_PLUSCODE = LATLNG_TO_PLUSCODE;
+CustomFunctions.associate("LATLNG_TO_PLUSCODE", LATLNG_TO_PLUSCODE);
 /**
  * Tests if there is access to the API and the user is logged in.
  * An address can be used instead of Latitude.
@@ -170,10 +174,12 @@ g.LATLNG_TO_PLUSCODE = LATLNG_TO_PLUSCODE;
  */
 function API_VERSION() {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log('API_VERSION');
         try {
             const url = `${_apiUrl}api_version`;
-            const token = getValueForKey('satf_token');
-            const apiResponse = yield fetch(url, { headers: { Authorization: token } });
+            // const token = getValueForKey('satf_token');
+            // const apiResponse = await fetch(url, { headers: { Authorization: token } });
+            const apiResponse = yield fetch(url);
             if (apiResponse.status === 401) {
                 throw errNotAvailable('401: Unauthorised user');
             }
@@ -192,6 +198,7 @@ function API_VERSION() {
     });
 }
 g.API_VERSION = API_VERSION;
+CustomFunctions.associate("API_VERSION", API_VERSION);
 /**
  * Calculates the amount of people within a circular radius of a point, using population data from WorldPop
  * @customfunction POPDENS_BUFFER
@@ -225,6 +232,7 @@ function POPDENS_BUFFER(bufferMeters, latitudeOrAddress, longitude = false) {
     });
 }
 g.POPDENS_BUFFER = POPDENS_BUFFER;
+CustomFunctions.associate("POPDENS_BUFFER", POPDENS_BUFFER);
 /**
  * Calculates the amount of people within a circular radius of a point, during daytime, nighttime and average.
  * An address can be used instead of Latitude.
@@ -257,6 +265,7 @@ function POP_BUFFER(bufferMeters, latitudeOrAddress, longitude = false) {
                     cell[0].push(responseJSON.message[i][0]);
                     cell[1].push(Number(responseJSON.message[i][1]));
                 }
+                console.log(cell);
                 return cell;
             }
             throw errInvalidValue(responseJSON.message);
@@ -267,23 +276,24 @@ function POP_BUFFER(bufferMeters, latitudeOrAddress, longitude = false) {
     });
 }
 g.POP_BUFFER = POP_BUFFER;
+CustomFunctions.associate("POP_BUFFER", POP_BUFFER);
 /**
  * Calculate the average nightnight in an area.
  * An address can be used instead of Latitude.
  * @customfunction NIGHTLIGHT
- * @param {any} bufferMeters
+ * @param {any} minutes Walking time
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
  * @return {Promise<any[][]>} Timeseries of nightlight
  */
-function NIGHTLIGHT(bufferMeters, latitudeOrAddress, longitude = false) {
+function NIGHTLIGHT(minutes, latitudeOrAddress, longitude = false) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            if (Number.isNaN(bufferMeters)) {
+            if (Number.isNaN(minutes)) {
                 throw errInvalidValue('Buffer not a number');
             }
             const coords = yield parseToLatlng(latitudeOrAddress, longitude);
-            const url = `${_apiUrl}nightlights?buffer=${bufferMeters}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+            const url = `${_apiUrl}nightlights?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
             const token = getValueForKey('satf_token');
             const apiResponse = yield fetch(url, { headers: { Authorization: token } });
             if (apiResponse.status === 401) {
@@ -309,23 +319,23 @@ function NIGHTLIGHT(bufferMeters, latitudeOrAddress, longitude = false) {
     });
 }
 g.NIGHTLIGHT = NIGHTLIGHT;
+CustomFunctions.associate("NIGHTLIGHT", NIGHTLIGHT);
 /**
  * Calculate the demography for an area
- * An address can be used instead of Latitude.
  * @customfunction DEMOGRAPHY
- * @param {any} minutes Walking time/distance
- * @param {any} latitudeOrAddress
- * @param {any} [longitude]
+ * @param {any} latitude
+ * @param {any} longitude
+ * @param {any} minutes Walking time
  * @return {Promise<any[][]>} Population by age groups and sex
  */
-function DEMOGRAPHY(minutes, latitudeOrAddress, longitude = false) {
+function DEMOGRAPHY(latitude, longitude, minutes) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             if (Number.isNaN(minutes)) {
-                throw errInvalidValue('Minutes not a number');
+                throw errInvalidValue('Minutes or Meters not a number');
             }
-            const coords = yield parseToLatlng(latitudeOrAddress, longitude);
-            const url = `${_apiUrl}demography?buffer=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
+            const coords = yield parseToLatlng(latitude, longitude);
+            const url = `${_apiUrl}demography?minutes=${minutes}&lat=${coords[0][0]}&lng=${coords[0][1]}`;
             const token = getValueForKey('satf_token');
             const apiResponse = yield fetch(url, { headers: { Authorization: token } });
             if (apiResponse.status === 401) {
@@ -352,6 +362,7 @@ function DEMOGRAPHY(minutes, latitudeOrAddress, longitude = false) {
     });
 }
 g.DEMOGRAPHY = DEMOGRAPHY;
+CustomFunctions.associate("DEMOGRAPHY", DEMOGRAPHY);
 /**
  * Calculates the amount of people within a walkable timeframe of the point. Circular approximation.
  * @customfunction POPDENS_BUFFER_WALK
@@ -385,6 +396,7 @@ function POPDENS_BUFFER_WALK(minutes, latitudeOrAddress, longitude = false) {
     });
 }
 g.POPDENS_BUFFER_WALK = POPDENS_BUFFER_WALK;
+CustomFunctions.associate("POPDENS_BUFFER_WALK", POPDENS_BUFFER_WALK);
 /**
  * Calculates the amount of people within a bikeable timeframe of the point. Circular approximation.
  * @customfunction POPDENS_BUFFER_BIKE
@@ -418,6 +430,7 @@ function POPDENS_BUFFER_BIKE(minutes, latitudeOrAddress, longitude = false) {
     });
 }
 g.POPDENS_BUFFER_BIKE = POPDENS_BUFFER_BIKE;
+CustomFunctions.associate("POPDENS_BUFFER_BIKE", POPDENS_BUFFER_BIKE);
 /**
  * Calculates the amount of people within a drivable timeframe of the point. Circular approximation.
  * @customfunction POPDENS_BUFFER_CAR
@@ -451,6 +464,7 @@ function POPDENS_BUFFER_CAR(minutes, latitudeOrAddress, longitude = false) {
     });
 }
 g.POPDENS_BUFFER_CAR = POPDENS_BUFFER_CAR;
+CustomFunctions.associate("POPDENS_BUFFER_CAR", POPDENS_BUFFER_CAR);
 /**
  * Calculates the amount of people within a walkable timeframe of the point. Traverses the road network creating isocrones.
  * @customfunction POPDENS_ISO_WALK
@@ -484,6 +498,7 @@ function POPDENS_ISO_WALK(minutes, latitudeOrAddress, longitude = false) {
     });
 }
 g.POPDENS_ISO_WALK = POPDENS_ISO_WALK;
+CustomFunctions.associate("POPDENS_ISO_WALK", POPDENS_ISO_WALK);
 /**
  * Calculates the amount of people within a bikeable timeframe of the point. Traverses the road network creating isocrones.
  * @customfunction POPDENS_ISO_BIKE
@@ -517,6 +532,7 @@ function POPDENS_ISO_BIKE(minutes, latitudeOrAddress, longitude = false) {
     });
 }
 g.POPDENS_ISO_BIKE = POPDENS_ISO_BIKE;
+CustomFunctions.associate("POPDENS_ISO_BIKE", POPDENS_ISO_BIKE);
 /**
  * Calculates the amount of people within a bikeable timeframe of the point. Traverses the road network creating isocrones.
  * @customfunction POPDENS_ISO_CAR
@@ -550,6 +566,7 @@ function POPDENS_ISO_CAR(minutes, latitudeOrAddress, longitude = false) {
     });
 }
 g.POPDENS_ISO_CAR = POPDENS_ISO_CAR;
+CustomFunctions.associate("POPDENS_ISO_CAR", POPDENS_ISO_CAR);
 /**
  * Finds the administrative zone of a point from Latitude and Longitude or an address.
  * Level 1 is regions.
@@ -580,6 +597,7 @@ function ADMIN_LEVEL1(latitudeOrAddress, longitude = false) {
     });
 }
 g.ADMIN_LEVEL1 = ADMIN_LEVEL1;
+CustomFunctions.associate("ADMIN_LEVEL1", ADMIN_LEVEL1);
 /**
  * Finds the administrative zone of a point from Latitude and Longitude or an address.
  * Level 2 is municipalities.
@@ -610,6 +628,7 @@ function ADMIN_LEVEL2(latitudeOrAddress, longitude = false) {
     });
 }
 g.ADMIN_LEVEL2 = ADMIN_LEVEL2;
+CustomFunctions.associate("ADMIN_LEVEL2", ADMIN_LEVEL2);
 /**
  * Finds the administrative zone that matches the input string the closest.
  * Uses the Levenstein Algorithm.
@@ -638,6 +657,7 @@ function ADMIN_LEVEL2_FUZZY_LEV(str) {
     });
 }
 g.ADMIN_LEVEL2_FUZZY_LEV = ADMIN_LEVEL2_FUZZY_LEV;
+CustomFunctions.associate("ADMIN_LEVEL2_FUZZY_LEV", ADMIN_LEVEL2_FUZZY_LEV);
 /**
  * Finds the administrative zone that matches the input string the closest.
  * Uses trigrams.
@@ -666,6 +686,7 @@ function ADMIN_LEVEL2_FUZZY_TRI(str) {
     });
 }
 g.ADMIN_LEVEL2_FUZZY_TRI = ADMIN_LEVEL2_FUZZY_TRI;
+CustomFunctions.associate("ADMIN_LEVEL2_FUZZY_TRI", ADMIN_LEVEL2_FUZZY_TRI);
 /**
  * Finds all the banks and their addresses matching a naming pattern
  * @customfunction BANKS
@@ -712,12 +733,13 @@ function BANKS(name, target = 0.4) {
     });
 }
 g.BANKS = BANKS;
+CustomFunctions.associate("BANKS", BANKS);
 /**
  * Finds the urban status of a location in Ghana. #landcover #landuse #urban_status
  * @customfunction URBAN_STATUS
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<string>} Name of the administrative zone.
+ * @return {Promise<string>} Urban status class.
  */
 function URBAN_STATUS(latitudeOrAddress, longitude = false) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -741,12 +763,13 @@ function URBAN_STATUS(latitudeOrAddress, longitude = false) {
     });
 }
 g.URBAN_STATUS = URBAN_STATUS;
+CustomFunctions.associate("URBAN_STATUS", URBAN_STATUS);
 /**
  * Finds the simplified (1km majority) urban status of a location in Ghana. #landcover #landuse #urban_status
  * @customfunction URBAN_STATUS_SIMPLE
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<string>} Name of the administrative zone.
+ * @return {Promise<string>} Urban status class.
  */
 function URBAN_STATUS_SIMPLE(latitudeOrAddress, longitude = false) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -770,12 +793,13 @@ function URBAN_STATUS_SIMPLE(latitudeOrAddress, longitude = false) {
     });
 }
 g.URBAN_STATUS_SIMPLE = URBAN_STATUS_SIMPLE;
+CustomFunctions.associate("URBAN_STATUS_SIMPLE", URBAN_STATUS_SIMPLE);
 /**
  * Finds the nearest placename to the location. Useful to figure out where the point is.
  * @customfunction NEAREST_PLACE
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<string>} Name of the administrative zone.
+ * @return {Promise<string>} Name of the nearest place.
  */
 function NEAREST_PLACE(latitudeOrAddress, longitude = false) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -799,12 +823,13 @@ function NEAREST_PLACE(latitudeOrAddress, longitude = false) {
     });
 }
 g.NEAREST_PLACE = NEAREST_PLACE;
+CustomFunctions.associate("NEAREST_PLACE", NEAREST_PLACE);
 /**
  * Finds the nearest point of interest to the location. Useful to figure out where the point is.
  * @customfunction NEAREST_POI
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<string>} Name of the administrative zone.
+ * @return {Promise<string>} Name of the nearest point of interest.
  */
 function NEAREST_POI(latitudeOrAddress, longitude = false) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -828,12 +853,13 @@ function NEAREST_POI(latitudeOrAddress, longitude = false) {
     });
 }
 g.NEAREST_POI = NEAREST_POI;
+CustomFunctions.associate("NEAREST_POI", NEAREST_POI);
 /**
  * Finds the nearest bank to a location.
  * @customfunction NEAREST_BANK
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<string>} Name of the administrative zone.
+ * @return {Promise<string>} Name of the nearest bank.
  */
 function NEAREST_BANK(latitudeOrAddress, longitude = false) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -857,12 +883,13 @@ function NEAREST_BANK(latitudeOrAddress, longitude = false) {
     });
 }
 g.NEAREST_BANK = NEAREST_BANK;
+CustomFunctions.associate("NEAREST_BANK", NEAREST_BANK);
 /**
  * Calculates the distance to the nearest bank.
  * @customfunction NEAREST_BANK_DIST
  * @param {any} latitudeOrAddress
  * @param {any} [longitude]
- * @return {Promise<number>} Name of the administrative zone.
+ * @return {Promise<number>} Distance from the nearest bank in meters.
  */
 function NEAREST_BANK_DIST(latitudeOrAddress, longitude = false) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -886,8 +913,9 @@ function NEAREST_BANK_DIST(latitudeOrAddress, longitude = false) {
     });
 }
 g.NEAREST_BANK_DIST = NEAREST_BANK_DIST;
+CustomFunctions.associate("NEAREST_BANK_DIST", NEAREST_BANK_DIST);
 /**
- * Calculates the walking time/distance between two points.
+ * Calculates the biking time/distance between two points.
  * @customfunction TIME_DISTANCE_A_TO_B_WALK
  * @param {any} lat1 Latitude of first point
  * @param {any} lng1 Longitude of first point
@@ -908,11 +936,24 @@ function TIME_DISTANCE_A_TO_B_WALK(lat1, lng1, lat2, lng2, timeOrDistance = 'tim
                 throw errNotAvailable('401: Unauthorised user');
             }
             const responseJSON = yield apiResponse.json();
+            console.log(responseJSON.message.geometry);
+            // const { state } = window; 
             if (apiResponse.ok) {
-                if (timeOrDistance === 'time') {
-                    return String(responseJSON.message.time);
+                if (timeOrDistance === 'distance') {
+                    return String(responseJSON.message.distance);
                 }
-                return Number(responseJSON.message.distance);
+                ;
+                // const route = responseJSON.message.geometry.coordinates
+                // const geojson = {
+                //   type: 'Feature',
+                //   properties:{},
+                //   geometry: {
+                //     type: 'LineString',
+                //     coordinates: route
+                //   }
+                // }
+                // console.log(geojson.geometry)
+                return String(responseJSON.message.time);
             }
             throw errInvalidValue(responseJSON.message);
         }
@@ -922,6 +963,7 @@ function TIME_DISTANCE_A_TO_B_WALK(lat1, lng1, lat2, lng2, timeOrDistance = 'tim
     });
 }
 g.TIME_DISTANCE_A_TO_B_WALK = TIME_DISTANCE_A_TO_B_WALK;
+CustomFunctions.associate("TIME_DISTANCE_A_TO_B_WALK", TIME_DISTANCE_A_TO_B_WALK);
 /**
  * Calculates the biking time/distance between two points.
  * @customfunction TIME_DISTANCE_A_TO_B_BIKE
@@ -945,10 +987,10 @@ function TIME_DISTANCE_A_TO_B_BIKE(lat1, lng1, lat2, lng2, timeOrDistance = 'tim
             }
             const responseJSON = yield apiResponse.json();
             if (apiResponse.ok) {
-                if (timeOrDistance === 'time') {
-                    return String(responseJSON.message.time);
+                if (timeOrDistance === 'distance') {
+                    return String(responseJSON.message.distance);
                 }
-                return Number(responseJSON.message.distance);
+                return String(responseJSON.message.time);
             }
             throw errInvalidValue(responseJSON.message);
         }
@@ -958,6 +1000,7 @@ function TIME_DISTANCE_A_TO_B_BIKE(lat1, lng1, lat2, lng2, timeOrDistance = 'tim
     });
 }
 g.TIME_DISTANCE_A_TO_B_BIKE = TIME_DISTANCE_A_TO_B_BIKE;
+CustomFunctions.associate("TIME_DISTANCE_A_TO_B_BIKE", TIME_DISTANCE_A_TO_B_BIKE);
 /**
  * Calculates the driving time/distance between two points.
  * @customfunction TIME_DISTANCE_A_TO_B_CAR
@@ -981,10 +1024,10 @@ function TIME_DISTANCE_A_TO_B_CAR(lat1, lng1, lat2, lng2, timeOrDistance = 'time
             }
             const responseJSON = yield apiResponse.json();
             if (apiResponse.ok) {
-                if (timeOrDistance === 'time') {
-                    return String(responseJSON.message.time);
+                if (timeOrDistance === 'distance') {
+                    return String(responseJSON.message.distance);
                 }
-                return Number(responseJSON.message.distance);
+                return String(responseJSON.message.time);
             }
             throw errInvalidValue(responseJSON.message);
         }
@@ -994,6 +1037,7 @@ function TIME_DISTANCE_A_TO_B_CAR(lat1, lng1, lat2, lng2, timeOrDistance = 'time
     });
 }
 g.TIME_DISTANCE_A_TO_B_CAR = TIME_DISTANCE_A_TO_B_CAR;
+CustomFunctions.associate("TIME_DISTANCE_A_TO_B_CAR", TIME_DISTANCE_A_TO_B_CAR);
 /**
  * Calculates the distance between two points
  * @customfunction DISTANCE_A_B
@@ -1017,6 +1061,7 @@ function DISTANCE_A_B(lat1, lng1, lat2, lng2) {
     });
 }
 g.DISTANCE_A_B = DISTANCE_A_B;
+CustomFunctions.associate("DISTANCE_A_B", DISTANCE_A_B);
 /**
  * Finds network COVERAGE
  * @customfunction NETWORK_COVERAGE
@@ -1048,6 +1093,7 @@ function NETWORK_COVERAGE(latitudeOrAddress, longitude = false) {
     });
 }
 g.NETWORK_COVERAGE = NETWORK_COVERAGE;
+CustomFunctions.associate("NETWORK_COVERAGE", NETWORK_COVERAGE);
 /**
  * Finds network COVERAGE from MCE source
  * @customfunction MCE_COVERAGE
@@ -1077,6 +1123,7 @@ function MCE_COVERAGE(latitudeOrAddress, longitude = false) {
     });
 }
 g.MCE_COVERAGE = MCE_COVERAGE;
+CustomFunctions.associate("MCE_COVERAGE", MCE_COVERAGE);
 /**
  * Finds network COVERAGE from OCI source
  * @customfunction OCI_COVERAGE
@@ -1106,6 +1153,7 @@ function OCI_COVERAGE(latitudeOrAddress, longitude = false) {
     });
 }
 g.OCI_COVERAGE = OCI_COVERAGE;
+CustomFunctions.associate("OCI_COVERAGE", OCI_COVERAGE);
 /**
  * Shows the weather forecast for the next 7 days on a location
  * An address can be used instead of Latitude.
@@ -1131,12 +1179,12 @@ function WEATHER_FORECAST(latitudeOrAddress, longitude = false) {
                 }
                 const cell = [];
                 // push headers
-                const header = ['Date', 'Description', 'Temp_min (°C)', 'Temp_max (°C)', 'Humidity (%)', 'Rain (mm)', 'Clouds (%)'];
+                const header = ['Date', 'Description', 'Temp_min(°C)', 'Temp_max(°C)', 'Humidity(%)', 'Rain(mm)', 'Clouds(%)', 'Probability of Precipitation(%)', 'Alerts'];
                 cell.push(header);
                 for (let i = 0; i < responseJSON.message.length; i += 1) {
                     // push values
                     const values = Object.values(responseJSON.message[i]);
-                    if (values.length < 7) {
+                    if (values.length < 9) {
                         values.splice(5, 0, 0);
                     }
                     cell.push(values);
@@ -1153,6 +1201,7 @@ function WEATHER_FORECAST(latitudeOrAddress, longitude = false) {
     });
 }
 g.WEATHER_FORECAST = WEATHER_FORECAST;
+CustomFunctions.associate("WEATHER_FORECAST", WEATHER_FORECAST);
 /**
  * Shows the Normalized Difference Vegetation Index (NDVI) statistics over time for a specificed number of days when the data is available on a buffered location
  * @customfunction AVG_NDVI
@@ -1162,7 +1211,7 @@ g.WEATHER_FORECAST = WEATHER_FORECAST;
  * @param {any} [buffer] buffer of the area to be analyzed: 100m, 500m, or 1000m. Defaults to 100m.
  * @return {Promise<any[][]>} NDVI statistics for each day the date is available over a specified amount of time
  */
-function AVG_NDVI(latitude, longitude, numberOfDays, buffer = false) {
+function AVG_NDVI(latitude, longitude, numberOfDays, buffer = 100) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const coords = yield parseToLatlng(latitude, longitude);
@@ -1179,7 +1228,7 @@ function AVG_NDVI(latitude, longitude, numberOfDays, buffer = false) {
                 }
                 const cell = [];
                 // push headers
-                const header = ['Dates', 'Min', 'Max', 'Mean', 'stDev'];
+                const header = ['Date', 'Min', 'Max', 'Mean', 'stDev', 'samples', 'noData'];
                 cell.push(header);
                 for (let i = 0; i < responseJSON.message.length; i += 1) {
                     // push values
@@ -1197,23 +1246,23 @@ function AVG_NDVI(latitude, longitude, numberOfDays, buffer = false) {
         }
     });
 }
-g.MONTHLY_NDVI = MONTHLY_NDVI;
+g.AVG_NDVI = AVG_NDVI;
+CustomFunctions.associate("AVG_NDVI", AVG_NDVI);
 /**
  * Shows the Normalized Difference Vegetation Index (NDVI) statistics over a 30 day period when the data is available on a buffered location
  * @customfunction MONTHLY_NDVI
  * @param {any} latitude
  * @param {any} longitude
- * @param {any} startMonth month of the year to start the analysis in numeric form (from 1 to 12)
- * @param {any} endMonth month of the year to end the analysis in numeric form (from 1 to 12)
- * @param {any} year year in numeric form (starting from 2016)
+ * @param {any} startDate YYYY-MM-DD format for start date
+ * @param {any} endDate YYYY-MM-DD format for end date
  * @param {any} [buffer] buffer of the area to be analyzed: 100m, 500m, or 1000m. Defaults to 100m.
- * @return {Promise<any[][]>} NDVI statistics for each month and year specified, aggregated over a 30 day period
+ * @return {Promise<any[][]>} NDVI statistics aggregated over a 30 day period
  */
-function MONTHLY_NDVI(latitude, longitude, startMonth, endMonth, year, buffer = false) {
+function MONTHLY_NDVI(latitude, longitude, startDate, endDate, buffer = 100) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const coords = yield parseToLatlng(latitude, longitude);
-            const url = `${_apiUrl}maxNDVI_monthly?lat=${coords[0][0]}&lng=${coords[0][1]}&start_month=${startMonth}&end_month=${endMonth}&year=${year}&buffer=${buffer}`;
+            const url = `${_apiUrl}NDVI_monthly?lat=${coords[0][0]}&lng=${coords[0][1]}&from_date=${startDate}&to_date=${endDate}&buffer=${buffer}`;
             const token = getValueForKey('satf_token');
             const apiResponse = yield fetch(url, { headers: { Authorization: token } });
             if (apiResponse.status === 401) {
@@ -1226,7 +1275,7 @@ function MONTHLY_NDVI(latitude, longitude, startMonth, endMonth, year, buffer = 
                 }
                 const cell = [];
                 // push headers
-                const header = ['Date', 'Min', 'Max', 'Mean', 'stDev'];
+                const header = ['Date', 'Min', 'Max', 'Mean', 'stDev', 'samples', 'noData'];
                 cell.push(header);
                 for (let i = 0; i < responseJSON.message.length; i += 1) {
                     // push values
@@ -1245,6 +1294,98 @@ function MONTHLY_NDVI(latitude, longitude, startMonth, endMonth, year, buffer = 
     });
 }
 g.MONTHLY_NDVI = MONTHLY_NDVI;
+CustomFunctions.associate("MONTHLY_NDVI", MONTHLY_NDVI);
+/**
+ * Shows the trend of the vegetation growth based on the maximum Normalized Difference Vegetation Index (NDVI) over the last 30 day period, when the data is available on a buffered location
+ * @customfunction VEGETATION_STATUS
+ * @param {any} latitude
+ * @param {any} longitude
+ * @param {any} [buffer] buffer of the area to be analyzed: 100m, 500m, or 1000m. Defaults to 100m.
+ * @return {Promise<string>} Trend or warning for high values of NDVI
+ */
+function VEGETATION_STATUS(latitude, longitude, buffer = 100) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const coords = yield parseToLatlng(latitude, longitude);
+            const url = `${_apiUrl}vegetation_monitoring?lat=${coords[0][0]}&lng=${coords[0][1]}&buffer=${buffer}`;
+            const token = getValueForKey('satf_token');
+            const apiResponse = yield fetch(url, { headers: { Authorization: token } });
+            if (apiResponse.status === 401) {
+                throw errNotAvailable('401: Unauthorised user');
+            }
+            const responseJSON = yield apiResponse.json();
+            if (apiResponse.ok) {
+                if (responseJSON.message.length === 0) {
+                    return null;
+                }
+                return String(responseJSON.message);
+            }
+            throw errInvalidValue(responseJSON.message);
+        }
+        catch (err) {
+            throw errInvalidValue(err);
+        }
+    });
+}
+g.VEGETATION_STATUS = VEGETATION_STATUS;
+CustomFunctions.associate("VEGETATION_STATUS", VEGETATION_STATUS);
+/**
+ * Finds the nearest bank to a location.
+ * @customfunction NEAREST_WATERBODY
+ * @param {any} latitudeOrAddress
+ * @param {any} [longitude]
+ * @return {Promise<number>} Distance in meters from the nearest waterbody.
+ */
+function NEAREST_WATERBODY(latitudeOrAddress, longitude = false) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const coords = yield parseToLatlng(latitudeOrAddress, longitude);
+            const url = `${_apiUrl}nearest_waterbody?lat=${coords[0][0]}&lng=${coords[0][1]}`;
+            const token = getValueForKey('satf_token');
+            const apiResponse = yield fetch(url, { headers: { Authorization: token } });
+            if (apiResponse.status === 401) {
+                throw errNotAvailable('401: Unauthorised user');
+            }
+            const responseJSON = yield apiResponse.json();
+            if (apiResponse.ok) {
+                return responseJSON.message;
+            }
+            throw errInvalidValue(String(responseJSON.message));
+        }
+        catch (err) {
+            throw errInvalidValue(err);
+        }
+    });
+}
+g.NEAREST_WATERBODY = NEAREST_WATERBODY;
+CustomFunctions.associate("NEAREST_WATERBODY", NEAREST_WATERBODY);
+// /**
+//  * Draws an Isochrone of defined minutes in walking distance (outputs a geometry)
+//  * @customfunction ISOCHRONE_WALK
+//  * @param {any} latitude
+//  * @param {any} longitude
+//  * @param {any} minutes time to be defined in minutes (max. 60)
+//  * @return {Promise<any>} geometry 
+//  */
+// async function ISOCHRONE_WALK(latitude:any, longitude:any, minutes:any):Promise<any> {
+//   try {
+//     const coords = await parseToLatlng(latitude, longitude);
+//     const url = `${_apiUrl}isochrone_walk?lat=${coords[0][0]}&lng=${coords[0][1]}&minutes=${minutes}`;
+//     const token = getValueForKey('satf_token');
+//     const apiResponse = await fetch(url, { headers: { Authorization: token } });
+//     if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
+//     const responseJSON:ApiReply = await apiResponse.json();
+//     if (apiResponse.ok) {
+//       if (responseJSON.message.length === 0) { return null; }
+//       console.log(responseJSON.message)
+//       return geojsonToArray(responseJSON.message);
+//     }
+//     throw errInvalidValue(responseJSON.message);
+//   } catch (err) {
+//     throw errInvalidValue(err);
+//   }
+// }
+// g.ISOCHRONE_WALK = ISOCHRONE_WALK;
 // import arrayToGeojson from './components/map/array_to_geojson'
 ///// TODO: finalize geometries functions
 // /**

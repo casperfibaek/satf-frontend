@@ -38,8 +38,7 @@ Office.onReady(async () => {
       loginState = userLoggedIn
       if (userLoggedIn) {
       toggleUserGeom(true)
-    }
-    else {
+    } else {
       toggleUserGeom(false)
     }
   }

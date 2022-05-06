@@ -98,7 +98,7 @@ export default function BottomBar(props) {
     }
     return (React.createElement("div", { id: "map-bottom-bar" },
         React.createElement(Dialog, { title: 'Send layer to Excel.', hidden: sendDialog.hidden, onDismiss: () => { closeSendDialog(); } },
-            React.createElement(Dropdown, { label: "Send selected layer to Excel.", options: getLayerCount() === 0 ? [{ text: '', key: -1 }] : state.layers.map((e) => ({ text: e.name, key: e.key })), onChange: (event, value) => { props.setSelectedLayer(value.key); }, required: true }),
+            React.createElement(Dropdown, { label: "Send selected layer to Excel!", options: getLayerCount() === 0 ? [{ text: '', key: -1 }] : state.layers.map((e) => ({ text: e.name, key: e.key })), onChange: (event, value) => { props.setSelectedLayer(value.key); }, required: true }),
             React.createElement(DialogFooter, null,
                 React.createElement(PrimaryButton, { onClick: sendData, text: "Send" }),
                 React.createElement(DefaultButton, { onClick: () => { closeSendDialog(); }, text: "Don't send" }))),
