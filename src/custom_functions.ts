@@ -54,6 +54,9 @@ async function WHAT3WORDS_TO_LATLNG(what3words:any):Promise<number[][]> {
 }
 g.WHAT3WORDS_TO_LATLNG = WHAT3WORDS_TO_LATLNG;
 
+CustomFunctions.associate("WHAT3WORDS_TO_LATLNG", WHAT3WORDS_TO_LATLNG);
+
+
 /**
  * Converts a Pluscode to two adjacent cells containing Latitude and Longitude.
  * @customfunction PLUSCODE_TO_LATLNG
@@ -81,6 +84,9 @@ async function PLUSCODE_TO_LATLNG(pluscode:any):Promise<number[][]> {
   throw errInvalidValue('500: Invalid Pluscode');
 }
 g.PLUSCODE_TO_LATLNG = PLUSCODE_TO_LATLNG;
+
+CustomFunctions.associate("PLUSCODE_TO_LATLNG", PLUSCODE_TO_LATLNG);
+
 
 /**
  * Parses an unknown input to Latitude and Longitude if possible.
@@ -135,6 +141,7 @@ async function LATLNG_TO_WHAT3WORDS(latitudeOrAddress:any, longitude:any = false
   }
 }
 g.LATLNG_TO_WHAT3WORDS = LATLNG_TO_WHAT3WORDS;
+CustomFunctions.associate("LATLNG_TO_WHAT3WORDS", LATLNG_TO_WHAT3WORDS);
 
 /**
  * Converts Latitude and Longitude to PlusCodes.
@@ -164,6 +171,7 @@ async function LATLNG_TO_PLUSCODE(latitudeOrAddress:any, longitude:any = false):
   }
 }
 g.LATLNG_TO_PLUSCODE = LATLNG_TO_PLUSCODE;
+CustomFunctions.associate("LATLNG_TO_PLUSCODE", LATLNG_TO_PLUSCODE);
 
 /**
  * Tests if there is access to the API and the user is logged in.
@@ -172,11 +180,14 @@ g.LATLNG_TO_PLUSCODE = LATLNG_TO_PLUSCODE;
  * @return {Promise<string>} Cell saying 'Hello world!' or 'Unauthorised'.
  */
 async function API_VERSION():Promise<string> {
+  console.log('API_VERSION');
   try {
     const url = `${_apiUrl}api_version`;
-    const token = getValueForKey('satf_token');
+    // const token = getValueForKey('satf_token');
 
-    const apiResponse = await fetch(url, { headers: { Authorization: token } });
+    // const apiResponse = await fetch(url, { headers: { Authorization: token } });
+    const apiResponse = await fetch(url);
+
 
     if (apiResponse.status === 401) { throw errNotAvailable('401: Unauthorised user'); }
 
@@ -192,6 +203,7 @@ async function API_VERSION():Promise<string> {
   }
 }
 g.API_VERSION = API_VERSION;
+CustomFunctions.associate("API_VERSION", API_VERSION);
 
 /**
  * Calculates the amount of people within a circular radius of a point, using population data from WorldPop
@@ -222,6 +234,7 @@ async function POPDENS_BUFFER(bufferMeters:any, latitudeOrAddress:any, longitude
   }
 }
 g.POPDENS_BUFFER = POPDENS_BUFFER;
+CustomFunctions.associate("POPDENS_BUFFER", POPDENS_BUFFER);
 
 /**
  * Calculates the amount of people within a circular radius of a point, during daytime, nighttime and average.
@@ -264,6 +277,7 @@ async function POP_BUFFER(bufferMeters:any, latitudeOrAddress:any, longitude:any
   }
 }
 g.POP_BUFFER = POP_BUFFER;
+CustomFunctions.associate("POP_BUFFER", POP_BUFFER);
 
 /**
  * Calculate the average nightnight in an area.
@@ -303,6 +317,7 @@ async function NIGHTLIGHT(minutes:any, latitudeOrAddress:any, longitude:any = fa
   }
 }
 g.NIGHTLIGHT = NIGHTLIGHT;
+CustomFunctions.associate("NIGHTLIGHT", NIGHTLIGHT);
 
 /**
  * Calculate the demography for an area
@@ -342,6 +357,7 @@ async function DEMOGRAPHY(latitude:any, longitude:any, minutes:any):Promise<any[
   }
 }
 g.DEMOGRAPHY = DEMOGRAPHY;
+CustomFunctions.associate("DEMOGRAPHY", DEMOGRAPHY);
 
 /**
  * Calculates the amount of people within a walkable timeframe of the point. Circular approximation.
@@ -372,6 +388,7 @@ async function POPDENS_BUFFER_WALK(minutes:any, latitudeOrAddress:any, longitude
   }
 }
 g.POPDENS_BUFFER_WALK = POPDENS_BUFFER_WALK;
+CustomFunctions.associate("POPDENS_BUFFER_WALK", POPDENS_BUFFER_WALK);
 
 /**
  * Calculates the amount of people within a bikeable timeframe of the point. Circular approximation.
@@ -402,6 +419,7 @@ async function POPDENS_BUFFER_BIKE(minutes:any, latitudeOrAddress:any, longitude
   }
 }
 g.POPDENS_BUFFER_BIKE = POPDENS_BUFFER_BIKE;
+CustomFunctions.associate("POPDENS_BUFFER_BIKE", POPDENS_BUFFER_BIKE);
 
 /**
  * Calculates the amount of people within a drivable timeframe of the point. Circular approximation.
@@ -432,6 +450,7 @@ async function POPDENS_BUFFER_CAR(minutes:any, latitudeOrAddress:any, longitude:
   }
 }
 g.POPDENS_BUFFER_CAR = POPDENS_BUFFER_CAR;
+CustomFunctions.associate("POPDENS_BUFFER_CAR", POPDENS_BUFFER_CAR);
 
 /**
  * Calculates the amount of people within a walkable timeframe of the point. Traverses the road network creating isocrones.
@@ -462,6 +481,7 @@ async function POPDENS_ISO_WALK(minutes:any, latitudeOrAddress:any, longitude:an
   }
 }
 g.POPDENS_ISO_WALK = POPDENS_ISO_WALK;
+CustomFunctions.associate("POPDENS_ISO_WALK", POPDENS_ISO_WALK);
 
 /**
  * Calculates the amount of people within a bikeable timeframe of the point. Traverses the road network creating isocrones.
@@ -492,6 +512,7 @@ async function POPDENS_ISO_BIKE(minutes:any, latitudeOrAddress:any, longitude:an
   }
 }
 g.POPDENS_ISO_BIKE = POPDENS_ISO_BIKE;
+CustomFunctions.associate("POPDENS_ISO_BIKE", POPDENS_ISO_BIKE);
 
 /**
  * Calculates the amount of people within a bikeable timeframe of the point. Traverses the road network creating isocrones.
@@ -524,6 +545,8 @@ async function POPDENS_ISO_CAR(minutes:any, latitudeOrAddress:any, longitude:any
 }
 g.POPDENS_ISO_CAR = POPDENS_ISO_CAR;
 
+CustomFunctions.associate("POPDENS_ISO_CAR", POPDENS_ISO_CAR);
+
 /**
  * Finds the administrative zone of a point from Latitude and Longitude or an address.
  * Level 1 is regions.
@@ -551,6 +574,7 @@ async function ADMIN_LEVEL1(latitudeOrAddress:any, longitude:any = false):Promis
   }
 }
 g.ADMIN_LEVEL1 = ADMIN_LEVEL1;
+CustomFunctions.associate("ADMIN_LEVEL1", ADMIN_LEVEL1);
 
 /**
  * Finds the administrative zone of a point from Latitude and Longitude or an address.
@@ -579,6 +603,7 @@ async function ADMIN_LEVEL2(latitudeOrAddress:any, longitude:any = false):Promis
   }
 }
 g.ADMIN_LEVEL2 = ADMIN_LEVEL2;
+CustomFunctions.associate("ADMIN_LEVEL2", ADMIN_LEVEL2);
 
 /**
  * Finds the administrative zone that matches the input string the closest.
@@ -605,6 +630,7 @@ async function ADMIN_LEVEL2_FUZZY_LEV(str:any):Promise<string> {
   }
 }
 g.ADMIN_LEVEL2_FUZZY_LEV = ADMIN_LEVEL2_FUZZY_LEV;
+CustomFunctions.associate("ADMIN_LEVEL2_FUZZY_LEV", ADMIN_LEVEL2_FUZZY_LEV);
 
 /**
  * Finds the administrative zone that matches the input string the closest.
@@ -631,6 +657,7 @@ async function ADMIN_LEVEL2_FUZZY_TRI(str:any):Promise<string> {
   }
 }
 g.ADMIN_LEVEL2_FUZZY_TRI = ADMIN_LEVEL2_FUZZY_TRI;
+CustomFunctions.associate("ADMIN_LEVEL2_FUZZY_TRI", ADMIN_LEVEL2_FUZZY_TRI);
 
 /**
  * Finds all the banks and their addresses matching a naming pattern
@@ -673,6 +700,7 @@ async function BANKS(name:any, target:any = 0.4):Promise<any[][]> {
   }
 }
 g.BANKS = BANKS;
+CustomFunctions.associate("BANKS", BANKS);
 
 /**
  * Finds the urban status of a location in Ghana. #landcover #landuse #urban_status
@@ -700,6 +728,7 @@ async function URBAN_STATUS(latitudeOrAddress:any, longitude:any = false):Promis
   }
 }
 g.URBAN_STATUS = URBAN_STATUS;
+CustomFunctions.associate("URBAN_STATUS", URBAN_STATUS);
 
 /**
  * Finds the simplified (1km majority) urban status of a location in Ghana. #landcover #landuse #urban_status
@@ -726,6 +755,7 @@ async function URBAN_STATUS_SIMPLE(latitudeOrAddress:any, longitude:any = false)
   }
 }
 g.URBAN_STATUS_SIMPLE = URBAN_STATUS_SIMPLE;
+CustomFunctions.associate("URBAN_STATUS_SIMPLE", URBAN_STATUS_SIMPLE);
 
 /**
  * Finds the nearest placename to the location. Useful to figure out where the point is.
@@ -753,6 +783,7 @@ async function NEAREST_PLACE(latitudeOrAddress:any, longitude:any = false):Promi
   }
 }
 g.NEAREST_PLACE = NEAREST_PLACE;
+CustomFunctions.associate("NEAREST_PLACE", NEAREST_PLACE);
 
 /**
  * Finds the nearest point of interest to the location. Useful to figure out where the point is.
@@ -780,6 +811,7 @@ async function NEAREST_POI(latitudeOrAddress:any, longitude:any = false):Promise
   }
 }
 g.NEAREST_POI = NEAREST_POI;
+CustomFunctions.associate("NEAREST_POI", NEAREST_POI);
 
 /**
  * Finds the nearest bank to a location.
@@ -806,6 +838,7 @@ async function NEAREST_BANK(latitudeOrAddress:any, longitude:any = false):Promis
   }
 }
 g.NEAREST_BANK = NEAREST_BANK;
+CustomFunctions.associate("NEAREST_BANK", NEAREST_BANK);
 
 /**
  * Calculates the distance to the nearest bank.
@@ -833,6 +866,7 @@ async function NEAREST_BANK_DIST(latitudeOrAddress:any, longitude:any = false):P
   }
 }
 g.NEAREST_BANK_DIST = NEAREST_BANK_DIST;
+CustomFunctions.associate("NEAREST_BANK_DIST", NEAREST_BANK_DIST);
 
 /**
  * Calculates the biking time/distance between two points.
@@ -883,6 +917,7 @@ async function TIME_DISTANCE_A_TO_B_WALK(lat1:any, lng1:any, lat2:any, lng2:any,
   }
 }
 g.TIME_DISTANCE_A_TO_B_WALK = TIME_DISTANCE_A_TO_B_WALK;
+CustomFunctions.associate("TIME_DISTANCE_A_TO_B_WALK", TIME_DISTANCE_A_TO_B_WALK);
 
 /**
  * Calculates the biking time/distance between two points.
@@ -920,6 +955,7 @@ async function TIME_DISTANCE_A_TO_B_BIKE(lat1:any, lng1:any, lat2:any, lng2:any,
   }
 }
 g.TIME_DISTANCE_A_TO_B_BIKE = TIME_DISTANCE_A_TO_B_BIKE;
+CustomFunctions.associate("TIME_DISTANCE_A_TO_B_BIKE", TIME_DISTANCE_A_TO_B_BIKE);
 
 /**
  * Calculates the driving time/distance between two points.
@@ -957,6 +993,7 @@ async function TIME_DISTANCE_A_TO_B_CAR(lat1:any, lng1:any, lat2:any, lng2:any, 
   }
 }
 g.TIME_DISTANCE_A_TO_B_CAR = TIME_DISTANCE_A_TO_B_CAR;
+CustomFunctions.associate("TIME_DISTANCE_A_TO_B_CAR", TIME_DISTANCE_A_TO_B_CAR);
 
 /**
  * Calculates the distance between two points
@@ -979,6 +1016,7 @@ async function DISTANCE_A_B(lat1:any, lng1:any, lat2:any, lng2:any):Promise<stri
   }
 }
 g.DISTANCE_A_B = DISTANCE_A_B;
+CustomFunctions.associate("DISTANCE_A_B", DISTANCE_A_B);
 
 /**
  * Finds network COVERAGE
@@ -1008,6 +1046,7 @@ async function NETWORK_COVERAGE(latitudeOrAddress:any, longitude:any = false):Pr
   }
 }
 g.NETWORK_COVERAGE = NETWORK_COVERAGE;
+CustomFunctions.associate("NETWORK_COVERAGE", NETWORK_COVERAGE);
 
 
 /**
@@ -1037,6 +1076,7 @@ async function MCE_COVERAGE(latitudeOrAddress:any, longitude:any = false):Promis
   }
 }
 g.MCE_COVERAGE = MCE_COVERAGE;
+CustomFunctions.associate("MCE_COVERAGE", MCE_COVERAGE);
 
 /**
  * Finds network COVERAGE from OCI source
@@ -1066,6 +1106,7 @@ async function OCI_COVERAGE(latitudeOrAddress:any, longitude:any = false):Promis
 }
 
 g.OCI_COVERAGE = OCI_COVERAGE;
+CustomFunctions.associate("OCI_COVERAGE", OCI_COVERAGE);
 
 
 /**
@@ -1117,6 +1158,7 @@ async function WEATHER_FORECAST(latitudeOrAddress:any, longitude:any = false):Pr
 }
 
 g.WEATHER_FORECAST = WEATHER_FORECAST;
+CustomFunctions.associate("WEATHER_FORECAST", WEATHER_FORECAST);
 
 
 /**
@@ -1166,6 +1208,7 @@ async function AVG_NDVI(latitude:any, longitude:any, numberOfDays:any, buffer:an
 }
 
 g.AVG_NDVI = AVG_NDVI;
+CustomFunctions.associate("AVG_NDVI", AVG_NDVI);
 
 
 /**
@@ -1216,6 +1259,7 @@ async function MONTHLY_NDVI(latitude:any, longitude:any, startDate:any, endDate:
 }
 
 g.MONTHLY_NDVI = MONTHLY_NDVI;
+CustomFunctions.associate("MONTHLY_NDVI", MONTHLY_NDVI);
 
 /**
  * Shows the trend of the vegetation growth based on the maximum Normalized Difference Vegetation Index (NDVI) over the last 30 day period, when the data is available on a buffered location 
@@ -1249,6 +1293,7 @@ async function VEGETATION_STATUS(latitude:any, longitude:any, buffer:any=100):Pr
 }
 
 g.VEGETATION_STATUS = VEGETATION_STATUS;
+CustomFunctions.associate("VEGETATION_STATUS", VEGETATION_STATUS);
 
 /**
  * Finds the nearest bank to a location.
@@ -1275,6 +1320,7 @@ async function NEAREST_WATERBODY(latitudeOrAddress:any, longitude:any = false):P
   }
 }
 g.NEAREST_WATERBODY = NEAREST_WATERBODY;
+CustomFunctions.associate("NEAREST_WATERBODY", NEAREST_WATERBODY);
 
 // /**
 //  * Draws an Isochrone of defined minutes in walking distance (outputs a geometry)
@@ -1395,5 +1441,4 @@ g.NEAREST_WATERBODY = NEAREST_WATERBODY;
 //     console.log(error);
 //   }
 // }
-
 
