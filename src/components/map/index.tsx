@@ -50,27 +50,27 @@ function initialiseMap(mapContainer:any) {
   const tzaBounds = L.latLngBounds(southWestTza, northEastTza);
 
   //layers to group layers
-  const population_ghana = L.tileLayer('https://{s}.imap.niras.dk/ghana/population_unweighted/{z}/{x}/{y}.png', {
+  const population_ghana = L.tileLayer('https://magi.niras.dk/satf/population_unweighted/{z}/{x}/{y}.png', {
         tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 13, bounds: mybounds,
       });
 
-  const population_tanzania = L.tileLayer('https://{s}.imap.niras.dk/ghana/tza_ppp_2020_UNadj/{z}/{x}/{y}.png', {
+  const population_tanzania = L.tileLayer('https://magi.niras.dk/satf/tza_ppp_2020_UNadj/{z}/{x}/{y}.png', {
         tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 12, bounds: tzaBounds,
       });
   
-  const s1_nl = L.tileLayer('https://{s}.imap.niras.dk/ghana/nightlights/{z}/{x}/{y}.png', {
+  const s1_nl = L.tileLayer('https://magi.niras.dk/satf/nightlights/{z}/{x}/{y}.png', {
         tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 14, bounds: mybounds,
       });
   
-  const nightlights_tanzania = L.tileLayer('https://{s}.imap.niras.dk/ghana/nightlights_tza_2020/{z}/{x}/{y}.png', {
+  const nightlights_tanzania = L.tileLayer('https://magi.niras.dk/satf/nightlights_tza_2020/{z}/{x}/{y}.png', {
         tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 12, bounds: tzaBounds,
       });
 
-  const network_coverage_gh = L.tileLayer('https://{s}.imap.niras.dk/ghana/mce_oci_ghana/{z}/{x}/{y}.png', {
+  const network_coverage_gh = L.tileLayer('https://magi.niras.dk/satf/mce_oci_ghana/{z}/{x}/{y}.png', {
         tms: true, attribution: 'Coverage Data © Collins Bartholomew and GSMA 2021', minZoom: 6, maxZoom: 16, maxNativeZoom: 12, bounds: mybounds, opacity:0.7,
       });
 
-  const network_coverage_tza = L.tileLayer('https://{s}.imap.niras.dk/ghana/mce_oci_tza/{z}/{x}/{y}.png', {
+  const network_coverage_tza = L.tileLayer('https://magi.niras.dk/satf/mce_oci_tza/{z}/{x}/{y}.png', {
         tms: true, attribution: 'Coverage Data © Collins Bartholomew and GSMA 2021', minZoom: 6, maxZoom: 16, maxNativeZoom: 12, bounds: tzaBounds, opacity:0.7,
       });
   
@@ -85,37 +85,37 @@ function initialiseMap(mapContainer:any) {
       esri: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
       }),
-      s2_2020: L.tileLayer('https://{s}.imap.niras.dk/ghana/2020/{z}/{x}/{y}.png', {
+      s2_2020: L.tileLayer('https://magi.niras.dk/satf/2020/{z}/{x}/{y}.png', {
         tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 14, bounds: mybounds,
       }),
-      s2_2019: L.tileLayer('https://{s}.imap.niras.dk/ghana/2019/{z}/{x}/{y}.png', {
+      s2_2019: L.tileLayer('https://magi.niras.dk/satf/2019/{z}/{x}/{y}.png', {
         tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 14, bounds: mybounds,
       }),
       empty: L.tileLayer(''),
     },
     overlay: {
-      ndvi: L.tileLayer('https://{s}.imap.niras.dk/ghana/ndvi/{z}/{x}/{y}.png', {
+      ndvi: L.tileLayer('https://magi.niras.dk/satf/ndvi/{z}/{x}/{y}.png', {
         tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 14, bounds: mybounds,
       }),
-      s1_bs: L.tileLayer('https://{s}.imap.niras.dk/ghana/grd/{z}/{x}/{y}.png', {
+      s1_bs: L.tileLayer('https://magi.niras.dk/satf/grd/{z}/{x}/{y}.png', {
         tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 14, bounds: mybounds,
       }),
-      s1_coh: L.tileLayer('https://{s}.imap.niras.dk/ghana/coh/{z}/{x}/{y}.png', {
+      s1_coh: L.tileLayer('https://magi.niras.dk/satf/coh/{z}/{x}/{y}.png', {
         tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 14, bounds: mybounds,
       }),
-      s1_cxb: L.tileLayer('https://{s}.imap.niras.dk/ghana/cxb/{z}/{x}/{y}.png', {
+      s1_cxb: L.tileLayer('https://magi.niras.dk/satf/cxb/{z}/{x}/{y}.png', {
         tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 14, bounds: mybounds,
       }),
-      height: L.tileLayer('https://{s}.imap.niras.dk/ghana/dem/terrain/{z}/{x}/{y}.png', {
+      height: L.tileLayer('https://magi.niras.dk/satf/dem/terrain/{z}/{x}/{y}.png', {
         tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 13, bounds: mybounds,
       }),
-      slope: L.tileLayer('https://{s}.imap.niras.dk/ghana/dem/slope/{z}/{x}/{y}.png', {
+      slope: L.tileLayer('https://magi.niras.dk/satf/dem/slope/{z}/{x}/{y}.png', {
         tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 13, bounds: mybounds,
       }),
-      urban_status: L.tileLayer('https://{s}.imap.niras.dk/ghana/tiles_classification/{z}/{x}/{y}.png', {
+      urban_status: L.tileLayer('https://magi.niras.dk/satf/tiles_classification/{z}/{x}/{y}.png', {
         tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 15, bounds: mybounds,
       }),
-      urban_status_simple: L.tileLayer('https://{s}.imap.niras.dk/ghana/tiles_classification_simple/{z}/{x}/{y}.png', {
+      urban_status_simple: L.tileLayer('https://magi.niras.dk/satf/tiles_classification_simple/{z}/{x}/{y}.png', {
         tms: true, attribution: 'NIRAS', minZoom: 6, maxZoom: 16, maxNativeZoom: 15, bounds: mybounds,
       }),
       population: L.layerGroup([population_ghana, population_tanzania]),
